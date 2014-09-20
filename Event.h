@@ -1,19 +1,56 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 
+#include <cstring>
+#include <map>
+#include "DataModel.h"
+
 class ShadowThread;
 class ShadowLock;
 class ShadowVar;
 
-
 enum Events{
     NEWTHREAD = 0x1,
-    ACQUIRE = 0x2,
-    RELEASE = 0x4,
-    ACCESS = 0x8,
-    CALL = 0x10,
+	JOIN = 0x2,
+    ACQUIRE = 0x4,
+    RELEASE = 0x8,
+    ACCESS = 0x10,
+    CALL = 0x20,
     ALL = 0xFF
 };
+
+///******************************************************************************
+// * Decoratable
+// *****************************************************************************/
+//class Decoratable {
+//public:
+//	virtual ~Decoratable() = 0;
+//};
+//inline Decoratable::~Decoratable(){}
+//
+///******************************************************************************
+// * Decoration
+// *****************************************************************************/
+//template<typename Key, typename Value>
+//class Decoration {
+//public:
+//
+//	Decoration(const Value& initial) : kInitial_(initial) {};
+//	~Decoration() {}
+//
+//	const Value& get(const Key& key) const;
+//	void set(const Key& key, const Value& value);
+//				   
+//private:
+//	typedef std::map<const Key&, const Value&> Map_;
+//
+//	Map_ map_;
+//	const Value kInitial_;
+//													 
+//	// prevent generated functions
+//	Decoration(const Decoration&);
+//	Decoration& operator=(const Decoration&);
+//};
 
 /******************************************************************************
  * Abstract Event
@@ -33,20 +70,50 @@ private:
 /******************************************************************************
  * New Thread Event
  *****************************************************************************/
+struct NewThreadInfo {
+	ShadowThread* thread;
+	NewThreadInfo(ShadowThread* thread) : thread(thread) {}
+};
+
 class NewThreadEvent : public Event {
 public:
 	NewThreadEvent(const ShadowThread *thread,
-				   const ShadowThread *newThread) :
-					   Event(thread), _newThread(newThread) {}
+				   const struct NewThreadInfo *info) :
+					   Event(thread), _info(info) {}
 	Events getEventType() const override { return NEWTHREAD; }
-	const ShadowThread* getNewThread() const;
+	const NewThreadInfo* getNewThreadInfo() const;
 
 private:
-	const ShadowThread *_newThread;
+	const NewThreadInfo *_info;
 
 	// prevent generated functions
 	NewThreadEvent(const NewThreadEvent&);
 	NewThreadEvent& operator=(const NewThreadEvent&);
+};
+
+
+/******************************************************************************
+ * Join Event
+ *****************************************************************************/
+struct JoinInfo {
+	ShadowThread* thread;
+	JoinInfo(ShadowThread* thread) : thread(thread) {}
+};
+
+class JoinEvent : public Event {
+public:
+	JoinEvent(const ShadowThread *thread,
+			  const struct JoinInfo *info) :
+			  Event(thread), _info(info) {}
+	Events getEventType() const override { return JOIN; }
+	const JoinInfo* getJoinInfo() const;
+
+private:
+	const JoinInfo *_info;
+
+	// prevent generated functions
+	JoinEvent(const JoinEvent&);
+	JoinEvent& operator=(const JoinEvent&);
 };
 
 /******************************************************************************
@@ -54,6 +121,7 @@ private:
  *****************************************************************************/
 struct AcquireInfo {
 	ShadowLock *lock;
+	AcquireInfo(ShadowLock *lock) : lock(lock) {}
 };
 
 class AcquireEvent : public Event {
@@ -77,6 +145,7 @@ private:
  *****************************************************************************/
 struct ReleaseInfo {
 	ShadowLock *lock;
+	ReleaseInfo(ShadowLock* lock) : lock(lock) {}
 };
 
 class ReleaseEvent : public Event {
@@ -85,6 +154,7 @@ public:
 				 const struct ReleaseInfo *info) :
 					 Event(thread), _info(info) {}
 	Events getEventType() const override { return RELEASE; }
+	const ReleaseInfo* getReleaseInfo() const;
 
 private:
 	const struct ReleaseInfo *_info;
@@ -97,15 +167,13 @@ private:
 /******************************************************************************
  * Access Event
  *****************************************************************************/
-enum AccessType {
-	READ,
-	WRITE,
-	READWRITE
-};
-
 struct AccessInfo {
-	enum AccessType type;
-	const ShadowVar *var;
+	AccessInfo(Access::type Type, ShadowVar *Var, unsigned instructionID)
+		: type(Type), instructionID(instructionID), var(Var) {}
+
+	Access::type type;
+	unsigned instructionID;
+	ShadowVar *var;
 };
 
 class AccessEvent : public Event {
@@ -113,12 +181,12 @@ public:
 	AccessEvent(const ShadowThread *thread,
 				const struct AccessInfo *info) :
 					 Event(thread), _info(info) {}
+
 	Events getEventType() const override { return ACCESS; }
-	const ShadowVar *getAccessInfo() const;
+	const AccessInfo *getAccessInfo() const;
 
 private:
 	const struct AccessInfo *_info;
-
 
 	// prevent generated functions
 	AccessEvent(const AccessEvent&);
@@ -128,9 +196,21 @@ private:
 /******************************************************************************
  * Call Event
  *****************************************************************************/
-struct CallInfo {
-	const char* name;
-};
+typedef struct CallInfo {
+	const double runtime;
+	const char* fnSignature;
+	const Function::type fnType;
+	const char* fileName;
+	const char* filePath;
+
+	CallInfo(const double Runtime,
+			 const char* FnSignature,
+			 const Function::type FnType,
+			 const char* FileName,
+			 const char* FilePath)
+		: runtime(Runtime), fnSignature(FnSignature), fnType(FnType),
+		  fileName(FileName), filePath(FilePath) {}
+} CallInfo;
 
 class CallEvent : public Event {
 public:
@@ -142,7 +222,6 @@ public:
 
 private:
 	const struct CallInfo *_info;
-
 
 	// prevent generated functions
 	CallEvent(const CallEvent&);

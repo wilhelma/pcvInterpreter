@@ -8,23 +8,24 @@
 #ifndef SAAPRUNNER_H_
 #define SAAPRUNNER_H_
 
-#include "Interpreter.h"
-#include "EventService.h"
+#include "Event.h"
+
+class Interpreter;
+class Tool;
+class Filter;
 
 class SAAPRunner {
 public:
-	SAAPRunner(Interpreter* interpreter, EventService* eventservice) :
-		_interpreter(interpreter), _eventService(eventservice) {}
-	~SAAPRunner() {}
+	SAAPRunner(Interpreter *interpreter) : _interpreter(interpreter) {};
+	~SAAPRunner() {};
 
-	bool registerTool(Tool* tool);
+	bool registerTool(Tool* tool, const Filter* filter, enum Events events);
 	bool removeTool(Tool* tool);
 	void interpret();
 
 private:
 	// private data members
 	Interpreter* _interpreter;
-	EventService* _eventService;
 
 	// prevent generated functions
 	SAAPRunner(const SAAPRunner&);

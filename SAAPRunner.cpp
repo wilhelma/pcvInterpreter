@@ -5,20 +5,33 @@
  *      Author: wilhelma
  */
 
+#include <iostream>
+
 #include "SAAPRunner.h"
+#include "EventService.h"
+#include "Interpreter.h"
+#include "Filter.h"
+#include "Event.h"
 
-bool SAAPRunner::registerTool(Tool* tool) {
-
+bool SAAPRunner::registerTool(Tool* tool,
+							  const Filter* filter,
+							  enum Events events)
+{
+	EventService *service = _interpreter->getEventService();
+	service->subscribe(tool, filter, events);
 	return true;
 }
 
-bool SAAPRunner::removeTool(Tool* tool) {
-
+bool SAAPRunner::removeTool(Tool* tool)
+{
+	EventService *service = _interpreter->getEventService();
+	service->unsubscribe(tool);
 	return true;
 }
 
-void SAAPRunner::interpret() {
-
+void SAAPRunner::interpret()
+{
+	_interpreter->process();
 }
 
 //class SAAPRunner {

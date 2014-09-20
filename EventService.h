@@ -20,6 +20,7 @@ class EventService {
 public:
 	EventService() {}
 	bool publish(NewThreadEvent *event);
+	bool publish(JoinEvent *event);
 	bool publish(AcquireEvent *event);
 	bool publish(ReleaseEvent *event);
 	bool publish(AccessEvent *event);

@@ -5,12 +5,24 @@
  *      Author: wilhelma
  */
 
+#include <iostream>
 #include "EventService.h"
 #include "Filter.h"
 #include "Tool.h"
 #include "Event.h"
 
 bool EventService::publish(NewThreadEvent *event) {
+	_observers_t::iterator it;
+	for (it = _observers.begin(); it != _observers.end(); ++it) {
+		if (it->second.events && NEWTHREAD ) {
+			it->first->create(event);
+		}
+	}
+
+	return true;
+}
+
+bool EventService::publish(JoinEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
 		if (it->second.events && NEWTHREAD ) {
@@ -54,7 +66,8 @@ bool EventService::publish(AccessEvent *event) {
 	return true;
 }
 
-bool EventService::publish(CallEvent *event) {
+bool EventService::publish(CallEvent *event)
+{
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
 		if (it->second.events && CALL ) {
