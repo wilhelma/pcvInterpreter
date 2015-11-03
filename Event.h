@@ -71,8 +71,9 @@ private:
  * New Thread Event
  *****************************************************************************/
 struct NewThreadInfo {
-	ShadowThread* thread;
-	NewThreadInfo(ShadowThread* thread) : thread(thread) {}
+	ShadowThread* childThread;
+	NewThreadInfo(ShadowThread* childThread)
+		: childThread(childThread) {}
 };
 
 class NewThreadEvent : public Event {
@@ -96,8 +97,8 @@ private:
  * Join Event
  *****************************************************************************/
 struct JoinInfo {
-	ShadowThread* thread;
-	JoinInfo(ShadowThread* thread) : thread(thread) {}
+	ShadowThread* childThread;
+	JoinInfo(ShadowThread* childThread) : childThread(childThread) {}
 };
 
 class JoinEvent : public Event {

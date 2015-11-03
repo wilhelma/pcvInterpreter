@@ -27,7 +27,7 @@ DBInterpreter::DBInterpreter(const char* DBPath,
 							 LockMgr *lockMgr,
 							 ThreadMgr *threadMgr) 
 	: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath), _logFile(logFile),
-	  _currentThread(0), _eventService(service)	{ }
+	  _eventService(service) { }
 
 DBInterpreter::~DBInterpreter(){ }
 
@@ -45,6 +45,8 @@ Instruction::type DBInterpreter::transformInstrType(const instruction_t &ins) {
 		return Instruction::ACQUIRE;
 	else if (strcmp( ins.instruction_type, "CSLEAVE" ) == 0)
 		return Instruction::RELEASE;
+	else if (strcmp( ins.instruction_type, "THRCREATE" ) == 0)
+		return Instruction::FORK;
 
 	return Instruction::OTHER;
 }
@@ -123,6 +125,28 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				accessFunc = &DBInterpreter::processRelAccess;
 			}
 			break;
+		case Instruction::FORK:
+			{
+				thread_t *thread;
+				if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
+					if (callT_.get(segment->call_id, &call) == IN_OK)
+					processFork(ins,
+								*segment,
+								*call,
+								*thread);
+				break;
+			}
+		case Instruction::JOIN:
+			{
+				thread_t *thread;
+				if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
+					if (callT_.get(segment->call_id, &call) == IN_OK)
+					processJoin(ins,
+								*segment,
+								*call,
+								*thread);
+				break;
+			}
 		default:
 			return IN_NO_ENTRY;
 		}	
@@ -188,7 +212,8 @@ int DBInterpreter::processCall(const char* callId,
 							   searchFile->second.file_name,
 							   searchFile->second.file_path);
 
-				CallEvent event(&_currentThread, &info);
+				ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+				CallEvent event(thread, &info);
 				_eventService->publish(&event);
 			} else {
 				BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
@@ -218,7 +243,8 @@ int DBInterpreter::processAccessGeneric(ACC_ID accessId,
 	auto search = referenceT_.find(_refNoIdMap[refId]);
 	if ( search != referenceT_.end() ) {
 
-		(this->* func)(accessId, access, instruction, segment, call, search->second);
+		(this->* func)(accessId, access, instruction, segment,
+					   call, search->second);
 
 	} else {
 		BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
@@ -243,16 +269,17 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
 	} else {
 		var = new ShadowVar( getVarType(reference.memory_type),
 								reference.id,
-								reference.address,
+								//reference.address,
 								reference.size,
 								reference.name);
 		_shadowVarMap[reference.id] = var;
 	}
 
+	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
 	AccessInfo info( access_t::getAccessType(access.access_type),
 					 var,
 					 instruction.instruction_id);
-	AccessEvent event( &_currentThread, &info );
+	AccessEvent event( thread, &info );
 	_eventService->publish( &event );
 
 	return 0;
@@ -265,9 +292,10 @@ int DBInterpreter::processAcqAccess(ACC_ID accessId,
 									const call_t& call,
 									const reference_t& reference) {
 	
-	ShadowLock *lock = lockMgr_->getLock(reference.address);
+	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+	ShadowLock *lock = lockMgr_->getLock(std::string(reference.reference_id));
 	AcquireInfo info(lock);					  
-	AcquireEvent event( &_currentThread, &info );
+	AcquireEvent event( thread, &info );
 	_eventService->publish( &event );
 
 	return 0;
@@ -280,39 +308,39 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 									const call_t& call,
 									const reference_t& reference) {
 		
-	ShadowLock *lock = lockMgr_->getLock(reference.address);
+	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+	ShadowLock *lock = lockMgr_->getLock(std::string(reference.reference_id));
 	ReleaseInfo info(lock);					  
-	ReleaseEvent event( &_currentThread, &info );
+	ReleaseEvent event( thread, &info );
 	_eventService->publish( &event );
 
 	return 0;
 }
 
-int DBInterpreter::processCrtAccess(ACC_ID accessId, 
-									const access_t& access,
-									const instruction_t& instruction,
-									const segment_t& segment,
-									const call_t& call,
-									const reference_t& reference) {
+int DBInterpreter::processFork(const instruction_t& instruction,
+							   const segment_t& segment,
+							   const call_t& call,
+							   const thread_t& thread) {
+		
 
-	ShadowThread *thread = threadMgr_->getThread(call.thread_id);
-	NewThreadInfo info(thread);					  
-	NewThreadEvent event( &_currentThread, &info );
+	ShadowThread *pT = threadMgr_->getThread(call.thread_id);
+	ShadowThread *cT = threadMgr_->getThread(thread.child_thread_id);
+	NewThreadInfo info(cT);					  
+	NewThreadEvent event( pT, &info );
 	_eventService->publish( &event );
 
 	return 0;
 }
 
-int DBInterpreter::processJinAccess(ACC_ID accessId, 
-									const access_t& access,
-									const instruction_t& instruction,
-									const segment_t& segment,
-									const call_t& call,
-									const reference_t& reference) {
-
-	ShadowThread *thread = threadMgr_->getThread(call.thread_id);
-	JoinInfo info(thread);					  
-	JoinEvent event( &_currentThread, &info );
+int DBInterpreter::processJoin(const instruction_t& instruction,
+							   const segment_t& segment,
+							   const call_t& call,
+							   const thread_t& thread) {
+									   
+	ShadowThread *pT = threadMgr_->getThread(call.thread_id);
+	ShadowThread *cT = threadMgr_->getThread(thread.child_thread_id);
+	JoinInfo info(cT);					  
+	JoinEvent event( pT, &info );
 	_eventService->publish( &event );
 
 	return 0;
@@ -322,21 +350,16 @@ ShadowVar::VarType DBInterpreter::getVarType(REF_MTYP memType) {
 	switch (memType) {
 	case reference_t::LOCAL:
 		return ShadowVar::STACK;
-		break;
 	case reference_t::HEAP:
 		return ShadowVar::HEAP;
-		break;
 	case reference_t::GLOBAL:
 		return ShadowVar::GLOBAL;
-		break;
 	case reference_t::STATIC:
 		return ShadowVar::STATIC;
-		break;
 	default:
-		break;
-	}
-	BOOST_LOG_TRIVIAL(error) << "No valid memory type: " << memType;
-	return ShadowVar::ERROR;
+		BOOST_LOG_TRIVIAL(error) << "No valid memory type: " << memType;
+		return ShadowVar::ERROR;
+	}																	
 }
 
 int DBInterpreter::fillStructures(sqlite3 **db) {
@@ -357,6 +380,8 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
 						  db, &DBInterpreter::fillReference)) != 0) return rc;
 	if ((rc = fillGeneric("SELECT * from SEGMENT_TABLE;",
 						  db, &DBInterpreter::fillSegment)) != 0) return rc;
+	if ((rc = fillGeneric("SELECT * from THREAD_TABLE;",
+						  db, &DBInterpreter::fillThread)) != 0) return rc;
 
 	BOOST_LOG_TRIVIAL(trace) << "Rows in ACCESS_TABLE: " << accessT_.size();
 	BOOST_LOG_TRIVIAL(trace) << "Rows in CALL_TABLE: " << callT_.size();
@@ -365,6 +390,7 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
 	BOOST_LOG_TRIVIAL(trace) << "Rows in INSTRUCTION_TABLE: " << instructionT_.size();
 	BOOST_LOG_TRIVIAL(trace) << "Rows in REFERENCE_TABLE: " << referenceT_.size();
 	BOOST_LOG_TRIVIAL(trace) << "Rows in SEGMENT_TABLE: " << segmentT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in THREAD_TABLE: " << threadT_.size();
 	return 0;
 }
 
@@ -485,15 +511,15 @@ int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
 
    int id = sqlite3_column_int(sqlstmt, 0);
    const unsigned char *reference_id = sqlite3_column_text(sqlstmt, 1);
-   int address = sqlite3_column_int(sqlstmt, 2);
-   int size = sqlite3_column_int(sqlstmt, 3);
-   const unsigned char *memory_type = sqlite3_column_text(sqlstmt, 4);
-   const unsigned char *name = sqlite3_column_text(sqlstmt, 5);
-   int allocinstr = sqlite3_column_int(sqlstmt, 3);
+   //int address = sqlite3_column_int(sqlstmt, 2);
+   int size = sqlite3_column_int(sqlstmt, 2);
+   const unsigned char *memory_type = sqlite3_column_text(sqlstmt, 3);
+   const unsigned char *name = sqlite3_column_text(sqlstmt, 4);
+   int allocinstr = sqlite3_column_int(sqlstmt, 5);
 
    reference_t *tmp = new reference_t(reference_id,
 		   	   	   	   	   	   	   	  id,
-		   	   	   	   	   	   	   	  address,
+		   	   	   	   	   	   	   	  //address,
 		   	   	   	   	   	   	   	  size,
 		   	   	   	   	   	   	   	  memory_type,
 		   	   	   	   	   	   	   	  name,
@@ -521,5 +547,21 @@ int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
 		   	   	   	   	   	   	  loop_pointer);
 
    segmentT_.fill(id, *tmp);
+   return 0;
+}
+
+int DBInterpreter::fillThread(sqlite3_stmt *sqlstmt) {
+
+   int id = sqlite3_column_int(sqlstmt, 0);
+   int instruction_id = sqlite3_column_int(sqlstmt, 1);
+   int parent_thread_id = sqlite3_column_int(sqlstmt, 2);
+   int child_thread_id = sqlite3_column_int(sqlstmt, 3);
+
+   thread_t *tmp = new thread_t(id,
+		   	   	   	   	   	   	instruction_id,
+		   	   	   	   	   	   	parent_thread_id,
+		   	   	   	   	   	   	child_thread_id);
+
+   threadT_.fill(instruction_id, *tmp);
    return 0;
 }

@@ -56,13 +56,13 @@ private:
 	DBTable<FUN_ID, function_t> functionT_;
 	DBTable<INS_ID, instruction_t> instructionT_;
 	DBTable<REF_ID, reference_t> referenceT_;
-	DBTable<SEG_ID, segment_t> segmentT_;  	
+	DBTable<SEG_ID, segment_t> segmentT_; 
+	DBTable<INS_ID, thread_t> threadT_;
 
 	insAccessMap_t _insAccessMap;
 	refNoIdMap_t _refNoIdMap;
 	const char* _dbPath;
 	const char* _logFile;
-	ShadowThread _currentThread;
 	EventService *_eventService;
 	shadowVarMap_t _shadowVarMap;
 
@@ -81,6 +81,7 @@ private:
 	int fillInstruction(sqlite3_stmt *stmt);
 	int fillReference(sqlite3_stmt *stmt);
 	int fillSegment(sqlite3_stmt *stmt);
+	int fillThread(sqlite3_stmt *stmt);
 
 	int processInstruction(const instruction_t& instruction);
 	int processSegment(SEG_ID segmentId,
@@ -114,18 +115,14 @@ private:
 						 const segment_t& segment,
 						 const call_t& call,
 						 const reference_t& reference);
-	int processCrtAccess(ACC_ID accessID,
-						 const access_t& access,
-						 const instruction_t& instruction,
-						 const segment_t& segment,
-						 const call_t& call,
-						 const reference_t& reference);
-	int processJinAccess(ACC_ID accessID,
-						 const access_t& access,
-						 const instruction_t& instruction,
-						 const segment_t& segment,
-						 const call_t& call,
-						 const reference_t& reference);
+	int processJoin(const instruction_t& instruction,
+					const segment_t& segment,
+					const call_t& call,
+					const thread_t& thread);
+	int processFork(const instruction_t& instruction,
+					const segment_t& segment,
+					const call_t& call,
+					const thread_t& thread);
 
 
 	// prevent generated functions

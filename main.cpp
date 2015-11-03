@@ -10,6 +10,7 @@
 #include "EventService.h"
 #include "DBInterpreter.h"
 #include "RaceDetectionTool.h"
+#include "LockSetChecker.h"
 #include "LockMgr.h"
 #include "ThreadMgr.h"
 
@@ -35,7 +36,8 @@ int main(int argc, char* argv[]) {
 	SAAPRunner *runner = new SAAPRunner(interpreter);
 
 	// create and register tools
-	RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
+	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
+	LockSetChecker *raceTool = new LockSetChecker("races.json");
 	runner->registerTool(raceTool, NULL, ALL);
 
 	// Start interpretation

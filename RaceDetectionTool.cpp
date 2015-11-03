@@ -20,41 +20,30 @@
 #include "rapidjson/prettywriter.h"
 
 RaceDetectionTool::RaceDetectionTool(const char *outFile) : outFile_(outFile) {
-		threadVC_[0].fill(1);
+		threadVC_[0].fill(0);
+		threadVC_[0][0] = 1;
 }
 
 RaceDetectionTool::~RaceDetectionTool() {
 
-	raceEntries_.push_back(
-			std::unique_ptr<RaceEntry_>(new RaceEntry_(
-					READ_WRITE,
-					123,
-					456,
-					789)
-			));
-
-	raceEntries_.push_back(
-			std::unique_ptr<RaceEntry_>(new RaceEntry_(
-					READ_WRITE,
-					987,
-					654,
-					321)
-			));
-
 	dumpRaceEntries(outFile_);
-
-	std::cout << "number of readvars: " << readVarSet_.size() << std::endl;
-	std::cout << "number of writevars: " << writeVarSet_.size() << std::endl;
 }
 
 void RaceDetectionTool::create(const Event* e) {
 
+   	ShadowThread* childThread = 
+		dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->childThread;
+
+	if (threadVC_.find(childThread->threadId) == threadVC_.end()) {
+		threadVC_[childThread->threadId].fill(0);
+		threadVC_[childThread->threadId][childThread->threadId] = 1;	
+	}
+
 	// LockSet_u = set of all possible locks
-	lockSet_[dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->thread] =
-		lockSet_[e->getThread()];
+	lockSet_[childThread] =  lockSet_[e->getThread()];
 
 	// VC_u = Vc_u # VC_t
-	vcMerge( threadVC_[dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->thread->threadId],
+	vcMerge( threadVC_[childThread->threadId],
 			 threadVC_[e->getThread()->threadId] );
 
 	// VC_t[t] = VC_t[t] + 1
@@ -65,10 +54,10 @@ void RaceDetectionTool::join(const Event* e) {
 
 	// VC_t = VC_t # VC_u
 	vcMerge( threadVC_[e->getThread()->threadId],
-			 threadVC_[((JoinEvent*)e)->getJoinInfo()->thread->threadId] );
+		threadVC_[((JoinEvent*)e)->getJoinInfo()->childThread->threadId] );
 
 	// VC_u[u] = VC_u[u] + 1
-	ThreadId id = ((JoinEvent*)e)->getJoinInfo()->thread->threadId;
+	ThreadId id = ((JoinEvent*)e)->getJoinInfo()->childThread->threadId;
 	threadVC_[id][id]++;
 }
 
@@ -92,7 +81,8 @@ void RaceDetectionTool::access(const Event* e) {
 
 	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
 	const RefId ref = event->getAccessInfo()->var->id;
-	Clock_ epoch = threadVC_[e->getThread()->threadId][e->getThread()->threadId];
+	Epoch_ epoch(e->getThread()->threadId,
+				 threadVC_[e->getThread()->threadId][e->getThread()->threadId]);
 	const ThreadId threadId = event->getThread()->threadId;
 
 	if (event->getAccessInfo()->var->type == ShadowVar::STACK)
@@ -125,6 +115,8 @@ void RaceDetectionTool::access(const Event* e) {
 
 			// R_x[t].epoch = epoch(t)
 			readVarSet_[ref][threadId].epoch = epoch;
+			readVarSet_[ref][threadId].instruction = 
+				event->getAccessInfo()->instructionID;
 
 			// R_x[t].lockset = LockSet_t
 			readVarSet_[ref][threadId].lockset = lockSet_[e->getThread()];
@@ -132,7 +124,7 @@ void RaceDetectionTool::access(const Event* e) {
 			// check if W_x.epoch > VC_t
 			if ( !vcLEQ(writeVarSet_[ref].epoch, threadVC_[threadId]) ) {
 				if (lsIsEmptySet( readVarSet_[ref][threadId].lockset,
-								  writeVarSet_[ref].lockset) ) 
+								  writeVarSet_[ref].lockset) ) {
 
 					raceEntries_.push_back(
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
@@ -142,6 +134,7 @@ void RaceDetectionTool::access(const Event* e) {
 									ref)
 							));
 					std::cout << "race detected..1" << std::endl;
+				}
 			}
 		}
 		break;
@@ -159,7 +152,7 @@ void RaceDetectionTool::access(const Event* e) {
 			lsIntersect(writeVarSet_[ref].lockset, lockSet_[e->getThread()]);
 
 			// check W_x.lockset = empty
-			if (writeVarSet_[ref].lockset.empty())
+			if (writeVarSet_[ref].lockset.empty())	{
 
 				raceEntries_.push_back(
 						std::unique_ptr<RaceEntry_>(new RaceEntry_(
@@ -169,6 +162,7 @@ void RaceDetectionTool::access(const Event* e) {
 								ref)
 						));
 				std::cout << "race detected..2" << std::endl;
+			}
 															 
 		} else {
 
@@ -178,6 +172,7 @@ void RaceDetectionTool::access(const Event* e) {
 
 		// W_x.epoch = epoch(t)
 		writeVarSet_[ref].epoch = epoch;
+		writeVarSet_[ref].instruction = event->getAccessInfo()->instructionID;
 
 		// forall threads t' in read map R_x do
 		for (auto tp : readVarSet_[ref]) {
@@ -186,7 +181,7 @@ void RaceDetectionTool::access(const Event* e) {
 			if ( !vcLEQ(tp.second.epoch, threadVC_[threadId]) ) {
 				
 				// check R_x[t'].lockset intersect Lockset_t = empty
-				if ( lsIsEmptySet(readVarSet_[ref][tp.first].lockset, lockSet_[e->getThread()]) )
+				if ( lsIsEmptySet(readVarSet_[ref][tp.first].lockset, lockSet_[e->getThread()]) ) {
 
 					raceEntries_.push_back(
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
@@ -196,6 +191,7 @@ void RaceDetectionTool::access(const Event* e) {
 									ref)
 							));
 					std::cout << "race detected..3" << std::endl;
+				}
 			}
 		}
 
@@ -271,15 +267,10 @@ void RaceDetectionTool::vcMerge(VectorClock_& lhs,
 	}
 }
 
-bool RaceDetectionTool::vcLEQ(const Clock_& epoch,
+bool RaceDetectionTool::vcLEQ(const Epoch_& epoch,
 							  const VectorClock_& vc) const {
 
-	for (auto item : vc) {
-		if (epoch > item)
-			return false;
-	}
-
-	return true;
+	return (epoch.clock <= vc[epoch.threadId]);
 }
 
 bool RaceDetectionTool::lsIsEmptySet(const LockSet_& lhs,

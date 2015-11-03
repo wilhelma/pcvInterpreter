@@ -32,12 +32,10 @@ if(NOT BOOST_PATH)
   )
 endif(NOT BOOST_PATH)
 
-add_definitions(-DBOOST_LOG_DYN_LINK)
+#add_definitions(-DBOOST_LOG_DYN_LINK)
+set(Boost_USE_STATIC_LIBS ON)
 
-#set(Boost_INCLUDE_DIR /usr/local/include)
-#set(Boost_LIBRARY_DIR /usr/local/lib)
-
-find_package(Boost 1.55.0 COMPONENTS log log_setup thread date_time filesystem system REQUIRED)
+find_package(Boost COMPONENTS log log_setup thread date_time filesystem system REQUIRED)
 message(STATUS ${Boost_INCLUDE_DIR})
 message(STATUS ${Boost_LIBRARY_DIR})
 
