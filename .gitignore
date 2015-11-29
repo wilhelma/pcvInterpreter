@@ -1,2 +1,8 @@
 # Ignore (generated) documentation 
 latex/
+
+# Ignore CMake-related files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
