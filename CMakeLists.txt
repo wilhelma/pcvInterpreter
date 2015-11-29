@@ -34,7 +34,7 @@ endif(NOT BOOST_PATH)
 
 #add_definitions(-DBOOST_LOG_DYN_LINK)
 set(Boost_USE_STATIC_LIBS ON)
-
+# thread
 find_package(Boost COMPONENTS log log_setup thread date_time filesystem system REQUIRED)
 message(STATUS ${Boost_INCLUDE_DIR})
 message(STATUS ${Boost_LIBRARY_DIR})
@@ -89,5 +89,5 @@ endif(MSVC)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${HDR_LIST})
 
-target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
 
