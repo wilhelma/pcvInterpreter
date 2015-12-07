@@ -12,6 +12,7 @@ SAAPFramework
 
 # Log file from framework
 SAAP.log
+*.json
 
 # Ignore databases
 *.db
