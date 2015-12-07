@@ -6,3 +6,15 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 cmake_install.cmake
+
+# Igonre compiled binary
+SAAPFramework
+
+# Log file from framework
+SAAP.log
+
+# Ignore databases
+*.db
+
+# Ignore db and unit tests
+cppUnit/
