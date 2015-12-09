@@ -79,6 +79,9 @@ private:
 	int fillFile(sqlite3_stmt *stmt);
 	int fillFunction(sqlite3_stmt *stmt);
 	int fillInstruction(sqlite3_stmt *stmt);
+	int fillLoop(sqlite3_stmt *stmt);
+	int fillLoopExecution(sqlite3_stmt *stmt);
+	int fillLoopIteration(sqlite3_stmt *stmt);
 	int fillReference(sqlite3_stmt *stmt);
 	int fillSegment(sqlite3_stmt *stmt);
 	int fillThread(sqlite3_stmt *stmt);
