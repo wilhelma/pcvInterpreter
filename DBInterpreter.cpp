@@ -1,5 +1,5 @@
-/*
- * DBInterpreter.cpp
+/**
+ *  @file  DBInterpreter.cpp
  *
  *  Created on: Aug 28, 2014
  *      Author: wilhelma
@@ -31,10 +31,20 @@ DBInterpreter::DBInterpreter(const char* DBPath,
 
 DBInterpreter::~DBInterpreter(){ }
 
+/**
+ * @bug Should this be a constant?
+ */
 EventService* DBInterpreter::getEventService() {
 	return _eventService;
 }
 
+/**
+ *
+ * @bug `instruction_t` already has a `getInstructionType()` method
+ * (which doesn't contain "THRCREATE" -> the test will always evaluate to 0).
+ * Why is this needed?
+ * @return The type of the instruction.
+ */
 Instruction::type DBInterpreter::transformInstrType(const instruction_t &ins) {
 
 	if (strcmp( ins.instruction_type, "CALL") == 0)
@@ -206,7 +216,7 @@ int DBInterpreter::processCall(const char* callId,
 		{
 			auto searchFile = fileT_.find(search->second.file_id);
 			if (searchFile != fileT_.end()) {
-				CallInfo info( std::atoi(call.end_time), // todo: use runtime!
+				CallInfo info( call.end_time, // todo: use runtime!
 							   search->second.signature,
 							   function_t::getFunctionType(search->second.type),
 							   searchFile->second.file_name,
@@ -362,41 +372,76 @@ ShadowVar::VarType DBInterpreter::getVarType(REF_MTYP memType) {
 	}																	
 }
 
+/**
+ * Fills the `db` database.
+ * 
+ * For each type of SQL statement, a different funcion is called as
+ * `fillGeneric()` argument to fill `db` (e.g. `fillAccess()` for the `Access` table).
+ *
+ * @todo `fillLoop*` are still dummy functions!
+ */
 int DBInterpreter::fillStructures(sqlite3 **db) {
 
 	int rc;
 
-	if ((rc = fillGeneric("SELECT * from ACCESS_TABLE;",
+	// Read from all the tables in the database
+	std::cout << "Loading Access" << std::endl;
+	if ((rc = fillGeneric("SELECT * from Access;",
 						  db, &DBInterpreter::fillAccess)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from CALL_TABLE;",
+	// XXX Call worked out
+	std::cout << "Loading Call" << std::endl;
+	if ((rc = fillGeneric("SELECT * from Call;",
 						  db, &DBInterpreter::fillCall)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from FILE_TABLE;",
+	std::cout << "Loading File" << std::endl;
+	if ((rc = fillGeneric("SELECT * from File;",
 						  db, &DBInterpreter::fillFile)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from FUNCTION_TABLE;",
+	if ((rc = fillGeneric("SELECT * from Function;",
 						  db, &DBInterpreter::fillFunction)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from INSTRUCTION_TABLE;",
+	if ((rc = fillGeneric("SELECT * from Instruction;",
 						  db, &DBInterpreter::fillInstruction)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from REFERENCE_TABLE;",
+	if ((rc = fillGeneric("SELECT * from Loop;",
+						  db, &DBInterpreter::fillLoop)) != 0) return rc;
+	if ((rc = fillGeneric("SELECT * from LoopExecution;",
+						  db, &DBInterpreter::fillLoopExecution)) != 0) return rc;
+	if ((rc = fillGeneric("SELECT * from LoopIteration;",
+						  db, &DBInterpreter::fillLoopIteration)) != 0) return rc;
+	if ((rc = fillGeneric("SELECT * from Reference;",
 						  db, &DBInterpreter::fillReference)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from SEGMENT_TABLE;",
+	if ((rc = fillGeneric("SELECT * from Segment;",
 						  db, &DBInterpreter::fillSegment)) != 0) return rc;
-	if ((rc = fillGeneric("SELECT * from THREAD_TABLE;",
+	if ((rc = fillGeneric("SELECT * from Thread;",
 						  db, &DBInterpreter::fillThread)) != 0) return rc;
 
-	BOOST_LOG_TRIVIAL(trace) << "Rows in ACCESS_TABLE: " << accessT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in CALL_TABLE: " << callT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in FILE_TABLE: " << fileT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in FUNCTION_TABLE: " << functionT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in INSTRUCTION_TABLE: " << instructionT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in REFERENCE_TABLE: " << referenceT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in SEGMENT_TABLE: " << segmentT_.size();
-	BOOST_LOG_TRIVIAL(trace) << "Rows in THREAD_TABLE: " << threadT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << instructionT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << instructionT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << instructionT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentT_.size();
+	BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadT_.size();
 	return 0;
 }
 
+/**
+ * Executes the statement `sql` on the database `db` and processes the output with `func`. 
+ *
+ * @param sql String cointaining the SQL statement (e.g. "SELECT * from THREAD_TABLE;")
+ * @param db The database object
+ * @param func Pointer to a `DBInterpreter::` method used to process the statement (e.g. `fillThread()`)
+ *
+ * @return 2 in case of error, 0 in case of success.
+ */
 int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
-
-   sqlite3_stmt *sqlstmt = 0;
+	/**
+	 * __About Statements__ Think of each SQL statement as a separate computer program.
+	 * The original SQL text is source code. A prepared statement object is the compiled
+	 * object code. All SQL must be converted into a prepared statement before it can be run.
+	 */
+	sqlite3_stmt *sqlstmt = 0;
 
    /* Execute SQL statement */
    if (sqlite3_prepare_v2(*db, sql, strlen(sql), &sqlstmt, NULL) != SQLITE_OK) {
@@ -404,10 +449,12 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
 	   return 1;
    }
 
+   // cycles through the entries till the database is over
    bool reading = true;
    while (reading) {
 	   switch(sqlite3_step(sqlstmt)) {
 	   case SQLITE_ROW:
+		   // process the statement with the function passed as argument
 		   (this->* func)(sqlstmt);
 		   break;
 	   case SQLITE_DONE:
@@ -422,11 +469,13 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
    return 0;
 }
 
+/**
+ */
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
 
-   ACC_ID id = sqlite3_column_int(sqlstmt, 0);
+   ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
    INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
-   int position = sqlite3_column_int(sqlstmt, 2);
+   int position          = sqlite3_column_int(sqlstmt, 2);
    const unsigned char *reference_id = sqlite3_column_text(sqlstmt, 3);
    const unsigned char *access_type = sqlite3_column_text(sqlstmt, 4);
    const unsigned char *memory_state = sqlite3_column_text(sqlstmt, 5);
@@ -444,22 +493,24 @@ int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 
-   const unsigned char *id = sqlite3_column_text(sqlstmt, 0);
-   int process_id = sqlite3_column_int(sqlstmt, 1);
-   int thread_id = sqlite3_column_int(sqlstmt, 2);
-   int function_id = sqlite3_column_int(sqlstmt, 3);
-   int instruction_id = sqlite3_column_int(sqlstmt, 4);
-   const unsigned char *start_time = sqlite3_column_text(sqlstmt, 5);
-   const unsigned char *end_time = sqlite3_column_text(sqlstmt, 6);
+	const unsigned char *id = sqlite3_column_text(sqlstmt, 0);
+	int thread_id           = sqlite3_column_int(sqlstmt, 1);
+	int function_id         = sqlite3_column_int(sqlstmt, 2);
+	int instruction_id      = sqlite3_column_int(sqlstmt, 3);
+	int start_time          = sqlite3_column_int(sqlstmt, 4);
+	int end_time            = sqlite3_column_int(sqlstmt, 5);
 
-   call_t *tmp = new call_t(process_id,
-							thread_id,
+   std::cout << "reading into call_t\n";
+   // BUG segmentation fault!!
+   call_t *tmp = new call_t(thread_id,
 							function_id,
 							instruction_id,
 							start_time,
 							end_time);
 
+   std::cout << "read into call_t\n";
    callT_.fill(std::string((const char*)id), *tmp);		 
+   std::cout << "callT_ filled\n";
    return 0;
 }
 
@@ -505,6 +556,18 @@ int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
 
    instructionT_.fill(id, *tmp);
    return 0;
+}
+
+int DBInterpreter::fillLoop(sqlite3_stmt *sqlstmt) {
+	return 0;
+}
+
+int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
+	return 0;
+}
+
+int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
+	return 0;
 }
 
 int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {

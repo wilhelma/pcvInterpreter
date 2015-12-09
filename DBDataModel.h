@@ -26,22 +26,22 @@ static const unsigned REFNAMELEN = 2000;
 static const unsigned SEGTYPELEN = 2;
 
 // types-------------------------------------------------------------------
-typedef unsigned 		INS_ID;		// instruction id
-typedef unsigned 		SEG_ID;		// segment id
-typedef unsigned 		ACC_ID;		// access id
-typedef unsigned		REF_ID;		// reference id
-typedef std::string 	CAL_ID;		// call id
-typedef unsigned		FUN_ID;		// function id
-typedef unsigned 		FIL_ID;		// file id
-typedef std::string		REF_NO;		// reference no
-typedef int				REF_ADDR;	// reference address
-typedef unsigned		REF_SIZE;	// reference size
-typedef std::string		REF_NAME;	// reference name
-typedef char			REF_MTYP;	// memory type
-typedef char			ACC_TYP;	// access type
-typedef char*			FUN_TYP;	// function type
-typedef unsigned		TRD_ID;		// thread id (table)
-typedef unsigned		TRD_TID;	// thread id (system)
+typedef unsigned 		INS_ID;		//! @brief  instruction id
+typedef unsigned 		SEG_ID;		//! @brief  segment id
+typedef unsigned 		ACC_ID;		//! @brief  access id
+typedef unsigned		REF_ID;		//! @brief  reference id
+typedef std::string 	CAL_ID;		//! @brief  call id
+typedef unsigned		FUN_ID;		//! @brief  function id
+typedef unsigned 		FIL_ID;		//! @brief  file id
+typedef std::string		REF_NO;		//! @brief  reference no
+typedef int				REF_ADDR;	//! @brief  reference address
+typedef unsigned		REF_SIZE;	//! @brief  reference size
+typedef std::string		REF_NAME;	//! @brief  reference name
+typedef char			REF_MTYP;	//! @brief  memory type
+typedef char			ACC_TYP;	//! @brief  access type
+typedef char*			FUN_TYP;	//! @brief  function type
+typedef unsigned		TRD_ID;		//! @brief  thread id (table)
+typedef unsigned		TRD_TID;	//! @brief  thread id (system)
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -74,25 +74,47 @@ typedef struct access_t {
 	}
 } access_t;
 
-typedef struct call_t {
-	int process_id;
-	int thread_id;
-	FUN_ID function_id;
-	INS_ID instruction_id;
-	char start_time[TIMELEN];
-	char end_time[TIMELEN];
+//typedef struct call_t {
+//	int process_id;
+//	int thread_id;
+//	FUN_ID function_id;
+//	INS_ID instruction_id;
+//	char start_time[TIMELEN];
+//	char end_time[TIMELEN];
+//
+//	call_t(int processID,
+//		   int threadID,
+//		   int functionID,
+//		   int instructionID,
+//		   const unsigned char *startTime,
+//		   const unsigned char *endTime)
+//		: process_id(processID), thread_id(threadID),
+//		  function_id(functionID), instruction_id(instructionID)
+//	{
+//		strncpy(start_time, (const char*)startTime, TIMELEN);
+//		strncpy(end_time, (const char*)endTime, TIMELEN);
+//	}
+//} call_t;
 
-	call_t(int processID,
-		   int threadID,
+// Try to make a new struct for call_t as the database format has changed
+typedef struct call_t {
+	int thread_id;
+	int function_id;    // TODO use types as above
+	int instruction_id; // TODO  "    "        "
+	int start_time;
+	int end_time;
+
+	call_t(int threadID,
 		   int functionID,
 		   int instructionID,
-		   const unsigned char *startTime,
-		   const unsigned char *endTime)
-		: process_id(processID), thread_id(threadID),
-		  function_id(functionID), instruction_id(instructionID)
+		   int startTime,
+		   int endTime)
+		: //process_id(processID),
+		  thread_id(threadID),
+		  function_id(functionID), instruction_id(instructionID),
+		  start_time(startTime), end_time(endTime)
 	{
-		strncpy(start_time, (const char*)startTime, TIMELEN);
-		strncpy(end_time, (const char*)endTime, TIMELEN);
+//		strncpy(process_id, (const char*)processID, PROCESSLEN);
 	}
 } call_t;
 
