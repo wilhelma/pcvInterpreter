@@ -242,6 +242,10 @@ int DBInterpreter::processCall(const char* callId,
 	return IN_OK;
 }
 
+
+/**
+ * @bug access_t.reference_id is now an integer!!
+ */
 int DBInterpreter::processAccessGeneric(ACC_ID accessId,
 										const access_t& access,
 										const instruction_t& instruction,
@@ -395,20 +399,28 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
 	std::cout << "Loading File" << std::endl;
 	if ((rc = fillGeneric("SELECT * from File;",
 						  db, &DBInterpreter::fillFile)) != 0) return rc;
+	std::cout << "Loading Function" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Function;",
 						  db, &DBInterpreter::fillFunction)) != 0) return rc;
+	std::cout << "Loading Instruction" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Instruction;",
 						  db, &DBInterpreter::fillInstruction)) != 0) return rc;
+	std::cout << "Loading Loop" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Loop;",
 						  db, &DBInterpreter::fillLoop)) != 0) return rc;
+	std::cout << "Loading LoopExecution" << std::endl;
 	if ((rc = fillGeneric("SELECT * from LoopExecution;",
 						  db, &DBInterpreter::fillLoopExecution)) != 0) return rc;
+	std::cout << "Loading LoopIteration" << std::endl;
 	if ((rc = fillGeneric("SELECT * from LoopIteration;",
 						  db, &DBInterpreter::fillLoopIteration)) != 0) return rc;
+	std::cout << "Loading Reference" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Reference;",
 						  db, &DBInterpreter::fillReference)) != 0) return rc;
+	std::cout << "Loading Segment" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Segment;",
 						  db, &DBInterpreter::fillSegment)) != 0) return rc;
+	std::cout << "Loading Thread" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Thread;",
 						  db, &DBInterpreter::fillThread)) != 0) return rc;
 
@@ -476,9 +488,12 @@ int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
    ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
    INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
    int position          = sqlite3_column_int(sqlstmt, 2);
-   const unsigned char *reference_id = sqlite3_column_text(sqlstmt, 3);
-   const unsigned char *access_type = sqlite3_column_text(sqlstmt, 4);
-   const unsigned char *memory_state = sqlite3_column_text(sqlstmt, 5);
+   const unsigned char * reference_id      = sqlite3_column_text(sqlstmt, 3);
+   const unsigned char * access_type       = sqlite3_column_text(sqlstmt, 4);
+   const unsigned char * memory_state      = sqlite3_column_text(sqlstmt, 5);
+//   int reference_id      = sqlite3_column_int(sqlstmt, 3);
+//   int access_type       = sqlite3_column_int(sqlstmt, 4);
+//   int memory_state      = sqlite3_column_int(sqlstmt, 5);
 
    access_t *tmp = new access_t(instruction_id,
 		   	   	   	   	   	     position,
@@ -517,11 +532,9 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 
    int id = sqlite3_column_int(sqlstmt, 0);
-   const unsigned char *file_name = sqlite3_column_text(sqlstmt, 1);
-   const unsigned char *file_path = sqlite3_column_text(sqlstmt, 2);
+   const unsigned char *file_path = sqlite3_column_text(sqlstmt, 1);
 
-   file_t *tmp = new file_t(file_name,
-		   	   	   	   	   	file_path);
+   file_t *tmp = new file_t(file_path);
 
    fileT_.fill(id, *tmp);	 
    return 0;

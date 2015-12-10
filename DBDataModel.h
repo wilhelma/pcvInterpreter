@@ -10,15 +10,16 @@
 
 #include <cstring>
 #include <string>
+#include <iostream>
 #include "DataModel.h"
 
 // constants---------------------------------------------------------------
 static const unsigned ITYPELEN = 10;
-static const unsigned TIMELEN = 12;
+//static const unsigned TIMELEN = 12; // XXX no longer used !
 static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
-static const unsigned FILENAMELEN = 256;
+static const unsigned FILENAMELEN = 256; // XXX do I need it ?
 static const unsigned FILEPATHLEN = 1024;
 static const unsigned SIGNATURELEN = 10000;
 static const unsigned FNTYPELEN = 20;
@@ -38,7 +39,7 @@ typedef int				REF_ADDR;	//! @brief  reference address
 typedef unsigned		REF_SIZE;	//! @brief  reference size
 typedef std::string		REF_NAME;	//! @brief  reference name
 typedef char			REF_MTYP;	//! @brief  memory type
-typedef char			ACC_TYP;	//! @brief  access type
+typedef char			ACC_TYP;	//! @brief  access type // XXX this has changed!
 typedef char*			FUN_TYP;	//! @brief  function type
 typedef unsigned		TRD_ID;		//! @brief  thread id (table)
 typedef unsigned		TRD_TID;	//! @brief  thread id (system)
@@ -74,6 +75,42 @@ typedef struct access_t {
 	}
 } access_t;
 
+// XXX reference_id breaks processAccessGeneric() !!
+//typedef struct access_t {
+//	INS_ID instruction_id;
+//	int position;
+//	int reference_id;
+//	int access_type;
+//	int memory_state;
+//
+//	access_t(int instructionID,
+//			 int pos,
+//			 int referenceID,
+//			 int accessType,
+//			 int memoryState)
+//		: instruction_id(instructionID), position(pos),
+//		  reference_id(referenceID), access_type(accessType),
+//		  memory_state(memoryState)
+//	{
+//	}
+//
+//	/**
+//	 * @brief Converts an integer into an Access:type
+//	 *
+//	 * @todo Implement this function as it's dummy now!
+//	 */
+//	static Access::type getAccessType(int accType) {
+//		switch (accType) {
+//		case 1:
+//			return Access::READ;
+//		case 2:
+//			return Access::WRITE;
+//		default:
+//			return Access::READWRITE;
+//		}
+//	}
+//} access_t;
+//
 //typedef struct call_t {
 //	int process_id;
 //	int thread_id;
@@ -118,14 +155,61 @@ typedef struct call_t {
 	}
 } call_t;
 
-typedef struct file_t {
-	char file_name[FILENAMELEN], file_path[FILEPATHLEN];
+//typedef struct file_t {
+//	char file_name[FILENAMELEN], file_path[FILEPATHLEN];
+//
+//	file_t(const unsigned char *fileName,
+//		   const unsigned char *filePath)
+//	{
+//		strncpy(file_name, (const char*)fileName, FILENAMELEN);
+//		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
+//	}
+//} file_t;
 
-	file_t(const unsigned char *fileName,
-		   const unsigned char *filePath)
+// TODO  write a function to return the file_name!
+// IDEA: search for last "/" (or "\" on winzoz) and return
+// what comes afterwards
+typedef struct file_t {
+	char file_path[FILEPATHLEN];
+	char file_name[FILENAMELEN];
+
+	file_t(const unsigned char *filePath)
 	{
-		strncpy(file_name, (const char*)fileName, FILENAMELEN);
 		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
+		retrieveFileName( filePath );
+	}
+
+	/**
+	 * @brief Tries to retrieve the file name from the file path.
+	 *
+	 * @attention I assume `filePath` is the __absolute path!__
+	 */
+	int retrieveFileName ( const unsigned char *filePath ) {
+		int lastFound = -1;
+
+		// look till the end of the string
+		size_t i = 0;
+		while ( filePath[i] != '\0' && i < FILEPATHLEN ) {
+			if ( filePath[i] == '/' )
+				lastFound = i;
+
+			i++;
+		}
+		
+		// check 
+		if( lastFound == -1 ) {
+			std::cerr << std::endl;
+			std::cerr << "The file name couldn't be identified" << std::endl;
+			std::cerr << "Using the full path:\n" << filePath << std::endl;
+			return 1;
+		} else {
+			/** @attention I assume `i - lastFound <= FILENAMELEN` */
+			strncpy( file_name, (const char*) &filePath[lastFound+1], i - lastFound );
+			std::cerr << std::endl;
+			std::cerr << "Identified filename " << file_name << std::endl;
+			std::cerr << "From path           " << file_path << std::endl;
+			return 0;
+		}
 	}
 } file_t;
 
