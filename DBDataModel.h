@@ -15,11 +15,10 @@
 
 // constants---------------------------------------------------------------
 static const unsigned ITYPELEN = 10;
-//static const unsigned TIMELEN = 12; // XXX no longer used !
 static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
-static const unsigned FILENAMELEN = 256; // XXX do I need it ?
+static const unsigned FILENAMELEN = 256;
 static const unsigned FILEPATHLEN = 1024;
 static const unsigned SIGNATURELEN = 10000;
 static const unsigned FNTYPELEN = 20;
@@ -166,11 +165,12 @@ typedef struct call_t {
 //	}
 //} file_t;
 
-// TODO  write a function to return the file_name!
-// IDEA: search for last "/" (or "\" on winzoz) and return
-// what comes afterwards
+/**
+ * @brief Record to process the `File` table in the database.
+ */
 typedef struct file_t {
 	char file_path[FILEPATHLEN];
+	// this is retrieved from the file_path[]
 	char file_name[FILENAMELEN];
 
 	file_t(const unsigned char *filePath)
@@ -181,34 +181,39 @@ typedef struct file_t {
 
 	/**
 	 * @brief Tries to retrieve the file name from the file path.
-	 *
-	 * @attention I assume `filePath` is the __absolute path!__
 	 */
 	int retrieveFileName ( const unsigned char *filePath ) {
 		int lastFound = -1;
 
-		// look till the end of the string
+
+		/**
+		 * Looks for '/' or '\' till the end of the string.
+		 */
 		size_t i = 0;
+		const char directorySeparator = '/'; // use '\' for Windows!
 		while ( filePath[i] != '\0' && i < FILEPATHLEN ) {
-			if ( filePath[i] == '/' )
+			if ( filePath[i] == directorySeparator )
 				lastFound = i;
 
 			i++;
 		}
 		
 		// check 
-		if( lastFound == -1 ) {
-			std::cerr << std::endl;
-			std::cerr << "The file name couldn't be identified" << std::endl;
-			std::cerr << "Using the full path:\n" << filePath << std::endl;
-			return 1;
-		} else {
-			/** @attention I assume `i - lastFound <= FILENAMELEN` */
+		if( lastFound != -1 ) {
+			/**
+			 * Copyes what comes after the last directory delimiter into
+			 * `file_name[]`.
+			 *
+			 * @attention I assume `i - lastFound <= FILENAMELEN` */
 			strncpy( file_name, (const char*) &filePath[lastFound+1], i - lastFound );
-			std::cerr << std::endl;
-			std::cerr << "Identified filename " << file_name << std::endl;
-			std::cerr << "From path           " << file_path << std::endl;
 			return 0;
+		} else {
+			/**
+			 * If no '/' (or '\') is found in the path, then the whole 
+			 * string is taken as the file name. 
+			 */
+			strncpy( file_name, (const char*) &filePath[lastFound+1], i - lastFound );
+			return 1;
 		}
 	}
 } file_t;
