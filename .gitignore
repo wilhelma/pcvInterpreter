@@ -19,3 +19,4 @@ SAAP.log
 
 # Ignore db and unit tests
 cppUnit/
+recursive_trace/
