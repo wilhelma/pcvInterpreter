@@ -284,6 +284,15 @@ typedef struct instruction_t {
 	}
 } instruction_t;
 
+typedef struct loop_t {
+	unsigned line_number;
+
+	loop_t(int lineNumber)
+		: line_number(lineNumber)
+	{}
+
+} loop_t;
+
 typedef struct reference_t {
 
 	static const REF_MTYP STATIC = 'S';
