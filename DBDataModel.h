@@ -293,6 +293,20 @@ typedef struct loop_t {
 
 } loop_t;
 
+typedef struct loopExecution_t {
+	unsigned loop_id;
+	unsigned parent_iteration;
+	unsigned loop_duration;
+
+	loopExecution_t(int loopID,
+			        int parentIteration,
+					int loopDuration)
+		            : loop_id(loopID), parent_iteration(parentIteration),
+					  loop_duration(loopDuration)
+	{}
+
+} loopExecution_t;
+
 typedef struct reference_t {
 
 	static const REF_MTYP STATIC = 'S';
