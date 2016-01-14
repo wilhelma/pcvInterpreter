@@ -307,6 +307,18 @@ typedef struct loopExecution_t {
 
 } loopExecution_t;
 
+typedef struct loopIteration_t {
+	unsigned loop_execution;
+	unsigned loop_iteration;
+
+	loopIteration_t(int loopExecution,
+			        int loopIteration)
+		            : loop_execution(loopExecution),
+					  loop_iteration(loopIteration)
+	{}
+
+} loopIteration_t;
+
 typedef struct reference_t {
 
 	static const REF_MTYP STATIC = 'S';
