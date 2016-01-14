@@ -580,6 +580,16 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
+
+	int id            = sqlite3_column_int(sqlstmt, 0);
+	int loopExecution = sqlite3_column_int(sqlstmt, 1);
+	int loopIteration = sqlite3_column_int(sqlstmt, 2);
+
+	loopIteration_t *tmp = new loopIteration_t(loopExecution,
+											   loopIteration);
+
+	// TODO !!
+	// loopIterationT_.fill(id, *tmp);
 	return 0;
 }
 
