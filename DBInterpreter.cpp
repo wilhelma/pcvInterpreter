@@ -585,8 +585,7 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 			                                   parentIteration,
 											   loopDuration);
 
-	// TODO !!
-//	loopExecutionT_.fill(id, *tmp);
+	loopExecutionT_.fill(id, *tmp);
 	return 0;
 }
 

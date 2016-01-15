@@ -42,6 +42,7 @@ typedef char			ACC_TYP;	//! @brief  access type // XXX this has changed!
 typedef char*			FUN_TYP;	//! @brief  function type
 typedef unsigned		TRD_ID;		//! @brief  thread id (table)
 typedef unsigned		TRD_TID;	//! @brief  thread id (system)
+typedef unsigned        LOE_ID;     //! @brief  loopExecution id
 
 typedef struct access_t {
 	INS_ID instruction_id;
