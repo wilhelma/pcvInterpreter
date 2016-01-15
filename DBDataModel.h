@@ -305,23 +305,6 @@ typedef struct instruction_t {
 	{
 	}
 
-	static Instruction::type getInstructionType(FUN_TYP fType) {
-		// -------------
-		// XXX Backward compatybility
-		char fnType[50];
-		sprintf(fnType, "%d", fType);
-		// ------------
-		if (strcmp( fnType, "CALL") == 0)
-			return Instruction::CALL;
-		else if (strcmp( fnType, "ACCESS" ) == 0)
-			return Instruction::MEMACCESS;
-		else if (strcmp( fnType, "CSENTER" ) == 0)
-			return Instruction::ACQUIRE;
-		else if (strcmp( fnType, "CSLEAVE" ) == 0)
-			return Instruction::RELEASE;
-		else
-			return Instruction::OTHER;
-	}
 } instruction_t;
 
 typedef struct loop_t {
