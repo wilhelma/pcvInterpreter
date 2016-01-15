@@ -1,9 +1,9 @@
-/*
-* DBDataModel.h
-*
-*  Created on: Sep 2, 2014
-*      Author: wilhelma
-*/
+/**
+ * @file DBDataModel.h
+ *
+ *  Created on: Sep 2, 2014
+ *      Author: wilhelma
+ */
 
 #ifndef DBDATAMODEL_H_
 #define DBDATAMODEL_H_
@@ -14,34 +14,33 @@
 #include "DataModel.h"
 
 // constants---------------------------------------------------------------
-static const unsigned ITYPELEN = 10;
 static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
 static const unsigned FILENAMELEN = 256;
 static const unsigned FILEPATHLEN = 1024;
 static const unsigned SIGNATURELEN = 10000;
-static const unsigned FNTYPELEN = 20;
 static const unsigned REFNAMELEN = 2000;
 static const unsigned SEGTYPELEN = 2;
 
 // types-------------------------------------------------------------------
-typedef unsigned 		INS_ID;		//! @brief  instruction id
-typedef unsigned 		SEG_ID;		//! @brief  segment id
-typedef unsigned 		ACC_ID;		//! @brief  access id
-typedef unsigned		REF_ID;		//! @brief  reference id
-typedef std::string 	CAL_ID;		//! @brief  call id
-typedef unsigned		FUN_ID;		//! @brief  function id
-typedef unsigned 		FIL_ID;		//! @brief  file id
-typedef std::string		REF_NO;		//! @brief  reference no
-typedef int				REF_ADDR;	//! @brief  reference address
-typedef unsigned		REF_SIZE;	//! @brief  reference size
-typedef std::string		REF_NAME;	//! @brief  reference name
-typedef char			REF_MTYP;	//! @brief  memory type
-typedef char			ACC_TYP;	//! @brief  access type // XXX this has changed!
-typedef char*			FUN_TYP;	//! @brief  function type
-typedef unsigned		TRD_ID;		//! @brief  thread id (table)
-typedef unsigned		TRD_TID;	//! @brief  thread id (system)
+typedef unsigned 		INS_ID;		//!< @brief  Instruction id
+typedef unsigned 		SEG_ID;		//!< @brief  Segment id
+typedef unsigned 		ACC_ID;		//!< @brief  Access id
+typedef unsigned		REF_ID;		//!< @brief  Reference id
+typedef std::string 	CAL_ID;		//!< @brief  Call id
+typedef unsigned		FUN_ID;		//!< @brief  Function id
+typedef unsigned 		FIL_ID;		//!< @brief  File id
+typedef unsigned        LIN_NO;     //!< @brief  Line number
+typedef std::string		REF_NO;		//!< @brief  Reference no
+typedef int				REF_ADDR;	//!< @brief  Reference address
+typedef unsigned		REF_SIZE;	//!< @brief  Reference size
+typedef std::string		REF_NAME;	//!< @brief  Reference name
+typedef char			REF_MTYP;	//!< @brief  Memory type
+typedef char			ACC_TYP;	//!< @brief  Access type // XXX this has changed!
+typedef unsigned		FUN_TYP;	//!< @brief  Function type
+typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
+typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -62,6 +61,11 @@ typedef struct access_t {
 		strncpy(memory_state, (const char*)memoryState, MEMSTATELEN);
 	}
 
+	/**
+	 * @brief Returns the type of memory access.
+	 *
+	 * @todo Adapt to new format.
+	 */
 	static Access::type getAccessType(ACC_TYP accType) {
 		switch (accType) {
 		case 'R':
@@ -109,28 +113,6 @@ typedef struct access_t {
 //		}
 //	}
 //} access_t;
-//
-//typedef struct call_t {
-//	int process_id;
-//	int thread_id;
-//	FUN_ID function_id;
-//	INS_ID instruction_id;
-//	char start_time[TIMELEN];
-//	char end_time[TIMELEN];
-//
-//	call_t(int processID,
-//		   int threadID,
-//		   int functionID,
-//		   int instructionID,
-//		   const unsigned char *startTime,
-//		   const unsigned char *endTime)
-//		: process_id(processID), thread_id(threadID),
-//		  function_id(functionID), instruction_id(instructionID)
-//	{
-//		strncpy(start_time, (const char*)startTime, TIMELEN);
-//		strncpy(end_time, (const char*)endTime, TIMELEN);
-//	}
-//} call_t;
 
 // Try to make a new struct for call_t as the database format has changed
 typedef struct call_t {
@@ -185,7 +167,6 @@ typedef struct file_t {
 	int retrieveFileName ( const unsigned char *filePath ) {
 		int lastFound = -1;
 
-
 		/**
 		 * Looks for '/' or '\' till the end of the string.
 		 */
@@ -218,37 +199,92 @@ typedef struct file_t {
 	}
 } file_t;
 
+//typedef struct function_t {
+//	char signature[SIGNATURELEN], type[FNTYPELEN];
+//	FIL_ID file_id;
+//
+//	function_t(const unsigned char *fnSignature,
+//			   const unsigned char *fnType,
+//			   int fileId)
+//		: file_id(fileId)
+//	{
+//		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
+//		strncpy(type, (const char*)fnType, FNTYPELEN);
+//	}
+//
+//	static Function::type getFunctionType(const FUN_TYP fnType) {
+//		if (strcmp( fnType, "METHOD") == 0)
+//			return Function::METHOD;
+//		else if (strcmp( fnType, "FUNCTION") == 0)
+//			return Function::FUNCTION;
+//		else if (strcmp( fnType, "ALLOC" ) == 0)
+//			return Function::ALLOC;
+//		else if (strcmp( fnType, "FREE" ) == 0)
+//			return Function::FREE;
+//		else if (strcmp( fnType, "ACQUIRE" ) == 0)
+//			return Function::ACQUIRE;
+//		else if (strcmp( fnType, "RELEASE" ) == 0)
+//			return Function::RELEASE;
+//		else if (strcmp( fnType, "FORK" ) == 0)
+//			return Function::FORK;
+//		else if (strcmp( fnType, "JOIN" ) == 0)
+//			return Function::JOIN;
+//
+//		return Function::OTHER;
+//	}
+//} function_t;
+
 typedef struct function_t {
-	char signature[SIGNATURELEN], type[FNTYPELEN];
+	char signature[SIGNATURELEN];
+	FUN_TYP type;
 	FIL_ID file_id;
+	LIN_NO line_number;
 
 	function_t(const unsigned char *fnSignature,
-			   const unsigned char *fnType,
-			   int fileId)
-		: file_id(fileId)
+			   FUN_TYP fnType,
+			   FIL_ID fileId,
+			   LIN_NO lineNumber)
+		: type(fnType), file_id(fileId), line_number(lineNumber)
 	{
 		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
-		strncpy(type, (const char*)fnType, FNTYPELEN);
+		std::cout << " >> " << signature << std::endl;
+		getFunctionType(fnType);
 	}
 
-	static Function::type getFunctionType(const FUN_TYP fnType) {
-		if (strcmp( fnType, "METHOD") == 0)
-			return Function::METHOD;
-		else if (strcmp( fnType, "FUNCTION") == 0)
-			return Function::FUNCTION;
-		else if (strcmp( fnType, "ALLOC" ) == 0)
-			return Function::ALLOC;
-		else if (strcmp( fnType, "FREE" ) == 0)
-			return Function::FREE;
-		else if (strcmp( fnType, "ACQUIRE" ) == 0)
-			return Function::ACQUIRE;
-		else if (strcmp( fnType, "RELEASE" ) == 0)
-			return Function::RELEASE;
-		else if (strcmp( fnType, "FORK" ) == 0)
-			return Function::FORK;
-		else if (strcmp( fnType, "JOIN" ) == 0)
-			return Function::JOIN;
+	/**
+	 * @brief Decodes the function type
+	 * @todo Return a proper thing!!
+	 */
+	static Function::type getFunctionType(FUN_TYP fnType) {
 
+		// shift right functionType till there is no information left
+		unsigned int counter = 0;
+		while( fnType != 0 ){
+			if( fnType & 1 )
+				std::cout << "   -- has type " << (1 << counter) << std::endl;
+
+			counter ++;
+			// shift right by one
+			fnType >>= 1;
+		}
+
+//		if (strcmp( fnType, "METHOD") == 0)
+//			return Function::METHOD;
+//		else if (strcmp( fnType, "FUNCTION") == 0)
+//			return Function::FUNCTION;
+//		else if (strcmp( fnType, "ALLOC" ) == 0)
+//			return Function::ALLOC;
+//		else if (strcmp( fnType, "FREE" ) == 0)
+//			return Function::FREE;
+//		else if (strcmp( fnType, "ACQUIRE" ) == 0)
+//			return Function::ACQUIRE;
+//		else if (strcmp( fnType, "RELEASE" ) == 0)
+//			return Function::RELEASE;
+//		else if (strcmp( fnType, "FORK" ) == 0)
+//			return Function::FORK;
+//		else if (strcmp( fnType, "JOIN" ) == 0)
+//			return Function::JOIN;
+//
 		return Function::OTHER;
 	}
 } function_t;
@@ -257,20 +293,24 @@ typedef struct instruction_t {
 
 	INS_ID instruction_id;
 	SEG_ID segment_id;
-	char instruction_type[ITYPELEN];
-	int line_number;
+	int instruction_type;
+	LIN_NO line_number;
 
 	instruction_t(INS_ID instructionId,
 				  int segmentId,
-				  const unsigned char *instructionType,
-				  int lineNumber) 
+				  int instructionType,
+				  LIN_NO lineNumber) 
 				  : instruction_id(instructionId), segment_id(segmentId),
-					line_number(lineNumber)
+                  instruction_type(instructionType), line_number(lineNumber)
 	{
-		strncpy(instruction_type, (const char*)instructionType, ITYPELEN);
 	}
 
-	static Instruction::type getInstructionType(FUN_TYP fnType) {
+	static Instruction::type getInstructionType(FUN_TYP fType) {
+		// -------------
+		// XXX Backward compatybility
+		char fnType[50];
+		sprintf(fnType, "%d", fType);
+		// ------------
 		if (strcmp( fnType, "CALL") == 0)
 			return Instruction::CALL;
 		else if (strcmp( fnType, "ACCESS" ) == 0)
@@ -284,12 +324,21 @@ typedef struct instruction_t {
 	}
 } instruction_t;
 
+typedef struct loop_t {
+} loop_t;
+
+typedef struct loopExecution_t {
+} loopExecution_t;
+
+typedef struct loopIteration_t {
+} loopIteration_t;
+
 typedef struct reference_t {
 
 	static const REF_MTYP STATIC = 'S';
-	static const REF_MTYP HEAP = 'H';
+	static const REF_MTYP HEAP   = 'H';
 	static const REF_MTYP GLOBAL = 'G';
-	static const REF_MTYP LOCAL = 'L';
+	static const REF_MTYP LOCAL  = 'L';
 
 	char reference_id[REFIDLEN];
 	REF_ID id;

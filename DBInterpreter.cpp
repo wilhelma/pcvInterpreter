@@ -47,16 +47,16 @@ EventService* DBInterpreter::getEventService() {
  */
 Instruction::type DBInterpreter::transformInstrType(const instruction_t &ins) {
 
-	if (strcmp( ins.instruction_type, "CALL") == 0)
-		return Instruction::CALL;
-	else if (strcmp( ins.instruction_type, "ACCESS" ) == 0)
-		return Instruction::MEMACCESS;
-	else if (strcmp( ins.instruction_type, "CSENTER" ) == 0)
-		return Instruction::ACQUIRE;
-	else if (strcmp( ins.instruction_type, "CSLEAVE" ) == 0)
-		return Instruction::RELEASE;
-	else if (strcmp( ins.instruction_type, "THRCREATE" ) == 0)
-		return Instruction::FORK;
+//	if (strcmp( ins.instruction_type, "CALL") == 0)
+//		return Instruction::CALL;
+//	else if (strcmp( ins.instruction_type, "ACCESS" ) == 0)
+//		return Instruction::MEMACCESS;
+//	else if (strcmp( ins.instruction_type, "CSENTER" ) == 0)
+//		return Instruction::ACQUIRE;
+//	else if (strcmp( ins.instruction_type, "CSLEAVE" ) == 0)
+//		return Instruction::RELEASE;
+//	else if (strcmp( ins.instruction_type, "THRCREATE" ) == 0)
+//		return Instruction::FORK;
 
 	return Instruction::OTHER;
 }
@@ -515,17 +515,13 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 	int start_time          = sqlite3_column_int(sqlstmt, 4);
 	int end_time            = sqlite3_column_int(sqlstmt, 5);
 
-   std::cout << "reading into call_t\n";
-   // BUG segmentation fault!!
    call_t *tmp = new call_t(thread_id,
 							function_id,
 							instruction_id,
 							start_time,
 							end_time);
 
-   std::cout << "read into call_t\n";
    callT_.fill(std::string((const char*)id), *tmp);		 
-   std::cout << "callT_ filled\n";
    return 0;
 }
 
@@ -542,14 +538,16 @@ int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
 
-   int id = sqlite3_column_int(sqlstmt, 0);
-   const unsigned char *signature = sqlite3_column_text(sqlstmt, 1);
-   const unsigned char *type = sqlite3_column_text(sqlstmt, 2);
-   int file_id = sqlite3_column_int(sqlstmt, 3);
+    int id                         = sqlite3_column_int(sqlstmt, 0);
+    const unsigned char *signature = sqlite3_column_text(sqlstmt, 1);
+    FUN_TYP type                   = sqlite3_column_int(sqlstmt, 2);
+    FIL_ID file_id                 = sqlite3_column_int(sqlstmt, 3);
+    LIN_NO line_number             = sqlite3_column_int(sqlstmt, 4);
 
    function_t *tmp = new function_t(signature,
 		   	   	   	  	   	   	    type,
-		   	   	   	   	   	   	    file_id);
+		   	   	   	   	   	   	    file_id,
+                                    line_number);
 
    functionT_.fill(id, *tmp);
    return 0;
@@ -557,10 +555,10 @@ int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
 
-   int id = sqlite3_column_int(sqlstmt, 0);
-   int segment_id = sqlite3_column_int(sqlstmt, 1);
-   const unsigned char *instruction_type = sqlite3_column_text(sqlstmt, 2);
-   int line_number = sqlite3_column_int(sqlstmt, 3);
+   int id               = sqlite3_column_int(sqlstmt, 0);
+   int segment_id       = sqlite3_column_int(sqlstmt, 1);
+   int instruction_type = sqlite3_column_int(sqlstmt, 2);
+   int line_number      = sqlite3_column_int(sqlstmt, 3);
 
    instruction_t *tmp = new instruction_t(id,
 										  segment_id,
