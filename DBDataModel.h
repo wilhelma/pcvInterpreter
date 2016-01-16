@@ -41,19 +41,21 @@ typedef unsigned		ACC_TYP;	//!< @brief  Access type // XXX this has changed!
 typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
 typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
+typedef unsigned        MEM_ST;     //!< @brief  Memory state
+typedef unsigned        MEM_ST;     //!< @brief  Memory state
 
 typedef struct access_t {
 	INS_ID instruction_id;
 	int position;
 	REF_ID reference_id;
 	ACC_TYP access_type;
-	int memory_state;
+	MEM_ST memory_state;
 
 	access_t(INS_ID instructionID,
 			 int pos,
 			 REF_ID referenceID,
 			 ACC_TYP accessType,
-			 int memoryState)
+			 MEM_ST memoryState)
 		: instruction_id(instructionID), position(pos),
 		  reference_id(referenceID), access_type(accessType),
 		  memory_state(memoryState)
