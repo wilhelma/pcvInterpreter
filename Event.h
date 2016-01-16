@@ -5,6 +5,9 @@
 #include <map>
 #include "DataModel.h"
 
+// to retrieve the custom typedefs
+#include "DBDataModel.h"
+
 class ShadowThread;
 class ShadowLock;
 class ShadowVar;
@@ -169,10 +172,10 @@ private:
  * Access Event
  *****************************************************************************/
 struct AccessInfo {
-	AccessInfo(Access::type Type, ShadowVar *Var, unsigned instructionID)
+	AccessInfo( ACC_TYP Type, ShadowVar *Var, unsigned instructionID)
 		: type(Type), instructionID(instructionID), var(Var) {}
 
-	Access::type type;
+	ACC_TYP type;
 	unsigned instructionID;
 	ShadowVar *var;
 };

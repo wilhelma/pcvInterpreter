@@ -37,48 +37,11 @@ typedef int				REF_ADDR;	//!< @brief  Reference address
 typedef unsigned		REF_SIZE;	//!< @brief  Reference size
 typedef std::string		REF_NAME;	//!< @brief  Reference name
 typedef char			REF_MTYP;	//!< @brief  Memory type
-typedef char			ACC_TYP;	//!< @brief  Access type // XXX this has changed!
+typedef unsigned		ACC_TYP;	//!< @brief  Access type // XXX this has changed!
 typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
 typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
 
-//typedef struct access_t {
-//	INS_ID instruction_id;
-//	int position;
-//	char reference_id[REFIDLEN];
-//	ACC_TYP access_type;
-//	char memory_state[MEMSTATELEN];
-//
-//	access_t(int instructionID,
-//			 int pos,
-//			 const unsigned char *referenceID,
-//			 const unsigned char *accessType,
-//			 const unsigned char *memoryState)
-//		: instruction_id(instructionID), position(pos),
-//		  access_type(*accessType)
-//	{
-//		strncpy(reference_id, (const char*)referenceID, REFIDLEN);
-//		strncpy(memory_state, (const char*)memoryState, MEMSTATELEN);
-//	}
-//
-//	/**
-//	 * @brief Returns the type of memory access.
-//	 *
-//	 * @todo Adapt to new format.
-//	 */
-//	static Access::type getAccessType(ACC_TYP accType) {
-//		switch (accType) {
-//		case 'R':
-//			return Access::READ;
-//		case 'W':
-//			return Access::WRITE;
-//		default:
-//			return Access::READWRITE;
-//		}
-//	}
-//} access_t;
-
-// XXX reference_id breaks processAccessGeneric() !!
 typedef struct access_t {
 	INS_ID instruction_id;
 	int position;
@@ -95,22 +58,6 @@ typedef struct access_t {
 		  reference_id(referenceID), access_type(accessType),
 		  memory_state(memoryState)
 	{
-	}
-
-	/**
-	 * @brief Converts an integer into an Access:type
-	 *
-	 * @todo Implement this function as it's dummy now!
-	 */
-	static Access::type getAccessType(int accType) {
-		switch (accType) {
-		case 1:
-			return Access::READ;
-		case 2:
-			return Access::WRITE;
-		default:
-			return Access::READWRITE;
-		}
 	}
 } access_t;
 

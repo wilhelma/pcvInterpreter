@@ -288,7 +288,7 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
 	}
 
 	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-	AccessInfo info( access_t::getAccessType(access.access_type),
+	AccessInfo info( access.access_type,
 					 var,
 					 instruction.instruction_id);
 	AccessEvent event( thread, &info );
