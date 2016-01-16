@@ -242,10 +242,6 @@ int DBInterpreter::processCall(const char* callId,
 	return IN_OK;
 }
 
-
-/**
- * @bug access_t.reference_id is now an integer!!
- */
 int DBInterpreter::processAccessGeneric(ACC_ID accessId,
 										const access_t& access,
 										const instruction_t& instruction,
@@ -253,8 +249,10 @@ int DBInterpreter::processAccessGeneric(ACC_ID accessId,
 										const call_t& call,
 										processAccess_t func) {
 
-	std::string refId = std::string(access.reference_id);
-	auto search = referenceT_.find(_refNoIdMap[refId]);
+//	std::string refId = std::string(access.reference_id);
+//	auto search = referenceT_.find(_refNoIdMap[refId]);
+	int refId = access.reference_id;
+	auto search = referenceT_.find(refId);
 	if ( search != referenceT_.end() ) {
 
 		(this->* func)(accessId, access, instruction, segment,
@@ -488,12 +486,12 @@ int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
    ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
    INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
    int position          = sqlite3_column_int(sqlstmt, 2);
-   const unsigned char * reference_id      = sqlite3_column_text(sqlstmt, 3);
-   const unsigned char * access_type       = sqlite3_column_text(sqlstmt, 4);
-   const unsigned char * memory_state      = sqlite3_column_text(sqlstmt, 5);
-//   int reference_id      = sqlite3_column_int(sqlstmt, 3);
-//   int access_type       = sqlite3_column_int(sqlstmt, 4);
-//   int memory_state      = sqlite3_column_int(sqlstmt, 5);
+//   const unsigned char * reference_id      = sqlite3_column_text(sqlstmt, 3);
+//   const unsigned char * access_type       = sqlite3_column_text(sqlstmt, 4);
+//   const unsigned char * memory_state      = sqlite3_column_text(sqlstmt, 5);
+   int reference_id      = sqlite3_column_int(sqlstmt, 3);
+   int access_type       = sqlite3_column_int(sqlstmt, 4);
+   int memory_state      = sqlite3_column_int(sqlstmt, 5);
 
    access_t *tmp = new access_t(instruction_id,
 		   	   	   	   	   	     position,
