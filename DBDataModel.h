@@ -45,14 +45,14 @@ typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
 typedef struct access_t {
 	INS_ID instruction_id;
 	int position;
-	int reference_id;
-	int access_type;
+	REF_ID reference_id;
+	ACC_TYP access_type;
 	int memory_state;
 
-	access_t(int instructionID,
+	access_t(INS_ID instructionID,
 			 int pos,
-			 int referenceID,
-			 int accessType,
+			 REF_ID referenceID,
+			 ACC_TYP accessType,
 			 int memoryState)
 		: instruction_id(instructionID), position(pos),
 		  reference_id(referenceID), access_type(accessType),
