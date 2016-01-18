@@ -14,7 +14,6 @@
 #include "DataModel.h"
 
 // constants---------------------------------------------------------------
-static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
 static const unsigned FILENAMELEN = 256;
