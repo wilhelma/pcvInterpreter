@@ -251,6 +251,56 @@ typedef struct function_t {
 		getFunctionType(fnType);
 	}
 
+	void printFunctionType(unsigned short shift) {
+		switch(shift) {
+			case 0:
+				std::cout << "ENTRY_ROUTINE" << std::endl;
+				break;
+			case 1:
+				std::cout << "EXIT_ROUTINE"  << std::endl;
+				break;
+			case 2:
+				std::cout << "FUNCTION"  << std::endl;
+				break;
+			case 3:
+				std::cout << "METHOD"  << std::endl;
+				break;
+			case 4:
+				std::cout << "FREE"  << std::endl;
+				break;
+			case 5:
+				std::cout << "FORK"  << std::endl;
+				break;
+			case 6:
+				std::cout << "JOIN"  << std::endl;
+				break;
+			case 7:
+				std::cout << "ACQUIRE"  << std::endl;
+				break;
+			case 8:
+				std::cout << "RELEASE"  << std::endl;
+				break;
+			case 9:
+				std::cout << "EXTERNAL"  << std::endl;
+				break;
+			case 10:
+				std::cout << "ALLOC"  << std::endl;
+				break;
+			case 11:
+				std::cout << "BARRIER"  << std::endl;
+				break;
+			case 12:
+				std::cout << "WAIT"  << std::endl;
+				break;
+			case 13:
+				std::cout << "SIGNAL_SINGLE"  << std::endl;
+				break;
+			case 14:
+				std::cout << "SIGNAL_BROADCAST"  << std::endl;
+				break;
+		}
+	}
+
 	/**
 	 * @brief Decodes the function type
 	 * @todo Return a proper thing!!
