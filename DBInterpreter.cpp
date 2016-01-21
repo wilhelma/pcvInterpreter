@@ -582,28 +582,19 @@ int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
+   int id                    = sqlite3_column_int(sqlstmt, 0);
+   int size                  = sqlite3_column_int(sqlstmt, 1);
+   int memory_type           = sqlite3_column_int(sqlstmt, 2);
+   const unsigned char *name = sqlite3_column_text(sqlstmt, 3);
+   int allocinstr            = sqlite3_column_int(sqlstmt, 4);
 
-   int id = sqlite3_column_int(sqlstmt, 0);
-   const unsigned char *reference_id = sqlite3_column_text(sqlstmt, 1);
-   //int address = sqlite3_column_int(sqlstmt, 2);
-   int size = sqlite3_column_int(sqlstmt, 2);
-   const unsigned char *memory_type = sqlite3_column_text(sqlstmt, 3);
-   const unsigned char *name = sqlite3_column_text(sqlstmt, 4);
-   int allocinstr = sqlite3_column_int(sqlstmt, 5);
-
-   reference_t *tmp = new reference_t(reference_id,
-		   	   	   	   	   	   	   	  id,
-		   	   	   	   	   	   	   	  //address,
+   reference_t *tmp = new reference_t(id,
 		   	   	   	   	   	   	   	  size,
 		   	   	   	   	   	   	   	  memory_type,
 		   	   	   	   	   	   	   	  name,
 		   	   	   	   	   	   	   	  allocinstr);
 
    referenceT_.fill(id, *tmp);
-
-   REF_NO no = REF_NO((const char*)reference_id);
-   _refNoIdMap[no] = id; // create association between no and id
-
    return 0;
 }
 

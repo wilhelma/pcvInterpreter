@@ -348,17 +348,14 @@ typedef struct reference_t {
 	char name[REFNAMELEN];
 	int allocinstr;
 
-	reference_t(const unsigned char *referenceId,
-				int refId,
-				//int refAddr,
+	reference_t(int refId,
 				int refSize,
-				const unsigned char *memoryType,
+				int memoryType,
 				const unsigned char *refName,
 				int allocInstr)
-		: id(refId), /*address(refAddr),*/ size(refSize), memory_type(*memoryType),
+		: id(refId), size(refSize), memory_type(memoryType),
 		  allocinstr(allocInstr)
 	{
-		strncpy(reference_id, (const char*)referenceId, REFIDLEN);
 		strncpy(name, (const char*)refName, REFNAMELEN);
 	}
 
