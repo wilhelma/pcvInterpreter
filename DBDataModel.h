@@ -28,9 +28,11 @@ static const unsigned SEGTYPELEN = 2;
 // types-------------------------------------------------------------------
 typedef unsigned 		INS_ID;		//! @brief  instruction id
 typedef unsigned 		SEG_ID;		//! @brief  segment id
+typedef unsigned        SEG_NO;     //! @brief  segment number
+typedef unsigned        SEG_TYP;    //! @brief  segment type
 typedef unsigned 		ACC_ID;		//! @brief  access id
 typedef unsigned		REF_ID;		//! @brief  reference id
-typedef std::string 	CAL_ID;		//! @brief  call id
+typedef unsigned        CAL_ID;		//! @brief  call id
 typedef unsigned		FUN_ID;		//! @brief  function id
 typedef unsigned 		FIL_ID;		//! @brief  file id
 typedef std::string		REF_NO;		//! @brief  reference no
@@ -315,21 +317,18 @@ typedef struct reference_t {
 
 } reference_t;
 
-typedef struct segment_t {
 
-	std::string call_id;
-	int segment_no;
-	char segment_type[SEGTYPELEN];
+typedef struct segment_t {
+	CAL_ID call_id;
+	SEG_TYP segment_type;
 	int loop_pointer;
 
-	segment_t(const unsigned char *callId,
-			int segmentNo,
-			const unsigned char *segmentType,
-			int loopPointer)
-		: call_id((const char*)callId), segment_no(segmentNo),
+	segment_t(CAL_ID callId,
+			  SEG_TYP segmentType,
+			  int loopPointer)
+		: call_id(callId), segment_type(segmentType),
 		  loop_pointer(loopPointer)
 	{
-		strncpy(segment_type, (const char*)segmentType, SEGTYPELEN);
 	}
 
 } segment_t;
