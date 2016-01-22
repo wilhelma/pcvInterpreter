@@ -281,11 +281,10 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
 	if ( searchVar != _shadowVarMap.end() ) {
 		var = searchVar->second;
 	} else {
-		var = new ShadowVar( getVarType(reference.memory_type),
-								reference.id,
-								//reference.address,
-								reference.size,
-								reference.name);
+		var = new ShadowVar(reference.memory_type,
+                            reference.id,
+							reference.size,
+							reference.name);
 		_shadowVarMap[reference.id] = var;
 	}
 
@@ -307,7 +306,7 @@ int DBInterpreter::processAcqAccess(ACC_ID accessId,
 									const reference_t& reference) {
 	
 	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-	ShadowLock *lock = lockMgr_->getLock(std::string(reference.reference_id));
+	ShadowLock *lock = lockMgr_->getLock(reference.id);
 	AcquireInfo info(lock);					  
 	AcquireEvent event( thread, &info );
 	_eventService->publish( &event );
@@ -323,7 +322,7 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 									const reference_t& reference) {
 		
 	ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-	ShadowLock *lock = lockMgr_->getLock(std::string(reference.reference_id));
+	ShadowLock *lock = lockMgr_->getLock(reference.id);
 	ReleaseInfo info(lock);					  
 	ReleaseEvent event( thread, &info );
 	_eventService->publish( &event );
@@ -360,21 +359,21 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
 	return 0;
 }
 
-ShadowVar::VarType DBInterpreter::getVarType(REF_MTYP memType) {
-	switch (memType) {
-	case reference_t::LOCAL:
-		return ShadowVar::STACK;
-	case reference_t::HEAP:
-		return ShadowVar::HEAP;
-	case reference_t::GLOBAL:
-		return ShadowVar::GLOBAL;
-	case reference_t::STATIC:
-		return ShadowVar::STATIC;
-	default:
-		BOOST_LOG_TRIVIAL(error) << "No valid memory type: " << memType;
-		return ShadowVar::ERROR;
-	}																	
-}
+//ShadowVar::VarType DBInterpreter::getVarType(REF_MTYP memType) {
+//	switch (memType) {
+//	case reference_t::LOCAL:
+//		return ShadowVar::STACK;
+//	case reference_t::HEAP:
+//		return ShadowVar::HEAP;
+//	case reference_t::GLOBAL:
+//		return ShadowVar::GLOBAL;
+//	case reference_t::STATIC:
+//		return ShadowVar::STATIC;
+//	default:
+//		BOOST_LOG_TRIVIAL(error) << "No valid memory type: " << memType;
+//		return ShadowVar::ERROR;
+//	}																	
+//}
 
 /**
  * Fills the `db` database.

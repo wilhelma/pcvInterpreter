@@ -16,7 +16,7 @@
 typedef int MemAddress;
 typedef unsigned ThreadId;
 typedef unsigned int RefId;
-typedef std::string RefNo;
+typedef unsigned RefNo;
 
 /*----------------------------------------------------------------------------
  * Instruction

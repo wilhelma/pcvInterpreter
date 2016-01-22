@@ -36,7 +36,7 @@ typedef std::string		REF_NO;		//!< @brief  Reference no
 typedef int				REF_ADDR;	//!< @brief  Reference address
 typedef unsigned		REF_SIZE;	//!< @brief  Reference size
 typedef std::string		REF_NAME;	//!< @brief  Reference name
-typedef char			REF_MTYP;	//!< @brief  Memory type
+typedef unsigned		REF_MTYP;	//!< @brief  Memory type
 typedef char			ACC_TYP;	//!< @brief  Access type // XXX this has changed!
 typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
@@ -335,12 +335,12 @@ typedef struct loopIteration_t {
 
 typedef struct reference_t {
 
-	static const REF_MTYP STATIC = 'S';
-	static const REF_MTYP HEAP   = 'H';
-	static const REF_MTYP GLOBAL = 'G';
-	static const REF_MTYP LOCAL  = 'L';
+//	static const REF_MTYP STATIC = 'S';
+//	static const REF_MTYP HEAP   = 'H';
+//	static const REF_MTYP GLOBAL = 'G';
+//	static const REF_MTYP LOCAL  = 'L';
 
-	char reference_id[REFIDLEN];
+//	char reference_id[REFIDLEN];
 	REF_ID id;
 	//REF_ADDR address;
 	REF_SIZE size;
