@@ -43,6 +43,7 @@ typedef char*			FUN_TYP;	//! @brief  function type
 typedef unsigned		TRD_ID;		//! @brief  thread id (table)
 typedef unsigned		TRD_TID;	//! @brief  thread id (system)
 typedef unsigned        LOP_ID;
+typedef unsigned        LOE_ID;     //! @brief  loopExecution id
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -293,6 +294,20 @@ typedef struct loop_t {
 	{}
 
 } loop_t;
+
+typedef struct loopExecution_t {
+	unsigned loop_id;
+	unsigned parent_iteration;
+	unsigned loop_duration;
+
+	loopExecution_t(int loopID,
+			        int parentIteration,
+					int loopDuration)
+		            : loop_id(loopID), parent_iteration(parentIteration),
+					  loop_duration(loopDuration)
+	{}
+
+} loopExecution_t;
 
 typedef struct reference_t {
 

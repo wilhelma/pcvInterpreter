@@ -56,6 +56,7 @@ private:
 	DBTable<FUN_ID, function_t> functionT_;
 	DBTable<INS_ID, instruction_t> instructionT_;
 	DBTable<LOP_ID, loop_t> loopT_;
+    DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
 	DBTable<REF_ID, reference_t> referenceT_;
 	DBTable<SEG_ID, segment_t> segmentT_; 
 	DBTable<INS_ID, thread_t> threadT_;
