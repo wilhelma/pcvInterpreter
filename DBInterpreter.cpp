@@ -618,16 +618,17 @@ int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillThread(sqlite3_stmt *sqlstmt) {
-
-   int id = sqlite3_column_int(sqlstmt, 0);
-   int instruction_id = sqlite3_column_int(sqlstmt, 1);
-   int parent_thread_id = sqlite3_column_int(sqlstmt, 2);
-   int child_thread_id = sqlite3_column_int(sqlstmt, 3);
+   int id               = sqlite3_column_int(sqlstmt, 0);
+   int process_id       = sqlite3_column_int(sqlstmt, 1);
+   int instruction_id   = sqlite3_column_int(sqlstmt, 2);
+   int child_thread_id  = sqlite3_column_int(sqlstmt, 3);
+   int parent_thread_id = sqlite3_column_int(sqlstmt, 4);
 
    thread_t *tmp = new thread_t(id,
+                                process_id,
 		   	   	   	   	   	   	instruction_id,
-		   	   	   	   	   	   	parent_thread_id,
-		   	   	   	   	   	   	child_thread_id);
+		   	   	   	   	   	   	child_thread_id,
+		   	   	   	   	   	   	parent_thread_id);
 
    threadT_.fill(instruction_id, *tmp);
    return 0;

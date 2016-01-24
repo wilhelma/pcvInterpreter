@@ -363,16 +363,18 @@ typedef struct segment_t {
 typedef struct thread_t {
 
 	TRD_ID id;
+	int process_id;
 	INS_ID instruction_id;
-	TRD_TID parent_thread_id;
 	TRD_TID	child_thread_id;
+	TRD_TID parent_thread_id;
 
 	thread_t(int id,
-			 int instructionID,
-			 int parentThreadId,
-			 int childThreadId)
-		: id(id), instruction_id(instructionID), 
-		parent_thread_id(parentThreadId), child_thread_id(childThreadId) {}
+			 int processId,
+			 int instructionId,
+			 int childThreadId,
+			 int parentThreadId)
+		: id(id), process_id(processId), instruction_id(instructionId), 
+		  child_thread_id(childThreadId), parent_thread_id(parentThreadId) {}
 
 } thread_t;
 
