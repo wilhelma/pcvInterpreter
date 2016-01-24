@@ -14,7 +14,6 @@
 #include "DataModel.h"
 
 // constants---------------------------------------------------------------
-static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
 static const unsigned FILENAMELEN = 256;
@@ -64,23 +63,21 @@ typedef struct access_t {
 
 // Try to make a new struct for call_t as the database format has changed
 typedef struct call_t {
-	int thread_id;
-	int function_id;    // TODO use types as above
-	int instruction_id; // TODO  "    "        "
+	TRD_ID thread_id;
+	FUN_ID function_id;
+	INS_ID instruction_id;
 	int start_time;
 	int end_time;
 
-	call_t(int threadID,
-		   int functionID,
-		   int instructionID,
+	call_t(TRD_ID threadID,
+		   FUN_ID functionID,
+		   INS_ID instructionID,
 		   int startTime,
 		   int endTime)
-		: //process_id(processID),
-		  thread_id(threadID),
+		: thread_id(threadID),
 		  function_id(functionID), instruction_id(instructionID),
 		  start_time(startTime), end_time(endTime)
 	{
-//		strncpy(process_id, (const char*)processID, PROCESSLEN);
 	}
 } call_t;
 
