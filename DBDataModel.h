@@ -24,7 +24,6 @@ static const unsigned SEGTYPELEN = 2;
 
 // types-------------------------------------------------------------------
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
-typedef unsigned        INS_TYP;    //!< @brief  Instruction type
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
 typedef unsigned		REF_ID;		//!< @brief  Reference id
@@ -251,20 +250,38 @@ typedef struct function_t {
 } function_t;
 
 typedef struct instruction_t {
+
 	INS_ID instruction_id;
 	SEG_ID segment_id;
-	INS_TYP instruction_type;
+	int instruction_type;
 	LIN_NO line_number;
 
 	instruction_t(INS_ID instructionId,
-				  SEG_ID segmentId,
-				  INS_TYP instructionType,
+				  int segmentId,
+				  int instructionType,
 				  LIN_NO lineNumber) 
 				  : instruction_id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
 	{
 	}
 
+	static Instruction::type getInstructionType(FUN_TYP fType) {
+		// -------------
+		// XXX Backward compatybility
+		char fnType[50];
+		sprintf(fnType, "%d", fType);
+		// ------------
+		if (strcmp( fnType, "CALL") == 0)
+			return Instruction::CALL;
+		else if (strcmp( fnType, "ACCESS" ) == 0)
+			return Instruction::MEMACCESS;
+		else if (strcmp( fnType, "CSENTER" ) == 0)
+			return Instruction::ACQUIRE;
+		else if (strcmp( fnType, "CSLEAVE" ) == 0)
+			return Instruction::RELEASE;
+		else
+			return Instruction::OTHER;
+	}
 } instruction_t;
 
 typedef struct loop_t {
