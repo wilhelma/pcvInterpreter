@@ -38,29 +38,6 @@ EventService* DBInterpreter::getEventService() {
 	return _eventService;
 }
 
-/**
- *
- * @bug `instruction_t` already has a `getInstructionType()` method
- * (which doesn't contain "THRCREATE" -> the test will always evaluate to 0).
- * Why is this needed?
- * @return The type of the instruction.
- */
-Instruction::type DBInterpreter::transformInstrType(const instruction_t &ins) {
-
-//	if (strcmp( ins.instruction_type, "CALL") == 0)
-//		return Instruction::CALL;
-//	else if (strcmp( ins.instruction_type, "ACCESS" ) == 0)
-//		return Instruction::MEMACCESS;
-//	else if (strcmp( ins.instruction_type, "CSENTER" ) == 0)
-//		return Instruction::ACQUIRE;
-//	else if (strcmp( ins.instruction_type, "CSLEAVE" ) == 0)
-//		return Instruction::RELEASE;
-//	else if (strcmp( ins.instruction_type, "THRCREATE" ) == 0)
-//		return Instruction::FORK;
-
-	return Instruction::OTHER;
-}
-
 int DBInterpreter::loadDB(const char* path, sqlite3 **db) {
 
 	if (sqlite3_open_v2(path, db,
@@ -116,7 +93,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 	call_t* call = nullptr;
 
 	if ( segmentT_.get(ins.segment_id, &segment) == IN_OK) {  
-		switch( transformInstrType(ins) ) {
+		switch( ins.instruction_type ) {
 		case Instruction::CALL:
 				processSegment(ins.segment_id, *segment, ins);
 			break;
