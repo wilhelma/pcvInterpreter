@@ -192,7 +192,7 @@ int DBInterpreter::processSegment(unsigned int segmentId,
 
 	auto search = callT_.find(seg.call_id);
 	if (search != callT_.end()) {
-		if (!processCall(seg.call_id.c_str(), search->second, seg, ins))
+		if (!processCall(seg.call_id, search->second, seg, ins))
 			return 1;
 	} else {
 		BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
@@ -202,7 +202,7 @@ int DBInterpreter::processSegment(unsigned int segmentId,
 	return 0;
 }
 
-int DBInterpreter::processCall(const char* callId,
+int DBInterpreter::processCall(CAL_ID callId,
 							   const call_t& call,
 							   const segment_t& seg,
 							   const instruction_t& ins) {
@@ -514,13 +514,19 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 	int start_time          = sqlite3_column_int(sqlstmt, 4);
 	int end_time            = sqlite3_column_int(sqlstmt, 5);
 
+   std::cout << "reading into call_t\n";
+   // BUG segmentation fault!!
    call_t *tmp = new call_t(thread_id,
 							function_id,
 							instruction_id,
 							start_time,
 							end_time);
 
-   callT_.fill(std::string((const char*)id), *tmp);		 
+   std::cout << "read into call_t\n";
+   // XXX till I don't get a new database with the right type!!
+   unsigned int dummyId = atoi((const char *)id);
+   callT_.fill(dummyId, *tmp);		 
+   std::cout << "callT_ filled\n";
    return 0;
 }
 
@@ -598,15 +604,12 @@ int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
-
-   int id = sqlite3_column_int(sqlstmt, 0);
-   const unsigned char *call_id = sqlite3_column_text(sqlstmt, 1);
-   int segment_no = sqlite3_column_int(sqlstmt, 2);
-   const unsigned char *segment_type = sqlite3_column_text(sqlstmt, 3);
-   int loop_pointer = sqlite3_column_int(sqlstmt, 4);
+   int id           = sqlite3_column_int(sqlstmt, 0);
+   int call_id      = sqlite3_column_int(sqlstmt, 1);
+   int segment_type = sqlite3_column_int(sqlstmt, 2);
+   int loop_pointer = sqlite3_column_int(sqlstmt, 3);
 
    segment_t *tmp = new segment_t(call_id,
-		   	   	   	   	   	   	  segment_no,
 		   	   	   	   	   	   	  segment_type,
 		   	   	   	   	   	   	  loop_pointer);
 

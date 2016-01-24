@@ -26,9 +26,11 @@ static const unsigned SEGTYPELEN = 2;
 // types-------------------------------------------------------------------
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
+typedef unsigned        SEG_NO;     //! @brief  segment number
+typedef unsigned        SEG_TYP;    //! @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
 typedef unsigned		REF_ID;		//!< @brief  Reference id
-typedef std::string 	CAL_ID;		//!< @brief  Call id
+typedef unsigned        CAL_ID;		//!< @brief  Call id
 typedef unsigned		FUN_ID;		//!< @brief  Function id
 typedef unsigned 		FIL_ID;		//!< @brief  File id
 typedef unsigned        LIN_NO;     //!< @brief  Line number
@@ -61,11 +63,6 @@ typedef struct access_t {
 		strncpy(memory_state, (const char*)memoryState, MEMSTATELEN);
 	}
 
-	/**
-	 * @brief Returns the type of memory access.
-	 *
-	 * @todo Adapt to new format.
-	 */
 	static Access::type getAccessType(ACC_TYP accType) {
 		switch (accType) {
 		case 'R':
@@ -113,6 +110,28 @@ typedef struct access_t {
 //		}
 //	}
 //} access_t;
+//
+//typedef struct call_t {
+//	int process_id;
+//	int thread_id;
+//	FUN_ID function_id;
+//	INS_ID instruction_id;
+//	char start_time[TIMELEN];
+//	char end_time[TIMELEN];
+//
+//	call_t(int processID,
+//		   int threadID,
+//		   int functionID,
+//		   int instructionID,
+//		   const unsigned char *startTime,
+//		   const unsigned char *endTime)
+//		: process_id(processID), thread_id(threadID),
+//		  function_id(functionID), instruction_id(instructionID)
+//	{
+//		strncpy(start_time, (const char*)startTime, TIMELEN);
+//		strncpy(end_time, (const char*)endTime, TIMELEN);
+//	}
+//} call_t;
 
 // Try to make a new struct for call_t as the database format has changed
 typedef struct call_t {
@@ -198,41 +217,6 @@ typedef struct file_t {
 		}
 	}
 } file_t;
-
-//typedef struct function_t {
-//	char signature[SIGNATURELEN], type[FNTYPELEN];
-//	FIL_ID file_id;
-//
-//	function_t(const unsigned char *fnSignature,
-//			   const unsigned char *fnType,
-//			   int fileId)
-//		: file_id(fileId)
-//	{
-//		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
-//		strncpy(type, (const char*)fnType, FNTYPELEN);
-//	}
-//
-//	static Function::type getFunctionType(const FUN_TYP fnType) {
-//		if (strcmp( fnType, "METHOD") == 0)
-//			return Function::METHOD;
-//		else if (strcmp( fnType, "FUNCTION") == 0)
-//			return Function::FUNCTION;
-//		else if (strcmp( fnType, "ALLOC" ) == 0)
-//			return Function::ALLOC;
-//		else if (strcmp( fnType, "FREE" ) == 0)
-//			return Function::FREE;
-//		else if (strcmp( fnType, "ACQUIRE" ) == 0)
-//			return Function::ACQUIRE;
-//		else if (strcmp( fnType, "RELEASE" ) == 0)
-//			return Function::RELEASE;
-//		else if (strcmp( fnType, "FORK" ) == 0)
-//			return Function::FORK;
-//		else if (strcmp( fnType, "JOIN" ) == 0)
-//			return Function::JOIN;
-//
-//		return Function::OTHER;
-//	}
-//} function_t;
 
 typedef struct function_t {
 	char signature[SIGNATURELEN];
@@ -362,20 +346,16 @@ typedef struct reference_t {
 } reference_t;
 
 typedef struct segment_t {
-
-	std::string call_id;
-	int segment_no;
-	char segment_type[SEGTYPELEN];
+	CAL_ID call_id;
+	SEG_TYP segment_type;
 	int loop_pointer;
 
-	segment_t(const unsigned char *callId,
-			int segmentNo,
-			const unsigned char *segmentType,
-			int loopPointer)
-		: call_id((const char*)callId), segment_no(segmentNo),
+	segment_t(CAL_ID callId,
+			  SEG_TYP segmentType,
+			  int loopPointer)
+		: call_id(callId), segment_type(segmentType),
 		  loop_pointer(loopPointer)
 	{
-		strncpy(segment_type, (const char*)segmentType, SEGTYPELEN);
 	}
 
 } segment_t;
