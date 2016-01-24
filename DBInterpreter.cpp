@@ -525,7 +525,7 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 
-   int id = sqlite3_column_int(sqlstmt, 0);
+   int id                         = sqlite3_column_int(sqlstmt, 0);
    const unsigned char *file_path = sqlite3_column_text(sqlstmt, 1);
 
    file_t *tmp = new file_t(file_path);
