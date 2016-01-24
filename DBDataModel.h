@@ -44,6 +44,7 @@ typedef unsigned		TRD_ID;		//! @brief  thread id (table)
 typedef unsigned		TRD_TID;	//! @brief  thread id (system)
 typedef unsigned        LOP_ID;
 typedef unsigned        LOE_ID;     //! @brief  loopExecution id
+typedef unsigned		LOI_ID;	    //! @brief  loopIteration id (system)
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -308,6 +309,18 @@ typedef struct loopExecution_t {
 	{}
 
 } loopExecution_t;
+
+typedef struct loopIteration_t {
+	unsigned loop_execution;
+	unsigned loop_iteration;
+
+	loopIteration_t(int loopExecution,
+			        int loopIteration)
+		            : loop_execution(loopExecution),
+					  loop_iteration(loopIteration)
+	{}
+
+} loopIteration_t;
 
 typedef struct reference_t {
 
