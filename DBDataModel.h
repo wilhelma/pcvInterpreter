@@ -41,6 +41,9 @@ typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
 typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
 typedef unsigned        MEM_ST;     //!< @brief  Memory state
+typedef unsigned        LOP_ID;
+typedef unsigned        LOE_ID;     //! @brief  loopExecution id
+typedef unsigned		LOI_ID;	    //! @brief  loopIteration id (system)
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -285,12 +288,38 @@ typedef struct instruction_t {
 } instruction_t;
 
 typedef struct loop_t {
+	unsigned line_number;
+
+	loop_t(int lineNumber)
+		: line_number(lineNumber)
+	{}
+
 } loop_t;
 
 typedef struct loopExecution_t {
+	unsigned loop_id;
+	unsigned parent_iteration;
+	unsigned loop_duration;
+
+	loopExecution_t(int loopID,
+			        int parentIteration,
+					int loopDuration)
+		            : loop_id(loopID), parent_iteration(parentIteration),
+					  loop_duration(loopDuration)
+	{}
+
 } loopExecution_t;
 
 typedef struct loopIteration_t {
+	unsigned loop_execution;
+	unsigned loop_iteration;
+
+	loopIteration_t(int loopExecution,
+			        int loopIteration)
+		            : loop_execution(loopExecution),
+					  loop_iteration(loopIteration)
+	{}
+
 } loopIteration_t;
 
 typedef struct reference_t {
