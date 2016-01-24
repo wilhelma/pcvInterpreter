@@ -145,41 +145,6 @@ typedef struct file_t {
 	}
 } file_t;
 
-//typedef struct function_t {
-//	char signature[SIGNATURELEN], type[FNTYPELEN];
-//	FIL_ID file_id;
-//
-//	function_t(const unsigned char *fnSignature,
-//			   const unsigned char *fnType,
-//			   int fileId)
-//		: file_id(fileId)
-//	{
-//		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
-//		strncpy(type, (const char*)fnType, FNTYPELEN);
-//	}
-//
-//	static Function::type getFunctionType(const FUN_TYP fnType) {
-//		if (strcmp( fnType, "METHOD") == 0)
-//			return Function::METHOD;
-//		else if (strcmp( fnType, "FUNCTION") == 0)
-//			return Function::FUNCTION;
-//		else if (strcmp( fnType, "ALLOC" ) == 0)
-//			return Function::ALLOC;
-//		else if (strcmp( fnType, "FREE" ) == 0)
-//			return Function::FREE;
-//		else if (strcmp( fnType, "ACQUIRE" ) == 0)
-//			return Function::ACQUIRE;
-//		else if (strcmp( fnType, "RELEASE" ) == 0)
-//			return Function::RELEASE;
-//		else if (strcmp( fnType, "FORK" ) == 0)
-//			return Function::FORK;
-//		else if (strcmp( fnType, "JOIN" ) == 0)
-//			return Function::JOIN;
-//
-//		return Function::OTHER;
-//	}
-//} function_t;
-
 typedef struct function_t {
 	char signature[SIGNATURELEN];
 	FUN_TYP type;

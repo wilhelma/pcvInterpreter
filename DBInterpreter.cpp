@@ -545,7 +545,13 @@ int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillLoop(sqlite3_stmt *sqlstmt) {
-	return 0;
+   int id = sqlite3_column_int(sqlstmt, 0);
+   int lineNumber = sqlite3_column_int(sqlstmt, 1);
+
+   loop_t *tmp = new loop_t(lineNumber);
+
+   loopT_.fill(id, *tmp);
+   return 0;
 }
 
 int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
