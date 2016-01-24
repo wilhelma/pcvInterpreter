@@ -23,9 +23,8 @@ public:
 				   ERROR	= 0x0
 				 } VarType;
 
-	ShadowVar(const VarType Type,
+	ShadowVar(const REF_MTYP Type,
 			  const REF_ID Id,
-			  //const REF_ADDR Addr,
 			  const REF_SIZE Size,
 			  const REF_NAME Name)
 				 : ptr(nullptr), type(Type), id(Id), //addr(Addr),
@@ -33,7 +32,7 @@ public:
 
 	void* ptr;
 
-	const VarType type;
+	const REF_MTYP type;
 	const REF_ID id;
 	//const REF_ADDR addr;
 	const REF_SIZE size;

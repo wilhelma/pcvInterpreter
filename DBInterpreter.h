@@ -93,7 +93,7 @@ private:
 	int processSegment(SEG_ID segmentId,
 					   const segment_t& segment,
 					   const instruction_t& instruction);
-	int processCall(const char* callId,
+	int processCall(CAL_ID callId,
 					const call_t& call,
 					const segment_t& segment,
 					const instruction_t& instruction);

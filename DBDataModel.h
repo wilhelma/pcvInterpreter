@@ -13,8 +13,8 @@
 #include <iostream>
 #include "DataModel.h"
 
-
 // constants---------------------------------------------------------------
+//static const unsigned CALLIDLEN = 50;
 static const unsigned REFIDLEN = 100;
 static const unsigned MEMSTATELEN = 10;
 static const unsigned FILENAMELEN = 256;
@@ -25,10 +25,13 @@ static const unsigned SEGTYPELEN = 2;
 
 // types-------------------------------------------------------------------
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
+typedef unsigned        INS_TYP;    //!< @brief  Instruction type
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
+typedef unsigned        SEG_NO;     //! @brief  segment number
+typedef unsigned        SEG_TYP;    //! @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
 typedef unsigned		REF_ID;		//!< @brief  Reference id
-typedef std::string 	CAL_ID;		//!< @brief  Call id
+typedef unsigned        CAL_ID;		//!< @brief  Call id
 typedef unsigned		FUN_ID;		//!< @brief  Function id
 typedef unsigned 		FIL_ID;		//!< @brief  File id
 typedef unsigned        LIN_NO;     //!< @brief  Line number
@@ -36,7 +39,7 @@ typedef std::string		REF_NO;		//!< @brief  Reference no
 typedef int				REF_ADDR;	//!< @brief  Reference address
 typedef unsigned		REF_SIZE;	//!< @brief  Reference size
 typedef std::string		REF_NAME;	//!< @brief  Reference name
-typedef char			REF_MTYP;	//!< @brief  Memory type
+typedef unsigned		REF_MTYP;	//!< @brief  Memory type
 typedef unsigned		ACC_TYP;	//!< @brief  Access type // XXX this has changed!
 typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
@@ -84,17 +87,6 @@ typedef struct call_t {
 	{
 	}
 } call_t;
-
-//typedef struct file_t {
-//	char file_name[FILENAMELEN], file_path[FILEPATHLEN];
-//
-//	file_t(const unsigned char *fileName,
-//		   const unsigned char *filePath)
-//	{
-//		strncpy(file_name, (const char*)fileName, FILENAMELEN);
-//		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
-//	}
-//} file_t;
 
 /**
  * @brief Record to process the `File` table in the database.
@@ -231,60 +223,23 @@ typedef struct function_t {
 			// shift right by one
 			fnType >>= 1;
 		}
-
-//		if (strcmp( fnType, "METHOD") == 0)
-//			return Function::METHOD;
-//		else if (strcmp( fnType, "FUNCTION") == 0)
-//			return Function::FUNCTION;
-//		else if (strcmp( fnType, "ALLOC" ) == 0)
-//			return Function::ALLOC;
-//		else if (strcmp( fnType, "FREE" ) == 0)
-//			return Function::FREE;
-//		else if (strcmp( fnType, "ACQUIRE" ) == 0)
-//			return Function::ACQUIRE;
-//		else if (strcmp( fnType, "RELEASE" ) == 0)
-//			return Function::RELEASE;
-//		else if (strcmp( fnType, "FORK" ) == 0)
-//			return Function::FORK;
-//		else if (strcmp( fnType, "JOIN" ) == 0)
-//			return Function::JOIN;
-//
 		return Function::OTHER;
 	}
 } function_t;
 
 typedef struct instruction_t {
-
 	INS_ID instruction_id;
 	SEG_ID segment_id;
-	int instruction_type;
+	INS_TYP instruction_type;
 	LIN_NO line_number;
 
 	instruction_t(INS_ID instructionId,
-				  int segmentId,
-				  int instructionType,
+				  SEG_ID segmentId,
+				  INS_TYP instructionType,
 				  LIN_NO lineNumber) 
 				  : instruction_id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
 	{
-	}
-
-	static Instruction::type getInstructionType(FUN_TYP fType) {
-		// -------------
-		// XXX Backward compatybility
-		char fnType[50];
-		sprintf(fnType, "%d", fType);
-		// ------------
-		if (strcmp( fnType, "CALL") == 0)
-			return Instruction::CALL;
-		else if (strcmp( fnType, "ACCESS" ) == 0)
-			return Instruction::MEMACCESS;
-		else if (strcmp( fnType, "CSENTER" ) == 0)
-			return Instruction::ACQUIRE;
-		else if (strcmp( fnType, "CSLEAVE" ) == 0)
-			return Instruction::RELEASE;
-		else
-			return Instruction::OTHER;
 	}
 } instruction_t;
 
@@ -325,12 +280,12 @@ typedef struct loopIteration_t {
 
 typedef struct reference_t {
 
-	static const REF_MTYP STATIC = 'S';
-	static const REF_MTYP HEAP   = 'H';
-	static const REF_MTYP GLOBAL = 'G';
-	static const REF_MTYP LOCAL  = 'L';
+//	static const REF_MTYP STATIC = 'S';
+//	static const REF_MTYP HEAP   = 'H';
+//	static const REF_MTYP GLOBAL = 'G';
+//	static const REF_MTYP LOCAL  = 'L';
 
-	char reference_id[REFIDLEN];
+//	char reference_id[REFIDLEN];
 	REF_ID id;
 	//REF_ADDR address;
 	REF_SIZE size;
@@ -338,54 +293,48 @@ typedef struct reference_t {
 	char name[REFNAMELEN];
 	int allocinstr;
 
-	reference_t(const unsigned char *referenceId,
-				int refId,
-				//int refAddr,
+	reference_t(int refId,
 				int refSize,
-				const unsigned char *memoryType,
+				int memoryType,
 				const unsigned char *refName,
 				int allocInstr)
-		: id(refId), /*address(refAddr),*/ size(refSize), memory_type(*memoryType),
+		: id(refId), size(refSize), memory_type(memoryType),
 		  allocinstr(allocInstr)
 	{
-		strncpy(reference_id, (const char*)referenceId, REFIDLEN);
 		strncpy(name, (const char*)refName, REFNAMELEN);
 	}
 
 } reference_t;
 
 typedef struct segment_t {
-
-	std::string call_id;
-	int segment_no;
-	char segment_type[SEGTYPELEN];
+	CAL_ID call_id;
+	SEG_TYP segment_type;
 	int loop_pointer;
 
-	segment_t(const unsigned char *callId,
-			int segmentNo,
-			const unsigned char *segmentType,
-			int loopPointer)
-		: call_id((const char*)callId), segment_no(segmentNo),
+	segment_t(CAL_ID callId,
+			  SEG_TYP segmentType,
+			  int loopPointer)
+		: call_id(callId), segment_type(segmentType),
 		  loop_pointer(loopPointer)
 	{
-		strncpy(segment_type, (const char*)segmentType, SEGTYPELEN);
 	}
 
 } segment_t;
 
 typedef struct thread_t {
-
 	TRD_ID id;
+	int process_id;
 	INS_ID instruction_id;
-	TRD_TID parent_thread_id;
 	TRD_TID	child_thread_id;
+	TRD_TID parent_thread_id;
 
 	thread_t(int id,
-			 int instructionID,
-			 int parentThreadId,
-			 int childThreadId)
-		: id(id), instruction_id(instructionID), 
-		parent_thread_id(parentThreadId), child_thread_id(childThreadId) {}
+			 int processId,
+			 int instructionId,
+			 int childThreadId,
+			 int parentThreadId)
+		: id(id), process_id(processId), instruction_id(instructionId), 
+		  child_thread_id(childThreadId), parent_thread_id(parentThreadId) {}
 
 } thread_t;
 
