@@ -14,21 +14,17 @@
 #include "DataModel.h"
 
 // constants---------------------------------------------------------------
-//static const unsigned CALLIDLEN = 50;
-static const unsigned REFIDLEN = 100;
-static const unsigned MEMSTATELEN = 10;
 static const unsigned FILENAMELEN = 256;
 static const unsigned FILEPATHLEN = 1024;
 static const unsigned SIGNATURELEN = 10000;
 static const unsigned REFNAMELEN = 2000;
-static const unsigned SEGTYPELEN = 2;
 
 // types-------------------------------------------------------------------
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
 typedef unsigned        INS_TYP;    //!< @brief  Instruction type
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
-typedef unsigned        SEG_NO;     //! @brief  segment number
-typedef unsigned        SEG_TYP;    //! @brief  segment type
+typedef unsigned        SEG_NO;     //!< @brief  segment number
+typedef unsigned        SEG_TYP;    //!< @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
 typedef unsigned		REF_ID;		//!< @brief  Reference id
 typedef unsigned        CAL_ID;		//!< @brief  Call id
@@ -45,9 +41,9 @@ typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
 typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)
 typedef unsigned        MEM_ST;     //!< @brief  Memory state
-typedef unsigned        LOP_ID;
-typedef unsigned        LOE_ID;     //! @brief  loopExecution id
-typedef unsigned		LOI_ID;	    //! @brief  loopIteration id (system)
+typedef unsigned        LOP_ID;     //!< @brief  Loop ID
+typedef unsigned        LOE_ID;     //!< @brief  loopExecution id
+typedef unsigned		LOI_ID;	    //!< @brief  loopIteration id (system)
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -157,7 +153,7 @@ typedef struct function_t {
 		getFunctionType(fnType);
 	}
 
-	void printFunctionType(unsigned short shift) {
+	static void printFunctionType(unsigned short shift) {
 		switch(shift) {
 			case 0:
 				std::cout << "ENTRY_ROUTINE" << std::endl;
@@ -216,8 +212,11 @@ typedef struct function_t {
 		// shift right functionType till there is no information left
 		unsigned int counter = 0;
 		while( fnType != 0 ){
-			if( fnType & 1 )
+			if( fnType & 1 ) {
 				std::cout << "   -- has type " << (1 << counter) << std::endl;
+				std::cout << "    -> ";
+				printFunctionType( counter );
+			}
 
 			counter ++;
 			// shift right by one
@@ -279,13 +278,6 @@ typedef struct loopIteration_t {
 } loopIteration_t;
 
 typedef struct reference_t {
-
-//	static const REF_MTYP STATIC = 'S';
-//	static const REF_MTYP HEAP   = 'H';
-//	static const REF_MTYP GLOBAL = 'G';
-//	static const REF_MTYP LOCAL  = 'L';
-
-//	char reference_id[REFIDLEN];
 	REF_ID id;
 	//REF_ADDR address;
 	REF_SIZE size;
