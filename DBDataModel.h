@@ -36,7 +36,7 @@ typedef int				REF_ADDR;	//!< @brief  Reference address
 typedef unsigned		REF_SIZE;	//!< @brief  Reference size
 typedef std::string		REF_NAME;	//!< @brief  Reference name
 typedef unsigned		REF_MTYP;	//!< @brief  Memory type
-typedef unsigned		ACC_TYP;	//!< @brief  Access type // XXX this has changed!
+typedef unsigned		ACC_TYP;	//!< @brief  Access type
 typedef unsigned		FUN_TYP;	//!< @brief  Function type
 typedef unsigned		TRD_ID;		//!< @brief  Thread id (table)
 typedef unsigned		TRD_TID;	//!< @brief  Thread id (system)

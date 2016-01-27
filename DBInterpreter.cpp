@@ -334,29 +334,12 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
 	return 0;
 }
 
-//ShadowVar::VarType DBInterpreter::getVarType(REF_MTYP memType) {
-//	switch (memType) {
-//	case reference_t::LOCAL:
-//		return ShadowVar::STACK;
-//	case reference_t::HEAP:
-//		return ShadowVar::HEAP;
-//	case reference_t::GLOBAL:
-//		return ShadowVar::GLOBAL;
-//	case reference_t::STATIC:
-//		return ShadowVar::STATIC;
-//	default:
-//		BOOST_LOG_TRIVIAL(error) << "No valid memory type: " << memType;
-//		return ShadowVar::ERROR;
-//	}																	
-//}
-
 /**
  * Fills the `db` database.
  * 
  * For each type of SQL statement, a different funcion is called as
  * `fillGeneric()` argument to fill `db` (e.g. `fillAccess()` for the `Access` table).
  *
- * @todo `fillLoop*` are still dummy functions!
  */
 int DBInterpreter::fillStructures(sqlite3 **db) {
 
@@ -455,16 +438,10 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
    return 0;
 }
 
-/**
- */
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
-
    ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
    INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
    int position          = sqlite3_column_int(sqlstmt, 2);
-//   const unsigned char * reference_id      = sqlite3_column_text(sqlstmt, 3);
-//   const unsigned char * access_type       = sqlite3_column_text(sqlstmt, 4);
-//   const unsigned char * memory_state      = sqlite3_column_text(sqlstmt, 5);
    int reference_id      = sqlite3_column_int(sqlstmt, 3);
    int access_type       = sqlite3_column_int(sqlstmt, 4);
    int memory_state      = sqlite3_column_int(sqlstmt, 5);
@@ -481,7 +458,6 @@ int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
-
 	const unsigned char *id = sqlite3_column_text(sqlstmt, 0);
 	int thread_id           = sqlite3_column_int(sqlstmt, 1);
 	int function_id         = sqlite3_column_int(sqlstmt, 2);
@@ -506,7 +482,6 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
-
    int id                         = sqlite3_column_int(sqlstmt, 0);
    const unsigned char *file_path = sqlite3_column_text(sqlstmt, 1);
 
@@ -517,7 +492,6 @@ int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
-
     int id                         = sqlite3_column_int(sqlstmt, 0);
     const unsigned char *signature = sqlite3_column_text(sqlstmt, 1);
     FUN_TYP type                   = sqlite3_column_int(sqlstmt, 2);
@@ -534,7 +508,6 @@ int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
-
    int id               = sqlite3_column_int(sqlstmt, 0);
    int segment_id       = sqlite3_column_int(sqlstmt, 1);
    int instruction_type = sqlite3_column_int(sqlstmt, 2);
@@ -574,7 +547,6 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
-
 	int id            = sqlite3_column_int(sqlstmt, 0);
 	int loopExecution = sqlite3_column_int(sqlstmt, 1);
 	int loopIteration = sqlite3_column_int(sqlstmt, 2);
