@@ -203,13 +203,13 @@ private:
 typedef struct CallInfo {
 	const double runtime;
 	const char* fnSignature;
-	const Function::type fnType;
+	const FUN_TYP fnType;
 	const char* fileName;
 	const char* filePath;
 
 	CallInfo(const double Runtime,
 			 const char* FnSignature,
-			 const Function::type FnType,
+			 FUN_TYP FnType,
 			 const char* FileName,
 			 const char* FilePath)
 		: runtime(Runtime), fnSignature(FnSignature), fnType(FnType),
