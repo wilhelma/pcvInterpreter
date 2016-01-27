@@ -23,3 +23,6 @@ recursive_trace/
 
 # Merge backup files
 *.orig
+
+# Whatever .txt file to check the output
+*.txt
