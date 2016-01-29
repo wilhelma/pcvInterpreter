@@ -53,6 +53,7 @@ typedef struct access_t {
 	ACC_TYP access_type;
 	MEM_ST memory_state;
 
+	explicit
 	access_t(INS_ID instructionID,
 			 int pos,
 			 REF_ID referenceID,
@@ -73,6 +74,7 @@ typedef struct call_t {
 	TIME_TYP start_time;
 	TIME_TYP end_time;
 
+	explicit
 	call_t(TRD_ID threadID,
 		   FUN_ID functionID,
 		   INS_ID instructionID,
@@ -93,6 +95,7 @@ typedef struct file_t {
 	// this is retrieved from the file_path[]
 	char file_name[FILENAMELEN];
 
+	explicit
 	file_t(const unsigned char *filePath)
 	{
 		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
@@ -143,6 +146,7 @@ typedef struct function_t {
 	FIL_ID file_id;
 	LIN_NO line_number;
 
+	explicit
 	function_t(const unsigned char *fnSignature,
 			   FUN_TYP fnType,
 			   FIL_ID fileId,
@@ -233,6 +237,7 @@ typedef struct instruction_t {
 	INS_TYP instruction_type;
 	LIN_NO line_number;
 
+	explicit
 	instruction_t(INS_ID instructionId,
 				  SEG_ID segmentId,
 				  INS_TYP instructionType,
@@ -246,6 +251,7 @@ typedef struct instruction_t {
 typedef struct loop_t {
 	unsigned line_number;
 
+	explicit
 	loop_t(int lineNumber)
 		: line_number(lineNumber)
 	{}
@@ -257,6 +263,7 @@ typedef struct loopExecution_t {
 	unsigned parent_iteration;
 	unsigned loop_duration;
 
+	explicit
 	loopExecution_t(int loopID,
 			        int parentIteration,
 					int loopDuration)
@@ -270,6 +277,7 @@ typedef struct loopIteration_t {
 	unsigned loop_execution;
 	unsigned loop_iteration;
 
+	explicit
 	loopIteration_t(int loopExecution,
 			        int loopIteration)
 		            : loop_execution(loopExecution),
@@ -286,6 +294,7 @@ typedef struct reference_t {
 	char name[REFNAMELEN];
 	int allocinstr;
 
+	explicit
 	reference_t(int refId,
 				int refSize,
 				int memoryType,
@@ -304,6 +313,7 @@ typedef struct segment_t {
 	SEG_TYP segment_type;
 	int loop_pointer;
 
+	explicit
 	segment_t(CAL_ID callId,
 			  SEG_TYP segmentType,
 			  int loopPointer)
@@ -321,6 +331,7 @@ typedef struct thread_t {
 	TRD_TID	child_thread_id;
 	TRD_TID parent_thread_id;
 
+	explicit
 	thread_t(int id,
 			 int processId,
 			 int instructionId,
