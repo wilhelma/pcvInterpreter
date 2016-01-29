@@ -44,6 +44,7 @@ typedef unsigned        MEM_ST;     //!< @brief  Memory state
 typedef unsigned        LOP_ID;     //!< @brief  Loop ID
 typedef unsigned        LOE_ID;     //!< @brief  loopExecution id
 typedef unsigned		LOI_ID;	    //!< @brief  loopIteration id (system)
+typedef clock_t         TIME_TYP;   //!< @brief  Time 
 
 typedef struct access_t {
 	INS_ID instruction_id;
@@ -69,14 +70,14 @@ typedef struct call_t {
 	TRD_ID thread_id;
 	FUN_ID function_id;
 	INS_ID instruction_id;
-	int start_time;
-	int end_time;
+	TIME_TYP start_time;
+	TIME_TYP end_time;
 
 	call_t(TRD_ID threadID,
 		   FUN_ID functionID,
 		   INS_ID instructionID,
-		   int startTime,
-		   int endTime)
+		   TIME_TYP startTime,
+		   TIME_TYP endTime)
 		: thread_id(threadID),
 		  function_id(functionID), instruction_id(instructionID),
 		  start_time(startTime), end_time(endTime)

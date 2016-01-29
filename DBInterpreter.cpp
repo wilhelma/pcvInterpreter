@@ -458,27 +458,24 @@ int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
-	const unsigned char *id = sqlite3_column_text(sqlstmt, 0);
-	int thread_id           = sqlite3_column_int(sqlstmt, 1);
-	int function_id         = sqlite3_column_int(sqlstmt, 2);
-	int instruction_id      = sqlite3_column_int(sqlstmt, 3);
-	int start_time          = sqlite3_column_int(sqlstmt, 4);
-	int end_time            = sqlite3_column_int(sqlstmt, 5);
+    int id             = sqlite3_column_int(sqlstmt, 0);
+    int thread_id      = sqlite3_column_int(sqlstmt, 1);
+    int function_id    = sqlite3_column_int(sqlstmt, 2);
+    int instruction_id = sqlite3_column_int(sqlstmt, 3);
+    int start_time     = sqlite3_column_int(sqlstmt, 4);
+    int end_time       = sqlite3_column_int(sqlstmt, 5);
 
-   std::cout << "reading into call_t\n";
-   // BUG segmentation fault!!
-   call_t *tmp = new call_t(thread_id,
-							function_id,
-							instruction_id,
-							start_time,
-							end_time);
+    std::cout << "reading into call_t\n";
+    call_t *tmp = new call_t(thread_id,
+            function_id,
+            instruction_id,
+            start_time,
+            end_time);
 
-   std::cout << "read into call_t\n";
-   // XXX till I don't get a new database with the right type!!
-   unsigned int dummyId = atoi((const char *)id);
-   callT_.fill(dummyId, *tmp);		 
-   std::cout << "callT_ filled\n";
-   return 0;
+    std::cout << "read into call_t\n";
+    callT_.fill(id, *tmp);		 
+    std::cout << "callT_ filled\n";
+    return 0;
 }
 
 int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
