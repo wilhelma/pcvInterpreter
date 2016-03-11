@@ -26,3 +26,10 @@ recursive_trace/
 
 # Whatever .txt file to check the output
 *.txt
+
+# DOT file and PNG representation of the graph
+*.dot
+*.png
+
+# Compiled function tracker
+dotFuncTracker
