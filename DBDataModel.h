@@ -326,15 +326,18 @@ typedef struct reference_t {
 } reference_t;
 
 typedef struct segment_t {
+	ID sql_id;
 	CAL_ID call_id;
 	SEG_TYP segment_type;
 	int loop_pointer;
 
 	explicit
-	segment_t(CAL_ID callId,
+	segment_t(ID sqlID,
+			  CAL_ID callId,
 			  SEG_TYP segmentType,
 			  int loopPointer)
-		: call_id(callId), segment_type(segmentType),
+		: sql_id(sqlID), call_id(callId),
+		  segment_type(segmentType),
 		  loop_pointer(loopPointer)
 	{
 	}

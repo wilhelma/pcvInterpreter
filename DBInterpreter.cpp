@@ -585,7 +585,8 @@ int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
    int segment_type = sqlite3_column_int(sqlstmt, 2);
    int loop_pointer = sqlite3_column_int(sqlstmt, 3);
 
-   segment_t *tmp = new segment_t(call_id,
+   segment_t *tmp = new segment_t(id,
+		                          call_id,
 		   	   	   	   	   	   	  segment_type,
 		   	   	   	   	   	   	  loop_pointer);
 
