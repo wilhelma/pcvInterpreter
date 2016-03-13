@@ -242,7 +242,7 @@ typedef struct function_t {
 } function_t;
 
 typedef struct instruction_t {
-	INS_ID instruction_id;
+	INS_ID instruction_id; //!< @brief The same as SQL ID
 	SEG_ID segment_id;
 	INS_TYP instruction_type;
 	LIN_NO line_number;
