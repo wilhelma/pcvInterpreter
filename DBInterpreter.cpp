@@ -498,7 +498,8 @@ int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
     FIL_ID file_id                 = sqlite3_column_int(sqlstmt, 3);
     LIN_NO line_number             = sqlite3_column_int(sqlstmt, 4);
 
-   function_t *tmp = new function_t(signature,
+   function_t *tmp = new function_t(id,
+		                            signature,
 		   	   	   	  	   	   	    type,
 		   	   	   	   	   	   	    file_id,
                                     line_number);

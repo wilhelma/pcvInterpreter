@@ -149,17 +149,19 @@ typedef struct file_t {
 } file_t;
 
 typedef struct function_t {
+	ID sql_id;
 	char signature[SIGNATURELEN];
 	FUN_TYP type;
 	FIL_ID file_id;
 	LIN_NO line_number;
 
 	explicit
-	function_t(const unsigned char *fnSignature,
+	function_t(ID sqlID,
+			   const unsigned char *fnSignature,
 			   FUN_TYP fnType,
 			   FIL_ID fileId,
 			   LIN_NO lineNumber)
-		: type(fnType), file_id(fileId), line_number(lineNumber)
+		: sql_id(sqlID), type(fnType), file_id(fileId), line_number(lineNumber)
 	{
 		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
 		std::cout << " >> " << signature << std::endl;
