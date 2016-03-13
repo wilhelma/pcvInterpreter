@@ -439,22 +439,23 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
 }
 
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
-   ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
-   INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
-   int position          = sqlite3_column_int(sqlstmt, 2);
-   int reference_id      = sqlite3_column_int(sqlstmt, 3);
-   int access_type       = sqlite3_column_int(sqlstmt, 4);
-   int memory_state      = sqlite3_column_int(sqlstmt, 5);
+	ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
+	INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
+	int position          = sqlite3_column_int(sqlstmt, 2);
+	int reference_id      = sqlite3_column_int(sqlstmt, 3);
+	int access_type       = sqlite3_column_int(sqlstmt, 4);
+	int memory_state      = sqlite3_column_int(sqlstmt, 5);
 
-   access_t *tmp = new access_t(instruction_id,
-		   	   	   	   	   	     position,
-		   	   	   	   	   	     reference_id,
-		   	   	   	   	   	     access_type,
-		   	   	   	   	   	     memory_state); 
+	access_t *tmp = new access_t(id,
+			                     instruction_id,
+								 position,
+								 reference_id,
+								 access_type,
+								 memory_state); 
 
-   accessT_.fill(id, *tmp);		 
-   _insAccessMap[instruction_id].push_back(id); // create 1:n associations 
-   return 0;
+	accessT_.fill(id, *tmp);		 
+	_insAccessMap[instruction_id].push_back(id); // create 1:n associations 
+	return 0;
 }
 
 int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {

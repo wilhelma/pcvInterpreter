@@ -48,6 +48,7 @@ typedef unsigned		LOI_ID;	    //!< @brief  loopIteration id (system)
 typedef clock_t         TIME_TYP;   //!< @brief  Time 
 
 typedef struct access_t {
+	ID sql_id;
 	INS_ID instruction_id;
 	int position;
 	REF_ID reference_id;
@@ -55,7 +56,8 @@ typedef struct access_t {
 	MEM_ST memory_state;
 
 	explicit
-	access_t(INS_ID instructionID,
+	access_t(ID sql_id,
+			 INS_ID instructionID,
 			 int pos,
 			 REF_ID referenceID,
 			 ACC_TYP accessType,
