@@ -540,7 +540,8 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 	int parentIteration = sqlite3_column_int(sqlstmt, 2);
 	int loopDuration    = sqlite3_column_int(sqlstmt, 3);
 
-	loopExecution_t *tmp = new loopExecution_t(loopID,
+	loopExecution_t *tmp = new loopExecution_t(id,
+			                                   loopID,
 			                                   parentIteration,
 											   loopDuration);
 
