@@ -96,12 +96,15 @@ typedef struct call_t {
  * @brief Record to process the `File` table in the database.
  */
 typedef struct file_t {
+	ID sql_id;
 	char file_path[FILEPATHLEN];
 	// this is retrieved from the file_path[]
 	char file_name[FILENAMELEN];
 
 	explicit
-	file_t(const unsigned char *filePath)
+	file_t(ID sqlID,
+		   const unsigned char *filePath)
+        : sql_id(sqlID)
 	{
 		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
 		retrieveFileName( filePath );
