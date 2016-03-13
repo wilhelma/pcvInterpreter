@@ -288,13 +288,16 @@ typedef struct loopExecution_t {
 } loopExecution_t;
 
 typedef struct loopIteration_t {
-	unsigned loop_execution;
-	unsigned loop_iteration;
+	ID sql_id;
+	LOE_ID loop_execution;
+	LOI_ID loop_iteration;
 
 	explicit
-	loopIteration_t(int loopExecution,
-			        int loopIteration)
-		            : loop_execution(loopExecution),
+	loopIteration_t(ID sqlID,
+			        LOE_ID loopExecution,
+			        LOI_ID loopIteration)
+		            : sql_id(sqlID),
+					  loop_execution(loopExecution),
 					  loop_iteration(loopIteration)
 	{}
 
