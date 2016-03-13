@@ -27,7 +27,6 @@ typedef unsigned 		SEG_ID;		//!< @brief  Segment id
 typedef unsigned        SEG_NO;     //!< @brief  segment number
 typedef unsigned        SEG_TYP;    //!< @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
-typedef unsigned		REF_ID;		//!< @brief  Reference id
 typedef unsigned        CAL_ID;		//!< @brief  Call id
 typedef unsigned		FUN_ID;		//!< @brief  Function id
 typedef unsigned 		FIL_ID;		//!< @brief  File id
@@ -51,7 +50,7 @@ typedef struct access_t {
 	ID sql_id;
 	INS_ID instruction_id;
 	int position;
-	REF_ID reference_id;
+	ID reference_id;
 	ACC_TYP access_type;
 	MEM_ST memory_state;
 
@@ -59,7 +58,7 @@ typedef struct access_t {
 	access_t(ID sqlID,
 			 INS_ID instructionID,
 			 int pos,
-			 REF_ID referenceID,
+			 ID referenceID,
 			 ACC_TYP accessType,
 			 MEM_ST memoryState)
 		: sql_id(sqlID), instruction_id(instructionID), position(pos),
@@ -304,7 +303,7 @@ typedef struct loopIteration_t {
 } loopIteration_t;
 
 typedef struct reference_t {
-	REF_ID id; //!< @brief The same as SQL ID
+	ID id; //!< @brief The same as SQL ID
 	//REF_ADDR address;
 	REF_SIZE size;
 	REF_MTYP memory_type;
@@ -312,9 +311,9 @@ typedef struct reference_t {
 	int allocinstr;
 
 	explicit
-	reference_t(int refId,
-				int refSize,
-				int memoryType,
+	reference_t(ID refId,
+				REF_SIZE refSize,
+				REF_MTYP memoryType,
 				const unsigned char *refName,
 				int allocInstr)
 		: id(refId), size(refSize), memory_type(memoryType),
