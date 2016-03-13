@@ -259,11 +259,13 @@ typedef struct instruction_t {
 } instruction_t;
 
 typedef struct loop_t {
+	ID sql_id;
 	unsigned line_number;
 
 	explicit
-	loop_t(int lineNumber)
-		: line_number(lineNumber)
+	loop_t(ID sqlID,
+		   int lineNumber)
+		: sql_id(sqlID), line_number(lineNumber)
 	{}
 
 } loop_t;
