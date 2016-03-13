@@ -56,13 +56,13 @@ typedef struct access_t {
 	MEM_ST memory_state;
 
 	explicit
-	access_t(ID sql_id,
+	access_t(ID sqlID,
 			 INS_ID instructionID,
 			 int pos,
 			 REF_ID referenceID,
 			 ACC_TYP accessType,
 			 MEM_ST memoryState)
-		: instruction_id(instructionID), position(pos),
+		: sql_id(sqlID), instruction_id(instructionID), position(pos),
 		  reference_id(referenceID), access_type(accessType),
 		  memory_state(memoryState)
 	{
