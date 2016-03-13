@@ -304,7 +304,7 @@ typedef struct loopIteration_t {
 } loopIteration_t;
 
 typedef struct reference_t {
-	REF_ID id;
+	REF_ID id; //!< @brief The same as SQL ID
 	//REF_ADDR address;
 	REF_SIZE size;
 	REF_MTYP memory_type;
