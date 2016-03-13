@@ -71,6 +71,7 @@ typedef struct access_t {
 
 // Try to make a new struct for call_t as the database format has changed
 typedef struct call_t {
+	ID sql_id;
 	TRD_ID thread_id;
 	FUN_ID function_id;
 	INS_ID instruction_id;
@@ -78,12 +79,13 @@ typedef struct call_t {
 	TIME_TYP end_time;
 
 	explicit
-	call_t(TRD_ID threadID,
+	call_t(ID sqlID,
+		   TRD_ID threadID,
 		   FUN_ID functionID,
 		   INS_ID instructionID,
 		   TIME_TYP startTime,
 		   TIME_TYP endTime)
-		: thread_id(threadID),
+		: sql_id(sqlID), thread_id(threadID),
 		  function_id(functionID), instruction_id(instructionID),
 		  start_time(startTime), end_time(endTime)
 	{

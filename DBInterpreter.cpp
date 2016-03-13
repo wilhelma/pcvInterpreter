@@ -467,11 +467,12 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
     int end_time       = sqlite3_column_int(sqlstmt, 5);
 
     std::cout << "reading into call_t\n";
-    call_t *tmp = new call_t(thread_id,
-            function_id,
-            instruction_id,
-            start_time,
-            end_time);
+    call_t *tmp = new call_t(id,
+			                 thread_id,
+							 function_id,
+							 instruction_id,
+							 start_time,
+							 end_time);
 
     std::cout << "read into call_t\n";
     callT_.fill(id, *tmp);		 
