@@ -27,6 +27,7 @@ typedef unsigned 		SEG_ID;		//!< @brief  Segment id
 typedef unsigned        SEG_NO;     //!< @brief  segment number
 typedef unsigned        SEG_TYP;    //!< @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
+typedef ID      		REF_ID;		//!< @brief  Reference id
 typedef unsigned        CAL_ID;		//!< @brief  Call id
 typedef unsigned		FUN_ID;		//!< @brief  Function id
 typedef unsigned 		FIL_ID;		//!< @brief  File id
