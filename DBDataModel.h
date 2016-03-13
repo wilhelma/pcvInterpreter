@@ -20,6 +20,7 @@ static const unsigned SIGNATURELEN = 10000;
 static const unsigned REFNAMELEN = 2000;
 
 // types-------------------------------------------------------------------
+typedef unsigned        ID;         //!< @brief  SQL ID field
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
 typedef unsigned        INS_TYP;    //!< @brief  Instruction type
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
