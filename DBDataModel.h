@@ -154,8 +154,8 @@ typedef struct function_t {
 		: type(fnType), file_id(fileId), line_number(lineNumber)
 	{
 		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
-		std::cout << " >> " << signature << std::endl;
-		getFunctionType(fnType);
+//		std::cout << " >> " << signature << std::endl;
+//		getFunctionType(fnType);
 	}
 
 	static void printFunctionType(unsigned short shift) {
@@ -212,23 +212,23 @@ typedef struct function_t {
 	 * @brief Decodes the function type
 	 * @todo Return a proper thing!!
 	 */
-	static Function::type getFunctionType(FUN_TYP fnType) {
-
-		// shift right functionType till there is no information left
-		unsigned int counter = 0;
-		while( fnType != 0 ){
-			if( fnType & 1 ) {
-				std::cout << "   -- has type " << (1 << counter) << std::endl;
-				std::cout << "    -> ";
-				printFunctionType( counter );
-			}
-
-			counter ++;
-			// shift right by one
-			fnType >>= 1;
-		}
-		return Function::OTHER;
-	}
+//	static Function::type getFunctionType(FUN_TYP fnType) {
+//
+//		// shift right functionType till there is no information left
+//		unsigned int counter = 0;
+//		while( fnType != 0 ){
+//			if( fnType & 1 ) {
+//				std::cout << "   -- has type " << (1 << counter) << std::endl;
+//				std::cout << "    -> ";
+//				printFunctionType( counter );
+//			}
+//
+//			counter ++;
+//			// shift right by one
+//			fnType >>= 1;
+//		}
+//		return Function::OTHER;
+//	}
 } function_t;
 
 typedef struct instruction_t {
