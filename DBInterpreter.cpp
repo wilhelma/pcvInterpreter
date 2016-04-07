@@ -346,38 +346,26 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
 	int rc;
 
 	// Read from all the tables in the database
-	std::cout << "Loading Access" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Access;",
 						  db, &DBInterpreter::fillAccess)) != 0) return rc;
-	// XXX Call worked out
-	std::cout << "Loading Call" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Call;",
 						  db, &DBInterpreter::fillCall)) != 0) return rc;
-	std::cout << "Loading File" << std::endl;
 	if ((rc = fillGeneric("SELECT * from File;",
 						  db, &DBInterpreter::fillFile)) != 0) return rc;
-	std::cout << "Loading Function" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Function;",
 						  db, &DBInterpreter::fillFunction)) != 0) return rc;
-	std::cout << "Loading Instruction" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Instruction;",
 						  db, &DBInterpreter::fillInstruction)) != 0) return rc;
-	std::cout << "Loading Loop" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Loop;",
 						  db, &DBInterpreter::fillLoop)) != 0) return rc;
-	std::cout << "Loading LoopExecution" << std::endl;
 	if ((rc = fillGeneric("SELECT * from LoopExecution;",
 						  db, &DBInterpreter::fillLoopExecution)) != 0) return rc;
-	std::cout << "Loading LoopIteration" << std::endl;
 	if ((rc = fillGeneric("SELECT * from LoopIteration;",
 						  db, &DBInterpreter::fillLoopIteration)) != 0) return rc;
-	std::cout << "Loading Reference" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Reference;",
 						  db, &DBInterpreter::fillReference)) != 0) return rc;
-	std::cout << "Loading Segment" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Segment;",
 						  db, &DBInterpreter::fillSegment)) != 0) return rc;
-	std::cout << "Loading Thread" << std::endl;
 	if ((rc = fillGeneric("SELECT * from Thread;",
 						  db, &DBInterpreter::fillThread)) != 0) return rc;
 
@@ -465,16 +453,13 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
     int start_time     = sqlite3_column_int(sqlstmt, 4);
     int end_time       = sqlite3_column_int(sqlstmt, 5);
 
-    std::cout << "reading into call_t\n";
     call_t *tmp = new call_t(thread_id,
             function_id,
             instruction_id,
             start_time,
             end_time);
 
-    std::cout << "read into call_t\n";
     callT_.fill(id, *tmp);		 
-    std::cout << "callT_ filled\n";
     return 0;
 }
 
