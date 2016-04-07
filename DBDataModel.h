@@ -20,13 +20,14 @@ static const unsigned SIGNATURELEN = 10000;
 static const unsigned REFNAMELEN = 2000;
 
 // types-------------------------------------------------------------------
+typedef unsigned        ID;         //!< @brief  SQL ID field
 typedef unsigned 		INS_ID;		//!< @brief  Instruction id
 typedef unsigned        INS_TYP;    //!< @brief  Instruction type
 typedef unsigned 		SEG_ID;		//!< @brief  Segment id
 typedef unsigned        SEG_NO;     //!< @brief  segment number
 typedef unsigned        SEG_TYP;    //!< @brief  segment type
 typedef unsigned 		ACC_ID;		//!< @brief  Access id
-typedef unsigned		REF_ID;		//!< @brief  Reference id
+typedef ID      		REF_ID;		//!< @brief  Reference id
 typedef unsigned        CAL_ID;		//!< @brief  Call id
 typedef unsigned		FUN_ID;		//!< @brief  Function id
 typedef unsigned 		FIL_ID;		//!< @brief  File id
@@ -47,19 +48,21 @@ typedef unsigned		LOI_ID;	    //!< @brief  loopIteration id (system)
 typedef clock_t         TIME_TYP;   //!< @brief  Time 
 
 typedef struct access_t {
+	ID sql_id;
 	INS_ID instruction_id;
 	int position;
-	REF_ID reference_id;
+	ID reference_id;
 	ACC_TYP access_type;
 	MEM_ST memory_state;
 
 	explicit
-	access_t(INS_ID instructionID,
+	access_t(ID sqlID,
+			 INS_ID instructionID,
 			 int pos,
-			 REF_ID referenceID,
+			 ID referenceID,
 			 ACC_TYP accessType,
 			 MEM_ST memoryState)
-		: instruction_id(instructionID), position(pos),
+		: sql_id(sqlID), instruction_id(instructionID), position(pos),
 		  reference_id(referenceID), access_type(accessType),
 		  memory_state(memoryState)
 	{
@@ -68,6 +71,7 @@ typedef struct access_t {
 
 // Try to make a new struct for call_t as the database format has changed
 typedef struct call_t {
+	ID sql_id;
 	TRD_ID thread_id;
 	FUN_ID function_id;
 	INS_ID instruction_id;
@@ -75,12 +79,13 @@ typedef struct call_t {
 	TIME_TYP end_time;
 
 	explicit
-	call_t(TRD_ID threadID,
+	call_t(ID sqlID,
+		   TRD_ID threadID,
 		   FUN_ID functionID,
 		   INS_ID instructionID,
 		   TIME_TYP startTime,
 		   TIME_TYP endTime)
-		: thread_id(threadID),
+		: sql_id(sqlID), thread_id(threadID),
 		  function_id(functionID), instruction_id(instructionID),
 		  start_time(startTime), end_time(endTime)
 	{
@@ -91,12 +96,15 @@ typedef struct call_t {
  * @brief Record to process the `File` table in the database.
  */
 typedef struct file_t {
+	ID sql_id;
 	char file_path[FILEPATHLEN];
 	// this is retrieved from the file_path[]
 	char file_name[FILENAMELEN];
 
 	explicit
-	file_t(const unsigned char *filePath)
+	file_t(ID sqlID,
+		   const unsigned char *filePath)
+        : sql_id(sqlID)
 	{
 		strncpy(file_path, (const char*)filePath, FILEPATHLEN);
 		retrieveFileName( filePath );
@@ -141,17 +149,19 @@ typedef struct file_t {
 } file_t;
 
 typedef struct function_t {
+	ID sql_id;
 	char signature[SIGNATURELEN];
 	FUN_TYP type;
 	FIL_ID file_id;
 	LIN_NO line_number;
 
 	explicit
-	function_t(const unsigned char *fnSignature,
+	function_t(ID sqlID,
+			   const unsigned char *fnSignature,
 			   FUN_TYP fnType,
 			   FIL_ID fileId,
 			   LIN_NO lineNumber)
-		: type(fnType), file_id(fileId), line_number(lineNumber)
+		: sql_id(sqlID), type(fnType), file_id(fileId), line_number(lineNumber)
 	{
 		strncpy(signature, (const char*)fnSignature, SIGNATURELEN);
 //		std::cout << " >> " << signature << std::endl;
@@ -232,7 +242,7 @@ typedef struct function_t {
 } function_t;
 
 typedef struct instruction_t {
-	INS_ID instruction_id;
+	INS_ID instruction_id; //!< @brief The same as SQL ID
 	SEG_ID segment_id;
 	INS_TYP instruction_type;
 	LIN_NO line_number;
@@ -249,45 +259,52 @@ typedef struct instruction_t {
 } instruction_t;
 
 typedef struct loop_t {
+	ID sql_id;
 	unsigned line_number;
 
 	explicit
-	loop_t(int lineNumber)
-		: line_number(lineNumber)
+	loop_t(ID sqlID,
+		   int lineNumber)
+		: sql_id(sqlID), line_number(lineNumber)
 	{}
 
 } loop_t;
 
 typedef struct loopExecution_t {
-	unsigned loop_id;
+	ID sql_id;
+	LOE_ID loop_id;
 	unsigned parent_iteration;
 	unsigned loop_duration;
 
 	explicit
-	loopExecution_t(int loopID,
+	loopExecution_t(ID sqlID,
+			        LOE_ID loopID,
 			        int parentIteration,
 					int loopDuration)
-		            : loop_id(loopID), parent_iteration(parentIteration),
-					  loop_duration(loopDuration)
+		            : sql_id(sqlID), loop_id(loopID),
+					  parent_iteration(parentIteration), loop_duration(loopDuration)
 	{}
 
 } loopExecution_t;
 
 typedef struct loopIteration_t {
-	unsigned loop_execution;
-	unsigned loop_iteration;
+	ID sql_id;
+	LOE_ID loop_execution;
+	LOI_ID loop_iteration;
 
 	explicit
-	loopIteration_t(int loopExecution,
-			        int loopIteration)
-		            : loop_execution(loopExecution),
+	loopIteration_t(ID sqlID,
+			        LOE_ID loopExecution,
+			        LOI_ID loopIteration)
+		            : sql_id(sqlID),
+					  loop_execution(loopExecution),
 					  loop_iteration(loopIteration)
 	{}
 
 } loopIteration_t;
 
 typedef struct reference_t {
-	REF_ID id;
+	ID id; //!< @brief The same as SQL ID
 	//REF_ADDR address;
 	REF_SIZE size;
 	REF_MTYP memory_type;
@@ -295,9 +312,9 @@ typedef struct reference_t {
 	int allocinstr;
 
 	explicit
-	reference_t(int refId,
-				int refSize,
-				int memoryType,
+	reference_t(ID refId,
+				REF_SIZE refSize,
+				REF_MTYP memoryType,
 				const unsigned char *refName,
 				int allocInstr)
 		: id(refId), size(refSize), memory_type(memoryType),
@@ -309,15 +326,18 @@ typedef struct reference_t {
 } reference_t;
 
 typedef struct segment_t {
+	ID sql_id;
 	CAL_ID call_id;
 	SEG_TYP segment_type;
 	int loop_pointer;
 
 	explicit
-	segment_t(CAL_ID callId,
+	segment_t(ID sqlID,
+			  CAL_ID callId,
 			  SEG_TYP segmentType,
 			  int loopPointer)
-		: call_id(callId), segment_type(segmentType),
+		: sql_id(sqlID), call_id(callId),
+		  segment_type(segmentType),
 		  loop_pointer(loopPointer)
 	{
 	}

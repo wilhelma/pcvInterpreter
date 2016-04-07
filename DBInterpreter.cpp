@@ -427,22 +427,23 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
 }
 
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
-   ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
-   INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
-   int position          = sqlite3_column_int(sqlstmt, 2);
-   int reference_id      = sqlite3_column_int(sqlstmt, 3);
-   int access_type       = sqlite3_column_int(sqlstmt, 4);
-   int memory_state      = sqlite3_column_int(sqlstmt, 5);
+	ACC_ID id             = sqlite3_column_int(sqlstmt, 0);
+	INS_ID instruction_id = sqlite3_column_int(sqlstmt, 1);
+	int position          = sqlite3_column_int(sqlstmt, 2);
+	int reference_id      = sqlite3_column_int(sqlstmt, 3);
+	int access_type       = sqlite3_column_int(sqlstmt, 4);
+	int memory_state      = sqlite3_column_int(sqlstmt, 5);
 
-   access_t *tmp = new access_t(instruction_id,
-		   	   	   	   	   	     position,
-		   	   	   	   	   	     reference_id,
-		   	   	   	   	   	     access_type,
-		   	   	   	   	   	     memory_state); 
+	access_t *tmp = new access_t(id,
+			                     instruction_id,
+								 position,
+								 reference_id,
+								 access_type,
+								 memory_state); 
 
-   accessT_.fill(id, *tmp);		 
-   _insAccessMap[instruction_id].push_back(id); // create 1:n associations 
-   return 0;
+	accessT_.fill(id, *tmp);		 
+	_insAccessMap[instruction_id].push_back(id); // create 1:n associations 
+	return 0;
 }
 
 int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
@@ -453,13 +454,17 @@ int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
     int start_time     = sqlite3_column_int(sqlstmt, 4);
     int end_time       = sqlite3_column_int(sqlstmt, 5);
 
-    call_t *tmp = new call_t(thread_id,
-            function_id,
-            instruction_id,
-            start_time,
-            end_time);
+    std::cout << "reading into call_t\n";
+    call_t *tmp = new call_t(id,
+			                 thread_id,
+							 function_id,
+							 instruction_id,
+							 start_time,
+							 end_time);
 
+    std::cout << "read into call_t\n";
     callT_.fill(id, *tmp);		 
+    std::cout << "callT_ filled\n";
     return 0;
 }
 
@@ -467,7 +472,8 @@ int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
    int id                         = sqlite3_column_int(sqlstmt, 0);
    const unsigned char *file_path = sqlite3_column_text(sqlstmt, 1);
 
-   file_t *tmp = new file_t(file_path);
+   file_t *tmp = new file_t(id,
+		                    file_path);
 
    fileT_.fill(id, *tmp);	 
    return 0;
@@ -480,7 +486,8 @@ int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
     FIL_ID file_id                 = sqlite3_column_int(sqlstmt, 3);
     LIN_NO line_number             = sqlite3_column_int(sqlstmt, 4);
 
-   function_t *tmp = new function_t(signature,
+   function_t *tmp = new function_t(id,
+		                            signature,
 		   	   	   	  	   	   	    type,
 		   	   	   	   	   	   	    file_id,
                                     line_number);
@@ -508,7 +515,8 @@ int DBInterpreter::fillLoop(sqlite3_stmt *sqlstmt) {
    int id = sqlite3_column_int(sqlstmt, 0);
    int lineNumber = sqlite3_column_int(sqlstmt, 1);
 
-   loop_t *tmp = new loop_t(lineNumber);
+   loop_t *tmp = new loop_t(id,
+		                    lineNumber);
 
    loopT_.fill(id, *tmp);
    return 0;
@@ -520,7 +528,8 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 	int parentIteration = sqlite3_column_int(sqlstmt, 2);
 	int loopDuration    = sqlite3_column_int(sqlstmt, 3);
 
-	loopExecution_t *tmp = new loopExecution_t(loopID,
+	loopExecution_t *tmp = new loopExecution_t(id,
+			                                   loopID,
 			                                   parentIteration,
 											   loopDuration);
 
@@ -533,7 +542,8 @@ int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
 	int loopExecution = sqlite3_column_int(sqlstmt, 1);
 	int loopIteration = sqlite3_column_int(sqlstmt, 2);
 
-	loopIteration_t *tmp = new loopIteration_t(loopExecution,
+	loopIteration_t *tmp = new loopIteration_t(id,
+			                                   loopExecution,
 											   loopIteration);
 
 	loopIterationT_.fill(id, *tmp);
@@ -563,7 +573,8 @@ int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
    int segment_type = sqlite3_column_int(sqlstmt, 2);
    int loop_pointer = sqlite3_column_int(sqlstmt, 3);
 
-   segment_t *tmp = new segment_t(call_id,
+   segment_t *tmp = new segment_t(id,
+		                          call_id,
 		   	   	   	   	   	   	  segment_type,
 		   	   	   	   	   	   	  loop_pointer);
 
