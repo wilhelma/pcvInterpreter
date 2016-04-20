@@ -20,8 +20,8 @@
 #include "rapidjson/prettywriter.h"
 
 RaceDetectionTool::RaceDetectionTool(const char *outFile) : outFile_(outFile) {
-		threadVC_[0].fill(0);
-		threadVC_[0][0] = 1;
+		threadVC_[(TRD_ID)0].fill(0);
+		threadVC_[(TRD_ID)0][0] = 1;
 }
 
 RaceDetectionTool::~RaceDetectionTool() {
@@ -80,7 +80,7 @@ void RaceDetectionTool::release(const Event* e) {
 void RaceDetectionTool::access(const Event* e) {
 
 	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
-	const RefId ref = event->getAccessInfo()->var->id;
+	const REF_ID ref = event->getAccessInfo()->var->id;
 	Epoch_ epoch(e->getThread()->threadId,
 				 threadVC_[e->getThread()->threadId][e->getThread()->threadId]);
 	const ThreadId threadId = event->getThread()->threadId;

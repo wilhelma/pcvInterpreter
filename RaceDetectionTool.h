@@ -22,7 +22,7 @@
 #include "ShadowVar.h"
 #include "ShadowLock.h"
 #include "DataModel.h"
-#include "DBDataModel.h"
+#include "Types.h"
 
 #define THREADS 100
 
@@ -62,13 +62,13 @@ private:
 	// Vector Clock -----------------------------------------------------------
 	typedef unsigned Clock_;
 	typedef std::array<Clock_, THREADS> VectorClock_;
-	typedef std::map<ThreadId, VectorClock_> ThreadVC_;
+	typedef std::map<TRD_ID, VectorClock_> ThreadVC_;
 	typedef struct Epoch_ {
-		ThreadId threadId;
+		TRD_ID threadId;
 		Clock_ clock;
-		Epoch_(ThreadId threadId, Clock_ clock) 
+		Epoch_(TRD_ID threadId, Clock_ clock) 
 			: threadId(threadId), clock(clock) {}
-		void set(ThreadId tId, Clock_ clck) {
+		void set(TRD_ID tId, Clock_ clck) {
 			threadId = tId;
 			clock = clck;
 		}
@@ -88,12 +88,12 @@ private:
 		LockSet_ lockset;
 		INS_ID instruction;
 
-		VarSet_() : epoch(0,0), instruction(0) {}
+		VarSet_() : epoch((TRD_ID)0,(Clock_)0), instruction(0) {}
 	} VarSet_;
 
-	typedef std::map<ThreadId, VarSet_> ThreadVarSet_;
-	typedef std::map<RefId, ThreadVarSet_> ReadVarSet_;
-	typedef std::map<RefId, VarSet_> WriteVarSet_;
+	typedef std::map<TRD_ID, VarSet_> ThreadVarSet_;
+	typedef std::map<REF_ID, ThreadVarSet_> ReadVarSet_;
+	typedef std::map<REF_ID, VarSet_> WriteVarSet_;
 	ReadVarSet_ readVarSet_;
 	WriteVarSet_ writeVarSet_;
 

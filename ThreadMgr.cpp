@@ -1,15 +1,16 @@
 #include "ThreadMgr.h"
 													   
-ShadowThread::ThreadId ThreadMgr::currentThreadId_ = 0;
+ShadowThread::ThreadId ThreadMgr::currentThreadId_ = (TRD_ID) 0;
 
-ShadowThread* ThreadMgr::getThread(ThreadId threadId) {
+ShadowThread* ThreadMgr::getThread(TRD_ID threadId) {
 	
 	ShadowThread* thread = nullptr;
 	auto search = tIdThreadMap_.find(threadId);
 	if (search != tIdThreadMap_.end())
 		thread = search->second;
 	else {
-		thread = new ShadowThread(ThreadMgr::currentThreadId_++);
+		thread = new ShadowThread( (TRD_ID) ThreadMgr::currentThreadId_);
+        ThreadMgr::currentThreadId_++;
 		tIdThreadMap_.insert(std::make_pair(threadId, thread));
 	}
 	return thread;

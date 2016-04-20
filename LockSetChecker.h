@@ -68,8 +68,8 @@ private:
 	} VarSet_;
 
 	typedef std::map<ThreadId, VarSet_> ThreadVarSet_;
-	typedef std::map<RefId, ThreadVarSet_> ReadVarSet_;
-	typedef std::map<RefId, VarSet_> WriteVarSet_;
+	typedef std::map<REF_ID, ThreadVarSet_> ReadVarSet_;
+	typedef std::map<REF_ID, VarSet_> WriteVarSet_;
 	ReadVarSet_ readVarSet_;
 	WriteVarSet_ writeVarSet_;
 

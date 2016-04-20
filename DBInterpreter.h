@@ -19,6 +19,8 @@
 #include "DBDataModel.h"
 #include "DBTable.h"
 
+#include "Types.h"
+
 class LockMgr;
 class ThreadMgr;
 
@@ -46,7 +48,7 @@ private:
 
 	typedef std::vector<ACC_ID> accessVector_t;
 	typedef std::map<INS_ID, accessVector_t> insAccessMap_t;
-	typedef std::map<REF_NO, REF_ID> refNoIdMap_t;
+//	typedef std::map<REF_NO, REF_ID> refNoIdMap_t;
 	typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
 	// members-----------------------------------------------------------------
@@ -63,7 +65,7 @@ private:
 	DBTable<INS_ID, thread_t> threadT_;
 
 	insAccessMap_t _insAccessMap;
-	refNoIdMap_t _refNoIdMap;
+//	refNoIdMap_t _refNoIdMap;
 	const char* _dbPath;
 	const char* _logFile;
 	EventService *_eventService;

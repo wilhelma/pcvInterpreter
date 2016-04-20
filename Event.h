@@ -6,7 +6,7 @@
 #include "DataModel.h"
 
 // to retrieve the custom typedefs
-#include "DBDataModel.h"
+#include "Types.h"
 
 class ShadowThread;
 class ShadowLock;
@@ -172,11 +172,11 @@ private:
  * Access Event
  *****************************************************************************/
 struct AccessInfo {
-	AccessInfo( ACC_TYP Type, ShadowVar *Var, unsigned instructionID)
+	AccessInfo( ACC_TYP Type, ShadowVar *Var, INS_ID instructionID)
 		: type(Type), instructionID(instructionID), var(Var) {}
 
 	ACC_TYP type;
-	unsigned instructionID;
+	INS_ID instructionID;
 	ShadowVar *var;
 };
 
@@ -201,18 +201,21 @@ private:
  * Call Event
  *****************************************************************************/
 typedef struct CallInfo {
-	const double runtime;
-	const char* fnSignature;
-	const FUN_TYP fnType;
-	const char* fileName;
-	const char* filePath;
+	TIME runtime;
+    FUN_SG fnSignature;
+	SEG_ID segment;
+	FUN_TYP fnType;
+	FIL_PT fileName;
+	FIL_PT filePath;
 
-	CallInfo(const double Runtime,
-			 const char* FnSignature,
+    explicit
+	CallInfo(TIME Runtime,
+			 FUN_SG FnSignature,
+			 SEG_ID Segment,
 			 FUN_TYP FnType,
-			 const char* FileName,
-			 const char* FilePath)
-		: runtime(Runtime), fnSignature(FnSignature), fnType(FnType),
+			 FIL_PT FileName,
+			 FIL_PT FilePath)
+		: runtime(Runtime), fnSignature(FnSignature), segment(Segment), fnType(FnType),
 		  fileName(FileName), filePath(FilePath) {}
 } CallInfo;
 

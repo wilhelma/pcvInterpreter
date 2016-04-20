@@ -9,13 +9,14 @@
 #define SHADOWTHREAD_H_
 
 #include "Event.h"
+#include "Types.h"
 
 /******************************************************************************
  * ShadowThread
  *****************************************************************************/
 class ShadowThread {
 public:
-	typedef unsigned int ThreadId;
+	typedef TRD_ID ThreadId;
 
 	ShadowThread(ThreadId threadId);
 	const ThreadId threadId;

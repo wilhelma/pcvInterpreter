@@ -12,6 +12,7 @@
 
 #include <map>
 #include "ShadowThread.h"
+#include "Types.h"
 
 /******************************************************************************
  * ThreadMgr
@@ -21,12 +22,12 @@ public:
 	ThreadMgr() {}
 	~ThreadMgr() {}
 
-	ShadowThread* getThread(ThreadId threadId);
-	void threadJoined(ThreadId threadId);
+	ShadowThread* getThread(TRD_ID threadId);
+	void threadJoined(TRD_ID threadId);
 
 private:
 	static ShadowThread::ThreadId currentThreadId_;
-	typedef std::map<ThreadId, ShadowThread*> TIdThreadMap_;
+	typedef std::map<TRD_ID, ShadowThread*> TIdThreadMap_;
 	
 	TIdThreadMap_ tIdThreadMap_;
 

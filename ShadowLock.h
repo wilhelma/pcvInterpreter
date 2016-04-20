@@ -9,15 +9,14 @@
 #define SHADOWLOCK_H_
 
 #include <map>
-#include "DataModel.h"
 
 /******************************************************************************
  * ShadowLock
  *****************************************************************************/
 class ShadowLock {
 public:
-	typedef unsigned int LockId;
 
+	typedef unsigned int LockId;
 	ShadowLock(LockId lockId);
 	~ShadowLock();
 												   

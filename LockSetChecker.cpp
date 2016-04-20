@@ -56,8 +56,8 @@ void LockSetChecker::release(const Event* e) {
 void LockSetChecker::access(const Event* e) {
 
 	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
-	const RefId ref = event->getAccessInfo()->var->id;
-	const ThreadId threadId = event->getThread()->threadId;
+	const REF_ID ref = event->getAccessInfo()->var->id;
+	const TRD_ID threadId = event->getThread()->threadId;
 
 	if (event->getAccessInfo()->var->type == ShadowVar::STACK)
 		return;
