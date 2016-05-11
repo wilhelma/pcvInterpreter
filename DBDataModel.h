@@ -16,27 +16,21 @@
 #include "DataModel.h"
 #include "Types.h"
 
-// constants---------------------------------------------------------------
-//static const unsigned FILENAMELEN = 256;
-//static const unsigned FILEPATHLEN = 1024;
-//static const unsigned SIGNATURELEN = 10000;
-//static const unsigned REFNAMELEN = 2000;
-
 typedef struct access_t {
     ACC_ID sql_id;
     INS_ID instruction_id;
     POS position;
     REF_ID reference_id;
-    ACC_TYP access_type;
-    MEM_ST memory_state;
+    AccessType access_type;
+    AccessState memory_state;
 
     explicit
     access_t(ACC_ID sqlID,
              INS_ID instructionID,
              POS pos,
              REF_ID referenceID,
-             ACC_TYP accessType,
-             MEM_ST memoryState)
+             AccessType accessType,
+             AccessState memoryState)
         : sql_id(sqlID), instruction_id(instructionID), position(pos),
           reference_id(referenceID), access_type(accessType),
           memory_state(memoryState)
@@ -104,14 +98,14 @@ typedef struct file_t {
 typedef struct function_t {
     FUN_ID sql_id;
     FUN_SG signature;
-    FUN_TYP type;
+    FunctionType type;
     FIL_ID file_id;
     LIN_NO line_number;
 
     explicit
     function_t(FUN_ID sqlID,
                FUN_SG fnSignature,
-               FUN_TYP fnType,
+               FunctionType fnType,
                FIL_ID fileId,
                LIN_NO lineNumber)
         : sql_id(sqlID), signature(fnSignature), type(fnType),
@@ -195,13 +189,13 @@ typedef struct function_t {
 typedef struct instruction_t {
     INS_ID instruction_id;
     SEG_ID segment_id;
-    INS_TYP instruction_type;
+    InstructionType instruction_type;
     LIN_NO line_number;
 
     explicit
     instruction_t(INS_ID instructionId,
                   SEG_ID segmentId,
-                  INS_TYP instructionType,
+                  InstructionType instructionType,
                   LIN_NO lineNumber) 
                   : instruction_id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
@@ -258,14 +252,14 @@ typedef struct reference_t {
     REF_ID id;
     //REF_ADDR address;
     REF_SIZE size;
-    REF_MTYP memory_type;
+    ReferenceType memory_type;
     REF_NAME name;
     INS_ID allocinstr;
 
     explicit
     reference_t(REF_ID refId,
                 REF_SIZE refSize,
-                REF_MTYP memoryType,
+                ReferenceType memoryType,
                 REF_NAME refName,
                 INS_ID allocInstr)
         : id(refId), size(refSize), memory_type(memoryType),
@@ -278,13 +272,13 @@ typedef struct reference_t {
 typedef struct segment_t {
     SEG_ID sql_id;
     CAL_ID call_id;
-    SEG_TYP segment_type;
+    SegmentType segment_type;
     LOI_ID loop_pointer;
 
     explicit
     segment_t(SEG_ID sqlID,
               CAL_ID callId,
-              SEG_TYP segmentType,
+              SegmentType segmentType,
               LOI_ID loopPointer)
         : sql_id(sqlID), call_id(callId),
           segment_type(segmentType),
