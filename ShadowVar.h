@@ -16,14 +16,14 @@
  *****************************************************************************/
 class ShadowVar {
 public:
-	typedef enum { STACK 	= 0x1,
-				   GLOBAL	= 0x2,
-				   HEAP		= 0x4,
-				   STATIC 	= 0x8,
-				   ERROR	= 0x0
-				 } VarType;
+//	typedef enum { STACK 	= 0x1,
+//				   GLOBAL	= 0x2,
+//				   HEAP		= 0x4,
+//				   STATIC 	= 0x8,
+//				   ERROR	= 0x0
+//				 } VarType;
 
-	ShadowVar(const REF_MTYP Type,
+	ShadowVar(const ReferenceType Type,
 			  const REF_ID Id,
 			  const REF_SIZE Size,
 			  const REF_NAME Name)
@@ -32,7 +32,7 @@ public:
 
 	void* ptr;
 
-	const REF_MTYP type;
+	const ReferenceType type;
 	const REF_ID id;
 	//const REF_ADDR addr;
 	const REF_SIZE size;

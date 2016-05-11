@@ -1,4 +1,4 @@
-/*
+	/*
  * LockSetChecker.cpp
  *
  *  Created on: Aug 28, 2014
@@ -59,11 +59,11 @@ void LockSetChecker::access(const Event* e) {
 	const REF_ID ref = event->getAccessInfo()->var->id;
 	const TRD_ID threadId = event->getThread()->threadId;
 
-	if (event->getAccessInfo()->var->type == ShadowVar::STACK)
+	if (event->getAccessInfo()->var->type == ReferenceType::STACK)
 		return;
 
 	switch(event->getAccessInfo()->type) {
-	case Access::READ:
+	case AccessType::READ:
 		{
 			readVarSet_[ref][threadId].instruction = 
 				event->getAccessInfo()->instructionID;
@@ -86,7 +86,7 @@ void LockSetChecker::access(const Event* e) {
 		}
 		break;
 
-	case Access::WRITE:
+	case AccessType::WRITE:
 		{	
 			// W_x.lockset = W_x.lockset intersect Lockset_t
 			lsIntersect(writeVarSet_[ref].lockset, lockSet_[e->getThread()]);
