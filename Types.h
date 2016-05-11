@@ -12,6 +12,8 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+#include <boost/serialization/strong_typedef.hpp>
+
 // Define ID to be unsigned
 typedef unsigned ID;
 
@@ -30,8 +32,8 @@ BOOST_STRONG_TYPEDEF( ID, TRD_ID )
 
 // Access Types
 BOOST_STRONG_TYPEDEF( unsigned, POS )
-BOOST_STRONG_TYPEDEF( unsigned, ACC_TYP )
-BOOST_STRONG_TYPEDEF( unsigned, MEM_ST )
+//BOOST_STRONG_TYPEDEF( unsigned, ACC_TYP ) // Already uses AccessType
+//BOOST_STRONG_TYPEDEF( unsigned, MEM_ST )  // Already uses AccessState
 
 // Call Types
 BOOST_STRONG_TYPEDEF( clock_t, TIME )
@@ -41,21 +43,21 @@ typedef std::string FIL_PT;
 
 // Function Types
 typedef std::string FUN_SG; 
-BOOST_STRONG_TYPEDEF( uint32_t, FUN_TYP )
+//BOOST_STRONG_TYPEDEF( uint32_t, FUN_TYP ) // Already uses FunctionType
 BOOST_STRONG_TYPEDEF( unsigned, LIN_NO )
 
 // Instruction Types
-BOOST_STRONG_TYPEDEF( unsigned, INS_TYP )
+//BOOST_STRONG_TYPEDEF( unsigned, INS_TYP ) // Already uses InstructionType
 
 // TODO loops
 
 // Reference Types
 BOOST_STRONG_TYPEDEF( size_t, REF_SIZE )
-BOOST_STRONG_TYPEDEF( unsigned, REF_MTYP )
+//BOOST_STRONG_TYPEDEF( unsigned, REF_MTYP ) // Already uses ReferenceType
 typedef std::string REF_NAME;
 
 // Segment Types
-BOOST_STRONG_TYPEDEF( bool, SEG_TYP )
+//BOOST_STRONG_TYPEDEF( bool, SEG_TYP )     // Already uses SegmentType 
 
 // Thread Types
 BOOST_STRONG_TYPEDEF( unsigned, PID )
