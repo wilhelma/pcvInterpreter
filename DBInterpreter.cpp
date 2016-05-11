@@ -91,25 +91,25 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 
     if ( segmentT_.get(ins.segment_id, &segment) == IN_OK) {  
         switch( ins.instruction_type ) {
-        case Instruction::CALL:
+        case InstructionType::CALL:
                 processSegment(ins.segment_id, *segment, ins);
             break;
-        case Instruction::MEMACCESS:
+        case InstructionType::ACCESS:
             if ( callT_.get(segment->call_id, &call) == IN_OK) {
                 accessFunc = &DBInterpreter::processMemAccess;
             }   
             break;
-        case Instruction::ACQUIRE:
+        case InstructionType::ALLOC:
             if ( callT_.get(segment->call_id, &call) == IN_OK) {
                 accessFunc = &DBInterpreter::processAcqAccess;
             }
             break;
-        case Instruction::RELEASE:
+        case InstructionType::FREE:
             if ( callT_.get(segment->call_id, &call) == IN_OK) {
                 accessFunc = &DBInterpreter::processRelAccess;
             }
             break;
-        case Instruction::FORK:
+        case InstructionType::FORK:
             {
                 thread_t *thread;
                 if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
@@ -120,7 +120,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
                                 *thread);
                 break;
             }
-        case Instruction::JOIN:
+        case InstructionType::JOIN:
             {
                 thread_t *thread;
                 if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
@@ -186,8 +186,8 @@ int DBInterpreter::processCall(CAL_ID callId,
     if (search != functionT_.end()) {
 
         switch(search->second.type) {
-            case int( FunctionType::FUNCTION ):
-            case int( FunctionType::METHOD ):
+            case FunctionType::FUNCTION:
+            case FunctionType::METHOD:
                 {
                     auto searchFile = fileT_.find(search->second.file_id);
                     if (searchFile != fileT_.end()) {
@@ -426,12 +426,12 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
 }
 
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
-    ACC_ID id             =  (ACC_ID)sqlite3_column_int(sqlstmt, 0);
-    INS_ID instruction_id =  (INS_ID)sqlite3_column_int(sqlstmt, 1);
-    POS position          =     (POS)sqlite3_column_int(sqlstmt, 2);
-    REF_ID reference_id   =  (REF_ID)sqlite3_column_int(sqlstmt, 3);
-    ACC_TYP access_type   = (ACC_TYP)sqlite3_column_int(sqlstmt, 4);
-    MEM_ST memory_state   =  (MEM_ST)sqlite3_column_int(sqlstmt, 5);
+    ACC_ID id                = (ACC_ID)sqlite3_column_int(sqlstmt, 0);
+    INS_ID instruction_id    = (INS_ID)sqlite3_column_int(sqlstmt, 1);
+    POS position             = (POS)sqlite3_column_int(sqlstmt, 2);
+    REF_ID reference_id      = (REF_ID)sqlite3_column_int(sqlstmt, 3);
+    AccessType access_type   = (AccessType)sqlite3_column_int(sqlstmt, 4);
+    AccessState memory_state = (AccessState)sqlite3_column_int(sqlstmt, 5);
 
     access_t *tmp = new access_t(id,
                                  instruction_id,
@@ -477,7 +477,7 @@ int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
     FUN_ID id          = (FUN_ID)sqlite3_column_int(sqlstmt, 0);
-    FUN_TYP type       = (FUN_TYP)sqlite3_column_int(sqlstmt, 2);
+    FunctionType type  = (FunctionType)sqlite3_column_int(sqlstmt, 2);
     FIL_ID file_id     = (FIL_ID)sqlite3_column_int(sqlstmt, 3);
     LIN_NO line_number = (LIN_NO)sqlite3_column_int(sqlstmt, 4);
     FUN_SG signature((const char*)sqlite3_column_text(sqlstmt, 1));
@@ -493,10 +493,10 @@ int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
-   INS_ID id                =  (INS_ID)sqlite3_column_int(sqlstmt, 0);
-   SEG_ID segment_id        =  (SEG_ID)sqlite3_column_int(sqlstmt, 1);
-   INS_TYP instruction_type = (INS_TYP)sqlite3_column_int(sqlstmt, 2);
-   LIN_NO line_number       =  (LIN_NO)sqlite3_column_int(sqlstmt, 3);
+   INS_ID id                        = (INS_ID)sqlite3_column_int(sqlstmt, 0);
+   SEG_ID segment_id                = (SEG_ID)sqlite3_column_int(sqlstmt, 1);
+   InstructionType instruction_type = (InstructionType)sqlite3_column_int(sqlstmt, 2);
+   LIN_NO line_number               = (LIN_NO)sqlite3_column_int(sqlstmt, 3);
 
    instruction_t *tmp = new instruction_t(id,
                                           segment_id,
@@ -551,10 +551,10 @@ int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
-    REF_ID id            =   (REF_ID)sqlite3_column_int(sqlstmt, 0);
-    REF_SIZE size        = (REF_SIZE)sqlite3_column_int(sqlstmt, 1);
-    REF_MTYP memory_type = (REF_MTYP)sqlite3_column_int(sqlstmt, 2);
-    INS_ID allocinstr    =   (INS_ID)sqlite3_column_int(sqlstmt, 4);
+    REF_ID id                 = (REF_ID)sqlite3_column_int(sqlstmt, 0);
+    REF_SIZE size             = (REF_SIZE)sqlite3_column_int(sqlstmt, 1);
+    ReferenceType memory_type = (ReferenceType)sqlite3_column_int(sqlstmt, 2);
+    INS_ID allocinstr         = (INS_ID)sqlite3_column_int(sqlstmt, 4);
     REF_NAME name((const char*)sqlite3_column_text(sqlstmt, 3));
 
     reference_t *tmp = new reference_t(id,
@@ -568,10 +568,10 @@ int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
 }
 
 int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
-   SEG_ID id            =  (SEG_ID)sqlite3_column_int(sqlstmt, 0);
-   CAL_ID call_id       =  (CAL_ID)sqlite3_column_int(sqlstmt, 1);
-   SEG_TYP segment_type = (SEG_TYP)sqlite3_column_int(sqlstmt, 2);
-   LOI_ID loop_pointer  =  (LOI_ID)sqlite3_column_int(sqlstmt, 3); // XXX check type
+   SEG_ID id                = (SEG_ID)sqlite3_column_int(sqlstmt, 0);
+   CAL_ID call_id           = (CAL_ID)sqlite3_column_int(sqlstmt, 1);
+   SegmentType segment_type = (SegmentType)sqlite3_column_int(sqlstmt, 2);
+   LOI_ID loop_pointer      = (LOI_ID)sqlite3_column_int(sqlstmt, 3);      // XXX check type
 
    segment_t *tmp = new segment_t(id,
                                   call_id,

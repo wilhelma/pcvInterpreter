@@ -57,7 +57,7 @@ void RaceDetectionTool::join(const Event* e) {
 		threadVC_[((JoinEvent*)e)->getJoinInfo()->childThread->threadId] );
 
 	// VC_u[u] = VC_u[u] + 1
-	ThreadId id = ((JoinEvent*)e)->getJoinInfo()->childThread->threadId;
+	TRD_ID id = ((JoinEvent*)e)->getJoinInfo()->childThread->threadId;
 	threadVC_[id][id]++;
 }
 
@@ -83,13 +83,13 @@ void RaceDetectionTool::access(const Event* e) {
 	const REF_ID ref = event->getAccessInfo()->var->id;
 	Epoch_ epoch(e->getThread()->threadId,
 				 threadVC_[e->getThread()->threadId][e->getThread()->threadId]);
-	const ThreadId threadId = event->getThread()->threadId;
+	const TRD_ID threadId = event->getThread()->threadId;
 
-	if (event->getAccessInfo()->var->type == ShadowVar::STACK)
+	if (event->getAccessInfo()->var->type == ReferenceType::STACK)
 		return;
 
 	switch(event->getAccessInfo()->type) {
-	case Access::READ:
+	case AccessType::READ:
 		{
 			
 			// if epoch(t) != R_x[t].epoch
@@ -139,7 +139,7 @@ void RaceDetectionTool::access(const Event* e) {
 		}
 		break;
 
-	case Access::WRITE:
+	case AccessType::WRITE:
 		
 		// if epoch(t) != W_x.epoch
 		if (epoch == writeVarSet_[ref].epoch)

@@ -16,7 +16,7 @@ ShadowThread* ThreadMgr::getThread(TRD_ID threadId) {
 	return thread;
 }
 
-void ThreadMgr::threadJoined(ThreadId threadId) {
+void ThreadMgr::threadJoined(TRD_ID threadId) {
 
 	auto search = tIdThreadMap_.find(threadId);
 	if (search != tIdThreadMap_.end())

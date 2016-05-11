@@ -72,8 +72,8 @@ private:
 	shadowVarMap_t _shadowVarMap;
 
 	// private methods---------------------------------------------------------
-	static Instruction::type transformInstrType(const instruction_t& ins);
-	static ShadowVar::VarType getVarType(REF_MTYP memType);
+	static InstructionType transformInstrType(const instruction_t& ins);
+	static ReferenceType getVarType(ReferenceType memType);
 
 	int loadDB(const char* path, sqlite3 **db);
 	int closeDB(sqlite3 **db);
