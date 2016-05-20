@@ -1,12 +1,12 @@
-s/*
- * CilkProf.h
+/*
+ * Parasite.h
  *
  *  Created on: May 8, 2016
  *      Author: knapp
  */
 
-#ifndef CILKPROF_H_
-#define CILKPROF_H_
+#ifndef Parasite_H_
+#define Parasite_H_
 
 #include <vector>	
 
@@ -28,17 +28,21 @@ typedef struct WorkSpan_ {
 	double longest_child;
 	// continuation
 	double continuation;
+	// span on locks
+	double lock_span;
+	// span of longest child 
+	double longest_child_lock_span;
 
 } WorkSpan_;
 
-// class to contain information used in CilkProf algorithm
-class CilkProf {
+// class to contain information used in Parasite algorithm
+class Parasite {
 
 	public:
 					   
 		const WorkSpanMap getWorkSpanMap() const;
-		CilkProf();
-		~CilkProf();
+		Parasite();
+		~Parasite();
 
 		// add a function and it's corresponding WorkSpan_ struct
 		addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation);
@@ -69,8 +73,8 @@ class CilkProf {
 
 		WorkSpanMap workSpanMap;
 		// prevent generated functions
-		CilkProf(const CilkProf&);
-		CilkProf& operator=(const CilkProf&);
+		Parasite(const Parasite&);
+		Parasite& operator=(const Parasite&);
 };
 
-#endif /* CILKPROF_H_ */
+#endif /* Parasite_H_ */

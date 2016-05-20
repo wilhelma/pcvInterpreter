@@ -1,37 +1,37 @@
 /*
- * CilkProf.cpp
+ * Parasite.cpp
  *
  *  Created on: Dec 12, 2015
  *      Author: knapp
  */
 
 #include <vector>
-#include "CilkProf.h"
+#include "Parasite.h"
 
-CilkProf::CilkProf() {
+Parasite::Parasite() {
 	
 	workSpanMap = new WorkSpanMap();
 }	
 
-CilkProf::~CilkProf() {
+Parasite::~Parasite() {
 
 	workSpanMap.clear();
 }
 
-CilkProf::CilkProf::addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
+Parasite::Parasite::addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
 
 	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation};
 	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
 }
 
-CilkProf::setWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
+Parasite::setWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
 
 	workSpanMap.erase(functionSignature);
 	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation};
 	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
 }
 
-CilkProf::incrementWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
+Parasite::incrementWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
 	 								double continuation_diff)  {
 
 	workSpanMap.erase(functionSignature);
@@ -40,25 +40,25 @@ CilkProf::incrementWorkSpan(const char* functionSignature, double work_diff, dou
 	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
 }
 
-CilkProf::setWork(const char* functionSignature, double wrk){
+Parasite::setWork(const char* functionSignature, double wrk){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->work = wrk;
 }
 
-CilkProf::setPrefix(const char* functionSignature, double prfix){
+Parasite::setPrefix(const char* functionSignature, double prfix){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->prefix = prfix;
 }
 
-CilkProf::setLongestChild(const char* functionSignature, double lngest_child){
+Parasite::setLongestChild(const char* functionSignature, double lngest_child){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->longest_child = lngest_child;
 }
 
-CilkProf::setContinuation(const char* functionSignature, double cntinuation){
+Parasite::setContinuation(const char* functionSignature, double cntinuation){
 
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
@@ -66,49 +66,49 @@ CilkProf::setContinuation(const char* functionSignature, double cntinuation){
 }
 
 
-CilkProf::addToWork(const char* functionSignature, double work_diff){
+Parasite::addToWork(const char* functionSignature, double work_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->work += work_diff;
 }
 
-CilkProf::addToPrefix(const char* functionSignature, double prefix_diff){
+Parasite::addToPrefix(const char* functionSignature, double prefix_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->prefix += prefix_diff;
 }
 
-CilkProf::addToLongestChild(const char* functionSignature, double longest_child_diff){
+Parasite::addToLongestChild(const char* functionSignature, double longest_child_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->longest_child += longest_child_diff;
 }
 
-CilkProf::addToContinuation(const char* functionSignature, double continuation_diff){
+Parasite::addToContinuation(const char* functionSignature, double continuation_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->continuation += continuation_diff;
 }
 
-double CilkProf::getWork(const char* functionSignature) {
+double Parasite::getWork(const char* functionSignature) {
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	return ws->work;
 }
 
-double CilkProf::getPrefix(const char* functionSignature) {
+double Parasite::getPrefix(const char* functionSignature) {
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	return ws->prefix;
 }
 
-double CilkProf::getLongestChild(const char* functionSignature){
+double Parasite::getLongestChild(const char* functionSignature){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	return ws->longest_child;
 }
 
-double CilkProf::getContinuation(const char* functionSignature){
+double Parasite::getContinuation(const char* functionSignature){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	return ws->continuation;

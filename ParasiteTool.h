@@ -1,12 +1,12 @@
 /*
- * CilkProfTool.h
+ * ParasiteTool.h
  *
  *  Created on: Dec 12, 2015
  *      Author: knapp
  */
 
-#ifndef CILKPROFTOOL_H_
-#define CILKPROFTOOL_H_
+#ifndef ParasiteTOOL_H_
+#define ParasiteTOOL_H_
 
 #include "Tool.h"
 #include <iostream>
@@ -22,15 +22,15 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "CilkProf.h"
+#include "Parasite.h"
 #define THREADS 100
 
 typedef std::map<unsigned int, const char*> ThreadFunctionMap;
 
-class CilkProfTool : public Tool {
+class ParasiteTool : public Tool {
 public:
 
-	CilkProfTool();
+	ParasiteTool();
 	void create(const Event* e);
 	void join(const Event* e);
 	void acquire(const Event* e);
@@ -38,12 +38,12 @@ public:
 	void access(const Event* e);
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
-	void ~CilkProfTool();
+	void ~ParasiteTool();
 	
 private:
 
-	// Provides information to the CilkProf structure
-	CilkProf* cilkprof;
+	// Provides information to the Parasite structure
+	Parasite* parasite;
 
 	// keeps track of current thread
 	ShadowThread* currenThread;
@@ -52,10 +52,10 @@ private:
 	ThreadFunctionMap threadFunctionMap;
 
 	// prevent generated functions --------------------------------------------
-	CilkProfTool(const CilkProfTool&);
-	CilkProfTool& operator=(const CilkProfTool&);
+	ParasiteTool(const ParasiteTool&);
+	ParasiteTool& operator=(const ParasiteTool&);
 };
 
 
 
-#endif /* CILKPROFTOOL_H_ */
+#endif /* ParasiteTOOL_H_ */
