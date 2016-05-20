@@ -30,7 +30,7 @@ typedef struct WorkSpan_ {
 	double continuation;
 	// span on locks
 	double lock_span;
-	// span of longest child 
+	// span of longest child
 	double longest_child_lock_span;
 
 } WorkSpan_;
@@ -63,11 +63,15 @@ class Parasite {
 		setPrefix(const char* functionSignature, double prefix);
 		setLongestChild(const char* functionSignature, double longest_child);
 		setContinuation(const char* functionSignature, double continuation);
+		setLockSpan(const char* functionSignature, double lock_span);
+		setLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span);
 
 		addToWork(const char* functionSignature, double work_diff);
 		addToPrefix(const char* functionSignature, double prefix_diff);
 		addToLongestChild(const char* functionSignature, double longest_child_diff);
 		addToContinuation(const char* functionSignature, double continuation_diff);
+		addToLockSpan(const char* functionSignature, double lock_span_diff);
+		addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff);
 
 	private:
 

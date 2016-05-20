@@ -135,7 +135,6 @@ void ParasiteTool::threadEnd(const Event* e){
 
 	// THREAD END EVENT
 
-
 	// Spawned G returns to F
 	// G.p += G.c
 	// F.w += G.w
