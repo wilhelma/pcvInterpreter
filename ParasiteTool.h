@@ -38,6 +38,7 @@ public:
 	void access(const Event* e);
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
+	void threadEnd(const Event* e){
 	void ~ParasiteTool();
 	
 private:
@@ -46,7 +47,7 @@ private:
 	Parasite* parasite;
 
 	// keeps track of current thread
-	ShadowThread* currenThread;
+	ShadowThread* currentThread;
 
 	// keeps track of current function signature for each thread
 	ThreadFunctionMap threadFunctionMap;

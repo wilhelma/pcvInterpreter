@@ -44,7 +44,7 @@ void ParasiteTool::create(const Event* e) {
 	// G.l = 0
 	// G.c = 0
 
-	CallInfo *_info = e->Parasite.getCallInfo();
+	CallInfo *_info = e->getCallInfo();
 	this->Parasite.addFunctionWorkSpan(_info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
@@ -62,20 +62,18 @@ void ParasiteTool::join(const Event* e) {
 	// F.l = 0
 	// F.longest_child_lock_span = 0
 
-	// AcquireInfo *_info = e->Parasite.getAcquireInfo();
+	// AcquireInfo *_info = e->getAcquireInfo();
 
 	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
 
-	if (Parasite.getContinuation(F_signature) > Parasite.getLongestChild(F_signature))
-			Parasite.addToPrefix(F_signature, Parasite.getContinuation(F_signature));
+	if (Parasite->getContinuation(F_signature) > Parasite->getLongestChild(F_signature))
+			Parasite.addToPrefix(F_signature, Parasite->getContinuation(F_signature));
 	else
-			Parasite.addToPrefix(F_signature, Parasite.getLongestChild(F_signature));
+			Parasite.addToPrefix(F_signature, Parasite->getLongestChild(F_signature));
 
 
 	setContinuation(F_signature, 0.0);
 	setLongestChild(F_signature, 0.0);
-
-
 }
 
 // lock acquire event 
@@ -94,24 +92,25 @@ void ParasiteTool::call(const Event* e) {
 	// G.l = 0
 	// G.c = 0
 
-	CallInfo *_info = e->Parasite.getCallInfo();
+	CallInfo *_info = e->getCallInfo();
 	ShadowThread* childThread = _info->childThread;
 	const char* G_signature = this.threadFunctionMap[childThread.threadId];
-	this->Parasite->setFunctionWorkSpan(_info->fnSignature, 0.0, 0.0, 0.0, 0.0);
+	Parasite.setWorkSpan(_info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
 
 // memory access event - the only related event to returns
 void ParasiteTool::access(const Event* e) {
 
-	AccessInfo *_info = e->Parasite.getAccessInfo();
+	AccessInfo *_info = e->getAccessInfo();
 
 }
 
 // lock release event: IMPORTANT
 void ParasiteTool::release(const Event* e) {
 
-	ReleaseInfo *_info = e->Parasite.getReleaseInfo();
+	
+	ReleaseInfo *_info = e->getReleaseInfo();
 }
 
 
@@ -123,19 +122,20 @@ void ParasiteTool::returnOfCalled(const Event* e){
 	// F.w += G.w
 	// F.c += G.p
 
+	G_w = 42.0;
+	// G_w = _info->runtime;
+	Parasite->setWork(G_signature, G_w);
 
-	Parasite.addToPrefix(G_signature, Parasite.getContinuation(G_signature));
-	Parasite.addToWork(F_signature, Parasite.getWork(G_signature));
-	Parasite.addToContinuation(F_signature, Parasite.getPrefix(G_signature));
+	Parasite.addToPrefix(G_signature, Parasite->getContinuation(G_signature));
+	Parasite.addToWork(F_signature, Parasite->getWork(G_signature));
+	Parasite.addToContinuation(F_signature, Parasite->getPrefix(G_signature));
 }
 
 
 // NOT YET IMPLEMENTED IN PCVINTERPRETER
 void ParasiteTool::threadEnd(const Event* e){
 
-	// THREAD END EVENT
-
-	// Spawned G returns to F
+	// Created G returns to F
 	// G.p += G.c
 	// F.w += G.w
 	// F.lock_span += G.lock_span
@@ -145,24 +145,31 @@ void ParasiteTool::threadEnd(const Event* e){
 	// 		F.p += G.c
 	// 		F.c = 0
 
-	JoinInfo *_info = e->Parasite.getJoinInfo();
+	JoinInfo *_info = e->getJoinInfo();
 	ShadowThread* childThread = _info->childThread;
 
 	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
 	const char* G_signature = this.threadFunctionMap[childThread.threadId];
 
-	G_c = Parasite.getContinuation(G_signature);
+	G_w = 42.0;
+	// G_w = _info->runtime;
+	Parasite->setWork(G_signature, G_w);
 
-	this->Parasite.addToPrefix(G_signature, G_c);
-	this->Parasite.addToWork(F_signature, Parasite.getWork(G_signature));
+	G_c = Parasite->getContinuation(G_signature);
+	G_p = Parasite->getPrefix(G_signature);
+	G_ls = Parasite->getLockSpan(G_signature);
 
-	G_p = Parasite.getPrefix(G_signature);
+	Parasite.addToPrefix(G_signature, G_c);
+	Parasite.addToWork(F_signature, Parasite->getWork(G_signature));
+	Parasite.addToLockSpan(F_signature, G_ls);
 
-	if ((Parasite.getContinuation(F_signature) + G_p) > Parasite.getLongestChild(F_signature)) {
 
-		setLongestChild(F_signature, G_p);
+	if ((Parasite->getContinuation(F_signature) + G_p) > Parasite->getLongestChild(F_signature)) {
+
+		Parasite.setLongestChild(F_signature, G_p);
+		Parasite.setLongestChildLockSpan(F_signature, G_ls);
 		Parasite.addToPrefix(F_signature, G_c);
-		setContinuation(F_signature, 0.0);
+		Parasite.setContinuation(F_signature, 0.0);
 	}
 }
 
