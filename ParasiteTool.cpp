@@ -68,21 +68,15 @@ void ParasiteTool::join(const Event* e) {
 
 	if (Parasite->getContinuation(F_signature) > Parasite->getLongestChild(F_signature))
 			Parasite.addToPrefix(F_signature, Parasite->getContinuation(F_signature));
-	else
+	else {	
 			Parasite.addToPrefix(F_signature, Parasite->getLongestChild(F_signature));
-
+			Parasite.addToPrefix(F_signature, Parasite->getLockSpan(F_signature));
+			Parasite.addToPrefix(F_signature, (0.0 - Parasite->getLockSpan(F_signature)));
+	}
 
 	setContinuation(F_signature, 0.0);
 	setLongestChild(F_signature, 0.0);
 }
-
-// lock acquire event 
-void ParasiteTool::acquire(const Event* e) {
-
-
-
-}
-
 
 void ParasiteTool::call(const Event* e) {
 
@@ -106,13 +100,19 @@ void ParasiteTool::access(const Event* e) {
 
 }
 
+// lock acquire event 
+void ParasiteTool::acquire(const Event* e) {
+
+	AcquireInfo *_info = e->getAcquireInfo();
+
+}
+
 // lock release event: IMPORTANT
 void ParasiteTool::release(const Event* e) {
 
-	
 	ReleaseInfo *_info = e->getReleaseInfo();
-}
 
+}
 
 // NOT YET IMPLEMENTED IN PCVINTERPRETER
 void ParasiteTool::returnOfCalled(const Event* e){
