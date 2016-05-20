@@ -32,6 +32,8 @@ typedef struct WorkSpan_ {
 	double lock_span;
 	// span of longest child
 	double longest_child_lock_span;
+	// runtime at beginning of most recent lock encountered by function
+	double last_lock_start;
 
 } WorkSpan_;
 
@@ -51,13 +53,16 @@ class Parasite {
 		setWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, double continuation_diff);
 
 		// increment WorkSpan variables for function with signature functionSignature
-		incrementWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
+		addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
 	 								double continuation_diff);
 
 		double getWork(const char* functionSignature);
 		double getPrefix(const char* functionSignature);
 		double getLongestChild(const char* functionSignature);
 		double getContinuation(const char* functionSignature);
+		double getLockSpan(const char* functionSignature);
+		double getLongestChildLockSpan(const char* functionSignature);
+		double getLastLockStart(const char* functionSignature);
 
 		setWork(const char* functionSignature, double work);
 		setPrefix(const char* functionSignature, double prefix);
@@ -65,6 +70,7 @@ class Parasite {
 		setContinuation(const char* functionSignature, double continuation);
 		setLockSpan(const char* functionSignature, double lock_span);
 		setLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span);
+		setLastLockStart(const char* functionSignature, double last_lock_start);
 
 		addToWork(const char* functionSignature, double work_diff);
 		addToPrefix(const char* functionSignature, double prefix_diff);
@@ -72,6 +78,7 @@ class Parasite {
 		addToContinuation(const char* functionSignature, double continuation_diff);
 		addToLockSpan(const char* functionSignature, double lock_span_diff);
 		addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff);
+		addToLastLockStart(const char* functionSignature, double last_lock_start_diff);
 
 	private:
 

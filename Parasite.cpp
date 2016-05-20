@@ -20,18 +20,18 @@ Parasite::~Parasite() {
 
 Parasite::Parasite::addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
 
-	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation};
+	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation, 0.0, 0.0};
 	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
 }
 
 Parasite::setWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
 
 	workSpanMap.erase(functionSignature);
-	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation};
+	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation, 0.0, 0.0};
 	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
 }
 
-Parasite::incrementWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
+Parasite::addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
 	 								double continuation_diff)  {
 
 	workSpanMap.erase(functionSignature);
@@ -79,6 +79,12 @@ Parasite::setLongestChildLockSpan(const char* functionSignature, double lngest_c
 	ws->longest_child_lock_span = lngest_child_lock_spans;
 }
 
+Parasite::setLastLockStart(const char* functionSignature, double lst_lock_start) {
+
+
+	WorkSpan_* ws = workSpanMap[functionSignature];
+	ws->last_lock_start = lst_lock_start;
+}
 
 
 Parasite::addToWork(const char* functionSignature, double work_diff){
@@ -117,6 +123,12 @@ Parasite::addToLongestChildLockSpan(const char* functionSignature, double longes
 	ws->longest_child_lock_span += longest_child_lock_span_diff;
 }
 
+
+Parasite::addToLastLockStart(const char* functionSignature, double last_lock_start_diff) {
+
+	WorkSpan_* ws = workSpanMap[functionSignature];
+	ws->last_lock_start += last_lock_start_diff;
+}
 
 double Parasite::getWork(const char* functionSignature) {
 

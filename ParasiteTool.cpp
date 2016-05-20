@@ -22,7 +22,6 @@
 #include "DBDataModel.h"
 #define THREADS 100
 
-
 ParasiteTool::ParasiteTool() {
 
 	this->Parasite = new Parasite;
@@ -62,7 +61,7 @@ void ParasiteTool::join(const Event* e) {
 	// F.l = 0
 	// F.longest_child_lock_span = 0
 
-	// AcquireInfo *_info = e->getAcquireInfo();
+  
 
 	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
 
@@ -97,6 +96,7 @@ void ParasiteTool::call(const Event* e) {
 void ParasiteTool::access(const Event* e) {
 
 	AccessInfo *_info = e->getAccessInfo();
+	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
 
 }
 
@@ -104,14 +104,20 @@ void ParasiteTool::access(const Event* e) {
 void ParasiteTool::acquire(const Event* e) {
 
 	AcquireInfo *_info = e->getAcquireInfo();
-
+	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
+	// double last_lock_start = e->runtime;
+	double last_lock_start = 0.0;
+	Parasite->setLastLockStart(F_signature, last_lock_start);
 }
 
 // lock release event: IMPORTANT
 void ParasiteTool::release(const Event* e) {
 
 	ReleaseInfo *_info = e->getReleaseInfo();
-
+	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
+	// double lock_span = e->runtime - getLastLockStart(F_signature);
+	double lock_span = 10.0;
+	Parasite->addToLockSpan(F_signature, lock_span);
 }
 
 // NOT YET IMPLEMENTED IN PCVINTERPRETER
@@ -121,6 +127,12 @@ void ParasiteTool::returnOfCalled(const Event* e){
 	// G.p += G.c
 	// F.w += G.w
 	// F.c += G.p
+
+	returnOfCalledInfo *_info = e->getJoinInfo();
+	ShadowThread* childThread = _info->childThread;
+
+	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
+	const char* G_signature = this.threadFunctionMap[childThread.threadId];
 
 	G_w = 42.0;
 	// G_w = _info->runtime;
@@ -145,7 +157,7 @@ void ParasiteTool::threadEnd(const Event* e){
 	// 		F.p += G.c
 	// 		F.c = 0
 
-	JoinInfo *_info = e->getJoinInfo();
+	ThreadEndInfo *_info = e->getJoinInfo();
 	ShadowThread* childThread = _info->childThread;
 
 	const char* F_signature = this.threadFunctionMap[currentThread.threadId];
