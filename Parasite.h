@@ -10,9 +10,6 @@
 
 #include <vector>	
 
-// maps function signatures to their FunctionInfo_ structure
-typedef std::map<const char*, WorkSpan_* > WorkSpanMap;
-
 // stores the work-span variables of a function
 typedef struct WorkSpan_ {
 
@@ -24,7 +21,7 @@ typedef struct WorkSpan_ {
 	double work;
 	// prefix
 	double prefix;
-	// longest-child
+	// longest_child
 	double longest_child;
 	// continuation
 	double continuation;
@@ -37,23 +34,26 @@ typedef struct WorkSpan_ {
 
 } WorkSpan_;
 
+// maps function signatures to their FunctionInfo_ structure
+typedef std::map<const char*, WorkSpan_* > WorkSpanMap;
+
+
 // class to contain information used in Parasite algorithm
 class Parasite {
 
 	public:
 					   
 		const WorkSpanMap getWorkSpanMap() const;
-		Parasite();
 		~Parasite();
 
-		// add a function and it's corresponding WorkSpan_ struct
-		addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation);
+		// void add a function and it's corresponding WorkSpan_ struct
+		void addWorkSpan(const char* parentFunctionSignature, const char* functionSignature, double work, double prefix, double longest_child, double continuation);
 
 		// change WorkSpan for function with signature functionSignature
-		setWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, double continuation_diff);
+		void setWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest_child_diff, double continuation_diff);
 
 		// increment WorkSpan variables for function with signature functionSignature
-		addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
+		void addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest_child_diff, 
 	 								double continuation_diff);
 
 		double getWork(const char* functionSignature);
@@ -64,21 +64,21 @@ class Parasite {
 		double getLongestChildLockSpan(const char* functionSignature);
 		double getLastLockStart(const char* functionSignature);
 
-		setWork(const char* functionSignature, double work);
-		setPrefix(const char* functionSignature, double prefix);
-		setLongestChild(const char* functionSignature, double longest_child);
-		setContinuation(const char* functionSignature, double continuation);
-		setLockSpan(const char* functionSignature, double lock_span);
-		setLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span);
-		setLastLockStart(const char* functionSignature, double last_lock_start);
+		void setWork(const char* functionSignature, double work);
+		void setPrefix(const char* functionSignature, double prefix);
+		void setLongestChild(const char* functionSignature, double longest_child);
+		void setContinuation(const char* functionSignature, double continuation);
+		void setLockSpan(const char* functionSignature, double lock_span);
+		void setLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span);
+		void setLastLockStart(const char* functionSignature, double last_lock_start);
 
-		addToWork(const char* functionSignature, double work_diff);
-		addToPrefix(const char* functionSignature, double prefix_diff);
-		addToLongestChild(const char* functionSignature, double longest_child_diff);
-		addToContinuation(const char* functionSignature, double continuation_diff);
-		addToLockSpan(const char* functionSignature, double lock_span_diff);
-		addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff);
-		addToLastLockStart(const char* functionSignature, double last_lock_start_diff);
+		void addToWork(const char* functionSignature, double work_diff);
+		void addToPrefix(const char* functionSignature, double prefix_diff);
+		void addToLongestChild(const char* functionSignature, double longest_child_diff);
+		void addToContinuation(const char* functionSignature, double continuation_diff);
+		void addToLockSpan(const char* functionSignature, double lock_span_diff);
+		void addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff);
+		void addToLastLockStart(const char* functionSignature, double last_lock_start_diff);
 
 	private:
 

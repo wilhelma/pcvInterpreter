@@ -5,81 +5,92 @@
  *      Author: knapp
  */
 
+#include <map>
 #include <vector>
 #include "Parasite.h"
 
-Parasite::Parasite() {
-	
-	workSpanMap = new WorkSpanMap();
-}	
 
 Parasite::~Parasite() {
 
 	workSpanMap.clear();
 }
 
-Parasite::Parasite::addWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
+void Parasite::addWorkSpan(const char* parentFunctionSignature, const char* functionSignature, double work, double prefix, double longest_child, double continuation)  {
 
-	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation, 0.0, 0.0};
-	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
+	WorkSpan_ newWorkSpan = {parentFunctionSignature, functionSignature, work, prefix, longest_child, continuation, 0.0, 0.0};
+	std::pair<const char*, WorkSpan_*> newPair(functionSignature, &newWorkSpan);
+	workSpanMap.insert(newPair);
 }
 
-Parasite::setWorkSpan(const char* functionSignature, double work, double prefix, double longest-child, double continuation)  {
+void Parasite::setWorkSpan(const char* functionSignature, double work, double prefix, double longest_child, double continuation)  {
 
+	WorkSpan_* ws = workSpanMap[functionSignature];
+	const char* parentFunctionSignature = ws->parentFunctionSignature;
 	workSpanMap.erase(functionSignature);
-	WorkSpan_ newWorkSpan = {functionSignature, work, prefix, longest-child, continuation, 0.0, 0.0};
-	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
+	WorkSpan_ newWorkSpan = {parentFunctionSignature, functionSignature, work, prefix, longest_child, continuation, 0.0, 0.0};
+	std::pair<const char*, WorkSpan_*> newPair(functionSignature, &newWorkSpan);
+	workSpanMap.insert(newPair);
 }
 
-Parasite::addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest-child_diff, 
+void Parasite::addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest_child_diff, 
 	 								double continuation_diff)  {
 
+	WorkSpan_* ws = workSpanMap[functionSignature];
+
+	double old_work = ws->work;
+	double old_prefix = ws->prefix;
+	double old_longest_child = ws->longest_child;
+	double old_continuation = ws->continuation;
+	const char* parentFunctionSignature = ws->parentFunctionSignature;
 	workSpanMap.erase(functionSignature);
-	WorkSpan_ newWorkSpan = {functionSignature, work + work_diff, prefix + prefix_diff, longest-child + longest-child_diff, 
-		                     continuation + continuation_diff};
-	workSpanMap.insert(std::pair<char*, WorkSpan> (functionSignature, &newWorkSpan));
+
+	WorkSpan_ newWorkSpan = {parentFunctionSignature, functionSignature, old_work + work_diff, old_prefix + prefix_diff, 
+							 old_longest_child + longest_child_diff, old_continuation + continuation_diff};
+
+	std::pair<const char*, WorkSpan_*> newPair(functionSignature, &newWorkSpan);
+	workSpanMap.insert(newPair);
 }
 
-Parasite::setWork(const char* functionSignature, double wrk){
+void Parasite::setWork(const char* functionSignature, double wrk){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->work = wrk;
 }
 
-Parasite::setPrefix(const char* functionSignature, double prfix){
+void Parasite::setPrefix(const char* functionSignature, double prfix){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->prefix = prfix;
 }
 
-Parasite::setLongestChild(const char* functionSignature, double lngest_child){
+void Parasite::setLongestChild(const char* functionSignature, double lngest_child){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->longest_child = lngest_child;
 }
 
-Parasite::setContinuation(const char* functionSignature, double cntinuation){
+void Parasite::setContinuation(const char* functionSignature, double cntinuation){
 
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->continuation = cntinuation;
 }
 
-Parasite::setLockSpan(const char* functionSignature, double lck_span) {
+void Parasite::setLockSpan(const char* functionSignature, double lck_span) {
 
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->lock_span = lck_span;
 }
 
-Parasite::setLongestChildLockSpan(const char* functionSignature, double lngest_child_lock_span) {
+void Parasite::setLongestChildLockSpan(const char* functionSignature, double lngest_child_lock_span) {
 
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
-	ws->longest_child_lock_span = lngest_child_lock_spans;
+	ws->longest_child_lock_span = lngest_child_lock_span;
 }
 
-Parasite::setLastLockStart(const char* functionSignature, double lst_lock_start) {
+void Parasite::setLastLockStart(const char* functionSignature, double lst_lock_start) {
 
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
@@ -87,44 +98,44 @@ Parasite::setLastLockStart(const char* functionSignature, double lst_lock_start)
 }
 
 
-Parasite::addToWork(const char* functionSignature, double work_diff){
+void Parasite::addToWork(const char* functionSignature, double work_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->work += work_diff;
 }
 
-Parasite::addToPrefix(const char* functionSignature, double prefix_diff){
+void Parasite::addToPrefix(const char* functionSignature, double prefix_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->prefix += prefix_diff;
 }
 
-Parasite::addToLongestChild(const char* functionSignature, double longest_child_diff){
+void Parasite::addToLongestChild(const char* functionSignature, double longest_child_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->longest_child += longest_child_diff;
 }
 
-Parasite::addToContinuation(const char* functionSignature, double continuation_diff){
+void Parasite::addToContinuation(const char* functionSignature, double continuation_diff){
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->continuation += continuation_diff;
 }
 
-Parasite::addToLockSpan(const char* functionSignature, double lock_span_diff) {
+void Parasite::addToLockSpan(const char* functionSignature, double lock_span_diff) {
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->lock_span += lock_span_diff;
 }
 
-Parasite::addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff) {
+void Parasite::addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff) {
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->longest_child_lock_span += longest_child_lock_span_diff;
 }
 
 
-Parasite::addToLastLockStart(const char* functionSignature, double last_lock_start_diff) {
+void Parasite::addToLastLockStart(const char* functionSignature, double last_lock_start_diff) {
 
 	WorkSpan_* ws = workSpanMap[functionSignature];
 	ws->last_lock_start += last_lock_start_diff;
