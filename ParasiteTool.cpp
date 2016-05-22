@@ -40,11 +40,13 @@ void ParasiteTool::create(const Event* e) {
 	// G.l = 0
 	// G.c = 0
 
-	NewThreadEvent* newThreadEvent = (newThreadEvent*) e;
+	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
 	currentThread = _info->childThread;
-	parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
+
+	// QUESTION: NEED INFO FOR NEW THREAD'S FUNCTION SIGNATURE
+	// parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
 // this is a SYNC EVENT 
