@@ -23,19 +23,6 @@
 #include "DataModel.h"
 #include "DBDataModel.h"
 
-
-// ParasiteTool::ParasiteTool() {
-
-// 	this->Parasite = new Parasite;
-// 	this->threadFunctionMap = new threadFunctionMap;
-// }	
-
-// ParasiteTool::~ParasiteTool() {
-
-// 	delete this.Parasite;
-// 	delete this.threadFunctionMap;
-// }
-
 const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 
 	return threadFunctionMap[id];
@@ -53,9 +40,10 @@ void ParasiteTool::create(const Event* e) {
 	// G.l = 0
 	// G.c = 0
 
-	CallEvent* callEvent = (CallEvent*) e;
-	const CallInfo *_info = callEvent->getCallInfo();
+	NewThreadEvent* newThreadEvent = (newThreadEvent*) e;
+	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
+	currentThread = _info->childThread;
 	parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
@@ -72,8 +60,6 @@ void ParasiteTool::join(const Event* e) {
 	// F.c = 0
 	// F.l = 0
 	// F.longest_child_lock_span = 0
-
-  
 
 	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
 
@@ -144,7 +130,8 @@ void ParasiteTool::release(const Event* e) {
 // 	// Called G returns to F:
 // 	// G.p += G.c
 // 	// F.w += G.w
-// 	// F.c += G.p
+//	// F.c += G.p
+//  // F.lock_span += G.lock_span
 
 // 	returnOfCalledInfo *_info = e->getJoinInfo();
 // 	ShadowThread* childThread = _info->childThread;

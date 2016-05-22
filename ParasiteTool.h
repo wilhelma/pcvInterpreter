@@ -32,9 +32,6 @@ class ParasiteTool : public Tool {
 
 public:
 
-	// ParasiteTool();
-	// ~ParasiteTool();
-
 	void create(const Event* e);
 	void join(const Event* e);
 	void acquire(const Event* e);
