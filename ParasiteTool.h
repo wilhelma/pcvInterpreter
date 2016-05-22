@@ -25,12 +25,16 @@
 #include "Parasite.h"
 #define THREADS 100
 
-typedef std::map<unsigned int, const char*> ThreadFunctionMap;
+typedef std::map<TRD_ID, const FUN_SG> ThreadFunctionMap;
 
 class ParasiteTool : public Tool {
+
+
 public:
 
-	ParasiteTool();
+	// ParasiteTool();
+	// ~ParasiteTool();
+
 	void create(const Event* e);
 	void join(const Event* e);
 	void acquire(const Event* e);
@@ -38,8 +42,8 @@ public:
 	void access(const Event* e);
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
-	void threadEnd(const Event* e){
-	void ~ParasiteTool();
+	void threadEnd(const Event* e);
+	const FUN_SG getSignature(TRD_ID id);
 	
 private:
 

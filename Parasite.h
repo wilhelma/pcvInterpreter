@@ -14,9 +14,9 @@
 typedef struct WorkSpan_ {
 
 	// parent function signature
-	const char* parentFunctionSignature;
+	const FUN_SG parentFunctionSignature;
 	// function signature
-	const char* functionSignature;
+	const FUN_SG functionSignature;
 	// work 
 	double work;
 	// prefix
@@ -35,7 +35,7 @@ typedef struct WorkSpan_ {
 } WorkSpan_;
 
 // maps function signatures to their FunctionInfo_ structure
-typedef std::map<const char*, WorkSpan_* > WorkSpanMap;
+typedef std::map<const FUN_SG, WorkSpan_* > WorkSpanMap;
 
 
 // class to contain information used in Parasite algorithm
@@ -47,38 +47,40 @@ class Parasite {
 		~Parasite();
 
 		// void add a function and it's corresponding WorkSpan_ struct
-		void addWorkSpan(const char* parentFunctionSignature, const char* functionSignature, double work, double prefix, double longest_child, double continuation);
+		void addWorkSpan(const FUN_SG parentFunctionSignature, const FUN_SG functionSignature, double work, double prefix, double longest_child, double continuation);
 
 		// change WorkSpan for function with signature functionSignature
-		void setWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest_child_diff, double continuation_diff);
+		void setWorkSpan(const FUN_SG functionSignature, double work_diff, double prefix_diff, double longest_child_diff, double continuation_diff);
 
 		// increment WorkSpan variables for function with signature functionSignature
-		void addToWorkSpan(const char* functionSignature, double work_diff, double prefix_diff, double longest_child_diff, 
+		void addToWorkSpan(const FUN_SG functionSignature, double work_diff, double prefix_diff, double longest_child_diff, 
 	 								double continuation_diff);
 
-		double getWork(const char* functionSignature);
-		double getPrefix(const char* functionSignature);
-		double getLongestChild(const char* functionSignature);
-		double getContinuation(const char* functionSignature);
-		double getLockSpan(const char* functionSignature);
-		double getLongestChildLockSpan(const char* functionSignature);
-		double getLastLockStart(const char* functionSignature);
+		double getWork(const FUN_SG functionSignature);
+		double getPrefix(const FUN_SG functionSignature);
+		double getLongestChild(const FUN_SG functionSignature);
+		double getContinuation(const FUN_SG functionSignature);
+		double getLockSpan(const FUN_SG functionSignature);
+		double getLongestChildLockSpan(const FUN_SG functionSignature);
+		double getLastLockStart(const FUN_SG functionSignature);
 
-		void setWork(const char* functionSignature, double work);
-		void setPrefix(const char* functionSignature, double prefix);
-		void setLongestChild(const char* functionSignature, double longest_child);
-		void setContinuation(const char* functionSignature, double continuation);
-		void setLockSpan(const char* functionSignature, double lock_span);
-		void setLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span);
-		void setLastLockStart(const char* functionSignature, double last_lock_start);
+		const FUN_SG getSignature(int threadID);
 
-		void addToWork(const char* functionSignature, double work_diff);
-		void addToPrefix(const char* functionSignature, double prefix_diff);
-		void addToLongestChild(const char* functionSignature, double longest_child_diff);
-		void addToContinuation(const char* functionSignature, double continuation_diff);
-		void addToLockSpan(const char* functionSignature, double lock_span_diff);
-		void addToLongestChildLockSpan(const char* functionSignature, double longest_child_lock_span_diff);
-		void addToLastLockStart(const char* functionSignature, double last_lock_start_diff);
+		void setWork(const FUN_SG functionSignature, double work);
+		void setPrefix(const FUN_SG functionSignature, double prefix);
+		void setLongestChild(const FUN_SG functionSignature, double longest_child);
+		void setContinuation(const FUN_SG functionSignature, double continuation);
+		void setLockSpan(const FUN_SG functionSignature, double lock_span);
+		void setLongestChildLockSpan(const FUN_SG functionSignature, double longest_child_lock_span);
+		void setLastLockStart(const FUN_SG functionSignature, double last_lock_start);
+
+		void addToWork(const FUN_SG functionSignature, double work_diff);
+		void addToPrefix(const FUN_SG functionSignature, double prefix_diff);
+		void addToLongestChild(const FUN_SG functionSignature, double longest_child_diff);
+		void addToContinuation(const FUN_SG functionSignature, double continuation_diff);
+		void addToLockSpan(const FUN_SG functionSignature, double lock_span_diff);
+		void addToLongestChildLockSpan(const FUN_SG functionSignature, double longest_child_lock_span_diff);
+		void addToLastLockStart(const FUN_SG functionSignature, double last_lock_start_diff);
 
 	private:
 
