@@ -38,7 +38,7 @@
 #define GET_STACK(ex) ex
 #else
 #define GET_STACK(ex) REDUCER_VIEW(ex)
-#include "cilkprof_stack_reducer.h"
+#include "pthreadprof_stack_reducer.h"
 #endif
 
 #include <libgen.h>
@@ -57,13 +57,13 @@
  */
 
 #if SERIAL_TOOL
-static cilkprof_stack_t ctx_stack;
+static pthreadprof_stack_t ctx_stack;
 #else
-static CILK_C_DECLARE_REDUCER(cilkprof_stack_t) ctx_stack =
-  CILK_C_INIT_REDUCER(cilkprof_stack_t,
-		      reduce_cilkprof_stack,
-		      identity_cilkprof_stack,
-		      destroy_cilkprof_stack,
+static CILK_C_DECLARE_REDUCER(pthreadprof_stack_t) ctx_stack =
+  CILK_C_INIT_REDUCER(pthreadprof_stack_t,
+		      reduce_pthreadprof_stack,
+		      identity_pthreadprof_stack,
+		      destroy_pthreadprof_stack,
 		      {NULL});
 #endif
 
@@ -82,7 +82,7 @@ extern int MIN_CAPACITY;
  * Helper methods.
  */
 
-static inline void initialize_tool(cilkprof_stack_t *stack) {
+static inline void initialize_tool(pthreadprof_stack_t *stack) {
 #if SERIAL_TOOL
   // This is a serial tool
   ensure_serial_tool();
@@ -90,7 +90,7 @@ static inline void initialize_tool(cilkprof_stack_t *stack) {
   // probably need to register the reducer here as well.
   CILK_C_REGISTER_REDUCER(ctx_stack);
 #endif
-  cilkprof_stack_init(stack, MAIN);
+  pthreadprof_stack_init(stack, MAIN);
   call_site_table = iaddr_table_create();
   function_table = iaddr_table_create();
   TOOL_INITIALIZED = true;
@@ -100,13 +100,13 @@ static inline void initialize_tool(cilkprof_stack_t *stack) {
 
 /*************************************************************************/
 
-void cilk_tool_init(void) {
+void pthread_tool_init(void) {
   // Do the initialization only if it hasn't been done. 
   // It could have been done if we instrument C functions, and the user 
-  // separately calls cilk_tool_init in the main function.
+  // separately calls pthread_tool_init in the main function.
 
   if(!TOOL_INITIALIZED) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_tool_init() [ret %p]\n",
+    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_tool_init() [ret %p]\n",
                               __builtin_extract_return_addr(__builtin_return_address(0))); );
 
     initialize_tool(&GET_STACK(ctx_stack));
@@ -118,24 +118,24 @@ void cilk_tool_init(void) {
 }
 
 /* Cleaningup; note that these cleanup may not be performed if
- * the user did not include cilk_tool_destroy in its main function and the
- * program is not compiled with -fcilktool_instr_c.
+ * the user did not include pthread_tool_destroy in its main function and the
+ * program is not compiled with -fpthreadtool_instr_c.
  */
-void cilk_tool_destroy(void) {
+void pthread_tool_destroy(void) {
   // Do the destroy only if it hasn't been done. 
   // It could have been done if we instrument C functions, and the user 
-  // separately calls cilk_tool_destroy in the main function.
+  // separately calls pthread_tool_destroy in the main function.
   if(TOOL_INITIALIZED) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_tool_destroy() [ret %p]\n",
+    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_tool_destroy() [ret %p]\n",
                               __builtin_extract_return_addr(__builtin_return_address(0))); );
 
-    cilkprof_stack_t *stack = &GET_STACK(ctx_stack);
+    pthreadprof_stack_t *stack = &GET_STACK(ctx_stack);
     // Print the output, if we haven't done so already
     if (!TOOL_PRINTED)
-      cilk_tool_print();
+      pthread_tool_print();
 
-    /* cilkprof_stack_frame_t *old_bottom = cilkprof_stack_pop(stack); */
-    cilkprof_stack_frame_t *old_bottom = stack->bot;
+    /* pthreadprof_stack_frame_t *old_bottom = pthreadprof_stack_pop(stack); */
+    pthreadprof_stack_frame_t *old_bottom = stack->bot;
     stack->bot = NULL;
 
     assert(old_bottom && MAIN == old_bottom->func_type);
@@ -143,18 +143,16 @@ void cilk_tool_destroy(void) {
 #if !SERIAL_TOOL
     CILK_C_UNREGISTER_REDUCER(ctx_stack);
 #endif
+    
     free_cc_hashtable(stack->wrk_table);
 
     old_bottom->parent = stack->sf_free_list;
     stack->sf_free_list = old_bottom;
 
-    cilkprof_stack_frame_t *free_frame = stack->sf_free_list;
-    cilkprof_stack_frame_t *next_free_frame;
+    pthreadprof_stack_frame_t *free_frame = stack->sf_free_list;
+    pthreadprof_stack_frame_t *next_free_frame;
     while (NULL != free_frame) {
       next_free_frame = free_frame->parent;
-      /* c_fn_frame_t *c_fn_frame = free_frame->c_fn_frame; */
-      /* assert(NULL == c_fn_frame->parent); */
-      /* free(c_fn_frame); */
       free_cc_hashtable(free_frame->prefix_table);
       free_cc_hashtable(free_frame->lchild_table);
       free_cc_hashtable(free_frame->contin_table);
@@ -186,22 +184,22 @@ void cilk_tool_destroy(void) {
 }
 
 
-void cilk_tool_print(void) {
+void pthread_tool_print(void) {
   FILE *fout;
   char filename[64];
 
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_tool_print()\n"); );
+  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_tool_print()\n"); );
 
   assert(TOOL_INITIALIZED);
 
-  cilkprof_stack_t *stack;
+  pthreadprof_stack_t *stack;
   stack = &GET_STACK(ctx_stack);
 
   assert(NULL != stack->bot);
   assert(MAIN == stack->bot->func_type);
   assert(stack->bot->c_head == stack->c_tail);
 
-  cilkprof_stack_frame_t *bottom = stack->bot;
+  pthreadprof_stack_frame_t *bottom = stack->bot;
   c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
   /* uint64_t span = stack->bot->prefix_spn + stack->bot->c_fn_frame->running_spn; */
@@ -231,7 +229,7 @@ void cilk_tool_print(void) {
   read_proc_maps();
 
   // Open call site CSV
-  sprintf(filename, "cilkprof_cs_%d.csv", TOOL_PRINT_NUM);
+  sprintf(filename, "pthreadprof_cs_%d.csv", TOOL_PRINT_NUM);
   fout = fopen(filename, "w"); 
 
   // print the header for the csv file
@@ -383,13 +381,10 @@ void cilk_tool_print(void) {
  * Hooks into runtime system.
  */
 
-void cilk_enter_begin(__cilkrts_stack_frame *sf, void* this_fn, void* rip)
+void pthread_enter_begin(void* this_fn, void* rip)
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_enter_begin(%p, %p) [ret %p]\n", sf, rip,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
 
-  /* fprintf(stderr, "worker %d entering %p\n", __cilkrts_get_worker_number(), sf); */
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   if (!TOOL_INITIALIZED) {
     initialize_tool(&(ctx_stack));
@@ -397,11 +392,6 @@ void cilk_enter_begin(__cilkrts_stack_frame *sf, void* this_fn, void* rip)
   } else {
     stack = &(GET_STACK(ctx_stack));
 
-#if COMPUTE_STRAND_DATA
-    // Prologue disabled
-    stack->strand_end
-        = (uintptr_t)__builtin_extract_return_addr(__builtin_return_address(0));
-#endif
     uint64_t strand_len = measure_and_add_strand_length(stack);
     if (stack->bot->c_head == stack->c_tail) {
       stack->bot->local_contin += strand_len;
@@ -410,7 +400,7 @@ void cilk_enter_begin(__cilkrts_stack_frame *sf, void* this_fn, void* rip)
   }
 
   // Push new frame onto the stack
-  cilkprof_stack_push(stack, SPAWNER);
+  pthreadprof_stack_push(stack, SPAWNER);
 
   c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
@@ -453,12 +443,9 @@ void cilk_enter_begin(__cilkrts_stack_frame *sf, void* this_fn, void* rip)
 }
 
 
-void cilk_enter_helper_begin(__cilkrts_stack_frame *sf, void *this_fn, void *rip)
+void pthread_enter_helper_begin(void *this_fn, void *rip)
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
-
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_enter_helper_begin(%p, %p) [ret %p]\n", sf, rip,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   // We should have passed spawn_or_continue(0) to get here.
   assert(stack->in_user_code);
@@ -472,7 +459,7 @@ void cilk_enter_helper_begin(__cilkrts_stack_frame *sf, void *this_fn, void *rip
   stack->in_user_code = false;
 
   // Push new frame onto the stack
-  cilkprof_stack_push(stack, HELPER);
+  pthreadprof_stack_push(stack, HELPER);
 
   c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
@@ -511,15 +498,15 @@ void cilk_enter_helper_begin(__cilkrts_stack_frame *sf, void *this_fn, void *rip
   }
 }
 
-void cilk_enter_end(__cilkrts_stack_frame *sf, void *rsp)
+void pthread_enter_end(__pthreadrts_stack_frame *sf, void *rsp)
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   if (SPAWNER == stack->bot->func_type) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_enter_end(%p, %p) from SPAWNER [ret %p]\n", sf, rsp,
+    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_enter_end(%p, %p) from SPAWNER [ret %p]\n", sf, rsp,
                               __builtin_extract_return_addr(__builtin_return_address(0))); );
   } else {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_enter_end(%p, %p) from HELPER [ret %p]\n", sf, rsp,
+    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_enter_end(%p, %p) from HELPER [ret %p]\n", sf, rsp,
                               __builtin_extract_return_addr(__builtin_return_address(0))); );
   }
   assert(!(stack->in_user_code));
@@ -529,15 +516,15 @@ void cilk_enter_end(__cilkrts_stack_frame *sf, void *rsp)
   begin_strand(stack);
 }
 
-void cilk_tool_c_function_enter(void *this_fn, void *rip)
+void pthread_tool_c_function_enter(void *this_fn, void *rip)
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   WHEN_TRACE_CALLS( fprintf(stderr, "c_function_enter(%p, %p) [ret %p]\n", this_fn, rip,
      __builtin_extract_return_addr(__builtin_return_address(0))); );
 
   if(!TOOL_INITIALIZED) { // We are entering main.
-    cilk_tool_init(); // this will push the frame for MAIN and do a gettime
+    pthread_tool_init(); // this will push the frame for MAIN and do a gettime
 
     c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
@@ -575,8 +562,8 @@ void cilk_tool_c_function_enter(void *this_fn, void *rip)
     }
 
     // Push new frame for this C function onto the stack
-    /* cilkprof_stack_push(stack, C_FUNCTION); */
-    c_fn_frame_t *c_bottom = cilkprof_c_fn_push(stack);
+    /* pthreadprof_stack_push(stack, C_FUNCTION); */
+    c_fn_frame_t *c_bottom = pthreadprof_c_fn_push(stack);
 
     uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
     uintptr_t fn = (uintptr_t)this_fn;
@@ -622,12 +609,12 @@ void cilk_tool_c_function_enter(void *this_fn, void *rip)
   }
 }
 
-void cilk_tool_c_function_leave(void *rip)
+void pthread_tool_c_function_leave(void *rip)
 {
   WHEN_TRACE_CALLS( fprintf(stderr, "c_function_leave(%p) [ret %p]\n", rip,
      __builtin_extract_return_addr(__builtin_return_address(0))); );
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   const c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
   if (NULL != stack->bot &&
@@ -646,16 +633,16 @@ void cilk_tool_c_function_leave(void *rip)
       }
     }
 
-    cilk_tool_destroy();
+    pthread_tool_destroy();
   }
   if (!TOOL_INITIALIZED) {
-    // either user code already called cilk_tool_destroy, or we are leaving
+    // either user code already called pthread_tool_destroy, or we are leaving
     // main; in either case, nothing to do here;
     return;
   }
 
   bool add_success;
-  /* cilkprof_stack_frame_t *old_bottom; */
+  /* pthreadprof_stack_frame_t *old_bottom; */
   const c_fn_frame_t *old_bottom;
 
   assert(stack->in_user_code);
@@ -667,7 +654,7 @@ void cilk_tool_c_function_leave(void *rip)
   assert(stack->c_tail > stack->bot->c_head);
 
   // Pop the stack
-  old_bottom = cilkprof_c_fn_pop(stack);
+  old_bottom = pthreadprof_c_fn_pop(stack);
   /* assert(old_bottom->local_wrk == old_bottom->local_contin); */
   uint64_t local_wrk = old_bottom->local_wrk;
   uint64_t running_wrk = old_bottom->running_wrk + local_wrk;
@@ -735,16 +722,13 @@ void cilk_tool_c_function_leave(void *rip)
   begin_strand(stack);
 }
 
-void cilk_spawn_prepare(__cilkrts_stack_frame *sf)
+void pthread_spawn_prepare()
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_spawn_prepare(%p) [ret %p]\n", sf,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
-
   // Tool must have been initialized as this is only called in a SPAWNER, and 
-  // we would have at least initialized the tool in the first cilk_enter_begin.
+  // we would have at least initialized the tool in the first pthread_enter_begin.
   assert(TOOL_INITIALIZED);
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   stack->strand_end
       = (uintptr_t)__builtin_extract_return_addr(__builtin_return_address(0));
@@ -761,9 +745,9 @@ void cilk_spawn_prepare(__cilkrts_stack_frame *sf)
 // If in_continuation == 0, we just did setjmp and about to call the spawn helper.  
 // If in_continuation == 1, we are resuming after setjmp (via longjmp) at the continuation 
 // of a spawn statement; note that this is possible only if steals can occur.
-void cilk_spawn_or_continue(int in_continuation)
+void pthread_spawn_or_continue(int in_continuation)
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   assert(stack->c_tail == stack->bot->c_head);
 
@@ -771,7 +755,7 @@ void cilk_spawn_or_continue(int in_continuation)
   if (in_continuation) {
     // In the continuation
     WHEN_TRACE_CALLS(
-        fprintf(stderr, "cilk_spawn_or_continue(%d) from continuation [ret %p]\n", in_continuation,
+        fprintf(stderr, "pthread_spawn_or_continue(%d) from continuation [ret %p]\n", in_continuation,
                 __builtin_extract_return_addr(__builtin_return_address(0))); );
     stack->in_user_code = true;
 
@@ -784,7 +768,7 @@ void cilk_spawn_or_continue(int in_continuation)
   } else {
     // In the spawned child
     WHEN_TRACE_CALLS(
-        fprintf(stderr, "cilk_spawn_or_continue(%d) from spawn [ret %p]\n", in_continuation,
+        fprintf(stderr, "pthread_spawn_or_continue(%d) from spawn [ret %p]\n", in_continuation,
                 __builtin_extract_return_addr(__builtin_return_address(0))); );
     // We need to re-enter user code, because function calls for
     // arguments might be called before enter_helper_begin occurs in
@@ -797,12 +781,12 @@ void cilk_spawn_or_continue(int in_continuation)
   }
 }
 
-void cilk_detach_begin(__cilkrts_stack_frame *parent)
+void pthread_detach_begin(__pthreadrts_stack_frame *parent)
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_detach_begin(%p) [ret %p]\n", parent,
+  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_detach_begin(%p) [ret %p]\n", parent,
                             __builtin_extract_return_addr(__builtin_return_address(0))); );
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
   assert(HELPER == stack->bot->func_type);
 
   uint64_t strand_len = measure_and_add_strand_length(stack);
@@ -816,12 +800,12 @@ void cilk_detach_begin(__cilkrts_stack_frame *parent)
   return;
 }
 
-void cilk_detach_end(void)
+void pthread_detach_end(void)
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_detach_end() [ret %p]\n",
+  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_detach_end() [ret %p]\n",
                             __builtin_extract_return_addr(__builtin_return_address(0))); );
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   assert(stack->bot->c_head == stack->c_tail);
   
@@ -833,30 +817,22 @@ void cilk_detach_end(void)
   return;
 }
 
-void cilk_sync_begin(__cilkrts_stack_frame *sf)
+void pthread_sync_begin()
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   uint64_t strand_len = measure_and_add_strand_length(stack);
   stack->bot->local_contin += strand_len;
 
   assert(stack->bot->c_head == stack->c_tail);
 
-  if (SPAWNER == stack->bot->func_type) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_sync_begin(%p) from SPAWNER [ret %p]\n", sf,
-                              __builtin_extract_return_addr(__builtin_return_address(0))); );
-  } else {
-    WHEN_TRACE_CALLS( fprintf(stderr, "cilk_sync_begin(%p) from HELPER [ret %p]\n", sf,
-                              __builtin_extract_return_addr(__builtin_return_address(0))); );
-  }
-
   assert(stack->in_user_code);
   stack->in_user_code = false;
 }
 
-void cilk_sync_end(__cilkrts_stack_frame *sf)
+void pthread_sync_end()
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
   assert(stack->bot->c_head == stack->c_tail);
 
@@ -891,20 +867,15 @@ void cilk_sync_end(__cilkrts_stack_frame *sf)
   assert(SPAWNER == stack->bot->func_type); 
   assert(!(stack->in_user_code));
   stack->in_user_code = true;
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_sync_end(%p) from SPAWNER [ret %p]\n", sf,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
 
   begin_strand(stack);
 }
 
-void cilk_leave_begin(__cilkrts_stack_frame *sf)
+void pthread_leave_begin()
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "cilk_leave_begin(%p) [ret %p]\n", sf,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
-
-  cilkprof_stack_frame_t *old_bottom;
+  pthreadprof_stack_frame_t *old_bottom;
   bool add_success;
 
   uint64_t strand_len = measure_and_add_strand_length(stack);
@@ -930,7 +901,7 @@ void cilk_leave_begin(__cilkrts_stack_frame *sf)
   add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->contin_table));
 
   // Pop the stack
-  old_bottom = cilkprof_stack_pop(stack);
+  old_bottom = pthreadprof_stack_pop(stack);
 
   c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
@@ -1051,9 +1022,9 @@ void cilk_leave_begin(__cilkrts_stack_frame *sf)
   stack->sf_free_list = old_bottom;
 }
 
-void cilk_leave_end(void)
+void pthread_leave_end(void)
 {
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
 
   assert(!(stack->in_user_code));

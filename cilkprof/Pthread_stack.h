@@ -32,8 +32,8 @@ typedef struct c_fn_frame_t {
   /* struct c_fn_frame_t *parent; */
 } c_fn_frame_t __attribute__((aligned(16)));
 
-// Type for cilkprof stack frame
-typedef struct cilkprof_stack_frame_t {
+// Type for pthreadprof stack frame
+typedef struct pthreadprof_stack_frame_t {
 
   // Function type
   FunctionType_t func_type;
@@ -80,8 +80,8 @@ typedef struct cilkprof_stack_frame_t {
   cc_hashtable_t* last_lock_start_table;
 
   // Pointer to the frame's parent
-  struct cilkprof_stack_frame_t *parent;
-} cilkprof_stack_frame_t;
+  struct pthreadprof_stack_frame_t *parent;
+} pthreadprof_stack_frame_t;
 
 
 // Metadata for a call site
@@ -100,7 +100,7 @@ const uint32_t RECURSIVE = 1;
 const int32_t OFF_STACK = INT32_MIN;
 const int32_t UNINITIALIZED = INT32_MIN;
 
-// Type for a cilkprof stack
+// Type for a pthreadprof stack
 typedef struct {
 
   // Capacity of call-site status vector
@@ -125,14 +125,14 @@ typedef struct {
   fn_status_t *fn_status;
 
   // Pointer to bottom of the stack, onto which frames are pushed.
-  cilkprof_stack_frame_t *bot;
+  pthreadprof_stack_frame_t *bot;
 
   // Call-site data associated with the running work
   cc_hashtable_t* wrk_table;
 
-  // Free list of cilkprof stack frames
-  cilkprof_stack_frame_t *sf_free_list;
-} cilkprof_stack_t;
+  // Free list of pthreadprof stack frames
+  pthreadprof_stack_frame_t *sf_free_list;
+} pthreadprof_stack_t;
 
 
 /*----------------------------------------------------------------------*/
@@ -154,7 +154,7 @@ void resize_c_stack(c_fn_frame_t **c_stack, int *c_stack_capacity) {
 
 // Initializes C function frame *c_fn_frame
 static inline
-void cilkprof_c_fn_frame_init(c_fn_frame_t *c_fn_frame) {
+void pthreadprof_c_fn_frame_init(c_fn_frame_t *c_fn_frame) {
   /* c_fn_frame->top_cs = false; */
   /* c_fn_frame->top_fn = false; */
 
@@ -174,9 +174,9 @@ void cilkprof_c_fn_frame_init(c_fn_frame_t *c_fn_frame) {
   /* c_fn_frame->parent = NULL; */
 }
 
-// Initializes the cilkprof stack frame *frame
+// Initializes the pthreadprof stack frame *frame
 static inline
-void cilkprof_stack_frame_init(cilkprof_stack_frame_t *frame,
+void pthreadprof_stack_frame_init(pthreadprof_stack_frame_t *frame,
                                FunctionType_t func_type,
                                int c_head)
 {
@@ -198,7 +198,7 @@ void cilkprof_stack_frame_init(cilkprof_stack_frame_t *frame,
 
 // Push new frame of C function onto the C function stack starting at
 // stack->bot->c_fn_frame.
-c_fn_frame_t* cilkprof_c_fn_push(cilkprof_stack_t *stack)
+c_fn_frame_t* pthreadprof_c_fn_push(pthreadprof_stack_t *stack)
 {
   assert(NULL != stack->bot);
 
@@ -208,7 +208,7 @@ c_fn_frame_t* cilkprof_c_fn_push(cilkprof_stack_t *stack)
     resize_c_stack(&(stack->c_stack), &(stack->c_stack_capacity));
   }
 
-  cilkprof_c_fn_frame_init(&(stack->c_stack[stack->c_tail]));
+  pthreadprof_c_fn_frame_init(&(stack->c_stack[stack->c_tail]));
 
   return &(stack->c_stack[stack->c_tail]);
 }
@@ -216,15 +216,15 @@ c_fn_frame_t* cilkprof_c_fn_push(cilkprof_stack_t *stack)
 
 // Push new frame of function type func_type onto the stack *stack
 __attribute__((always_inline))
-cilkprof_stack_frame_t*
-cilkprof_stack_push(cilkprof_stack_t *stack, FunctionType_t func_type)
+pthreadprof_stack_frame_t*
+pthreadprof_stack_push(pthreadprof_stack_t *stack, FunctionType_t func_type)
 {
-  cilkprof_stack_frame_t *new_frame;
+  pthreadprof_stack_frame_t *new_frame;
   if (NULL != stack->sf_free_list) {
     new_frame = stack->sf_free_list;
     stack->sf_free_list = stack->sf_free_list->parent;
   } else {
-    new_frame = (cilkprof_stack_frame_t *)malloc(sizeof(cilkprof_stack_frame_t));
+    new_frame = (pthreadprof_stack_frame_t *)malloc(sizeof(pthreadprof_stack_frame_t));
 
     new_frame->prefix_table = cc_hashtable_create();
     new_frame->lchild_table = cc_hashtable_create();
@@ -232,8 +232,8 @@ cilkprof_stack_push(cilkprof_stack_t *stack, FunctionType_t func_type)
 
   }
 
-  cilkprof_c_fn_push(stack);
-  cilkprof_stack_frame_init(new_frame, func_type, stack->c_tail);
+  pthreadprof_c_fn_push(stack);
+  pthreadprof_stack_frame_init(new_frame, func_type, stack->c_tail);
   new_frame->parent = stack->bot;
   stack->bot = new_frame;
 
@@ -241,8 +241,8 @@ cilkprof_stack_push(cilkprof_stack_t *stack, FunctionType_t func_type)
 }
 
 
-// Initializes the cilkprof stack
-void cilkprof_stack_init(cilkprof_stack_t *stack, FunctionType_t func_type)
+// Initializes the pthreadprof stack
+void pthreadprof_stack_init(pthreadprof_stack_t *stack, FunctionType_t func_type)
 {
   stack->in_user_code = false;
   stack->bot = NULL;
@@ -252,14 +252,14 @@ void cilkprof_stack_init(cilkprof_stack_t *stack, FunctionType_t func_type)
   stack->c_stack_capacity = START_C_STACK_SIZE;
   stack->c_tail = 0;
 
-  cilkprof_stack_frame_t *new_frame = (cilkprof_stack_frame_t *)malloc(sizeof(cilkprof_stack_frame_t));
+  pthreadprof_stack_frame_t *new_frame = (pthreadprof_stack_frame_t *)malloc(sizeof(pthreadprof_stack_frame_t));
   new_frame->prefix_table = cc_hashtable_create();
   new_frame->lchild_table = cc_hashtable_create();
   new_frame->contin_table = cc_hashtable_create();
 
 
-  cilkprof_stack_frame_init(new_frame, func_type, 0);
-  cilkprof_c_fn_frame_init(&(stack->c_stack[0]));
+  pthreadprof_stack_frame_init(new_frame, func_type, 0);
+  pthreadprof_c_fn_frame_init(&(stack->c_stack[0]));
 
   stack->bot = new_frame;
   stack->wrk_table = cc_hashtable_create();
@@ -326,7 +326,7 @@ void resize_fn_status_vector(fn_status_t **old_status_vec,
 
 // Pops the bottommost C frame off of the stack
 // stack->bot->c_fn_frame, and returns a pointer to it.
-c_fn_frame_t* cilkprof_c_fn_pop(cilkprof_stack_t *stack)
+c_fn_frame_t* pthreadprof_c_fn_pop(pthreadprof_stack_t *stack)
 {
   c_fn_frame_t *old_c_bot = &(stack->c_stack[stack->c_tail]);
   --stack->c_tail;
@@ -337,11 +337,11 @@ c_fn_frame_t* cilkprof_c_fn_pop(cilkprof_stack_t *stack)
 
 // Pops the bottommost frame off of the stack *stack, and returns a
 // pointer to it.
-cilkprof_stack_frame_t* cilkprof_stack_pop(cilkprof_stack_t *stack)
+pthreadprof_stack_frame_t* pthreadprof_stack_pop(pthreadprof_stack_t *stack)
 {
-  cilkprof_stack_frame_t *old_bottom = stack->bot;
+  pthreadprof_stack_frame_t *old_bottom = stack->bot;
   stack->bot = stack->bot->parent;
-  cilkprof_c_fn_pop(stack);
+  pthreadprof_c_fn_pop(stack);
   return old_bottom;
 }
 

@@ -537,7 +537,7 @@ void cilk_tool_print(void) {
  * Hooks into runtime system.
  */
 
-void cilk_enter_begin(__cilkrts_stack_frame *sf, void* this_fn, void* rip)
+void cilk_enter_begin(void* this_fn, void* rip)
 {
   WHEN_TRACE_CALLS( fprintf(stderr, "cilk_enter_begin(%p, %p) [ret %p]\n", sf, rip,
                             __builtin_extract_return_addr(__builtin_return_address(0))); );
