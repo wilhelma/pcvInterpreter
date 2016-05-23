@@ -22,11 +22,18 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
+#include "CilkProf.h"
 
 
 const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 
 	return threadFunctionMap[id];
+}
+
+void initialize_tool() {
+
+
+
 }
 
 
