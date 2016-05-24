@@ -47,6 +47,9 @@ typedef struct pthreadprof_stack_frame_t {
   uint64_t local_spn;
   // Local lock span of this function
   uint64_t local_lock_spn;
+  // Local longest child lock span of this function
+  uint64_t local_lchild_lock_spn;
+
 
   // Span of the prefix of this function and its child C functions
   uint64_t prefix_spn;
@@ -184,9 +187,13 @@ void pthreadprof_stack_frame_init(pthreadprof_stack_frame_t *frame,
   frame->func_type = func_type;
   frame->c_head = c_head;
   frame->local_spn = 0;
+  frame->local_lock_spn = 0;
+  frame->local_lchild_lock_spn = 0;
   frame->local_contin = 0;
   frame->prefix_spn = 0; 
   frame->lchild_spn = 0;
+  frame->last_lock_start = 0.0;
+
 
   assert(cc_hashtable_is_empty(frame->prefix_table));
 
@@ -194,7 +201,11 @@ void pthreadprof_stack_frame_init(pthreadprof_stack_frame_t *frame,
 
   assert(cc_hashtable_is_empty(frame->contin_table));
 
+  assert(cc_hashtable_is_empty(frame->lock_spn_table));
 
+  assert(cc_hashtable_is_empty(frame->lchild_lock_spn_table));
+
+  assert(cc_hashtable_is_empty(frame->last_lock_start_table));
 
 // Push new frame of C function onto the C function stack starting at
 // stack->bot->c_fn_frame.
@@ -229,7 +240,9 @@ pthreadprof_stack_push(pthreadprof_stack_t *stack, FunctionType_t func_type)
     new_frame->prefix_table = cc_hashtable_create();
     new_frame->lchild_table = cc_hashtable_create();
     new_frame->contin_table = cc_hashtable_create();
-
+    new_frame->lock_spn_table = cc_hashtable_create();
+    new_frame->lchild_lock_spn_table = cc_hashtable_create();
+    new_frame->last_lock_start_table = cc_hashtable_create();
   }
 
   pthreadprof_c_fn_push(stack);
@@ -253,9 +266,13 @@ void pthreadprof_stack_init(pthreadprof_stack_t *stack, FunctionType_t func_type
   stack->c_tail = 0;
 
   pthreadprof_stack_frame_t *new_frame = (pthreadprof_stack_frame_t *)malloc(sizeof(pthreadprof_stack_frame_t));
+
   new_frame->prefix_table = cc_hashtable_create();
   new_frame->lchild_table = cc_hashtable_create();
   new_frame->contin_table = cc_hashtable_create();
+  new_frame->lock_spn_table = cc_hashtable_create();
+  new_frame->lchild_lock_spn_table = cc_hashtable_create();
+  new_frame->last_lock_start_table = cc_hashtable_create();
 
 
   pthreadprof_stack_frame_init(new_frame, func_type, 0);

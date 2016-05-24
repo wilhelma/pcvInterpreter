@@ -22,8 +22,7 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "CilkProf.h"
-
+#include "Pthread_prof.h"
 
 const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 
@@ -96,7 +95,6 @@ void ParasiteTool::call(const Event* e) {
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
-	parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 
 	pthread_tool_c_function_enter(this_fn, rip);
 }

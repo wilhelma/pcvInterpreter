@@ -18,24 +18,12 @@
 #include "iaddrs.h"
 #include "util.h"
 
-#ifndef SERIAL_TOOL
-#define SERIAL_TOOL 1
-#endif
-
-#ifndef OLD_PRINTOUT 
-#define OLD_PRINTOUT 0
-#endif
-
 #ifndef BURDENING
 #define BURDENING 0
 #endif
 
-#if SERIAL_TOOL
-#define GET_STACK(ex) ex
-#else
 #define GET_STACK(ex) REDUCER_VIEW(ex)
-#include "pthreadprof_stack_reducer.h"
-#endif
+#include "cilkprof_stack_reducer.h"
 
 #include <libgen.h>
 
@@ -44,16 +32,12 @@
  * Data structures for tracking work and span.
  */
 
-#if SERIAL_TOOL
-static pthreadprof_stack_t ctx_stack;
-#else
 static CILK_C_DECLARE_REDUCER(pthreadprof_stack_t) ctx_stack =
   CILK_C_INIT_REDUCER(pthreadprof_stack_t,
 		      reduce_pthreadprof_stack,
 		      identity_pthreadprof_stack,
 		      destroy_pthreadprof_stack,
 		      {NULL});
-#endif
 
 iaddr_table_t *call_site_table;
 static iaddr_table_t *function_table;
@@ -71,13 +55,10 @@ extern int MIN_CAPACITY;
  */
 
 static inline void initialize_tool(pthreadprof_stack_t *stack) {
-#if SERIAL_TOOL
-  // This is a serial tool
-  ensure_serial_tool();
-#else
+
   // probably need to register the reducer here as well.
   CILK_C_REGISTER_REDUCER(ctx_stack);
-#endif
+
   pthreadprof_stack_init(stack, MAIN);
   call_site_table = iaddr_table_create();
   function_table = iaddr_table_create();
@@ -128,9 +109,7 @@ void pthread_tool_destroy(void) {
 
     assert(old_bottom && MAIN == old_bottom->func_type);
 
-#if !SERIAL_TOOL
     CILK_C_UNREGISTER_REDUCER(ctx_stack);
-#endif
 
     free_cc_hashtable(stack->wrk_table);
 
@@ -770,7 +749,7 @@ void pthread_detach_begin()
   return;
 }
 
-void pthread_detach_end(void)
+void pthread_detach_end()
 {
 
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
@@ -990,11 +969,9 @@ void pthread_leave_begin()
   stack->sf_free_list = old_bottom;
 }
 
-void pthread_leave_end(void)
+void pthread_leave_end()
 {
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
-
-
   assert(!(stack->in_user_code));
   stack->in_user_code = true;
   begin_strand(stack);
