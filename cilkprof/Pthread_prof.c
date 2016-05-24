@@ -559,7 +559,8 @@ void pthread_tool_c_function_leave(void *rip)
   uint64_t local_wrk = old_bottom->local_wrk;
   uint64_t running_wrk = old_bottom->running_wrk + local_wrk;
   uint64_t running_spn = old_bottom->running_spn + local_wrk;
-  uint64_t running_lock_spn = old_bottom->lock_spn + local_lock_spn;
+  uint64_t running_lock_spn = old_bottom->running_lock_spn + local_lock_spn;
+  uint64_t running_longest_child_lock_spn = old_bottom->running_longest_child_lock_spn;
 
   int32_t cs_index = old_bottom->cs_index;
   int32_t cs_tail = stack->cs_status[cs_index].c_tail;
@@ -577,6 +578,7 @@ void pthread_tool_c_function_leave(void *rip)
   new_bottom->running_wrk += running_wrk;
   new_bottom->running_spn += running_spn;
   new_bottom->running_lock_spn += running_lock_spn;
+  new_bottom->running_longest_child_lock_spn += running_longest_child_lock_spn;
 
   // Update work table
   if (top_cs) {
@@ -588,6 +590,7 @@ void pthread_tool_c_function_leave(void *rip)
                                       old_bottom->rip,
                                       running_wrk,
                                       running_spn,
+                                      running_lock_spn,
                                       local_wrk,
                                       local_wrk);
     assert(add_success);
@@ -598,6 +601,7 @@ void pthread_tool_c_function_leave(void *rip)
                                       old_bottom->rip,
                                       running_wrk,
                                       running_spn,
+                                      running_lock_spn,
                                       local_wrk,
                                       local_wrk);
     assert(add_success);
@@ -616,6 +620,7 @@ void pthread_tool_c_function_leave(void *rip)
                                             old_bottom->rip,
                                             local_wrk,
                                             local_wrk);
+
     assert(add_success);
   }
 
@@ -733,6 +738,7 @@ void pthread_sync_end()
   c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
 
   c_bottom->running_spn += stack->bot->local_contin;
+  c_bottom->running_lock_spn += stack->bot->local_lock_spn;
 
   /* if (stack->bot->lchild_spn > stack->bot->contin_spn) { */
   if (stack->bot->lchild_spn > c_bottom->running_spn) {
@@ -742,11 +748,16 @@ void pthread_sync_end()
     add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->lchild_table));
 
   } else {
-    /* stack->bot->prefix_spn += stack->bot->contin_spn; */
+
     stack->bot->prefix_spn += c_bottom->running_spn;
+    stack->bot->prefix_spn += c_bottom->running_lock_spn;
+    stack->bot->prefix_spn -= c_bottom->running_longest_child_lock_spn;
+
     // critical path goes through continuation, which is local.  add
     // local_contin to local_spn.
     stack->bot->local_spn += stack->bot->local_contin;
+
+
     add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->contin_table));
   }
 
@@ -754,6 +765,9 @@ void pthread_sync_end()
   stack->bot->lchild_spn = 0;
   c_bottom->running_spn = 0;
   stack->bot->local_contin = 0;
+
+  // ADD CODE HERE
+
   clear_cc_hashtable(stack->bot->lchild_table);
   clear_cc_hashtable(stack->bot->contin_table);
 

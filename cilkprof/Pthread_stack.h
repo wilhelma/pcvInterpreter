@@ -28,6 +28,7 @@ typedef struct c_fn_frame_t {
   uint64_t running_wrk;
   uint64_t running_spn;
   uint64_t running_lock_spn;
+  uint64_t running_longest_child_lock_spn;
 
   /* // Parent of this C function on the same stack */
   /* struct c_fn_frame_t *parent; */
