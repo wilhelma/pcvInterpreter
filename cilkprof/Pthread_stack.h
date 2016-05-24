@@ -27,6 +27,7 @@ typedef struct c_fn_frame_t {
 
   uint64_t running_wrk;
   uint64_t running_spn;
+  uint64_t running_lock_spn;
 
   /* // Parent of this C function on the same stack */
   /* struct c_fn_frame_t *parent; */
@@ -53,6 +54,9 @@ typedef struct pthreadprof_stack_frame_t {
 
   // Span of the prefix of this function and its child C functions
   uint64_t prefix_spn;
+
+  // Span of this function and its child C functions in locked sections
+  uint64_t lock_spn;
 
   // Span of the longest spawned child of this function observed so
   // far

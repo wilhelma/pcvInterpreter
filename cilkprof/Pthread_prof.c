@@ -69,7 +69,7 @@ static inline void initialize_tool(pthreadprof_stack_t *stack) {
 
 /*************************************************************************/
 
-void pthread_tool_init(void) {
+void pthread_tool_init() {
   // Do the initialization only if it hasn't been done. 
   // It could have been done if we instrument C functions, and the user 
   // separately calls pthread_tool_init in the main function.
@@ -90,15 +90,17 @@ void pthread_tool_init(void) {
  * the user did not include pthread_tool_destroy in its main function and the
  * program is not compiled with -fpthreadtool_instr_c.
  */
-void pthread_tool_destroy(void) {
+
+void pthread_tool_destroy() {
+
   // Do the destroy only if it hasn't been done. 
   // It could have been done if we instrument C functions, and the user 
   // separately calls pthread_tool_destroy in the main function.
+
   if(TOOL_INITIALIZED) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_tool_destroy() [ret %p]\n",
-                              __builtin_extract_return_addr(__builtin_return_address(0))); );
 
     pthreadprof_stack_t *stack = &GET_STACK(ctx_stack);
+
     // Print the output, if we haven't done so already
     if (!TOOL_PRINTED)
       pthread_tool_print();
@@ -123,6 +125,9 @@ void pthread_tool_destroy(void) {
       free_cc_hashtable(free_frame->prefix_table);
       free_cc_hashtable(free_frame->lchild_table);
       free_cc_hashtable(free_frame->contin_table);
+      free_cc_hashtable(free_frame->lock_spn_table);
+      free_cc_hashtable(free_frame->lchild_lock_spn_table);
+      free_cc_hashtable(free_frame->last_lock_start_table);
       free(free_frame);
       free_frame = next_free_frame;
     }
@@ -154,8 +159,6 @@ void pthread_tool_destroy(void) {
 void pthread_tool_print(void) {
   FILE *fout;
   char filename[64];
-
-  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_tool_print()\n"); );
 
   assert(TOOL_INITIALIZED);
 
@@ -348,6 +351,7 @@ void pthread_tool_print(void) {
  * Hooks into runtime system.
  */
 
+// rip = Return address of this function 
 void pthread_enter_begin(void* this_fn, void* rip)
 {
 
@@ -409,62 +413,6 @@ void pthread_enter_begin(void* this_fn, void* rip)
   c_bottom->function = (uintptr_t)this_fn;
 }
 
-
-void pthread_enter_helper_begin(void *this_fn, void *rip)
-{
-  pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
-
-  // We should have passed spawn_or_continue(0) to get here.
-  assert(stack->in_user_code);
-
-  // A helper should not be invoked from a C function
-  assert(stack->bot->c_head == stack->c_tail);
-
-  uint64_t strand_len = measure_and_add_strand_length(stack);
-  stack->bot->local_contin += strand_len;
-
-  stack->in_user_code = false;
-
-  // Push new frame onto the stack
-  pthreadprof_stack_push(stack, HELPER);
-
-  c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
-
-  uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
-  uintptr_t fn = (uintptr_t)this_fn;
-
-  int32_t cs_index = add_to_iaddr_table(&call_site_table, cs, HELPER);
-  c_bottom->cs_index = cs_index;
-  if (cs_index >= stack->cs_status_capacity) {
-    resize_cs_status_vector(&(stack->cs_status), &(stack->cs_status_capacity));
-  }
-  int32_t cs_tail = stack->cs_status[cs_index].c_tail;
-  if (OFF_STACK != cs_tail) {
-    if (!(stack->cs_status[cs_index].flags & RECURSIVE)) {
-      stack->cs_status[cs_index].flags |= RECURSIVE;
-    }
-  } else {
-    int32_t fn_index;
-    if (UNINITIALIZED == stack->cs_status[cs_index].fn_index) {
-
-      assert(call_site_table->table_size == cs_index + 1);
-      MIN_CAPACITY = cs_index + 1;
-
-      fn_index = add_to_iaddr_table(&function_table, fn, SPAWNER);
-      stack->cs_status[cs_index].fn_index = fn_index;
-      if (fn_index >= stack->fn_status_capacity) {
-        resize_fn_status_vector(&(stack->fn_status), &(stack->fn_status_capacity));
-      }
-    } else {
-      fn_index = stack->cs_status[cs_index].fn_index;
-    }
-    stack->cs_status[cs_index].c_tail = stack->c_tail;
-    if (OFF_STACK == stack->fn_status[fn_index]) {
-      stack->fn_status[fn_index] = stack->c_tail;
-    }
-  }
-}
-
 void pthread_enter_end()
 {
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
@@ -507,10 +455,7 @@ void pthread_tool_c_function_enter(void *this_fn, void *rip)
     stack->fn_status[fn_index] = stack->c_tail;
 
   } else {
-    if (!stack->in_user_code) {
-      WHEN_TRACE_CALLS( fprintf(stderr, "c_function_enter(%p) [ret %p]\n", rip,
-                                __builtin_extract_return_addr(__builtin_return_address(0))); );
-    }
+
     assert(stack->in_user_code);
 
     uint64_t strand_len = measure_and_add_strand_length(stack);
@@ -614,6 +559,7 @@ void pthread_tool_c_function_leave(void *rip)
   uint64_t local_wrk = old_bottom->local_wrk;
   uint64_t running_wrk = old_bottom->running_wrk + local_wrk;
   uint64_t running_spn = old_bottom->running_spn + local_wrk;
+  uint64_t running_lock_spn = old_bottom->lock_spn + local_lock_spn;
 
   int32_t cs_index = old_bottom->cs_index;
   int32_t cs_tail = stack->cs_status[cs_index].c_tail;
@@ -630,6 +576,7 @@ void pthread_tool_c_function_leave(void *rip)
   c_fn_frame_t *new_bottom = &(stack->c_stack[stack->c_tail]);
   new_bottom->running_wrk += running_wrk;
   new_bottom->running_spn += running_spn;
+  new_bottom->running_lock_spn += running_lock_spn;
 
   // Update work table
   if (top_cs) {

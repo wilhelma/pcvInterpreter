@@ -32,7 +32,6 @@ typedef std::map<TRD_ID, const FUN_SG> ThreadFunctionMap;
 
 class ParasiteTool : public Tool {
 
-
 public:
 
 	void create(const Event* e);
@@ -48,9 +47,6 @@ public:
 	const FUN_SG getSignature(TRD_ID id);
 	
 private:
-
-	// Provides information to the Parasite structure
-	Parasite* parasite;
 
 	// keeps track of current thread
 	ShadowThread* currentThread;
