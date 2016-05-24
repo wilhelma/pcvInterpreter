@@ -23,6 +23,9 @@
 #include "DataModel.h"
 #include "DBDataModel.h"
 #include "Parasite.h"
+#include "Parasite.h"
+
+
 #define THREADS 100
 
 typedef std::map<TRD_ID, const FUN_SG> ThreadFunctionMap;
@@ -40,6 +43,8 @@ public:
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
 	void threadEnd(const Event* e);
+	void before_start_of_program(const Event* e);
+	void after_end_of_program(const Event* e);
 	const FUN_SG getSignature(TRD_ID id);
 	
 private:

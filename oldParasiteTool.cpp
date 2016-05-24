@@ -30,12 +30,6 @@ const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 	return threadFunctionMap[id];
 }
 
-void start_of_program() {
-
-
-
-}
-
 
 void ParasiteTool::create(const Event* e) {
 
@@ -133,13 +127,6 @@ void ParasiteTool::release(const Event* e) {
 	double lock_span = 10.0;
 	parasite->addToLockSpan(F_signature, lock_span);
 }
-
-void end_of_program() {
-
-
-
-}
-
 
 // // NOT YET IMPLEMENTED IN PCVINTERPRETER
 // void ParasiteTool::returnOfCalled(const Event* e){

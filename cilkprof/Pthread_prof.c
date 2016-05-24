@@ -26,10 +26,6 @@
 #define OLD_PRINTOUT 0
 #endif
 
-#ifndef TRACE_CALLS
-#define TRACE_CALLS 0
-#endif
-
 #ifndef BURDENING
 #define BURDENING 0
 #endif
@@ -42,14 +38,6 @@
 #endif
 
 #include <libgen.h>
-
-// TB: Adjusted so I can terminate WHEN_TRACE_CALLS() with semicolons.
-// Emacs gets confused about tabbing otherwise.
-#if TRACE_CALLS
-#define WHEN_TRACE_CALLS(ex) do { ex } while (0)
-#else
-#define WHEN_TRACE_CALLS(ex) do {} while (0)
-#endif
 
 /*************************************************************************/
 /**
@@ -513,9 +501,6 @@ void pthread_tool_c_function_enter(void *this_fn, void *rip)
 {
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
-  WHEN_TRACE_CALLS( fprintf(stderr, "c_function_enter(%p, %p) [ret %p]\n", this_fn, rip,
-     __builtin_extract_return_addr(__builtin_return_address(0))); );
-
   if(!TOOL_INITIALIZED) { // We are entering main.
     pthread_tool_init(); // this will push the frame for MAIN and do a gettime
 
@@ -555,7 +540,6 @@ void pthread_tool_c_function_enter(void *this_fn, void *rip)
     }
 
     // Push new frame for this C function onto the stack
-    /* pthreadprof_stack_push(stack, C_FUNCTION); */
     c_fn_frame_t *c_bottom = pthreadprof_c_fn_push(stack);
 
     uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
@@ -598,14 +582,13 @@ void pthread_tool_c_function_enter(void *this_fn, void *rip)
     /* the stop time is also the start time of this function */
     // stack->start = stack->stop; /* TB: Want to exclude the length
     // (e.g. time or instruction count) of this function */
+
     begin_strand(stack);
   }
 }
 
 void pthread_tool_c_function_leave(void *rip)
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "c_function_leave(%p) [ret %p]\n", rip,
-     __builtin_extract_return_addr(__builtin_return_address(0))); );
 
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
@@ -715,7 +698,7 @@ void pthread_tool_c_function_leave(void *rip)
   begin_strand(stack);
 }
 
-void pthread_spawn_prepare()
+void pthread_create_prepare()
 {
   // Tool must have been initialized as this is only called in a SPAWNER, and 
   // we would have at least initialized the tool in the first pthread_enter_begin.
@@ -738,7 +721,7 @@ void pthread_spawn_prepare()
 // If in_continuation == 0, we just did setjmp and about to call the spawn helper.  
 // If in_continuation == 1, we are resuming after setjmp (via longjmp) at the continuation 
 // of a spawn statement; note that this is possible only if steals can occur.
-void pthread_spawn_or_continue(int in_continuation)
+void pthread_create_or_continue(int in_continuation)
 {
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
@@ -746,10 +729,8 @@ void pthread_spawn_or_continue(int in_continuation)
 
   assert(!(stack->in_user_code));
   if (in_continuation) {
+
     // In the continuation
-    WHEN_TRACE_CALLS(
-        fprintf(stderr, "pthread_spawn_or_continue(%d) from continuation [ret %p]\n", in_continuation,
-                __builtin_extract_return_addr(__builtin_return_address(0))); );
     stack->in_user_code = true;
 
     stack->bot->local_contin += BURDENING;
@@ -759,10 +740,8 @@ void pthread_spawn_or_continue(int in_continuation)
 
     begin_strand(stack);
   } else {
+
     // In the spawned child
-    WHEN_TRACE_CALLS(
-        fprintf(stderr, "pthread_spawn_or_continue(%d) from spawn [ret %p]\n", in_continuation,
-                __builtin_extract_return_addr(__builtin_return_address(0))); );
     // We need to re-enter user code, because function calls for
     // arguments might be called before enter_helper_begin occurs in
     // spawn helper.
@@ -774,10 +753,8 @@ void pthread_spawn_or_continue(int in_continuation)
   }
 }
 
-void pthread_detach_begin(__pthreadrts_stack_frame *parent)
+void pthread_detach_begin()
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_detach_begin(%p) [ret %p]\n", parent,
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
 
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
   assert(HELPER == stack->bot->func_type);
@@ -795,8 +772,6 @@ void pthread_detach_begin(__pthreadrts_stack_frame *parent)
 
 void pthread_detach_end(void)
 {
-  WHEN_TRACE_CALLS( fprintf(stderr, "pthread_detach_end() [ret %p]\n",
-                            __builtin_extract_return_addr(__builtin_return_address(0))); );
 
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
