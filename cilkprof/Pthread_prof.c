@@ -143,7 +143,7 @@ void pthread_tool_destroy(void) {
 #if !SERIAL_TOOL
     CILK_C_UNREGISTER_REDUCER(ctx_stack);
 #endif
-    
+
     free_cc_hashtable(stack->wrk_table);
 
     old_bottom->parent = stack->sf_free_list;
@@ -498,17 +498,10 @@ void pthread_enter_helper_begin(void *this_fn, void *rip)
   }
 }
 
-void pthread_enter_end(__pthreadrts_stack_frame *sf, void *rsp)
+void pthread_enter_end()
 {
   pthreadprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
-  if (SPAWNER == stack->bot->func_type) {
-    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_enter_end(%p, %p) from SPAWNER [ret %p]\n", sf, rsp,
-                              __builtin_extract_return_addr(__builtin_return_address(0))); );
-  } else {
-    WHEN_TRACE_CALLS( fprintf(stderr, "pthread_enter_end(%p, %p) from HELPER [ret %p]\n", sf, rsp,
-                              __builtin_extract_return_addr(__builtin_return_address(0))); );
-  }
   assert(!(stack->in_user_code));
 
   stack->in_user_code = true;

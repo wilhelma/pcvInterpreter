@@ -30,16 +30,18 @@ const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 	return threadFunctionMap[id];
 }
 
-void start_of_program() {
+void before_start_of_program() {
 
+	// pthread_enter_begin(void* this_fn, void* rip);
+	// rip = Return address of this function 
 
-
+	// QUESTION: where is this called?
+	pthread_enter_begin(this_fn, rip);
+	pthread_enter_end()
 }
 
 
 void ParasiteTool::create(const Event* e) {
-
-	// QUESTION: should this be different than the call event? 
 
 	// F spawns or calls G:
 
@@ -94,6 +96,9 @@ void ParasiteTool::call(const Event* e) {
 	// G.p = 0
 	// G.l = 0
 	// G.c = 0
+
+
+	pthread_tool_c_function_enter(this_fn, rip);
 
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
