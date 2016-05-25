@@ -22,18 +22,75 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "CilkProf.h"
+#include "ParasiteToolUtilities.h"
 
 
-const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
+ParasiteTool::ParasiteTool() {
 
-	return threadFunctionMap[id];
+  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
+
+  if (!TOOL_INITIALIZED) {
+    initialize_tool(&(ctx_stack));
+
+  } else {
+    stack = &(GET_STACK(ctx_stack));
+
+    uint64_t strand_len = measure_and_add_strand_length(stack);
+    if (stack->bot->c_head == stack->c_tail) {
+      stack->bot->local_contin += strand_len;
+    }
+  }
+
+  // Push new frame onto the stack
+  cilkprof_stack_push(stack, SPAWNER);
+
+  c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
+
+  uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
+  uintptr_t fn = (uintptr_t)this_fn;
+
+  int32_t cs_index = add_to_iaddr_table(&call_site_table, cs, SPAWNER);
+  c_bottom->cs_index = cs_index;
+  if (cs_index >= stack->cs_status_capacity) {
+    resize_cs_status_vector(&(stack->cs_status), &(stack->cs_status_capacity));
+  }
+  int32_t cs_tail = stack->cs_status[cs_index].c_tail;
+  if (OFF_STACK != cs_tail) {
+    if (!(stack->cs_status[cs_index].flags & RECURSIVE)) {
+      stack->cs_status[cs_index].flags |= RECURSIVE;
+    }
+  } else {
+    int32_t fn_index;
+    if (UNINITIALIZED == stack->cs_status[cs_index].fn_index) {
+
+      assert(call_site_table->table_size == cs_index + 1);
+      MIN_CAPACITY = cs_index + 1;
+
+      fn_index = add_to_iaddr_table(&function_table, fn, SPAWNER);
+      stack->cs_status[cs_index].fn_index = fn_index;
+      if (fn_index >= stack->fn_status_capacity) {
+        resize_fn_status_vector(&(stack->fn_status), &(stack->fn_status_capacity));
+      }
+    } else {
+      fn_index = stack->cs_status[cs_index].fn_index;
+    }
+    stack->cs_status[cs_index].c_tail = stack->c_tail;
+    if (OFF_STACK == stack->fn_status[fn_index]) {
+      stack->fn_status[fn_index] = stack->c_tail;
+    }
+  }
+
 }
 
+}
+
+ParasiteTool::~ParasiteTool() {
+
+
+
+}
 
 void ParasiteTool::create(const Event* e) {
-
-	// QUESTION: should this be different than the call event? 
 
 	// F spawns or calls G:
 
@@ -47,8 +104,6 @@ void ParasiteTool::create(const Event* e) {
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
 	currentThread = _info->childThread;
 
-	// QUESTION: NEED INFO FOR NEW THREAD'S FUNCTION SIGNATURE
-	// parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
 // this is a SYNC EVENT 

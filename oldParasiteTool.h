@@ -22,8 +22,6 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "ParasiteHashtable.h"
-
 #include "Parasite.h"
 #include "Parasite.h"
 
@@ -36,8 +34,6 @@ class ParasiteTool : public Tool {
 
 public:
 
-	ParasiteTool();
-	~ParasiteTool();
 	void create(const Event* e);
 	void join(const Event* e);
 	void acquire(const Event* e);
