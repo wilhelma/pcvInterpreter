@@ -22,25 +22,18 @@
 #include "ShadowLock.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "Pthread_prof.h"
+#include "CilkProf.h"
+
 
 const FUN_SG ParasiteTool::getSignature(TRD_ID id) {
 
 	return threadFunctionMap[id];
 }
 
-void ParasiteTool::before_start_of_program() {
-
-	// pthread_enter_begin(void* this_fn, void* rip);
-	// rip = Return address of this function 
-
-	// QUESTION: what is this_fn? 
-	pthread_enter_begin(this_fn, rip);
-	pthread_enter_end();
-}
-
 
 void ParasiteTool::create(const Event* e) {
+
+	// QUESTION: should this be different than the call event? 
 
 	// F spawns or calls G:
 
@@ -53,9 +46,6 @@ void ParasiteTool::create(const Event* e) {
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
 	currentThread = _info->childThread;
-
-	pthread_create_prepare();
-	pthread_create_or_continue(in_continuation);
 
 	// QUESTION: NEED INFO FOR NEW THREAD'S FUNCTION SIGNATURE
 	// parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
@@ -77,9 +67,16 @@ void ParasiteTool::join(const Event* e) {
 
 	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
 
-	pthread_sync_begin();
-	pthread_sync_end();
+	if (parasite->getContinuation(F_signature) > parasite->getLongestChild(F_signature))
+			parasite->addToPrefix(F_signature, parasite->getContinuation(F_signature));
+	else {	
+			parasite->addToPrefix(F_signature, parasite->getLongestChild(F_signature));
+			parasite->addToPrefix(F_signature, parasite->getLockSpan(F_signature));
+			parasite->addToPrefix(F_signature, (0.0 - parasite->getLockSpan(F_signature)));
+	}
 
+	parasite->setLongestChild(F_signature, 0.0);
+	parasite->setLongestChild(F_signature, 0.0);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -95,8 +92,7 @@ void ParasiteTool::call(const Event* e) {
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
-
-	pthread_tool_c_function_enter(this_fn, rip);
+	parasite->addWorkSpan(parentSignature, _info->fnSignature, 0.0, 0.0, 0.0, 0.0);
 }
 
 
@@ -106,6 +102,7 @@ void ParasiteTool::access(const Event* e) {
 	AccessEvent* accessEvent = (AccessEvent*) e;
 	const AccessInfo *_info = accessEvent->getAccessInfo();
 	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
+
 }
 
 // lock acquire event 
@@ -115,6 +112,9 @@ void ParasiteTool::acquire(const Event* e) {
 	AcquireEvent* acquireEvent = (AcquireEvent*) e;
 	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
+	// double last_lock_start = e->runtime;
+	double last_lock_start = 0.0;
+	parasite->setLastLockStart(F_signature, last_lock_start);
 }
 
 // lock release event: IMPORTANT
@@ -123,56 +123,74 @@ void ParasiteTool::release(const Event* e) {
 	ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
 	const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
 	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
-
 	// double lock_span = e->runtime - getLastLockStart(F_signature);
+	double lock_span = 10.0;
+	parasite->addToLockSpan(F_signature, lock_span);
 }
 
-void ParasiteTool::after_end_of_program() {
+// // NOT YET IMPLEMENTED IN PCVINTERPRETER
+// void ParasiteTool::returnOfCalled(const Event* e){
 
-	pthread_detach_begin();
-	pthread_detach_end();
-}
+// 	// Called G returns to F:
+// 	// G.p += G.c
+// 	// F.w += G.w
+//	// F.c += G.p
+//  // F.lock_span += G.lock_span
+
+// 	returnOfCalledInfo *_info = e->getJoinInfo();
+// 	ShadowThread* childThread = _info->childThread;
+
+// 	const FUN_SG F_signature = this.threadFunctionMap[currentThread->threadId];
+// 	const FUN_SG G_signature = this.threadFunctionMap[childThread.threadId];
+
+// 	G_w = 42.0;
+// 	// G_w = _info->runtime;
+// 	parasite->setWork(G_signature, G_w);
+
+// 	parasite->addToPrefix(G_signature, parasite->getContinuation(G_signature));
+// 	parasite->addToWork(F_signature, parasite->getWork(G_signature));
+// 	parasite->addToContinuation(F_signature, parasite->getPrefix(G_signature));
+// }
 
 
-// NOT YET IMPLEMENTED IN PCVINTERPRETER
-void ParasiteTool::returnOfCalled(const Event* e){
+// // NOT YET IMPLEMENTED IN PCVINTERPRETER
+// void ParasiteTool::threadEnd(const Event* e){
 
-	// Called G returns to F:
-	// G.p += G.c
-	// F.w += G.w
-	// F.c += G.p
-    // F.lock_span += G.lock_span
+// 	// Created G returns to F
+// 	// G.p += G.c
+// 	// F.w += G.w
+// 	// F.lock_span += G.lock_span
+// 	// if F.c + G.p > F.l
+// 	// 		F.l = G.p
+// 	//		F.longest_child_lock_span = G.lock_span 
+// 	// 		F.p += G.c
+// 	// 		F.c = 0
 
-	returnOfCalledInfo *_info = e->getJoinInfo();
-	ShadowThread* childThread = _info->childThread;
+// 	ThreadEndInfo *_info = e->getJoinInfo();
+// 	ShadowThread* childThread = _info->childThread;
 
-	const FUN_SG F_signature = this.threadFunctionMap[currentThread->threadId];
-	const FUN_SG G_signature = this.threadFunctionMap[childThread.threadId];
+// 	const FUN_SG F_signature = this.threadFunctionMap[currentThread->threadId];
+// 	const FUN_SG G_signature = this.threadFunctionMap[childThread.threadId];
 
-	pthread_tool_c_function_leave(rip);
-}
+// 	G_w = 42.0;
+// 	// G_w = _info->runtime;
+// 	parasite->setWork(G_signature, G_w);
+
+// 	G_c = parasite->getContinuation(G_signature);
+// 	G_p = parasite->getPrefix(G_signature);
+// 	G_ls = parasite->getLockSpan(G_signature);
+
+// 	parasite->addToPrefix(G_signature, G_c);
+// 	parasite->addToWork(F_signature, parasite->getWork(G_signature));
+// 	parasite->addToLockSpan(F_signature, G_ls);
 
 
-// NOT YET IMPLEMENTED IN PCVINTERPRETER
-void ParasiteTool::threadEnd(const Event* e){
+// 	if ((parasite->getContinuation(F_signature) + G_p) > parasite->getLongestChild(F_signature)) {
 
-	// Created G returns to F
-	// G.p += G.c
-	// F.w += G.w
-	// F.lock_span += G.lock_span
-	// if F.c + G.p > F.l
-	// 		F.l = G.p
-	//		F.longest_child_lock_span = G.lock_span 
-	// 		F.p += G.c
-	// 		F.c = 0
-
-	ThreadEndInfo *_info = e->getJoinInfo();
-	ShadowThread* childThread = _info->childThread;
-
-	const FUN_SG F_signature = this.threadFunctionMap[currentThread->threadId];
-	const FUN_SG G_signature = this.threadFunctionMap[childThread.threadId];
-
-	pthread_leave_begin();
-	pthread_leave_end();
-}
+// 		parasite->setLongestChild(F_signature, G_p);
+// 		parasite->setLongestChildLockSpan(F_signature, G_ls);
+// 		parasite->addToPrefix(F_signature, G_c);
+// 		parasite->parasite.setLongestChild(F_signature, 0.0);
+// 	}
+// }
 
