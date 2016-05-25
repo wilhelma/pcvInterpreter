@@ -128,6 +128,25 @@ void ParasiteTool::release(const Event* e) {
 	parasite->addToLockSpan(F_signature, lock_span);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // // NOT YET IMPLEMENTED IN PCVINTERPRETER
 // void ParasiteTool::returnOfCalled(const Event* e){
 
