@@ -25,7 +25,7 @@
 #include "ParasiteHashtable.h"
 
 #include "Parasite.h"
-#include "Parasite.h"
+#include "ParasiteStacks.h"
 
 
 #define THREADS 100
@@ -35,6 +35,11 @@ typedef std::map<TRD_ID, const FUN_SG> ThreadFunctionMap;
 class ParasiteTool : public Tool {
 
 public:
+
+	parasite_stack_t main_stack;
+	iaddr_table_t *call_site_table;
+	static iaddr_table_t *function_table;
+	int MIN_CAPACITY;
 
 	ParasiteTool();
 	~ParasiteTool();
@@ -46,8 +51,6 @@ public:
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
 	void threadEnd(const Event* e);
-	void before_start_of_program(const Event* e);
-	void after_end_of_program(const Event* e);
 	const FUN_SG getSignature(TRD_ID id);
 	
 private:

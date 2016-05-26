@@ -1,11 +1,7 @@
-static inline void initialize_tool(cilkprof_stack_t *stack) {
+// Auxiliary functions for Parasite Tool
 
-  cilkprof_stack_init(stack, MAIN);
-  call_site_table = iaddr_table_create();
-  function_table = iaddr_table_create();
-  TOOL_INITIALIZED = true;
-  TOOL_PRINTED = false;
-}
+#include "ParasiteStacks.h"
+
 
 __attribute__((always_inline))
 void begin_strand(parasite_stack_t *stack) {

@@ -24,71 +24,61 @@
 #include "DBDataModel.h"
 #include "ParasiteToolUtilities.h"
 
+// Helper functions
 
 ParasiteTool::ParasiteTool() {
 
-  cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
-
-  if (!TOOL_INITIALIZED) {
-    initialize_tool(&(ctx_stack));
-
-  } else {
-    stack = &(GET_STACK(ctx_stack));
-
-    uint64_t strand_len = measure_and_add_strand_length(stack);
-    if (stack->bot->c_head == stack->c_tail) {
-      stack->bot->local_contin += strand_len;
-    }
-  }
-
-  // Push new frame onto the stack
-  cilkprof_stack_push(stack, SPAWNER);
-
-  c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
-
-  uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
-  uintptr_t fn = (uintptr_t)this_fn;
-
-  int32_t cs_index = add_to_iaddr_table(&call_site_table, cs, SPAWNER);
-  c_bottom->cs_index = cs_index;
-  if (cs_index >= stack->cs_status_capacity) {
-    resize_cs_status_vector(&(stack->cs_status), &(stack->cs_status_capacity));
-  }
-  int32_t cs_tail = stack->cs_status[cs_index].c_tail;
-  if (OFF_STACK != cs_tail) {
-    if (!(stack->cs_status[cs_index].flags & RECURSIVE)) {
-      stack->cs_status[cs_index].flags |= RECURSIVE;
-    }
-  } else {
-    int32_t fn_index;
-    if (UNINITIALIZED == stack->cs_status[cs_index].fn_index) {
-
-      assert(call_site_table->table_size == cs_index + 1);
-      MIN_CAPACITY = cs_index + 1;
-
-      fn_index = add_to_iaddr_table(&function_table, fn, SPAWNER);
-      stack->cs_status[cs_index].fn_index = fn_index;
-      if (fn_index >= stack->fn_status_capacity) {
-        resize_fn_status_vector(&(stack->fn_status), &(stack->fn_status_capacity));
-      }
-    } else {
-      fn_index = stack->cs_status[cs_index].fn_index;
-    }
-    stack->cs_status[cs_index].c_tail = stack->c_tail;
-    if (OFF_STACK == stack->fn_status[fn_index]) {
-      stack->fn_status[fn_index] = stack->c_tail;
-    }
-  }
-
+	parasite_stack_init(main_stack, MAIN);
+	call_site_table = iaddr_table_create();
+	function_table = iaddr_table_create();
+	begin_strand(&(main_stack));
 }
 
-}
 
 ParasiteTool::~ParasiteTool() {
 
+    cilk_tool_print();
+    parasite_stack_frame_t *old_bottom = stack->bot;
+    free_cc_hashtable(stack->work_table);
 
+    old_bottom->parent = stack->sf_free_list;
+    stack->sf_free_list = old_bottom;
 
+    parasite_stack_frame_t *free_frame = stack->sf_free_list;
+    parasite_stack_frame_t *next_free_frame;
+
+    while (NULL != free_frame) {
+
+      next_free_frame = free_frame->parent;
+      free_cc_hashtable(free_frame->prefix_table);
+      free_cc_hashtable(free_frame->longest_child_table);
+      free_cc_hashtable(free_frame->continuation_table);
+      free(free_frame);
+      free_frame = next_free_frame;
+    }
+
+    stack->sf_free_list = NULL;
+
+    free(stack->call_site_status);
+    free(stack->function_status);
+    free(stack->function_stack);
+
+    cc_hashtable_list_el_t *free_list_el = ll_free_list;
+    cc_hashtable_list_el_t *next_free_list_el;
+    while (NULL != free_list_el) {
+      next_free_list_el = free_list_el->next;
+      free(free_list_el);
+      free_list_el = next_free_list_el;
+    }
+    ll_free_list = NULL;
+
+    // Free the tables of call sites and functions
+    iaddr_table_free(call_site_table);
+    call_site_table = NULL;
+    iaddr_table_free(function_table);
+    function_table = NULL;
 }
+
 
 void ParasiteTool::create(const Event* e) {
 

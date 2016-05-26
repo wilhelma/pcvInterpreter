@@ -93,7 +93,7 @@ const uint32_t RECURSIVE = 1;
 const int32_t OFF_STACK = INT32_MIN;
 const int32_t UNINITIALIZED = INT32_MIN;
 
-// Type for a cilkprof stack
+// Type for a parasite stack
 typedef struct {
 
   // Capacity of call-site status vector
@@ -121,15 +121,15 @@ typedef struct {
   function_status_t *function_status;
 
   // Pointer to bottom of the stack, onto which frames are pushed.
-  cilkprof_stack_frame_t *bot;
+  parasite_stack_frame_t *bot;
 
   // Call-site data associated with the running work
   parasite_hashtable_t* wrk_table;
 
-  // Free list of cilkprof stack frames
-  cilkprof_stack_frame_t *sf_free_list;
+  // Free list of parasite stack frames
+  parasite_stack_frame_t *sf_free_list;
 
-} cilkprof_stack_t;
+} parasite_stack_t;
 
 
 /*----------------------------------------------------------------------*/
