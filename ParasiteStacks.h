@@ -127,7 +127,7 @@ typedef struct {
   parasite_hashtable_t* wrk_table;
 
   // Free list of parasite stack frames
-  parasite_stack_frame_t *sf_free_list;
+  parasite_stack_frame_t *stack_frame_free_list;
 
 } parasite_stack_t;
 

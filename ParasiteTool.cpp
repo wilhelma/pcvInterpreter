@@ -37,40 +37,41 @@ ParasiteTool::ParasiteTool() {
 
 ParasiteTool::~ParasiteTool() {
 
-    cilk_tool_print(main_stack);
+    parasite_tool_print(main_stack);
     parasite_stack_frame_t *old_bottom = stack->bot;
-    free_cc_hashtable(stack->work_table);
+    free_parasite_hashtable(main_stack->work_table);
 
-    old_bottom->parent = stack->sf_free_list;
-    stack->sf_free_list = old_bottom;
+    old_bottom->parent = stack->stack_frame_free_list;
+    stack->stack_frame_free_list = old_bottom;
 
-    parasite_stack_frame_t *free_frame = stack->sf_free_list;
+    parasite_stack_frame_t *free_frame = stack->stack_frame_free_list;
     parasite_stack_frame_t *next_free_frame;
 
     while (NULL != free_frame) {
 
       next_free_frame = free_frame->parent;
-      free_cc_hashtable(free_frame->prefix_table);
-      free_cc_hashtable(free_frame->longest_child_table);
-      free_cc_hashtable(free_frame->continuation_table);
+      free_parasite_hashtable(free_frame->prefix_table);
+      free_parasite_hashtable(free_frame->longest_child_table);
+      free_parasite_hashtable(free_frame->continuation_table);
       free(free_frame);
       free_frame = next_free_frame;
     }
 
-    stack->sf_free_list = NULL;
+    stack->stack_frame_free_list = NULL;
 
-    free(stack->call_site_status);
-    free(stack->function_status);
-    free(stack->function_stack);
+    free(main_stack->call_site_status);
+    free(main_stack->function_status);
+    free(main_stack->function_stack);
 
-    cc_hashtable_list_el_t *free_list_el = ll_free_list;
-    cc_hashtable_list_el_t *next_free_list_el;
-    while (NULL != free_list_el) {
-      next_free_list_el = free_list_el->next;
-      free(free_list_el);
-      free_list_el = next_free_list_el;
+    parasite_hashtable_linked_list_node_t *free_list_node = linked_list_free_list;
+    parasite_hashtable_linked_list_node_t *next_free_list_node;
+
+    while (NULL != free_list_node) {
+      next_free_list_node = free_list_node->next;
+      free(free_list_node);
+      free_list_node = next_free_list_node;
     }
-    ll_free_list = NULL;
+    linked_list_free_list = NULL;
 
     // Free the tables of call sites and functions
     iaddr_table_free(call_site_table);
@@ -95,9 +96,9 @@ void ParasiteTool::create(const Event* e) {
 	currentThread = _info->childThread;
 
 	uint64_t strand_len = measure_and_add_strand_length(main_stack);
-	stack->bot->local_continuation += strand_len;
-	assert(main_stack->c_tail == main_stack->bot->c_head);
-	assert(stack->c_tail == stack->bot->c_head);
+	main_stack->bottom->local_continuation += strand_len;
+	assert(main_stack->tailFunctionSignature == main_stack->bottom->headFunctionSignature);
+	assert(main_stack->tailFunctionSignature == stack->bottom->headFunctionSignature);
 	begin_strand(stack);
 }
 
@@ -119,45 +120,45 @@ void ParasiteTool::join(const Event* e) {
 
 
 	uint64_t strand_len = measure_and_add_strand_length(stack);
-	stack->bot->local_contin += strand_len;
+	stack->bottom->local_contin += strand_len;
 
-	assert(stack->bot->c_head == stack->c_tail);
+	assert(main_stack->bottom->headFunctionSignature == stack->tailFunctionSignature);
 
 	cilkprof_stack_t *stack = &(GET_STACK(ctx_stack));
 
-	assert(stack->bot->c_head == stack->c_tail);
+	assert(main_stack->bottom->headFunctionSignature == stack->tailFunctionSignature);
 
-	c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
+	function_frame_t *c_bottom = &(main_stack->function_stack[stack->tailFunctionSignature]);
 
-	c_bottom->running_spn += stack->bot->local_contin;
+	c_bottom->running_span += stack->bottom->local_continuation;
 
-	if (stack->bot->lchild_spn > c_bottom->running_spn) {
-	stack->bot->prefix_spn += stack->bot->lchild_spn;
+	if (main_stack->bottom->longest_child_span > c_bottom->running_span) {
+	stack->bottom->prefix_span += stack->bottom->longest_child_span;
 
-	// local_spn does not increase, because critical path goes through
+	// local_span does not increase, because critical path goes through
 	// spawned child.
-	add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->lchild_table));
+	add_parasite_hashtables(&(main_stack->bottom->prefix_table), &(main_stack->bottom->longest_child_table));
 
 	} else {
-	/* stack->bot->prefix_spn += stack->bot->contin_spn; */
-	stack->bot->prefix_spn += c_bottom->running_spn;
+	/* stack->bottom->prefix_span += stack->bottom->continuation_span; */
+	stack->bottom->prefix_span += c_bottom->running_span;
 	// critical path goes through continuation, which is local.  add
-	// local_contin to local_spn.
-	stack->bot->local_spn += stack->bot->local_contin;
-	add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->contin_table));
+	// local_contin to local_span.
+	stack->bottom->local_span += stack->bottom->local_continuation;
+	add_parasite_hashtables(&(main_stack->bottom->prefix_table), &(main_stack->bottom->continuation_table));
 
 	}
 
 	// reset lchild and contin span variables
-	stack->bot->lchild_spn = 0;
-	c_bottom->running_spn = 0;
-	stack->bot->local_contin = 0;
-	clear_cc_hashtable(stack->bot->lchild_table);
-	clear_cc_hashtable(stack->bot->contin_table);
+	stack->bottom->longest_child_span = 0;
+	c_bottom->running_span = 0;
+	stack->bottom->local_contin = 0;
+	clear_parasite_hashtable(main_stack->bottom->longest_child_table);
+	clear_parasite_hashtable(main_stack->bottom->continuation_table);
 
 	// can't be anything else; only SPAWNER have sync
-	assert(SPAWNER == stack->bot->func_type); 
-	assert(!(stack->in_user_code));
+	assert(SPAWNER == stack->bottom->func_type); 
+	assert(!(main_stack->in_user_code));
 	stack->in_user_code = true;
 	begin_strand(stack);
 
@@ -176,48 +177,48 @@ void ParasiteTool::call(const Event* e) {
 	const FUN_SG parentSignature = getSignature(currentThread->threadId);
 
     uint64_t strand_len = measure_and_add_strand_length(stack);
-    if (stack->bot->c_head == stack->c_tail) {
-      stack->bot->local_contin += strand_len;
+    if (main_stack->bottom->headFunctionSignature == stack->tailFunctionSignature) {
+      stack->bottom->local_contin += strand_len;
     }
 
     // Push new frame for this C function onto the stack
-    c_fn_frame_t *c_bottom = cilkprof_c_fn_push(stack);
+    function_frame_t *c_bottom = cilkprof_c_fn_push(stack);
 
-    uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(rip);
+    uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(call_site_ID);
     uintptr_t fn = (uintptr_t)this_fn;
 
-    int32_t cs_index = add_to_iaddr_table(&call_site_table, cs, C_FUNCTION);
-    c_bottom->cs_index = cs_index;
-    if (cs_index >= stack->cs_status_capacity) {
-      resize_cs_status_vector(&(stack->cs_status), &(stack->cs_status_capacity));
+    int32_t call_site_ID = add_to_iaddr_table(&call_site_table, cs, C_FUNCTION);
+    c_bottom->call_site_ID = call_site_ID;
+    if (call_site_ID >= stack->cs_status_capacity) {
+      resize_cs_status_vector(&(main_stack->cs_status), &(main_stack->cs_status_capacity));
     }
-    int32_t cs_tail = stack->cs_status[cs_index].c_tail;
+    int32_t cs_tail = stack->cs_status[call_site_ID].tailFunctionSignature;
     if (OFF_STACK != cs_tail) {
-      if (!(stack->cs_status[cs_index].flags & RECURSIVE)) {
-        stack->cs_status[cs_index].flags |= RECURSIVE;
+      if (!(main_stack->cs_status[call_site_ID].flags & RECURSIVE)) {
+        stack->cs_status[call_site_ID].flags |= RECURSIVE;
       }
     } else {
       int32_t fn_index;
-      if (UNINITIALIZED == stack->cs_status[cs_index].fn_index) {
+      if (UNINITIALIZED == stack->cs_status[call_site_ID].fn_index) {
 
-        assert(call_site_table->table_size == cs_index + 1);
-        MIN_CAPACITY = cs_index + 1;
+        assert(call_site_table->table_size == call_site_ID + 1);
+        MIN_CAPACITY = call_site_ID + 1;
 
         fn_index = add_to_iaddr_table(&function_table, fn, C_FUNCTION);
-        stack->cs_status[cs_index].fn_index = fn_index;
+        stack->cs_status[call_site_ID].fn_index = fn_index;
         if (fn_index >= stack->fn_status_capacity) {
-          resize_fn_status_vector(&(stack->fn_status), &(stack->fn_status_capacity));
+          resize_fn_status_vector(&(main_stack->fn_status), &(main_stack->fn_status_capacity));
         }
       } else {
-        fn_index = stack->cs_status[cs_index].fn_index;
+        fn_index = stack->cs_status[call_site_ID].fn_index;
       }
-      stack->cs_status[cs_index].c_tail = stack->c_tail;
+      stack->cs_status[call_site_ID].tailFunctionSignature = stack->tailFunctionSignature;
       if (OFF_STACK == stack->fn_status[fn_index]) {
-        stack->fn_status[fn_index] = stack->c_tail;
+        stack->fn_status[fn_index] = stack->tailFunctionSignature;
       }
     }
 
-    c_bottom->rip = (uintptr_t)__builtin_extract_return_addr(rip);
+    c_bottom->call_site_ID = (uintptr_t)__builtin_extract_return_addr(call_site_ID);
     c_bottom->function = (uintptr_t)this_fn;
 
     /* the stop time is also the start time of this function */
@@ -274,84 +275,82 @@ void ParasiteTool::returnOfCalled(const Event* e){
 	const FUN_SG F_signature = this.threadFunctionMap[currentThread->threadId];
 	const FUN_SG G_signature = this.threadFunctionMap[childThread.threadId];
 
-
-    const c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
+    const function_frame_t *c_bottom = &(main_stack->function_stack[stack->tailFunctionSignature]);
   
     bool add_success;
-    /* cilkprof_stack_frame_t *old_bottom; */
-    const c_fn_frame_t *old_bottom;
+
+    const function_frame_t *old_bottom;
   
-    assert(stack->in_user_code);
+    assert(main_stack->in_user_code);
   
     // stop the timer and attribute the elapsed time to this returning
     // function
     measure_and_add_strand_length(stack);
   
-    assert(stack->c_tail > stack->bot->c_head);
+    assert(main_stack->tailFunctionSignature > stack->bottom->headFunctionSignature);
   
     // Pop the stack
     old_bottom = cilkprof_c_fn_pop(stack);
-    /* assert(old_bottom->local_wrk == old_bottom->local_contin); */
-    uint64_t local_wrk = old_bottom->local_wrk;
-    uint64_t running_wrk = old_bottom->running_wrk + local_wrk;
-    uint64_t running_spn = old_bottom->running_spn + local_wrk;
+    uint64_t local_work = old_bottom->local_work;
+    uint64_t running_work = old_bottom->running_work + local_work;
+    uint64_t running_span = old_bottom->running_span + local_work;
   
-    int32_t cs_index = old_bottom->cs_index;
-    int32_t cs_tail = stack->cs_status[cs_index].c_tail;
-    bool top_cs = (cs_tail == stack->c_tail + 1);
+    int32_t call_site_ID = old_bottom->call_site_ID;
+    int32_t cs_tail = stack->cs_status[call_site_ID].tailFunctionSignature;
+    bool top_cs = (cs_tail == stack->tailFunctionSignature + 1);
   
     if (top_cs) {  // top call site instance
-      stack->cs_status[cs_index].c_tail = OFF_STACK;
-      int32_t fn_index = stack->cs_status[cs_index].fn_index;
-      if (stack->fn_status[fn_index] == stack->c_tail + 1) {
+      stack->cs_status[call_site_ID].tailFunctionSignature = OFF_STACK;
+      int32_t fn_index = stack->cs_status[call_site_ID].fn_index;
+      if (main_stack->fn_status[fn_index] == stack->tailFunctionSignature + 1) {
         stack->fn_status[fn_index] = OFF_STACK;
       }
     }
   
-    c_fn_frame_t *new_bottom = &(stack->c_stack[stack->c_tail]);
-    new_bottom->running_wrk += running_wrk;
-    new_bottom->running_spn += running_spn;
+    function_frame_t *new_bottom = &(main_stack->function_stack[stack->tailFunctionSignature]);
+    new_bottom->running_work += running_work;
+    new_bottom->running_span += running_span;
   
   
     // Update work table
     if (top_cs) {
-      uint32_t fn_index = stack->cs_status[new_bottom->cs_index].fn_index;
-      /* fprintf(stderr, "adding to wrk table\n"); */
-      add_success = add_to_cc_hashtable(&(stack->wrk_table),
-                                        stack->c_tail == stack->fn_status[fn_index],
-                                        cs_index,
-                                        old_bottom->rip,
-                                        running_wrk,
-                                        running_spn,
-                                        local_wrk,
-                                        local_wrk);
+      uint32_t fn_index = stack->cs_status[new_bottom->call_site_ID].fn_index;
+      /* fprintf(stderr, "adding to work table\n"); */
+      add_success = add_to_parasite_hashtable(&(main_stack->work_table),
+                                        stack->tailFunctionSignature == stack->fn_status[fn_index],
+                                        call_site_ID,
+                                        old_bottom->call_site_ID,
+                                        running_work,
+                                        running_span,
+                                        local_work,
+                                        local_work);
       assert(add_success);
 
-      add_success = add_to_cc_hashtable(&(stack->bot->contin_table),
-                                        stack->c_tail == stack->fn_status[fn_index],
-                                        cs_index,
-                                        old_bottom->rip,
-                                        running_wrk,
-                                        running_spn,
-                                        local_wrk,
-                                        local_wrk);
+      add_success = add_to_parasite_hashtable(&(main_stack->bottom->continuation_table),
+                                        stack->tailFunctionSignature == stack->fn_status[fn_index],
+                                        call_site_ID,
+                                        old_bottom->call_site_ID,
+                                        running_work,
+                                        running_span,
+                                        local_work,
+                                        local_work);
       assert(add_success);
     } else {
 
       // Only record the local work and local span
-      /* fprintf(stderr, "adding to wrk table\n"); */
-      add_success = add_local_to_cc_hashtable(&(stack->wrk_table),
-                                              cs_index,
-                                              old_bottom->rip,
-                                              local_wrk,
-                                              local_wrk);
+      /* fprintf(stderr, "adding to work table\n"); */
+      add_success = add_local_to_parasite_hashtable(&(main_stack->work_table),
+                                              call_site_ID,
+                                              old_bottom->call_site_ID,
+                                              local_work,
+                                              local_work);
       assert(add_success);
       /* fprintf(stderr, "adding to contin table\n"); */
-      add_success = add_local_to_cc_hashtable(&(stack->bot->contin_table),
-                                              cs_index,
-                                              old_bottom->rip,
-                                              local_wrk,
-                                              local_wrk);
+      add_success = add_local_to_parasite_hashtable(&(main_stack->bottom->continuation_table),
+                                              call_site_ID,
+                                              old_bottom->call_site_ID,
+                                              local_work,
+                                              local_work);
       assert(add_success);
     }
   
@@ -382,88 +381,88 @@ void ParasiteTool::threadEnd(const Event* e){
 	bool add_success;
 
 	uint64_t strand_len = measure_and_add_strand_length(stack);
-	stack->bot->local_contin += strand_len;
+	stack->bottom->local_contin += strand_len;
 
-	assert(stack->in_user_code);
+	assert(main_stack->in_user_code);
 	stack->in_user_code = false;
 
 	// We are leaving this function, so it must have sync-ed, meaning
 	// that, lchild should be 0 / empty.  prefix could contain value,
 	// however, if this function is a Cilk function that spawned before.
-	assert(0 == stack->bot->lchild_spn);
-	assert(cc_hashtable_is_empty(stack->bot->lchild_table));
+	assert(0 == stack->bottom->longest_child_span);
+	assert(parasite_hashtable_is_empty(main_stack->bottom->longest_child_table));
 
-	assert(stack->bot->c_head == stack->c_tail);
+	assert(main_stack->bottom->headFunctionSignature == stack->tailFunctionSignature);
 
-	c_fn_frame_t *old_c_bottom = &(stack->c_stack[stack->c_tail]);
+	function_frame_t *old_c_bottom = &(main_stack->function_stack[stack->tailFunctionSignature]);
 
-	stack->bot->prefix_spn += old_c_bottom->running_spn;
-	stack->bot->local_spn += stack->bot->local_contin + BURDENING;
-	old_c_bottom->running_wrk += old_c_bottom->local_wrk;
-	stack->bot->prefix_spn += stack->bot->local_spn;
+	stack->bottom->prefix_span += old_c_bottom->running_span;
+	stack->bottom->local_span += stack->bottom->local_contin + BURDENING;
+	old_c_bottom->running_work += old_c_bottom->local_work;
+	stack->bottom->prefix_span += stack->bottom->local_span;
 
-	add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->contin_table));
+	add_parasite_hashtables(&(main_stack->bottom->prefix_table), &(main_stack->bottom->continuation_table));
 
 	// Pop the stack
 	old_bottom = cilkprof_stack_pop(stack);
 
-	c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
+	function_frame_t *c_bottom = &(main_stack->function_stack[stack->tailFunctionSignature]);
 
-	int32_t cs_index = old_c_bottom->cs_index;
-	int32_t cs_tail = stack->cs_status[cs_index].c_tail;
-	bool top_cs = (cs_tail == stack->c_tail + 1);
+	int32_t call_site_ID = old_c_bottom->call_site_ID;
+	int32_t cs_tail = stack->cs_status[call_site_ID].tailFunctionSignature;
+	bool top_cs = (cs_tail == stack->tailFunctionSignature + 1);
 
 	if (top_cs) {  // top CS instance
-	stack->cs_status[cs_index].c_tail = OFF_STACK;
-	int32_t fn_index = stack->cs_status[cs_index].fn_index;
-	if (stack->fn_status[fn_index] == stack->c_tail + 1) {
+	stack->cs_status[call_site_ID].tailFunctionSignature = OFF_STACK;
+	int32_t fn_index = stack->cs_status[call_site_ID].fn_index;
+	if (main_stack->fn_status[fn_index] == stack->tailFunctionSignature + 1) {
 	  stack->fn_status[fn_index] = OFF_STACK;
 	}
 	}
 
-	c_bottom->running_wrk += old_c_bottom->running_wrk;
+	c_bottom->running_work += old_c_bottom->running_work;
 
 	// Update work table
 	if (top_cs) {
 
-		int32_t fn_index = stack->cs_status[c_bottom->cs_index].fn_index;
-		add_success = add_to_cc_hashtable(&(stack->wrk_table),
-		                                  stack->c_tail == stack->fn_status[fn_index],
-		                                  cs_index,
-		                                  old_c_bottom->rip,
-		                                  old_c_bottom->running_wrk,
-		                                  old_bottom->prefix_spn,
-		                                  old_c_bottom->local_wrk,
-		                                  old_bottom->local_spn);
+		int32_t fn_index = stack->cs_status[c_bottom->call_site_ID].fn_index;
+		add_success = add_to_parasite_hashtable(&(main_stack->work_table),
+		                                  stack->tailFunctionSignature == stack->fn_status[fn_index],
+		                                  call_site_ID,
+		                                  old_c_bottom->call_site_ID,
+		                                  old_c_bottom->running_work,
+		                                  old_bottom->prefix_span,
+		                                  old_c_bottom->local_work,
+		                                  old_bottom->local_span);
 		assert(add_success);
 
 
-		add_success = add_to_cc_hashtable(&(old_bottom->prefix_table),
-		                                  stack->c_tail == stack->fn_status[fn_index],
-		                                  cs_index,
-		                                  old_c_bottom->rip,
-		                                  old_c_bottom->running_wrk,
-		                                  old_bottom->prefix_spn,
-		                                  old_c_bottom->local_wrk,
-		                                  old_bottom->local_spn);
+		add_success = add_to_parasite_hashtable(&(old_bottom->prefix_table),
+		                                  stack->tailFunctionSignature == stack->fn_status[fn_index],
+		                                  call_site_ID,
+		                                  old_c_bottom->call_site_ID,
+		                                  old_c_bottom->running_work,
+		                                  old_bottom->prefix_span,
+		                                  old_c_bottom->local_work,
+		                                  old_bottom->local_span);
 		assert(add_success);
 	} 
 
 	else {
 
 		// Only record the local work and local span
-		add_success = add_local_to_cc_hashtable(&(stack->wrk_table),
-		                                        cs_index,
-		                                        old_c_bottom->rip,
-		                                        old_c_bottom->local_wrk,
-		                                        old_bottom->local_spn);
+		add_success = add_local_to_parasite_hashtable(&(main_stack->work_table),
+		                                        call_site_ID,
+		                                        old_c_bottom->call_site_ID,
+		                                        old_c_bottom->local_work,
+		                                        old_bottom->local_span);
 		assert(add_success);
 
-		add_success = add_local_to_cc_hashtable(&(old_bottom->prefix_table),
-		                                        cs_index,
-		                                        old_c_bottom->rip,
-		                                        old_c_bottom->local_wrk,
-		                                        old_bottom->local_spn);
+		add_success = add_local_to_parasite_hashtable(&(old_bottom->prefix_table),
+		                                        call_site_ID,
+		                                        old_c_bottom->call_site_ID,
+		                                        old_c_bottom->local_work,
+		                                        old_bottom->local_span);
 		assert(add_success);
 	}
 
@@ -471,44 +470,44 @@ void ParasiteTool::threadEnd(const Event* e){
 	// This is the case we are returning to a spawn, since a HELPER 
 	// is always invoked due to a spawn statement.
 
-	assert(HELPER != stack->bot->func_type);
+	assert(HELPER != stack->bottom->func_type);
 
-	if (c_bottom->running_spn + old_bottom->prefix_spn > stack->bot->lchild_spn) {
+	if (c_bottom->running_span + old_bottom->prefix_span > stack->bottom->longest_child_span) {
 
-	  stack->bot->prefix_spn += c_bottom->running_spn;
-	  stack->bot->local_spn += stack->bot->local_contin;
+	  stack->bottom->prefix_span += c_bottom->running_span;
+	  stack->bottom->local_span += stack->bottom->local_continuation;
 
 	  // This needs a better data structure to be implemented more
 	  // efficiently.
-	  add_cc_hashtables(&(stack->bot->prefix_table), &(stack->bot->contin_table));
+	  add_parasite_hashtables(&(main_stack->bottom->prefix_table), &(main_stack->bottom->continuation_table));
 
 	  // Save old_bottom tables in new bottom's l_child variable.
-	  stack->bot->lchild_spn = old_bottom->prefix_spn;
-	  clear_cc_hashtable(stack->bot->lchild_table);
+	  stack->bottom->longest_child_span = old_bottom->prefix_span;
+	  clear_parasite_hashtable(main_stack->bottom->longest_child_table);
 
-	  cc_hashtable_t* tmp_cc = stack->bot->lchild_table;
-	  stack->bot->lchild_table = old_bottom->prefix_table;
-	  old_bottom->prefix_table = tmp_cc;
+	  parasite_hashtable_t* tmp_hashtable = stack->bottom->longest_child_table;
+	  stack->bottom->longest_child_table = old_bottom->prefix_table;
+	  old_bottom->prefix_table = tmp_hashtable;
 
 	  // Free old_bottom tables that are no longer in use
-	  clear_cc_hashtable(old_bottom->lchild_table);
-	  clear_cc_hashtable(old_bottom->contin_table);
+	  clear_parasite_hashtable(old_bottom->longest_child_table);
+	  clear_parasite_hashtable(old_bottom->continuation_table);
 
 	  // Empy new bottom's continuation
-	  c_bottom->running_spn = 0;
-	  stack->bot->local_contin = 0;
-	  clear_cc_hashtable(stack->bot->contin_table);
+	  c_bottom->running_span = 0;
+	  stack->bottom->local_contin = 0;
+	  clear_parasite_hashtable(main_stack->bottom->continuation_table);
 
 	} else {
 	  // Discared all tables from old_bottom
-	  clear_cc_hashtable(old_bottom->prefix_table);
-	  clear_cc_hashtable(old_bottom->lchild_table);
-	  clear_cc_hashtable(old_bottom->contin_table);
+	  clear_parasite_hashtable(old_bottom->prefix_table);
+	  clear_parasite_hashtable(old_bottom->longest_child_table);
+	  clear_parasite_hashtable(old_bottom->continuation_table);
 
 	}
 
-	old_bottom->parent = stack->sf_free_list;
-	stack->sf_free_list = old_bottom;
+	old_bottom->parent = stack->stack_frame_free_list;
+	stack->stack_frame_free_list = old_bottom;
 	begin_strand(stack);
 }
 
