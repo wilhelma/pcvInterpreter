@@ -45,7 +45,7 @@ typedef struct parasite_stack_frame_t {
   FunctionType_t func_type;
 
   // Signature of head function in call stack
-  FUN_SG functionSignature;
+  FUN_SG headFunctionSignature;
 
   // Local continuation span of this function
   TIME local_continuation;
@@ -81,7 +81,7 @@ typedef struct parasite_stack_frame_t {
 typedef struct {
   /* uint32_t count_on_stack; */
   /* FunctionType_t func_type; */
-  int32_t function_stack_tail;
+  FUN_SG tailFunctionSignature;
   FUN_SG fnSignature;
   uint32_t flags;
 } call_site_status_t;

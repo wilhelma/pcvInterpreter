@@ -37,7 +37,7 @@ ParasiteTool::ParasiteTool() {
 
 ParasiteTool::~ParasiteTool() {
 
-    cilk_tool_print();
+    cilk_tool_print(main_stack);
     parasite_stack_frame_t *old_bottom = stack->bot;
     free_cc_hashtable(stack->work_table);
 
