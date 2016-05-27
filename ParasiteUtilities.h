@@ -1,3 +1,5 @@
+#ifndef _PARASITE_UTILITIES_H_
+#define _PARASITE_UTILITIES_H_
 
 #include <inttypes.h>
 #include <execinfo.h>
@@ -46,3 +48,5 @@ uintptr_t rip2cc(uintptr_t rip);
 void read_proc_maps(void);
 char* get_info_on_inst_addr(uint64_t addr, int *line_no, char **file);
 void print_addr(uintptr_t a);
+
+#endif

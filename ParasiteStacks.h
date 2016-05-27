@@ -1,12 +1,9 @@
-// Types of functions
-typedef enum {
-  EMPTY = 0,
-  IS_RECURSIVE = 1,
-  MAIN = 2,
-  SPAWNER = 4,
-  HELPER = 6,
-  C_FUNCTION = 8
-} FunctionType_t;
+#ifndef _PARASITE_STACKS_H_
+#define _PARASITE_STACKS_H_
+
+#include "ParasiteUtilities.h"
+#include "strand_time_rdtsc.h"
+#include "assert.h"
 
 // Used to size call site status vector 
 const int START_FUNCTION_STATUS_VECTOR_SIZE = 4;
@@ -18,7 +15,8 @@ const int START_CALL_SITE_STACK_SIZE = 8;
 typedef struct function_frame_t {
 
   // ID for the function's call site
-  CALL_SITE_ID call_site_ID;
+  // CALL_SITE_ID call_site_ID;
+  int call_site_id;
 
   // Signature for the function
   FUN_SG functionSignature;
@@ -153,9 +151,8 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
 static inline
 void parasite_function_frame_init(function_frame_t *function_frame) {
 
-  function_frame->call_site_index = 0;
-  function_frame->call_site_id = (uintptr_t)NULL;
-  function_frame->function = (uintptr_t)NULL;
+  function_frame->call_site_id = 0;
+  // function_frame->functionSignature = NULL;
 
   function_frame->local_work = 0;
   function_frame->running_work = 0;
@@ -250,16 +247,16 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
   stack->bot = new_frame;
 
   stack->work_table = parasite_hashtable_create();
-  stack->call_site_status_capacity = START_FUNCTION_VECTOR_SIZE;
-  stack->function_status_capacity = START_FUNCTION_VECTOR_SIZE;
+  stack->call_site_status_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
+  stack->function_status_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
 
   stack->call_site_status = (call_site_status_t*)malloc(sizeof(call_site_status_t)
-                                          * START_FUNCTION_VECTOR_SIZE);
+                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
 
   stack->function_status = (function_status_t*)malloc(sizeof(function_status_t)
-                                          * START_FUNCTION_VECTOR_SIZE);
+                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
 
-  for (int i = 0; i < START_FUNCTION_VECTOR_SIZE; ++i) {
+  for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
 
     stack->call_site_status[i].function_stack_tail = OFF_STACK;
     stack->call_site_status[i].function_index = UNINITIALIZED;
@@ -331,3 +328,5 @@ parasite_stack_frame_t* parasite_stack_pop(parasite_stack_t *stack)
   parasite_function_pop(stack);
   return old_bottom;
 }
+
+#endif

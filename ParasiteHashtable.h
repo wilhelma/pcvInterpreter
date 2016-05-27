@@ -1,3 +1,6 @@
+#ifndef _PARASITE_HASHTABLE_H_
+#define _PARASITE_HASHTABLE_H_
+
 #include <stdbool.h>
 #include "ParasiteUtilities.h"
 
@@ -101,19 +104,19 @@ void flush_parasite_hashtable(parasite_hashtable_t **table);
 bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          bool is_top_fn,
                          int index,
-                         CALL_SITE_ID call_site_id,
+                         int call_site_id,
+                         // CALL_SITE_ID call_site_id,
                          TIME work, TIME span,
                          TIME local_work, TIME local_span);
 
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
                                int index,
-                               CALL_SITE_ID call_site_id,
+                               int call_site_id,
+                               // CALL_SITE_ID call_site_id,
                                TIME local_work, TIME local_span);
 
 void free_parasite_hashtable(parasite_hashtable_t *table); 
 
 bool parasite_hashtable_is_empty(const parasite_hashtable_t *table);
 
-
-
-
+#endif
