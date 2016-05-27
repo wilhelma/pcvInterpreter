@@ -154,13 +154,13 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
   free(*function_stack);
   *function_stack = new_function_stack;
   *function_stack_capacity = new_function_stack_capacity;
-}
+
 
 // Initializes C function frame *function_frame
 static inline
 void parasite_function_frame_init(function_frame_t *function_frame) {
 
-  function_frame->call_site_id = 0;
+  function_frame->call_site_ID = 0;
   // function_frame->functionSignature = NULL;
 
   function_frame->local_work = 0;
@@ -189,21 +189,21 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
 
 
 // Push new frame of C function onto the C function stack starting at
-// stack->bot->function_frame.
+// stack->bottom->function_frame.
 function_frame_t* parasite_function_push(parasite_stack_t *stack)
 {
   /* fprintf(stderr, "pushing C stack\n"); */
-  assert(NULL != stack->bot);
+  assert(NULL != stack->bottom);
 
-  ++stack->function_stack_tail;
+  ++stack->function_stack_tail_index;
 
-  if (stack->function_stack_tail >= stack->function_stack_capacity) {
+  if (stack->function_stack_tail_index >= stack->function_stack_capacity) {
     resize_function_stack(&(stack->function_stack), &(stack->function_stack_capacity));
   }
 
-  parasite_function_frame_init(&(stack->function_stack[stack->function_stack_tail]));
+  parasite_function_frame_init(&(stack->function_stack[stack->function_stack_tail_index]));
 
-  return &(stack->function_stack[stack->function_stack_tail]);
+  return &(stack->function_stack[stack->function_stack_tail_index]);
 }
 
 
@@ -213,9 +213,9 @@ parasite_stack_frame_t*
 parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 {
   parasite_stack_frame_t *new_frame;
-  if (NULL != stack->sf_free_list) {
-    new_frame = stack->sf_free_list;
-    stack->sf_free_list = stack->sf_free_list->parent;
+  if (NULL != stack->stack_frame_free_list) {
+    new_frame = stack->stack_frame_free_list;
+    stack->stack_frame_free_list = stack->stack_frame_free_list->parent;
   } else {
 
     new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
@@ -228,8 +228,8 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 
   parasite_function_push(stack);
   parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail);
-  new_frame->parent = stack->bot;
-  stack->bot = new_frame;
+  new_frame->parent = stack->bottom;
+  stack->bottom = new_frame;
   return new_frame;
 }
 
@@ -237,12 +237,12 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 // Initializes the parasite stack
 void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
 {
-  stack->bot = NULL;
-  stack->sf_free_list = NULL;
+  stack->bottom = NULL;
+  stack->stack_frame_free_list = NULL;
 
   stack->function_stack = (function_frame_t*)malloc(sizeof(function_frame_t) * START_C_STACK_SIZE);
   stack->function_stack_capacity = START_C_STACK_SIZE;
-  stack->function_stack_tail = 0;
+  stack->function_stack_tail_index = 0;
 
   parasite_stack_frame_t *new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
 
@@ -253,13 +253,13 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
   parasite_stack_frame_init(new_frame, func_type, 0);
   parasite_function_frame_init(&(stack->function_stack[0]));
 
-  stack->bot = new_frame;
+  stack->bottom = new_frame;
 
   stack->work_table = parasite_hashtable_create();
-  stack->call_site_status_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
-  stack->function_status_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
+  stack->call_site_status_vector_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
+  stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
 
-  stack->call_site_status = (call_site_status_t*)malloc(sizeof(call_site_status_t)
+  stack->call_site_status_vector = (call_site_status_t*)malloc(sizeof(call_site_status_t)
                                           * START_FUNCTION_STATUS_VECTOR_SIZE);
 
   stack->function_status = (function_status_t*)malloc(sizeof(function_status_t)
@@ -267,10 +267,10 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
 
   for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
 
-    stack->call_site_status[i].function_stack_tail = OFF_STACK;
-    stack->call_site_status[i].function_index = UNINITIALIZED;
-    stack->call_site_status[i].flags = 0;
-    stack->function_status[i] = OFF_STACK;
+    stack->call_site_status_vector[i].call_site_tail_function_index = OFF_STACK;
+    stack->call_site_status_vector[i].call_site_function_index = UNINITIALIZED;
+    stack->call_site_status_vector[i].flags = 0;
+    stack->function_status_vector[i] = OFF_STACK;
   }
 
   init_strand_ruler(&(stack->strand_ruler));
@@ -288,8 +288,8 @@ void resize_call_site_status_vector(call_site_status_t **old_status_vec,
   }
   for ( ; i < new_vec_capacity; ++i) {
     /* new_status_vec[i].count_on_stack = 0; */
-    new_status_vec[i].function_stack_tail = OFF_STACK;
-    new_status_vec[i].function_index = UNINITIALIZED;
+    new_status_vec[i].call_site_tail_function_index = OFF_STACK;
+    new_status_vec[i].call_site_function_index = UNINITIALIZED;
     new_status_vec[i].flags = 0;
   }
 
@@ -318,13 +318,13 @@ void resize_function_status_vector(function_status_t **old_status_vec,
 }
 
 // Pops the bottommost C frame off of the stack
-// stack->bot->function_frame, and returns a pointer to it.
+// stack->bottom->function_frame, and returns a pointer to it.
 function_frame_t* parasite_function_pop(parasite_stack_t *stack)
 {
-  function_frame_t *old_c_bot = &(stack->function_stack[stack->function_stack_tail]);
-  --stack->function_stack_tail;
-  assert(stack->function_stack_tail >= stack->bot->functionSignature);
-  return old_c_bot;
+  function_frame_t *old_c_bottom = &(stack->function_stack[stack->function_stack_tail_index]);
+  --stack->function_stack_tail_index;
+  assert(stack->function_stack_tail_index >= stack->bottom->head_function_index);
+  return old_c_bottom;
 }
 
 
@@ -332,8 +332,8 @@ function_frame_t* parasite_function_pop(parasite_stack_t *stack)
 // pointer to it.
 parasite_stack_frame_t* parasite_stack_pop(parasite_stack_t *stack)
 {
-  parasite_stack_frame_t *old_bottom = stack->bot;
-  stack->bot = stack->bot->parent;
+  parasite_stack_frame_t *old_bottom = stack->bottom;
+  stack->bottom = stack->bottom->parent;
   parasite_function_pop(stack);
   return old_bottom;
 }

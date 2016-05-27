@@ -42,7 +42,7 @@ void ParasiteTool::print()
   parasite_stack_frame_t *bottom = main_stack->bottom;
   function_frame_t *c_bottom = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
 
-  uint64_t span = bottom->prefix_span + c_bottom->running_span
+  double span = bottom->prefix_span + c_bottom->running_span
       + bottom->local_span + bottom->local_continuation;
 
   add_parasite_hashtables(&(bottom->prefix_table), &(bottom->continuation_table));
@@ -55,7 +55,7 @@ void ParasiteTool::print()
           "span_table->list_size = %d, span_table->table_size = %d, span_table->lg_capacity = %d\n",
       span_table->list_size, span_table->table_size, span_table->log_capacity);
 
-  uint64_t work = c_bottom->running_work + c_bottom->local_work;
+  double work = c_bottom->running_work + c_bottom->local_work;
   flush_parasite_hashtable(&(main_stack->work_table));
   parasite_hashtable_t* work_table = main_stack->work_table;
   fprintf(stderr, 
@@ -98,35 +98,35 @@ void ParasiteTool::print()
 
       assert(entry->call_site_ID == record->iaddr);
 
-      uint64_t work_work = entry->work;
-      uint64_t span_work = entry->span;
+      double work_work = entry->work;
+      double span_work = entry->span;
       double par_work = (double)work_work/(double)span_work;
-      uint64_t cnt_work = entry->count;
+      double cnt_work = entry->count;
 
-      uint64_t t_work_work = entry->top_work;
-      uint64_t t_span_work = entry->top_span;
+      double t_work_work = entry->top_work;
+      double t_span_work = entry->top_span;
       double t_par_work = (double)t_work_work/(double)t_span_work;
-      uint64_t t_cnt_work = entry->top_count;
+      double t_cnt_work = entry->top_count;
 
-      uint64_t l_work_work = entry->local_work;
-      uint64_t l_span_work = entry->local_span;
+      double l_work_work = entry->local_work;
+      double l_span_work = entry->local_span;
       double l_par_work = (double)l_work_work/(double)l_span_work;
-      uint64_t l_cnt_work = entry->local_call_site_invocation_count;
+      double l_cnt_work = entry->local_call_site_invocation_count;
 
-      uint64_t work_span = 0;
-      uint64_t span_span = 0;
+      double work_span = 0;
+      double span_span = 0;
       double par_span = DBL_MAX;
-      uint64_t cnt_span = 0;
+      double cnt_span = 0;
 
-      uint64_t t_work_span = 0;
-      uint64_t t_span_span = 0;
+      double t_work_span = 0;
+      double t_span_span = 0;
       double t_par_span = DBL_MAX;
-      uint64_t t_cnt_span = 0;
+      double t_cnt_span = 0;
 
-      uint64_t l_work_span = 0;
-      uint64_t l_span_span = 0;
+      double l_work_span = 0;
+      double l_span_span = 0;
       double l_par_span = DBL_MAX;
-      uint64_t l_cnt_span = 0;
+      double l_cnt_span = 0;
 
       if (record->index < (1 << span_table->log_capacity)) {
         parasite_hashtable_entry_t *st_entry = &(span_table->entries[ record->index ]);
@@ -155,14 +155,14 @@ void ParasiteTool::print()
 
       int line = 0; 
       char *fstr = NULL;
-      uint64_t addr = record->iaddr;
+      double addr = record->iaddr;
 
       // get_info_on_inst_addr returns a char array from some system call that
       // needs to get freed by the user after we are done with the info
       char *line_to_free = get_info_on_inst_addr(addr, &line, &fstr);
-      char *file = basename(fstr);
+      char *file = fstr;
 
-      fprintf(fout, "\"%s\", %d, 0x%lx, ", file, line, addr);
+      fprintf(fout, "\"%s\", %d, %f, ", file, line, addr);
       FunctionType_t func_type = record->func_type;
       if (main_stack->call_site_status_vector[record->index].flags & RECURSIVE) {  // recursive function
         fprintf(fout, "%s %s, ",
@@ -171,11 +171,11 @@ void ParasiteTool::print()
       } else {
         fprintf(fout, "%s, ", FunctionType_str[func_type]);
       }
-      fprintf(fout, "%lu, %lu, %g, %lu, %lu, %lu, %g, %lu, %lu, %lu, %g, %lu, ", 
+      fprintf(fout, "%f, %f, %g, %f, %f, %f, %g, %f, %f, %f, %g, %f, ", 
               work_work, span_work, par_work, cnt_work,
               t_work_work, t_span_work, t_par_work, t_cnt_work,
               l_work_work, l_span_work, l_par_work, l_cnt_work);
-      fprintf(fout, "%lu, %lu, %g, %lu, %lu, %lu, %g, %lu, %lu, %lu, %g, %lu\n", 
+      fprintf(fout, "%f, %f, %g, %f, %f, %f, %g, %f, %f, %f, %g, %f\n", 
               work_span, span_span, par_span, cnt_span,
               t_work_span, t_span_span, t_par_span, t_cnt_span,
               l_work_span, l_span_span, l_par_span, l_cnt_span);
