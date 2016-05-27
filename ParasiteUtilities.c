@@ -27,11 +27,6 @@ void ensure_serial_tool(void) {
   }
 }
 
-// Arch-dependent method for translating a RIP into a call site
-inline uintptr_t rip2cc(uintptr_t rip) {
-  return rip - 5;
-}
-
 void read_proc_maps(void) {
   pid_t pid = getpid();
   char path[100];

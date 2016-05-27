@@ -30,6 +30,183 @@
 
 // Helper functions
 
+void ParasiteTool::print()
+{
+  FILE *fout;
+  char filename[64];
+
+  assert(NULL != main_stack->bottom);
+  assert(MAIN == main_stack->bottom->func_type);
+  assert(main_stack->bottom->head_function_signature == main_stack->function_stack_tail);
+
+  parasite_stack_frame_t *bottom = stack->bottom;
+  function_frame_t *c_bottom = &(stack->c_stack[stack->function_stack_tail]);
+
+  uint64_t span = bottom->prefix_span + c_bottom->running_span
+      + bottom->local_span + bottom->local_continuation;
+
+  add_parasite_hashtables(&(bottom->prefix_table), &(bottom->continuation_table));
+  clear_parasite_hashtable(bottom->continuation_table);
+
+  flush_parasite_hashtable(&(bottom->prefix_table));
+
+  parasite_hashtable_t* span_table = bottom->prefix_table;
+  fprintf(stderr, 
+          "span_table->list_size = %d, span_table->table_size = %d, span_table->lg_capacity = %d\n",
+      span_table->list_size, span_table->table_size, span_table->log_capacity);
+
+  uint64_t work = c_bottom->running_work + c_bottom->local_work;
+  flush_parasite_hashtable(&(stack->work_table));
+  parasite_hashtable_t* work_table = stack->work_table;
+  fprintf(stderr, 
+          "work_table->list_size = %d, work_table->table_size = %d, work_table->lg_capacity = %d\n",
+      work_table->list_size, work_table->table_size, work_table->log_capacity);
+
+  // Read the proc maps list
+  read_proc_maps();
+
+  // Open call site CSV
+  sprintf(filename, "parasite_call_site_profile.csv");
+  fout = fopen(filename, "w"); 
+
+  // print the header for the csv file
+  /* fprintf(fout, "file, line, call sites (call_site_ID), depth, "); */
+  fprintf(fout, "file, line, call sites (call_site_ID), function type, ");
+  fprintf(fout, "work on work, span on work, parallelism on work, count on work, ");
+  fprintf(fout, "top work on work, top span on work, top parallelism on work, top count on work, ");
+  fprintf(fout, "local work on work, local span on work, local parallelism on work, local count on work, ");
+  fprintf(fout, "work on span, span on span, parallelism on span, count on span, ");
+  fprintf(fout, "top work on span, top span on span, top parallelism on span, top count on span, ");
+  fprintf(fout, "local work on span, local span on span, local parallelism on span, local count on span \n");
+
+  // Parse tables
+  int span_table_entries_read = 0;
+  for (size_t i = 0; i < (1 << (call_site_table->lg_capacity)); ++i) {
+    iaddr_record_t *record = call_site_table->records[i];
+    while (NULL != record /* && (uintptr_t)NULL != record->iaddr */) {
+
+      assert(0 != record->iaddr);
+      assert(0 <= record->index && record->index < (1 << work_table->log_capacity));
+
+      parasite_hashtable_entry_t *entry = &(work_table->entries[ record->index ]);
+
+
+      if (hashtable_entry_is_empty(entry)) {
+        record = record->next;
+        continue;
+      }
+
+      assert(entry->call_site_ID == record->iaddr);
+
+      uint64_t work_work = entry->work;
+      uint64_t span_work = entry->span;
+      double par_work = (double)work_work/(double)span_work;
+      uint64_t cnt_work = entry->count;
+
+      uint64_t t_work_work = entry->top_work;
+      uint64_t t_span_work = entry->top_span;
+      double t_par_work = (double)t_work_work/(double)t_span_work;
+      uint64_t t_cnt_work = entry->top_count;
+
+      uint64_t l_work_work = entry->local_work;
+      uint64_t l_span_work = entry->local_span;
+      double l_par_work = (double)l_work_work/(double)l_span_work;
+      uint64_t l_cnt_work = entry->local_call_site_invocation_count;
+
+      uint64_t work_span = 0;
+      uint64_t span_span = 0;
+      double par_span = DBL_MAX;
+      uint64_t cnt_span = 0;
+
+      uint64_t t_work_span = 0;
+      uint64_t t_span_span = 0;
+      double t_par_span = DBL_MAX;
+      uint64_t t_cnt_span = 0;
+
+      uint64_t l_work_span = 0;
+      uint64_t l_span_span = 0;
+      double l_par_span = DBL_MAX;
+      uint64_t l_cnt_span = 0;
+
+      if (record->index < (1 << span_table->log_capacity)) {
+        parasite_hashtable_entry_t *st_entry = &(span_table->entries[ record->index ]);
+
+        if (!hashtable_entry_is_empty(st_entry)) {
+          assert(st_entry->call_site_ID == entry->call_site_ID);
+
+          work_span = st_entry->work;
+          span_span = st_entry->span;
+          par_span = (double)work_span / (double)span_span;
+          cnt_span = st_entry->count;
+
+          t_work_span = st_entry->top_work;
+          t_span_span = st_entry->top_span;
+          t_par_span = (double)t_work_span / (double)t_span_span;
+          t_cnt_span = st_entry->top_count;
+
+          l_work_span = st_entry->local_work;
+          l_span_span = st_entry->local_span;
+          l_par_span = (double)l_work_span / (double)l_span_span;
+          l_cnt_span = st_entry->local_call_site_invocation_count;
+
+          ++span_table_entries_read;
+        }
+      }
+
+      int line = 0; 
+      char *fstr = NULL;
+      uint64_t addr = record->iaddr;
+
+      // get_info_on_inst_addr returns a char array from some system call that
+      // needs to get freed by the user after we are done with the info
+      char *line_to_free = get_info_on_inst_addr(addr, &line, &fstr);
+      char *file = basename(fstr);
+
+      fprintf(fout, "\"%s\", %d, 0x%lx, ", file, line, addr);
+      FunctionType_t func_type = record->func_type;
+      if (stack->call_site_status_vector[record->index].flags & RECURSIVE) {  // recursive function
+        fprintf(fout, "%s %s, ",
+                FunctionType_str[func_type],
+                FunctionType_str[IS_RECURSIVE]);
+      } else {
+        fprintf(fout, "%s, ", FunctionType_str[func_type]);
+      }
+      fprintf(fout, "%lu, %lu, %g, %lu, %lu, %lu, %g, %lu, %lu, %lu, %g, %lu, ", 
+              work_work, span_work, par_work, cnt_work,
+              t_work_work, t_span_work, t_par_work, t_cnt_work,
+              l_work_work, l_span_work, l_par_work, l_cnt_work);
+      fprintf(fout, "%lu, %lu, %g, %lu, %lu, %lu, %g, %lu, %lu, %lu, %g, %lu\n", 
+              work_span, span_span, par_span, cnt_span,
+              t_work_span, t_span_span, t_par_span, t_cnt_span,
+              l_work_span, l_span_span, l_par_span, l_cnt_span);
+      if(line_to_free) free(line_to_free);
+      
+      record = record->next;
+    }
+  }
+  fclose(fout);
+
+  assert(span_table_entries_read == span_table->table_size);
+
+  fprintf(stderr, "work = %fs, span = %fs, parallelism = %f\n",
+    work / (1000000000.0),
+    span / (1000000000.0),
+    work / (float)span);
+
+
+  // Free the proc maps list
+  mapping_list_el_t *map_lst_el = maps.head;
+  mapping_list_el_t *next_map_lst_el;
+  while (NULL != map_lst_el) {
+    next_map_lst_el = map_lst_el->next;
+    free(map_lst_el);
+    map_lst_el = next_map_lst_el;
+  }
+  maps.head = NULL;
+  maps.tail = NULL;
+
+}
+
 ParasiteTool::ParasiteTool() {
 
 	parasite_stack_init(main_stack, MAIN);
@@ -41,7 +218,7 @@ ParasiteTool::ParasiteTool() {
 
 ParasiteTool::~ParasiteTool() {
 
-    parasite_tool_print(main_stack);
+    this->print();
     parasite_stack_frame_t *old_bottom = main_stack->bottom;
     free_parasite_hashtable(main_stack->work_table);
 

@@ -51,6 +51,7 @@ public:
 	void call(const Event* e);
 	void returnOfCalled(const Event* e);
 	void threadEnd(const Event* e);
+	void ParasiteTool::print();
 	const FUN_SG getSignature(TRD_ID id);
 	
 private:

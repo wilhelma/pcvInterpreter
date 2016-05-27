@@ -23,7 +23,7 @@ typedef struct {
   int call_site_ID;
 
   // Total number of invocations of call_site_ID
-  int local_call_site_invocations;
+  int local_call_site_invocation_count;
 
   // Local work associated with call_site_ID
   double local_work;
