@@ -28,7 +28,7 @@ void parasite_tool_print(parasite_stack_t *stack)
   assert(stack->bot->head_function_signature == stack->function_stack_tail);
 
   cilkprof_stack_frame_t *bottom = stack->bot;
-  c_fn_frame_t *c_bottom = &(stack->c_stack[stack->c_tail]);
+  c_fn_frame_t *c_bottom = &(stack->c_stack[stack->function_stack_tail]);
 
   uint64_t span = bottom->prefix_span + c_bottom->running_span
       + bottom->local_span + bottom->local_continuation;

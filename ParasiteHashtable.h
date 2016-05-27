@@ -26,10 +26,10 @@ typedef struct {
   int local_call_site_invocations;
 
   // Local work associated with call_site_ID
-  TIME local_work;
+  double local_work;
 
   // Local span associated with call_site_ID
-  TIME local_span;
+  double local_span;
 
   // Number of invocations of call_site_ID, excluding recursive instances.
   int count;
@@ -38,15 +38,15 @@ typedef struct {
   int top_count;
 
   // Work associated with call_site_ID, excluding recursive instances
-  TIME work;
+  double work;
   // Span associated with call_site_ID, excluding recursive instances
-  TIME span;
+  double span;
 
   // Work associated with top-level invocations of call_site_ID
-  TIME top_work;
+  double top_work;
   
   // Span associated with top-level invocations of call_site_ID
-  TIME top_span;
+  double top_span;
 
 } parasite_hashtable_entry_t;
 
@@ -90,13 +90,10 @@ typedef struct {
 
 extern parasite_hashtable_linked_list_node_t *linked_list_free_list;  
 
-/**
- * Exposed hashtable methods
- */
-
 bool hashtable_entry_is_empty(const parasite_hashtable_entry_t *entry);
 
 parasite_hashtable_t* parasite_hashtable_create();
+parasite_hashtable_t* add_parasite_hashtables(parasite_hashtable_t **left, parasite_hashtable_t **right);
 
 void clear_parasite_hashtable(parasite_hashtable_t *table);
 void flush_parasite_hashtable(parasite_hashtable_t **table);
@@ -106,14 +103,14 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          int index,
                          int call_site_id,
                          // CALL_SITE_ID call_site_id,
-                         TIME work, TIME span,
-                         TIME local_work, TIME local_span);
+                         double work, double span,
+                         double local_work, double local_span);
 
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
                                int index,
                                int call_site_id,
                                // CALL_SITE_ID call_site_id,
-                               TIME local_work, TIME local_span);
+                               double local_work, double local_span);
 
 void free_parasite_hashtable(parasite_hashtable_t *table); 
 

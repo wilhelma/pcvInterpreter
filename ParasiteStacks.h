@@ -16,7 +16,11 @@ typedef struct function_frame_t {
 
   // ID for the function's call site
   // CALL_SITE_ID call_site_ID;
-  int call_site_id;
+  int call_site_ID;
+
+  // ID for the function's call site
+  // CALL_SITE_ID call_site_ID;
+  int call_site_index;
 
   // Signature for the function
   FUN_SG functionSignature;
@@ -41,6 +45,9 @@ typedef struct parasite_stack_frame_t {
 
   // Function type
   FunctionType_t func_type;
+
+  // Index of head C function in stack
+  int head_function_index;
 
   // Signature of head function in call stack
   FUN_SG headFunctionSignature;
@@ -80,6 +87,8 @@ typedef struct {
   /* uint32_t count_on_stack; */
   /* FunctionType_t func_type; */
   FUN_SG tailFunctionSignature;
+  int call_site_tail_function_index;
+  int call_site_function_index;
   FUN_SG fnSignature;
   uint32_t flags;
 } call_site_status_t;
@@ -95,16 +104,16 @@ const int32_t UNINITIALIZED = INT32_MIN;
 typedef struct {
 
   // Capacity of call-site status vector
-  int call_site_status_capacity;
+  int call_site_status_vector_capacity;
 
   // Capacity of function status vector
-  int function_status_capacity;
+  int function_status_vector_capacity;
 
   // Capacity of C stack
   int function_stack_capacity;
 
   // Current bottom of C stack
-  int32_t function_stack_tail;
+  int function_stack_tail_index;
 
   // Tool for measuring the length of a strand
   strand_ruler_t strand_ruler;
@@ -113,16 +122,16 @@ typedef struct {
   function_frame_t *function_stack;
 
   // Vector of status flags for different call sites
-  call_site_status_t *call_site_status;
+  call_site_status_t *call_site_status_vector;
 
   // Vector of status flags for different functions
-  function_status_t *function_status;
+  function_status_t *function_status_vector;
 
   // Pointer to bottom of the stack, onto which frames are pushed.
-  parasite_stack_frame_t *bot;
+  parasite_stack_frame_t *bottom;
 
   // Call-site data associated with the running work
-  parasite_hashtable_t* wrk_table;
+  parasite_hashtable_t* work_table;
 
   // Free list of parasite stack frames
   parasite_stack_frame_t *stack_frame_free_list;

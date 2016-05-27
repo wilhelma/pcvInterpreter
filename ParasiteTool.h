@@ -36,9 +36,9 @@ class ParasiteTool : public Tool {
 
 public:
 
-	parasite_stack_t main_stack;
+	parasite_stack_t *main_stack;
 	iaddr_table_t *call_site_table;
-	static iaddr_table_t *function_table;
+	iaddr_table_t *function_table;
 	int MIN_CAPACITY;
 
 	ParasiteTool();

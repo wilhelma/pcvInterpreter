@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "util.h"
+#include "ParasiteUtilities.h"
 
 typedef struct iaddr_record_t {
   /* bool on_stack; */

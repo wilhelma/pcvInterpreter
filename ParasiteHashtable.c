@@ -90,7 +90,7 @@ static parasite_hashtable_t* increase_hashtable_table_capacity(const parasite_ha
 
   int new_log_capacity;
   if ((1 << table->log_capacity) < MIN_CAPACITY) {
-    uint32_t x = MIN_CAPACITY - 1;
+    int x = MIN_CAPACITY - 1;
     x |= x >> 1;
     x |= x >> 2;
     x |= x >> 4;
@@ -133,7 +133,7 @@ static parasite_hashtable_t* increase_hashtable_table_capacity(const parasite_ha
 // Add entry to table, resizing table if necessary.  Returns a pointer to
 // the entry if it can find a place to store it, NULL otherwise.
 /* static */ __attribute__((always_inline)) parasite_hashtable_entry_t*
-get_parasite_hashtable_entry_at_index(uint32_t index, parasite_hashtable_t **table) {
+get_parasite_hashtable_entry_at_index(int index, parasite_hashtable_t **table) {
   if (index >= (1 << (*table)->log_capacity)) {
     parasite_hashtable_t *new_tab = increase_hashtable_table_capacity(*table);
 
@@ -217,10 +217,10 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          /* int32_t depth, bool is_top_level, */
                          /* InstanceType_t inst_type, */
                          bool is_top_fn,
-                         uint32_t index,
+                         int index,
                          CALL_SITE_ID call_site_id,
-                         uint64_t work, uint64_t span,
-                         uint64_t local_work, uint64_t local_span) {
+                         TIME work, TIME span,
+                         TIME local_work, TIME local_span) {
   
   if (index >= (1 << (*table)->log_capacity) &&
       /* (1 << (*table)->log_capacity) < MIN_CAPACITY && */
@@ -331,9 +331,9 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
 // data was suhashtableessfully added, false otherwise.
 __attribute__((always_inline))
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
-                               uint32_t index,
+                               int index,
                                CALL_SITE_ID call_site_id,
-                               uint64_t local_work, uint64_t local_span) {
+                               TIME local_work, TIME local_span) {
 
   if (index >= (1 << (*table)->log_capacity) &&
       /* (1 << (*table)->log_capacity) < MIN_CAPACITY && */
@@ -416,7 +416,7 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
 // Add the parasite_hashtable **right into the parasite_hashtable **left.  The
 // result will appear in **left, and **right might be modified in the
 // process.
-__attribute__((always_inline))
+
 parasite_hashtable_t* add_parasite_hashtables(parasite_hashtable_t **left, parasite_hashtable_t **right) {
 
   /* fprintf(stderr, "add_parasite_hashtables(%p, %p)\n", left, right); */
