@@ -37,10 +37,10 @@ void ParasiteTool::print()
 
   assert(NULL != main_stack->bottom);
   assert(MAIN == main_stack->bottom->func_type);
-  assert(main_stack->bottom->head_function_signature == main_stack->function_stack_tail);
+  assert(main_stack->bottom->head_function_index == main_stack->function_stack_tail_index);
 
-  parasite_stack_frame_t *bottom = stack->bottom;
-  function_frame_t *c_bottom = &(stack->c_stack[stack->function_stack_tail]);
+  parasite_stack_frame_t *bottom = main_stack->bottom;
+  function_frame_t *c_bottom = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
 
   uint64_t span = bottom->prefix_span + c_bottom->running_span
       + bottom->local_span + bottom->local_continuation;
@@ -56,8 +56,8 @@ void ParasiteTool::print()
       span_table->list_size, span_table->table_size, span_table->log_capacity);
 
   uint64_t work = c_bottom->running_work + c_bottom->local_work;
-  flush_parasite_hashtable(&(stack->work_table));
-  parasite_hashtable_t* work_table = stack->work_table;
+  flush_parasite_hashtable(&(main_stack->work_table));
+  parasite_hashtable_t* work_table = main_stack->work_table;
   fprintf(stderr, 
           "work_table->list_size = %d, work_table->table_size = %d, work_table->lg_capacity = %d\n",
       work_table->list_size, work_table->table_size, work_table->log_capacity);
@@ -164,7 +164,7 @@ void ParasiteTool::print()
 
       fprintf(fout, "\"%s\", %d, 0x%lx, ", file, line, addr);
       FunctionType_t func_type = record->func_type;
-      if (stack->call_site_status_vector[record->index].flags & RECURSIVE) {  // recursive function
+      if (main_stack->call_site_status_vector[record->index].flags & RECURSIVE) {  // recursive function
         fprintf(fout, "%s %s, ",
                 FunctionType_str[func_type],
                 FunctionType_str[IS_RECURSIVE]);
