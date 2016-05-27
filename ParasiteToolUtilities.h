@@ -1,5 +1,4 @@
 // Auxiliary functions for Parasite Tool
-
 #include "ParasiteStacks.h"
 
 __attribute__((always_inline))
