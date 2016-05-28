@@ -2,7 +2,6 @@
 #define _PARASITE_STACKS_H_
 
 #include "ParasiteHashtable.h"
-#include "ParasiteUtilities.h"
 #include "strand_time_rdtsc.h"
 #include "assert.h"
 
@@ -45,7 +44,7 @@ typedef struct function_frame_t {
 typedef struct parasite_stack_frame_t {
 
   // Function type
-  FunctionType_t func_type;
+  int func_type;
 
   // Index of head C function in stack
   int head_function_index;
@@ -173,7 +172,7 @@ void parasite_function_frame_init(function_frame_t *function_frame) {
 // Initializes the parasite stack frame *frame
 static inline
 void parasite_stack_frame_init(parasite_stack_frame_t *frame,
-                               FunctionType_t func_type,
+                               int func_type,
                                int functionSignature)
 {
   frame->parent = NULL;
@@ -212,7 +211,7 @@ function_frame_t* parasite_function_push(parasite_stack_t *stack)
 // Push new frame of function type func_type onto the stack *stack
 __attribute__((always_inline))
 parasite_stack_frame_t*
-parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
+parasite_stack_push(parasite_stack_t *stack, int func_type)
 {
   parasite_stack_frame_t *new_frame;
   if (NULL != stack->stack_frame_free_list) {
@@ -237,7 +236,7 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 
 
 // Initializes the parasite stack
-void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
+void parasite_stack_init(parasite_stack_t *stack, int func_type)
 {
   stack->bottom_parasite_frame = NULL;
   stack->stack_frame_free_list = NULL;

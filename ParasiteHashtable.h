@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "ParasiteUtilities.h"
+#include "ParasiteToolUtilities.h"
 
 /**
  * Data structures
@@ -20,7 +20,8 @@ typedef struct {
 
   // Function type.  Least-significant bit indicates whether the
   // function is recursive.
-  FunctionType_t func_type;
+  // FunctionType_t func_type;
+  int func_type;
 
  // ID for the function's call site
   //CALL_SITE_ID call_site_ID;

@@ -27,7 +27,7 @@
 #include "DataModel.h"
 #include "DBDataModel.h"
 
-#include "ParasiteUtilities.h"
+#include "ParasiteToolHelper.h"
 #include "ParasiteToolUtilities.h"
 #include "ParasiteHashtable.h"
 
