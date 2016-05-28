@@ -5,7 +5,6 @@
  *      Author: knapp
  */
 
-#define THREADS 100
 #define BURDENING 0
 
 #include <vector>
@@ -25,6 +24,7 @@
 
 #include "iaddrs.h"
 #include "ParasiteTool.h"
+#include "ParasiteUtilities.h"
 #include "ParasiteToolUtilities.h"
 #include "ParasiteHashtable.h"
 

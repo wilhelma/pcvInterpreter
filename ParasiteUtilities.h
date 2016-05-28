@@ -22,7 +22,7 @@ typedef enum {
 /* static const InstanceType_t TOP = 0x2;  */
 /* static const InstanceType_t RECURSIVE = 0x4; */
 
-extern const char *FunctionType_str[FUNCTIONTYPE_END];
+const char *FunctionType_str[FUNCTIONTYPE_END];
 
 // Linked list of mappings.
 typedef struct mapping_t {

@@ -155,6 +155,7 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
   *function_stack = new_function_stack;
   *function_stack_capacity = new_function_stack_capacity;
 
+}
 
 // Initializes C function frame *function_frame
 static inline
@@ -227,7 +228,7 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
   }
 
   parasite_function_push(stack);
-  parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail);
+  parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail_index);
   new_frame->parent = stack->bottom;
   stack->bottom = new_frame;
   return new_frame;
@@ -240,8 +241,8 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
   stack->bottom = NULL;
   stack->stack_frame_free_list = NULL;
 
-  stack->function_stack = (function_frame_t*)malloc(sizeof(function_frame_t) * START_C_STACK_SIZE);
-  stack->function_stack_capacity = START_C_STACK_SIZE;
+  stack->function_stack = (function_frame_t*)malloc(sizeof(function_frame_t) * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->function_stack_tail_index = 0;
 
   parasite_stack_frame_t *new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
@@ -262,7 +263,7 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
   stack->call_site_status_vector = (call_site_status_t*)malloc(sizeof(call_site_status_t)
                                           * START_FUNCTION_STATUS_VECTOR_SIZE);
 
-  stack->function_status = (function_status_t*)malloc(sizeof(function_status_t)
+  stack->function_status_vector = (function_status_t*)malloc(sizeof(function_status_t)
                                           * START_FUNCTION_STATUS_VECTOR_SIZE);
 
   for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
