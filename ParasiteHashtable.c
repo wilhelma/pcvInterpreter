@@ -1,9 +1,4 @@
-#include "Parasite_hashtable.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-
+#include "ParasiteHashtable.h"
 /**
  * Method implementations
  */
@@ -465,6 +460,7 @@ parasite_hashtable_t* add_parasite_hashtables(parasite_hashtable_t **left, paras
     assert(empty_hashtable_entry_p(l_entry) || can_override_entry(l_entry, r_entry->call_site_id));
 
     if (empty_hashtable_entry_p(l_entry)) {
+      
       // let the compiler do the struct copy
       *l_entry = *r_entry;
       (*left)->populated[ (*left)->table_size ] = (*right)->populated[i];

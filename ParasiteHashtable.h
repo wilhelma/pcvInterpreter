@@ -2,6 +2,10 @@
 #define _PARASITE_HASHTABLE_H_
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
 #include "ParasiteUtilities.h"
 
 /**
@@ -67,7 +71,7 @@ typedef struct parasite_hashtable_linked_list_node_t {
 // Structure for the hashtable
 typedef struct {
 
-  // Logarithm (?) of capacity of hash table
+  // Logarithm of capacity of hash table
   int log_capacity;
 
   // Number of elements in list

@@ -1,6 +1,7 @@
 #ifndef _PARASITE_STACKS_H_
 #define _PARASITE_STACKS_H_
 
+#include "ParasiteHashtable.h"
 #include "ParasiteUtilities.h"
 #include "strand_time_rdtsc.h"
 #include "assert.h"
@@ -128,7 +129,7 @@ typedef struct {
   function_status_t *function_status_vector;
 
   // Pointer to bottom of the stack, onto which frames are pushed.
-  parasite_stack_frame_t *bottom;
+  parasite_stack_frame_t *bottom_parasite_frame;
 
   // Call-site data associated with the running work
   parasite_hashtable_t* work_table;
@@ -194,7 +195,7 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
 function_frame_t* parasite_function_push(parasite_stack_t *stack)
 {
   /* fprintf(stderr, "pushing C stack\n"); */
-  assert(NULL != stack->bottom);
+  assert(NULL != stack->bottom_parasite_frame);
 
   ++stack->function_stack_tail_index;
 
@@ -229,8 +230,8 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 
   parasite_function_push(stack);
   parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail_index);
-  new_frame->parent = stack->bottom;
-  stack->bottom = new_frame;
+  new_frame->parent = stack->bottom_parasite_frame;
+  stack->bottom_parasite_frame = new_frame;
   return new_frame;
 }
 
@@ -238,7 +239,7 @@ parasite_stack_push(parasite_stack_t *stack, FunctionType_t func_type)
 // Initializes the parasite stack
 void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
 {
-  stack->bottom = NULL;
+  stack->bottom_parasite_frame = NULL;
   stack->stack_frame_free_list = NULL;
 
   stack->function_stack = (function_frame_t*)malloc(sizeof(function_frame_t) * START_FUNCTION_STATUS_VECTOR_SIZE);
@@ -254,7 +255,7 @@ void parasite_stack_init(parasite_stack_t *stack, FunctionType_t func_type)
   parasite_stack_frame_init(new_frame, func_type, 0);
   parasite_function_frame_init(&(stack->function_stack[0]));
 
-  stack->bottom = new_frame;
+  stack->bottom_parasite_frame = new_frame;
 
   stack->work_table = parasite_hashtable_create();
   stack->call_site_status_vector_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
@@ -324,7 +325,7 @@ function_frame_t* parasite_function_pop(parasite_stack_t *stack)
 {
   function_frame_t *old_c_bottom = &(stack->function_stack[stack->function_stack_tail_index]);
   --stack->function_stack_tail_index;
-  assert(stack->function_stack_tail_index >= stack->bottom->head_function_index);
+  assert(stack->function_stack_tail_index >= stack->bottom_parasite_frame->head_function_index);
   return old_c_bottom;
 }
 
@@ -333,10 +334,10 @@ function_frame_t* parasite_function_pop(parasite_stack_t *stack)
 // pointer to it.
 parasite_stack_frame_t* parasite_stack_pop(parasite_stack_t *stack)
 {
-  parasite_stack_frame_t *old_bottom = stack->bottom;
-  stack->bottom = stack->bottom->parent;
+  parasite_stack_frame_t *old_bottom_parasite_frame = stack->bottom_parasite_frame;
+  stack->bottom_parasite_frame = stack->bottom_parasite_frame->parent;
   parasite_function_pop(stack);
-  return old_bottom;
+  return old_bottom_parasite_frame;
 }
 
 #endif
