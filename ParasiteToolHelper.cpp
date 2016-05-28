@@ -12,7 +12,6 @@ void create_thread_operations(parasite_stack_t* main_stack) {
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
   begin_strand(main_stack);
-
 }
 
 
@@ -29,19 +28,23 @@ void join_operations(parasite_stack_t* main_stack) {
   bottom_function_frame->running_span += main_stack->bottom_parasite_frame->local_continuation;
 
   if (main_stack->bottom_parasite_frame->longest_child_span > bottom_function_frame->running_span) {
-  main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_span;
 
-  // local_span does not increase, because critical path goes through
-  // spawned child.
-  add_parasite_hashtables(&(main_stack->bottom_parasite_frame->prefix_table), &(main_stack->bottom_parasite_frame->longest_child_table));
+    main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_span;
 
-  } else {
-  /* main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->continuation_span; */
-  main_stack->bottom_parasite_frame->prefix_span += bottom_function_frame->running_span;
-  // critical path goes through continuation, which is local.  add
-  // local_continuation to local_span.
-  main_stack->bottom_parasite_frame->local_span += main_stack->bottom_parasite_frame->local_continuation;
-  add_parasite_hashtables(&(main_stack->bottom_parasite_frame->prefix_table), &(main_stack->bottom_parasite_frame->continuation_table));
+    // local_span does not increase, because critical path goes through
+    // spawned child.
+    add_parasite_hashtables(&(main_stack->bottom_parasite_frame->prefix_table), &(main_stack->bottom_parasite_frame->longest_child_table));
+
+  } 
+
+  else {
+
+    main_stack->bottom_parasite_frame->prefix_span += bottom_function_frame->running_span;
+
+    // critical path goes through continuation, which is local.  add
+    // local_continuation to local_span.
+    main_stack->bottom_parasite_frame->local_span += main_stack->bottom_parasite_frame->local_continuation;
+    add_parasite_hashtables(&(main_stack->bottom_parasite_frame->prefix_table), &(main_stack->bottom_parasite_frame->continuation_table));
 
   }
 
@@ -58,24 +61,16 @@ void join_operations(parasite_stack_t* main_stack) {
 }
 
 
-void call_operations(parasite_stack_t* main_stack) {
+void call_operations(parasite_stack_t* main_stack, int call_site_index) {
 
     double strand_len = measure_and_add_strand_length(main_stack);
     if (main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index) {
+
       main_stack->bottom_parasite_frame->local_continuation += strand_len;
     }
 
     // Push new frame for this C function onto the main_stack
     function_frame_t *bottom_function_frame= parasite_function_push(main_stack);
-
-    // uintptr_t cs = (uintptr_t)__builtin_extract_return_addr(call_site_index);
-    // uintptr_t fn = (uintptr_t)this_fn;
-
-    uintptr_t cs = 0;
-    uintptr_t fn = 0;
-
-    // TODO: get call site index somehow
-    int call_site_index = getCallSiteIndex(currentThread->threadId);
 
     bottom_function_frame->call_site_index = call_site_index;
 
@@ -92,8 +87,6 @@ void call_operations(parasite_stack_t* main_stack) {
       if (UNINITIALIZED == main_stack->call_site_status_vector[call_site_index].call_site_function_index) {
 
         MIN_CAPACITY = call_site_index + 1;
-
-        // TODO: add way to get call site function index
 
         main_stack->call_site_status_vector[call_site_index].call_site_function_index = call_site_function_index;
         if (call_site_function_index >= main_stack->function_status_vector_capacity) {
