@@ -10,7 +10,6 @@ void create_thread_operations(parasite_stack_t* main_stack) {
   double strand_len = measure_and_add_strand_length(main_stack);
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
-  assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
   begin_strand(main_stack);
 }
 
@@ -20,7 +19,6 @@ void join_operations(parasite_stack_t* main_stack) {
   double strand_len = measure_and_add_strand_length(main_stack);
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
-  assert(main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index);
   assert(main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index);
 
   function_frame_t *bottom_function_frame= &(main_stack->function_stack[main_stack->function_stack_tail_index]);

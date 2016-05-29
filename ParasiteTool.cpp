@@ -41,8 +41,8 @@ void ParasiteTool::create(const Event* e) {
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
 	currentThread = _info->childThread;
-
-	create_thread_operations(main_stack, parentThread, currentThread, currentCallSiteID);
+	
+	create_thread_operations(main_stack);
 }
 
 // this is a SYNC EVENT 

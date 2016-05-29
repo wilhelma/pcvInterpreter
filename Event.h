@@ -177,13 +177,6 @@ public:
 				 const struct ReleaseInfo *info) :
 					 Event(thread), _info(info) {}
 
-
-
-
-
-
-
-
 	Events getEventType() const override { return Events::RELEASE; }
 	const ReleaseInfo* getReleaseInfo() const;
 

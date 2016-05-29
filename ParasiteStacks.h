@@ -2,7 +2,7 @@
 #define _PARASITE_STACKS_H_
 
 #include "ParasiteHashtable.h"
-#include "strand_time_rdtsc.h"
+#include "StrandTimer.h"
 #include "assert.h"
 
 // Used to size call site status vector 
