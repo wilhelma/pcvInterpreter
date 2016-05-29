@@ -31,8 +31,6 @@
 #include "ParasiteToolUtilities.h"
 #include "ParasiteHashtable.h"
 
-typedef std::map<TRD_ID, const FUN_SG> ThreadFunctionMap;
-
 class ParasiteTool : public Tool {
 
 public:
@@ -56,16 +54,21 @@ public:
 	void threadEnd(const Event* e);
 	void print();
 
-	const FUN_SG getSignature(TRD_ID id);
-	int getCallSiteIndex(TRD_ID id);
+	unsigned long long getCurrentCallSite();
+	ShadowThread* getCurrentThread();
+	FUN_SG getCurrentFunctionSignature();
 	
 private:
+
+	// keeps track of current call site
+	unsigned long long currentCallSiteID;
 
 	// keeps track of current thread
 	ShadowThread* currentThread;
 
-	// keeps track of current function signature for each thread
-	ThreadFunctionMap threadFunctionMap;
+	// keeps track of current function signature 
+	FUN_SG currentFunctionSignature;
+
 
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);

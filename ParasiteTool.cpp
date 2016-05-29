@@ -37,20 +37,12 @@ ParasiteTool::~ParasiteTool() {
 
 void ParasiteTool::create(const Event* e) {
 
-	// F spawns  G:
-
-	// G.w = 0
-	// G.p = 0
-	// G.l = 0
-	// G.c = 0
-
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
-	const FUN_SG parentSignature = getSignature(currentThread->threadId);
+
 	currentThread = _info->childThread;
 
-
-	create_thread_operations(main_stack);
+	create_thread_operations(main_stack, parentThread, currentThread, currentCallSiteID);
 }
 
 // this is a SYNC EVENT 
@@ -67,9 +59,7 @@ void ParasiteTool::join(const Event* e) {
 	// F.l = 0
 	// F.longest_child_lock_span = 0
 
-	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
-
-	join_operations(main_stack);
+	join_operations(main_stack, F_signature);
 
 }
 
@@ -83,9 +73,13 @@ void ParasiteTool::call(const Event* e) {
 
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
-	const FUN_SG parentSignature = getSignature(currentThread->threadId);
 
-    call_operations(main_stack);
+	currentFunctionSignature = _info->fnSignature;
+
+	if (currentCallSite != _info->callSiteID)
+		currentCallSite = _info->callSiteID;
+
+    call_operations(main_stack, currentFunctionSignature, parentFunctionSignature, currentCallSiteID);
 }
 
 
@@ -94,7 +88,6 @@ void ParasiteTool::access(const Event* e) {
 
 	AccessEvent* accessEvent = (AccessEvent*) e;
 	const AccessInfo *_info = accessEvent->getAccessInfo();
-	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
 
 	memory_access_operations(main_stack);
 }
@@ -105,7 +98,7 @@ void ParasiteTool::acquire(const Event* e) {
 
 	AcquireEvent* acquireEvent = (AcquireEvent*) e;
 	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
-	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
+
 	// double last_lock_start = e->runtime;
 	double last_lock_start = 0.0;
 
@@ -117,7 +110,7 @@ void ParasiteTool::release(const Event* e) {
 
 	ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
 	const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
-	const FUN_SG F_signature = threadFunctionMap[currentThread->threadId];
+
 	// double lock_span = e->runtime - getLastLockStart(F_signature);
 	double lock_span = 10.0;
 
@@ -135,7 +128,6 @@ void ParasiteTool::returnOfCalled(const Event* e){
 
 	// ReturnOfCalledEvent* returnOfCalledEvent = (ReturnOfCalledEvent*) e;
 	// returnOfCalledInfo *_info = e->getReturnOfCalledInfo();
-	// ShadowThread* childThread = _info->childThread;
 
 	return_of_called_operations(main_stack);
 }
