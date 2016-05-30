@@ -48,28 +48,10 @@ void ParasiteTool::create(const Event* e) {
 // this is a SYNC EVENT 
 void ParasiteTool::join(const Event* e) {
 
-	// F syncs
-	// if F.c > F.l
-	// 		F.p += F.c
-	// else
-	// 		F.p += F.l
-	//		F.p += F.lock_span
-	//		F.p -= F.longest_child_lock_span
-	// F.c = 0
-	// F.l = 0
-	// F.longest_child_lock_span = 0
-
 	join_operations(main_stack, F_signature);
-
 }
 
 void ParasiteTool::call(const Event* e) {
-
-	// F spawns or calls G:
-	// G.w = 0
-	// G.p = 0
-	// G.l = 0
-	// G.c = 0
 
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
@@ -119,12 +101,6 @@ void ParasiteTool::release(const Event* e) {
 
 // NOT YET IMPLEMENTED IN PCVINTERPRETER
 void ParasiteTool::returnOfCalled(const Event* e){
-
-	// Called G returns to F:
-	// G.p += G.c
-	// F.w += G.w
-	// F.c += G.p
- 	// F.lock_span += G.lock_span
 
 	// ReturnOfCalledEvent* returnOfCalledEvent = (ReturnOfCalledEvent*) e;
 	// returnOfCalledInfo *_info = e->getReturnOfCalledInfo();

@@ -16,7 +16,22 @@ void create_thread_operations(parasite_stack_t* main_stack) {
 
 void join_operations(parasite_stack_t* main_stack) {
 
+
+  // F syncs
+
+  // if F.l > F.c
+  //    F.p += F.l
+  //    F.p += F.lock_span
+  //    F.p -= F.longest_child_lock_span
+  // else
+  //    F.p += F.c
+  // F.c = 0
+  // F.l = 0
+  // F.longest_child_lock_span = 0
+
   double strand_len = measure_and_add_strand_length(main_stack);
+
+
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
   assert(main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index);
@@ -25,9 +40,15 @@ void join_operations(parasite_stack_t* main_stack) {
 
   bottom_function_frame->running_span += main_stack->bottom_parasite_frame->local_continuation;
 
+  // if F.l > F.c
   if (main_stack->bottom_parasite_frame->longest_child_span > bottom_function_frame->running_span) {
 
+    // F.p += F.l
+    // F.p += F.lock_span
+    // F.p -= F.longest_child_lock_span
     main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_span;
+    main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->lock_span;
+    main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_lock_span;
 
     // local_span does not increase, because critical path goes through
     // spawned child.
@@ -37,6 +58,7 @@ void join_operations(parasite_stack_t* main_stack) {
 
   else {
 
+    // F.p += F.c
     main_stack->bottom_parasite_frame->prefix_span += bottom_function_frame->running_span;
 
     // critical path goes through continuation, which is local.  add
@@ -46,10 +68,17 @@ void join_operations(parasite_stack_t* main_stack) {
 
   }
 
-  // reset lchild and contin span variables
-  main_stack->bottom_parasite_frame->longest_child_span = 0;
-  bottom_function_frame->running_span = 0;
+  // reset longest child and continuation span variables
+
+  // F.c = 0
+  // F.l = 0
+  // F.longest_child_lock_span = 0
   main_stack->bottom_parasite_frame->local_continuation = 0;
+  main_stack->bottom_parasite_frame->longest_child_span = 0;
+  main_stack->bottom_parasite_frame->longest_child_lock_span = 0;
+  
+  bottom_function_frame->running_span = 0;
+
   clear_parasite_hashtable(main_stack->bottom_parasite_frame->longest_child_table);
   clear_parasite_hashtable(main_stack->bottom_parasite_frame->continuation_table);
 
@@ -60,6 +89,12 @@ void join_operations(parasite_stack_t* main_stack) {
 
 
 void call_operations(parasite_stack_t* main_stack, int call_site_index) {
+
+    // F spawns or calls G:
+    // G.w = 0
+    // G.p = 0
+    // G.l = 0
+    // G.c = 0
 
     double strand_len = measure_and_add_strand_length(main_stack);
     if (main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index) {
@@ -302,23 +337,35 @@ void print_parallelism_data(parasite_stack_t* main_stack) {
 
 void return_of_called_operations(parasite_stack_t* main_stack) {
 
+    // Called G returns to F:
+    // G.p += G.c
+    // F.w += G.w
+    // F.c += G.p
+    // F.lock_span += G.lock_span
+
     const function_frame_t *bottom_function_frame= &(main_stack->function_stack[main_stack->function_stack_tail_index]);
   
     bool add_success;
 
-    const function_frame_t *old_bottom_parasite_frame;
+    const function_frame_t *old_bottom_function_frame;
   
     // stop the timer and attribute the elapsed time to this returning
     // function
+
+    // G.p += G.c
     measure_and_add_strand_length(main_stack);
   
     assert(main_stack->function_stack_tail_index > main_stack->bottom_parasite_frame->head_function_index);
   
     // Pop the main_stack
-    old_bottom_parasite_frame = parasite_function_pop(main_stack);
+    old_bottom_function_frame = parasite_function_pop(main_stack);
     double local_work = old_bottom_parasite_frame->local_work;
-    double running_work = old_bottom_parasite_frame->running_work + local_work;
-    double running_span = old_bottom_parasite_frame->running_span + local_work;
+    double local_lock_span = old_bottom_parasite_frame->lock_span;
+
+
+    double running_work = old_bottom_function_frame->running_work + local_work;
+    double running_span = old_bottom_function_frame->running_span + local_work;
+    double running_lock_span = old_bottom_function_frame->running_lock_span + local_lock_span;
   
     int32_t call_site_index = old_bottom_parasite_frame->call_site_index;
     int32_t cs_tail = main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index;
@@ -332,10 +379,14 @@ void return_of_called_operations(parasite_stack_t* main_stack) {
       }
     }
   
-    function_frame_t *new_bottom_parasite_frame = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
-    new_bottom_parasite_frame->running_work += running_work;
-    new_bottom_parasite_frame->running_span += running_span;
-  
+    function_frame_t *new_bottom_function_frame = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
+
+    // F.w += G.w
+    // F.c += G.p
+    // F.lock_span += G.lock_span
+    new_bottom_function_frame->running_work += running_work;
+    new_bottom_function_frame->running_span += running_span;
+    new_bottom_function_frame->running_lock_span += running_lock_span;
   
     // Update work table
     if (top_cs) {
@@ -385,9 +436,20 @@ void return_of_called_operations(parasite_stack_t* main_stack) {
 
 void thread_end_operations(parasite_stack_t* main_stack) {
 
+  // Created G returns to F
+  // G.p += G.c
+  // F.w += G.w
+  // F.lock_span += G.lock_span
+  // if F.c + G.p > F.l
+  //    F.l = G.p
+  //    F.longest_child_lock_span = G.lock_span 
+  //    F.p += G.c
+  //    F.c = 0
+
   parasite_stack_frame_t *old_bottom_parasite_frame;
   bool add_success;
 
+  // G.p += G.c
   double strand_len = measure_and_add_strand_length(main_stack);
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
@@ -477,6 +539,7 @@ void thread_end_operations(parasite_stack_t* main_stack) {
 
     assert(HELPER != main_stack->bottom_parasite_frame->func_type);
 
+    // if F.c + G.p > F.l
     if (bottom_function_frame->running_span + old_bottom_parasite_frame->prefix_span > main_stack->bottom_parasite_frame->longest_child_span) {
 
       main_stack->bottom_parasite_frame->prefix_span += bottom_function_frame->running_span;

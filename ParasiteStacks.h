@@ -61,9 +61,16 @@ typedef struct parasite_stack_frame_t {
   // Span of the prefix of this function and its child C functions
   TIME prefix_span;
 
+  // lock span of this function
+  TIME lock_span;
+
   // Span of the longest spawned child of this function observed so
   // far
   TIME longest_child_span;
+
+  // Span of the longest spawned child of this function observed so
+  // far
+  TIME longest_child_lock_span;
 
   // The span of the continuation is stored in the running_span
   // variable in the topmost function_frame
