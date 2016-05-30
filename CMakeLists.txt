@@ -16,7 +16,7 @@ else()
   aux_source_directory(. SRC_LIST)
 endif (MSVC)
 
-# ---------------------------------- BOOST related seach map ---------------------------------------- #
+# ---------------------------------- BOOST related search map ---------------------------------------- #
 find_path(BOOST_PATH
 	NAMES boost/log/trivial.hpp
 	PATHS $ENV{BOOST_PATH}
@@ -40,7 +40,7 @@ message(STATUS ${Boost_LIBRARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories (${Boost_LIBRARY_DIR})
 
-# --------------------------------- SQLITE related seach map ---------------------------------------- #
+# --------------------------------- SQLITE related search map ---------------------------------------- #
 
 find_path(SQLITE_PATH
   NAMES sqlite3.h
