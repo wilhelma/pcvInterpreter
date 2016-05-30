@@ -30,12 +30,16 @@
 #include "ParasiteToolHelper.h"
 #include "ParasiteToolUtilities.h"
 #include "ParasiteHashtable.h"
-
+ 
 class ParasiteTool : public Tool {
 
 public:
 	
 	parasite_stack_t *main_stack;
+
+	TIME last_lock_start;
+	TIME last_strand_start;
+
 	int MIN_CAPACITY;
 
 	ParasiteTool();
@@ -68,7 +72,6 @@ private:
 
 	// keeps track of current function signature 
 	FUN_SG currentFunctionSignature;
-
 
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);

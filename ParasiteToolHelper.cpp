@@ -5,17 +5,17 @@ void memory_access_operations(parasite_stack_t* main_stack) {
   return;
 }
 
-void create_thread_operations(parasite_stack_t* main_stack) {
+void create_thread_operations(parasite_stack_t* main_stack, TIME create_time) {
 
-  double strand_len = measure_and_add_strand_length(main_stack);
+  TIME strand_len = create_time - last_strand_start;
+  last_strand_start = create_time;
+  main_stack->function_stack[stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
+
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
-  begin_strand(main_stack);
 }
 
-
-void join_operations(parasite_stack_t* main_stack) {
-
+void join_operations(parasite_stack_t* main_stack, TIME join_time) {
 
   // F syncs
 
@@ -29,9 +29,9 @@ void join_operations(parasite_stack_t* main_stack) {
   // F.l = 0
   // F.longest_child_lock_span = 0
 
-  double strand_len = measure_and_add_strand_length(main_stack);
-
-
+  TIME strand_len = join_time - last_strand_start;
+  last_strand_start = join_time;
+  main_stack->function_stack[stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
   assert(main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index);
@@ -84,11 +84,10 @@ void join_operations(parasite_stack_t* main_stack) {
 
   // can't be anything else; only SPAWNER have sync
   assert(SPAWNER == main_stack->bottom_parasite_frame->func_type); 
-  begin_strand(main_stack);
 }
 
 
-void call_operations(parasite_stack_t* main_stack, int call_site_index) {
+void call_operations(parasite_stack_t* main_stack, int call_site_index, TIME call_time) {
 
     // F spawns or calls G:
     // G.w = 0
@@ -96,7 +95,10 @@ void call_operations(parasite_stack_t* main_stack, int call_site_index) {
     // G.l = 0
     // G.c = 0
 
-    double strand_len = measure_and_add_strand_length(main_stack);
+    TIME strand_len = call_time - last_strand_start;
+    last_strand_start = call_time;
+    main_stack->function_stack[stack->function_stack_tail_index].local_work += strand_len;
+
     if (main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index) {
 
       main_stack->bottom_parasite_frame->local_continuation += strand_len;
@@ -133,14 +135,12 @@ void call_operations(parasite_stack_t* main_stack, int call_site_index) {
         main_stack->function_status_vector[call_site_function_index] = main_stack->function_stack_tail_index;
       }
     }
-
-    begin_strand(main_stack);
 }
 
 
 void destroy_stack(parasite_stack_t* main_stack) {
 
-	parasite_stack_frame_t *old_bottom_parasite_frame = main_stack->bottom_parasite_frame;
+	  parasite_stack_frame_t *old_bottom_parasite_frame = main_stack->bottom_parasite_frame;
     free_parasite_hashtable(main_stack->work_table);
 
     old_bottom_parasite_frame->parent = main_stack->stack_frame_free_list;
@@ -335,7 +335,7 @@ void print_parallelism_data(parasite_stack_t* main_stack) {
     work / (float)span);
 }
 
-void return_of_called_operations(parasite_stack_t* main_stack) {
+void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time) {
 
     // Called G returns to F:
     // G.p += G.c
@@ -353,7 +353,9 @@ void return_of_called_operations(parasite_stack_t* main_stack) {
     // function
 
     // G.p += G.c
-    measure_and_add_strand_length(main_stack);
+    TIME strand_len = return_time - last_strand_start;
+    last_strand_start = return_time;
+    main_stack->function_stack[stack->function_stack_tail_index].local_work += strand_len;
   
     assert(main_stack->function_stack_tail_index > main_stack->bottom_parasite_frame->head_function_index);
   
@@ -429,12 +431,10 @@ void return_of_called_operations(parasite_stack_t* main_stack) {
                                               local_work);
       assert(add_success);
     }
-  
-    begin_strand(main_stack);
 }
 
 
-void thread_end_operations(parasite_stack_t* main_stack) {
+void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time) {
 
   // Created G returns to F
   // G.p += G.c
@@ -450,7 +450,11 @@ void thread_end_operations(parasite_stack_t* main_stack) {
   bool add_success;
 
   // G.p += G.c
-  double strand_len = measure_and_add_strand_length(main_stack);
+  TIME strand_len = thread_end_time - last_strand_start;
+  last_strand_start = thread_end_time;
+  main_stack->function_stack[stack->function_stack_tail_index].local_work += strand_len;
+
+  // F.w += G.w
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
   // We are leaving this function, so it must have sync-ed, meaning
@@ -480,11 +484,11 @@ void thread_end_operations(parasite_stack_t* main_stack) {
   bool top_cs = (cs_tail == main_stack->function_stack_tail_index + 1);
 
   if (top_cs) {  // top CS instance
-  main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index = OFF_STACK;
-  int32_t call_site_function_index = main_stack->call_site_status_vector[call_site_index].call_site_function_index;
-  if (main_stack->function_status_vector[call_site_function_index] == main_stack->function_stack_tail_index + 1) {
-    main_stack->function_status_vector[call_site_function_index] = OFF_STACK;
-  }
+    main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index = OFF_STACK;
+    int32_t call_site_function_index = main_stack->call_site_status_vector[call_site_index].call_site_function_index;
+    if (main_stack->function_status_vector[call_site_function_index] == main_stack->function_stack_tail_index + 1) {
+      main_stack->function_status_vector[call_site_function_index] = OFF_STACK;
+    }
   }
 
   bottom_function_frame->running_work += old_bottom_function_frame->running_work;
@@ -542,6 +546,7 @@ void thread_end_operations(parasite_stack_t* main_stack) {
     // if F.c + G.p > F.l
     if (bottom_function_frame->running_span + old_bottom_parasite_frame->prefix_span > main_stack->bottom_parasite_frame->longest_child_span) {
 
+      // F.p += G.c
       main_stack->bottom_parasite_frame->prefix_span += bottom_function_frame->running_span;
       main_stack->bottom_parasite_frame->local_span += main_stack->bottom_parasite_frame->local_continuation;
 
@@ -550,10 +555,16 @@ void thread_end_operations(parasite_stack_t* main_stack) {
       add_parasite_hashtables(&(main_stack->bottom_parasite_frame->prefix_table), &(main_stack->bottom_parasite_frame->continuation_table));
 
       // Save old_bottom_parasite_frame tables in new bottom_parasite_frame's l_child variable.
+
+       // F.l = G.p
       main_stack->bottom_parasite_frame->longest_child_span = old_bottom_parasite_frame->prefix_span;
+      // F.longest_child_lock_span = G.lock_span 
+      main_stack->bottom_parasite_frame->longest_child_lock_span = old_bottom_parasite_frame->lock_span; 
+
       clear_parasite_hashtable(main_stack->bottom_parasite_frame->longest_child_table);
 
       parasite_hashtable_t* tmp_hashtable = main_stack->bottom_parasite_frame->longest_child_table;
+
       main_stack->bottom_parasite_frame->longest_child_table = old_bottom_parasite_frame->prefix_table;
       old_bottom_parasite_frame->prefix_table = tmp_hashtable;
 
@@ -576,7 +587,6 @@ void thread_end_operations(parasite_stack_t* main_stack) {
 
     old_bottom_parasite_frame->parent = main_stack->stack_frame_free_list;
     main_stack->stack_frame_free_list = old_bottom_parasite_frame;
-    begin_strand(main_stack);
 }
 
 
