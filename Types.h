@@ -37,6 +37,7 @@ BOOST_STRONG_TYPEDEF( unsigned, POS )
 
 // Call Types
 BOOST_STRONG_TYPEDEF( clock_t, TIME )
+BOOST_STRONG_TYPEDEF( size_t, CALLSITE )
 
 // File Types
 typedef std::string FIL_PT;
@@ -61,6 +62,8 @@ typedef std::string REF_NAME;
 
 // Thread Types
 BOOST_STRONG_TYPEDEF( unsigned, PID )
+BOOST_STRONG_TYPEDEF( std::string, TIME_STRING )
+BOOST_STRONG_TYPEDEF( unsigned, NUM_CYCLES )
 
 
 #endif /* TYPES_H_ */

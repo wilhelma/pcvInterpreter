@@ -32,7 +32,9 @@ Events operator& (Events A, Events B) noexcept {
 template <typename T>
 constexpr inline
 bool operator== (Events A, T b ) noexcept {
-	return static_cast<bool>( static_cast<T>(static_cast<std::underlying_type<Events>::type>(A)) == b );
+  return static_cast<bool>(
+        static_cast<T>(
+          static_cast<std::underlying_type<Events>::type>(A)) == b );
 }
 
 template <typename T>
@@ -94,8 +96,10 @@ private:
  *****************************************************************************/
 struct NewThreadInfo {
 	ShadowThread* childThread;
-	NewThreadInfo(ShadowThread* childThread)
-		: childThread(childThread) {}
+  ShadowThread* parentThread;
+  NewThreadInfo(ShadowThread* childThread,
+                ShadowThread* parentThread)
+    : childThread(childThread), parentThread(parentThread) {}
 };
 
 class NewThreadEvent : public Event {
@@ -120,7 +124,9 @@ private:
  *****************************************************************************/
 struct JoinInfo {
 	ShadowThread* childThread;
-	JoinInfo(ShadowThread* childThread) : childThread(childThread) {}
+  ShadowThread* parentThread;
+  JoinInfo(ShadowThread* childThread, ShadowThread* parentThread)
+    : childThread(childThread), parentThread(parentThread) {}
 };
 
 class JoinEvent : public Event {
@@ -177,13 +183,6 @@ public:
 				 const struct ReleaseInfo *info) :
 					 Event(thread), _info(info) {}
 
-
-
-
-
-
-
-
 	Events getEventType() const override { return Events::RELEASE; }
 	const ReleaseInfo* getReleaseInfo() const;
 
@@ -228,22 +227,24 @@ private:
  * Call Event
  *****************************************************************************/
 typedef struct CallInfo {
+  CALLSITE siteId;
 	TIME runtime;
-    FUN_SG fnSignature;
+  FUN_SG fnSignature;
 	SEG_ID segment;
 	FunctionType fnType;
 	FIL_PT fileName;
-	FIL_PT filePath;
+  FIL_PT filePath;
 
     explicit
-	CallInfo(TIME Runtime,
-			 FUN_SG FnSignature,
-			 SEG_ID Segment,
-			 FunctionType FnType,
-			 FIL_PT FileName,
-			 FIL_PT FilePath)
-		: runtime(Runtime), fnSignature(FnSignature), segment(Segment), fnType(FnType),
-		  fileName(FileName), filePath(FilePath) {}
+  CallInfo(CALLSITE SiteId,
+           TIME Runtime,
+           FUN_SG FnSignature,
+           SEG_ID Segment,
+           FunctionType FnType,
+           FIL_PT FileName,
+           FIL_PT FilePath)
+    : siteId(SiteId), runtime(Runtime), fnSignature(FnSignature),
+      segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
 } CallInfo;
 
 class CallEvent : public Event {

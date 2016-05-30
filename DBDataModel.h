@@ -290,20 +290,27 @@ typedef struct segment_t {
 
 typedef struct thread_t {
     TRD_ID id;
-    PID process_id;
-    INS_ID instruction_id;
-    TRD_ID  child_thread_id;
+    TIME_STRING start_time;
+    TIME_STRING end_time;
+    NUM_CYCLES num_cycles;
+    INS_ID create_instruction_id;
+    INS_ID join_instruction_id;
     TRD_ID parent_thread_id;
+    PID process_id;
 
     explicit
     thread_t(TRD_ID id,
-             PID processId,
-             INS_ID instructionId,
-             TRD_ID childThreadId,
-             TRD_ID parentThreadId)
-        : id(id), process_id(processId), instruction_id(instructionId), 
-          child_thread_id(childThreadId), parent_thread_id(parentThreadId) {}
-
+             TIME_STRING start_time,
+             TIME_STRING end_time,
+             NUM_CYCLES num_cycles,
+             INS_ID createINS_id,
+             INS_ID joinIns_id,
+             TRD_ID parentThreadId,
+             PID processId)
+        : id(id), start_time(start_time), end_time(end_time),
+          num_cycles(num_cycles), create_instruction_id(createINS_id),
+          join_instruction_id(joinIns_id), parent_thread_id(parentThreadId),
+          process_id(processId) {}
 } thread_t;
 
 

@@ -4,8 +4,6 @@ include (GenerateExportHeader)
 project(SAAPFramework)
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_BUILD_TYPE Release)
-
 if (MSVC)
   # Include files
   FILE(GLOB HDR_LIST *.h*)

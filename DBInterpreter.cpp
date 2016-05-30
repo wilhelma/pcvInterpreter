@@ -10,8 +10,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <functional>
+
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
+
 #include "Event.h"
 #include "EventService.h"
 #include "ShadowThread.h"
@@ -111,24 +114,32 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
             break;
         case InstructionType::FORK:
             {
-                thread_t *thread;
-                if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
-                    if (callT_.get(segment->call_id, &call) == IN_OK)
-                    processFork(ins,
-                                *segment,
-                                *call,
-                                *thread);
+                for (auto it : threadT_) {
+                  thread_t& thread = it.second;
+                  if (ins.instruction_id == thread.create_instruction_id) {
+                    if (callT_.get(segment->call_id, &call) == IN_OK) {
+                      processFork(ins,
+                                  *segment,
+                                  *call,
+                                  thread);
+                    }
+                  }
+                }
                 break;
             }
         case InstructionType::JOIN:
             {
-                thread_t *thread;
-                if ( threadT_.get(ins.instruction_id, &thread ) == IN_OK)
-                    if (callT_.get(segment->call_id, &call) == IN_OK)
-                    processJoin(ins,
-                                *segment,
-                                *call,
-                                *thread);
+                for (auto it : threadT_) {
+                  thread_t& thread = it.second;
+                  if (ins.instruction_id == thread.join_instruction_id) {
+                    if (callT_.get(segment->call_id, &call) == IN_OK) {
+                      processFork(ins,
+                                  *segment,
+                                  *call,
+                                  thread);
+                    }
+                  }
+                }
                 break;
             }
         default:
@@ -176,41 +187,48 @@ int DBInterpreter::processSegment(SEG_ID segmentId,
     return 0;
 }
 
+size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
+    size_t h1 = std::hash<unsigned>()(funId);
+    size_t h2 = std::hash<unsigned>()(lineNo);
+    return h1 ^ (h2 << 1);
+}
+
 int DBInterpreter::processCall(CAL_ID callId,
                                const call_t& call,
                                const segment_t& seg,
                                const instruction_t& ins) {
 
     // fetch called function 
-    auto search = functionT_.find(call.function_id);
-    if (search != functionT_.end()) {
+  auto search = functionT_.find(call.function_id);
+  if (search != functionT_.end()) {
 
-        switch(search->second.type) {
-            case FunctionType::FUNCTION:
-            case FunctionType::METHOD:
-                {
-                    auto searchFile = fileT_.find(search->second.file_id);
-                    if (searchFile != fileT_.end()) {
-                        CallInfo info( (TIME) (call.end_time - call.start_time),
-                                       (FUN_SG)search->second.signature,
-                                       (SEG_ID) call.sql_id, // XXX BUG segment or call?
-                                       search->second.type,
-                                       (FIL_PT)searchFile->second.file_name,
-                                       (FIL_PT)searchFile->second.file_path);
+    switch(search->second.type) {
+    case FunctionType::FUNCTION:
+    case FunctionType::METHOD:
+    {
+      auto searchFile = fileT_.find(search->second.file_id);
+      if (searchFile != fileT_.end()) {
+        CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
+                       (TIME) (call.end_time - call.start_time),
+                       (FUN_SG)search->second.signature,
+                       (SEG_ID) call.sql_id, // XXX BUG segment or call?
+                       search->second.type,
+                       (FIL_PT)searchFile->second.file_name,
+                       (FIL_PT)searchFile->second.file_path);
 
-                        ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-                        CallEvent event(thread, &info);
-                        _eventService->publish(&event);
-                    } else {
-                        BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
-                        return 1;
-                    }
-                    break;
-                }
-            default:
-                break;
-        }
-    } else {     
+        ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+        CallEvent event(thread, &info);
+        _eventService->publish(&event);
+      } else {
+        BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
+        return 1;
+      }
+      break;
+    }
+    default:
+      break;
+    }
+  } else {
         BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
         return IN_NO_ENTRY;
     }
@@ -308,11 +326,9 @@ int DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
-        
-
     ShadowThread *pT = threadMgr_->getThread(call.thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.child_thread_id);
-    NewThreadInfo info(cT);                   
+    ShadowThread *cT = threadMgr_->getThread(thread.id);
+    NewThreadInfo info(cT, pT);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 
@@ -325,8 +341,8 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
                                const thread_t& thread) {
                                        
     ShadowThread *pT = threadMgr_->getThread(call.thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.child_thread_id);
-    JoinInfo info(cT);                    
+    ShadowThread *cT = threadMgr_->getThread(thread.id);
+    JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
     _eventService->publish( &event );
 
@@ -477,10 +493,10 @@ int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
     FUN_ID id          = (FUN_ID)sqlite3_column_int(sqlstmt, 0);
-    FunctionType type  = (FunctionType)sqlite3_column_int(sqlstmt, 2);
+    FUN_SG signature((const char*)sqlite3_column_text(sqlstmt, 2));
     FIL_ID file_id     = (FIL_ID)sqlite3_column_int(sqlstmt, 3);
     LIN_NO line_number = (LIN_NO)sqlite3_column_int(sqlstmt, 4);
-    FUN_SG signature((const char*)sqlite3_column_text(sqlstmt, 1));
+    FunctionType type  = (FunctionType)sqlite3_column_int(sqlstmt, 6);
 
    function_t *tmp = new function_t(id,
                                     signature,
@@ -584,17 +600,25 @@ int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
 
 int DBInterpreter::fillThread(sqlite3_stmt *sqlstmt) {
    TRD_ID id               = (TRD_ID)sqlite3_column_int(sqlstmt, 0);
-   PID process_id          =    (PID)sqlite3_column_int(sqlstmt, 1);
-   INS_ID instruction_id   = (INS_ID)sqlite3_column_int(sqlstmt, 2);
-   TRD_ID child_thread_id  = (TRD_ID)sqlite3_column_int(sqlstmt, 3);
-   TRD_ID parent_thread_id = (TRD_ID)sqlite3_column_int(sqlstmt, 4);
+   TIME_STRING start_time  = TIME_STRING(reinterpret_cast<const char*>(
+         sqlite3_column_text(sqlstmt, 1)));
+   TIME_STRING end_time		 = TIME_STRING(reinterpret_cast<const char*>(
+         sqlite3_column_text(sqlstmt, 2)));
+   NUM_CYCLES num_cycles	 = (NUM_CYCLES)sqlite3_column_int(sqlstmt, 3);
+   INS_ID create_instr_id  = (INS_ID)sqlite3_column_int(sqlstmt, 4);
+   INS_ID join_instr_id    = (INS_ID)sqlite3_column_int(sqlstmt, 5);
+   TRD_ID parent_thread_id = (TRD_ID)sqlite3_column_int(sqlstmt, 6);
+   PID process_id          = (PID)sqlite3_column_int(sqlstmt, 7);
 
    thread_t *tmp = new thread_t(id,
-                                process_id,
-                                instruction_id,
-                                child_thread_id,
-                                parent_thread_id);
+                                start_time,
+                                end_time,
+                                num_cycles,
+                                create_instr_id,
+                                join_instr_id,
+                                parent_thread_id,
+                                process_id);
 
-   threadT_.fill(instruction_id, *tmp);
+   threadT_.fill(id, *tmp);
    return 0;
 }

@@ -58,11 +58,11 @@ private:
 	DBTable<FUN_ID, function_t> functionT_;
 	DBTable<INS_ID, instruction_t> instructionT_;
 	DBTable<LOP_ID, loop_t> loopT_;
-    DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
+  DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
 	DBTable<REF_ID, reference_t> referenceT_;
 	DBTable<LOI_ID, loopIteration_t> loopIterationT_;
 	DBTable<SEG_ID, segment_t> segmentT_; 
-	DBTable<INS_ID, thread_t> threadT_;
+  DBTable<TRD_ID, thread_t> threadT_;
 
 	insAccessMap_t _insAccessMap;
 //	refNoIdMap_t _refNoIdMap;
@@ -127,11 +127,12 @@ private:
 					const segment_t& segment,
 					const call_t& call,
 					const thread_t& thread);
-	int processFork(const instruction_t& instruction,
-					const segment_t& segment,
-					const call_t& call,
-					const thread_t& thread);
+  int processFork(const instruction_t& instruction,
+                  const segment_t& segment,
+                  const call_t& call,
+                  const thread_t& thread);
 
+  size_t getHash(unsigned funId, unsigned lineNo) const;
 
 	// prevent generated functions
 	DBInterpreter(const DBInterpreter&);

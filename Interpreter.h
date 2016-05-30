@@ -31,7 +31,7 @@ public:
 	virtual int process() = 0;
 	void initLogger();
 
-	virtual ~Interpreter() {};
+  virtual ~Interpreter() {}
 	virtual EventService* getEventService() = 0;
 
 protected:
