@@ -41,7 +41,8 @@ int main(int argc, char* argv[]) {
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
 	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 	// register functionTool, no filters, only CALL events
-	runner->registerTool(functionTool, NULL, Events::CALL);
+  runner->registerTool(functionTool, NULL,
+                       Events::CALL | Events::NEWTHREAD );
 
 	// Start interpretation
 	runner->interpret();

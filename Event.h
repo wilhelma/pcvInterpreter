@@ -23,9 +23,9 @@ enum class Events: unsigned char {
 };
 
 constexpr inline
-Events operator& (Events A, Events B) noexcept {
+Events operator| (Events A, Events B) noexcept {
     return static_cast<Events>(
-        static_cast<std::underlying_type<Events>::type>(A) &
+        static_cast<std::underlying_type<Events>::type>(A) |
         static_cast<std::underlying_type<Events>::type>(B)   );
 }
 
@@ -97,9 +97,11 @@ private:
 struct NewThreadInfo {
 	ShadowThread* childThread;
   ShadowThread* parentThread;
+  time_t runtime;
   NewThreadInfo(ShadowThread* childThread,
-                ShadowThread* parentThread)
-    : childThread(childThread), parentThread(parentThread) {}
+                ShadowThread* parentThread,
+                time_t runtime)
+    : childThread(childThread), parentThread(parentThread), runtime(runtime) {}
 };
 
 class NewThreadEvent : public Event {
@@ -114,7 +116,7 @@ private:
 	const NewThreadInfo *_info;
 
 	// prevent generated functions
-	NewThreadEvent(const NewThreadEvent&);
+  NewThreadEvent(const NewThreadEvent&);
 	NewThreadEvent& operator=(const NewThreadEvent&);
 };
 

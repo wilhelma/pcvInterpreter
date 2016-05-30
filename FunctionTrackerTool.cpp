@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "FunctionTrackerTool.h"
+#include "ShadowThread.h"
 
 /**
  * @brief Constructor for `FunctionTrackerTool`
@@ -46,6 +47,12 @@ FunctionTrackerTool::~FunctionTrackerTool() {
 } 
 
 void FunctionTrackerTool::create( const Event* e ) {
+  const NewThreadEvent* event = static_cast<const NewThreadEvent*>(e);
+  const NewThreadInfo* info = event->getNewThreadInfo();
+
+  std::cerr << "New Thread... parent: " << info->parentThread->threadId
+            << " child: " << info->childThread->threadId
+            << " runtime: " << info->runtime << std::endl;
 }
 
 void FunctionTrackerTool::join( const Event* e ) {
