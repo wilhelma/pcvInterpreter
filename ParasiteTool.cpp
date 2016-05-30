@@ -41,6 +41,7 @@ void ParasiteTool::create(const Event* e) {
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
 	currentThread = _info->childThread;
+	TIME create_time = _info->runtime;
 	
 	create_thread_operations(main_stack);
 }
@@ -48,6 +49,8 @@ void ParasiteTool::create(const Event* e) {
 // this is a SYNC EVENT 
 void ParasiteTool::join(const Event* e) {
 
+	JoinEvent* joinEvent = (JoinEvent*) e;
+	const JoinInfo *_info = joinEvent->getAccessInfo();
 	join_operations(main_stack, F_signature);
 }
 
@@ -71,18 +74,16 @@ void ParasiteTool::access(const Event* e) {
 	AccessEvent* accessEvent = (AccessEvent*) e;
 	const AccessInfo *_info = accessEvent->getAccessInfo();
 
-	memory_access_operations(main_stack);
+	// memory_access_operations(main_stack);
 }
 
 // lock acquire event 
 void ParasiteTool::acquire(const Event* e) {
 
-
 	AcquireEvent* acquireEvent = (AcquireEvent*) e;
 	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 
-	// double last_lock_start = e->runtime;
-	double last_lock_start = 0.0;
+	last_lock_start = e->runtime;
 
 	lock_acquire_operations(main_stack);
 }
@@ -110,16 +111,6 @@ void ParasiteTool::returnOfCalled(const Event* e){
 
 // NOT YET IMPLEMENTED IN PCVINTERPRETER
 void ParasiteTool::threadEnd(const Event* e){
-
-	// Created G returns to F
-	// G.p += G.c
-	// F.w += G.w
-	// F.lock_span += G.lock_span
-	// if F.c + G.p > F.l
-	// 		F.l = G.p
-	//		F.longest_child_lock_span = G.lock_span 
-	// 		F.p += G.c
-	// 		F.c = 0
 
 	// ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
 	// threadEndInfo *_info = e->getThreadEndInfo();

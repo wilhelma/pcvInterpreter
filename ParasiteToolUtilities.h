@@ -37,15 +37,8 @@ typedef enum {
   FUNCTIONTYPE_END
 } FunctionType_t;
 
-typdef struct strand_ruler_t {
-
-  TIME start;
-  TIME stop;
-} strand_ruler_t;
-
 const char *FunctionType_str[FUNCTIONTYPE_END] = 
 { "empty", "recursive", "main", "INVALID", "cilk", "INVALID", "helper", "INVALID", "c" };
-
 
 
 #endif

@@ -87,7 +87,7 @@ void join_operations(parasite_stack_t* main_stack, TIME join_time) {
 }
 
 
-void call_operations(parasite_stack_t* main_stack, int call_site_index, TIME call_time) {
+void call_operations(parasite_stack_t* main_stack, unsigned long long call_site_index, TIME call_time) {
 
     // F spawns or calls G:
     // G.w = 0
