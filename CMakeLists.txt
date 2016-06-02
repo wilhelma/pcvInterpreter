@@ -81,7 +81,7 @@ if (MSVC)
   set(CMAKE_CXX_FLAGS "/Gm- /errorReport:prompt /WX- /Zc:forScope /EHsc")
 else ()
   set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -Wall -Wno-unknown-pragmas -std=c++11")
-  set(CMAKE_C_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -WALL -Wno-unknown-pragmas -std=c++11" )
+  set(CMAKE_C_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -Wall -Wno-unknown-pragmas -std=c++11" )
   set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 endif(MSVC)
 

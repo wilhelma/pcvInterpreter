@@ -8,6 +8,8 @@
 
 #include "ParasiteToolUtilities.h"
 
+#define MIN_CAPACITY 2
+
 /**
  * Data structures
  */
@@ -93,7 +95,7 @@ typedef struct {
 
 } parasite_hashtable_t;
 
-extern parasite_hashtable_linked_list_node_t *linked_list_free_list;  
+extern parasite_hashtable_linked_list_node_t *linked_list_free_node_list;  
 
 bool hashtable_entry_is_empty(const parasite_hashtable_entry_t *entry);
 

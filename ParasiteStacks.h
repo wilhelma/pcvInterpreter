@@ -2,8 +2,8 @@
 #define _PARASITE_STACKS_H_
 
 #include "ParasiteHashtable.h"
-#include "StrandTimer.h"
 #include "assert.h"
+#include "Types.h"
 
 // Used to size call site status vector 
 const int START_FUNCTION_STATUS_VECTOR_SIZE = 4;
@@ -121,9 +121,6 @@ typedef struct {
 
   // Current bottom of C stack
   int function_stack_tail_index;
-
-  // Tool for measuring the length of a strand
-  strand_ruler_t strand_ruler;
 
   // Stack of C function frames
   function_frame_t *function_stack;
@@ -280,8 +277,6 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
     stack->call_site_status_vector[i].flags = 0;
     stack->function_status_vector[i] = OFF_STACK;
   }
-
-  init_strand_ruler(&(stack->strand_ruler));
 }
 
 // Doubles the capacity of a call_site status vector

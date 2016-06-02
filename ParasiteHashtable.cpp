@@ -11,16 +11,16 @@
 
 int MIN_HASHTABLE_CAPACITY = 1;
 
-parasite_hashtable_list_node_t *linked_list_free_list = NULL;
+parasite_hashtable_linked_list_node_t *linked_list_free_list = NULL;
 
 // Return true if this entry is empty, false otherwise.
 bool hashtable_entry_is_empty(const parasite_hashtable_entry_t *entry) {
-  return (0 == entry->initialized);
+  return (0 == entry->is_initialized);
 }
 
 // Create an empty hashtable entry
 static void make_empty_hashtable_entry(parasite_hashtable_entry_t *entry) {
-  entry->initialized = 0;
+  entry->is_initialized = 0;
 }
 
 
@@ -58,10 +58,10 @@ parasite_hashtable_t* parasite_hashtable_create() {
 
 
 static inline
-int can_override_entry(parasite_hashtable_entry_t *entry, uintptr_t new_call_site_id) {
+int can_override_entry(parasite_hashtable_entry_t *entry, uintptr_t new_call_site_ID) {
   // used to be this:
-  // entry->call_site_id == new_call_site_id && entry->height == new_height
-  return (entry->call_site_id == new_call_site_id);
+  // entry->call_site_ID == new_call_site_ID && entry->height == new_height
+  return (entry->call_site_ID == new_call_site_ID);
 }
 
 
@@ -70,7 +70,6 @@ void combine_entries(parasite_hashtable_entry_t *entry,
                      const parasite_hashtable_entry_t *entry_add) {
   entry->local_work += entry_add->local_work;
   entry->local_span += entry_add->local_span;
-  entry->local_count += entry_add->local_count;
   entry->work += entry_add->work;
   entry->span += entry_add->span;
   entry->count += entry_add->count;
@@ -100,7 +99,7 @@ static parasite_hashtable_t* increase_hashtable_table_capacity(const parasite_ha
 
   parasite_hashtable_t *new_table;
 
-  new_tab = parasite_hashtable_alloc(new_log_capacity);
+  new_table = parasite_hashtable_alloc(new_log_capacity);
   size_t i = 0;
 
   for (i = 0; i < (1 << table->log_capacity); ++i) {
@@ -130,7 +129,7 @@ static parasite_hashtable_t* increase_hashtable_table_capacity(const parasite_ha
 /* static */ __attribute__((always_inline)) parasite_hashtable_entry_t*
 get_parasite_hashtable_entry_at_index(int index, parasite_hashtable_t **table) {
   if (index >= (1 << (*table)->log_capacity)) {
-    parasite_hashtable_t *new_tab = increase_hashtable_table_capacity(*table);
+    parasite_hashtable_t *new_table = increase_hashtable_table_capacity(*table);
 
     assert(new_table);
     assert(new_table->head == (*table)->head);
@@ -164,16 +163,16 @@ void flush_parasite_hashtable_list(parasite_hashtable_t **table) {
 
     parasite_hashtable_entry_t *tab_entry;
 
-    /* tab_entry = get_parasite_hashtable_entry(entry->call_site_id, table); */
+    /* tab_entry = get_parasite_hashtable_entry(entry->call_site_ID, table); */
     tab_entry = get_parasite_hashtable_entry_at_index(lst_entry->index, table);
     assert(NULL != tab_entry);
-    assert(empty_hashtable_entry_p(tab_entry) || can_override_entry(tab_entry, entry->call_site_id));
+    assert(hashtable_entry_is_empty(tab_entry) || can_override_entry(tab_entry, entry->call_site_ID));
 
-    if (empty_hashtable_entry_p(tab_entry)) {
+    if (hashtable_entry_is_empty(tab_entry)) {
       // the compiler will do a struct copy
       *tab_entry = *entry;
-      tab_entry->initialized = 1;
-      /* (*table)->populated[(*table)->table_size] = hashtable_index(entry->call_site_id); */
+      tab_entry->is_initialized = 1;
+      /* (*table)->populated[(*table)->table_size] = hashtable_index(entry->call_site_ID); */
       (*table)->populated[(*table)->table_size] = lst_entry->index;
       ++(*table)->table_size;
     } else {
@@ -188,8 +187,8 @@ void flush_parasite_hashtable_list(parasite_hashtable_t **table) {
 
   if (NULL != (*table)->head) {
     assert(NULL != (*table)->tail);
-    (*table)->tail->next = ll_free_list;
-    ll_free_list = (*table)->head;
+    (*table)->tail->next = linked_list_free_list;
+    linked_list_free_node_list = (*table)->head;
   }
 
   (*table)->head = NULL;
@@ -213,7 +212,7 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          /* InstanceType_t inst_type, */
                          bool is_top_fn,
                          int index,
-                         CALL_SITE_ID call_site_id,
+                         CALLSITE call_site_ID,
                          TIME work, TIME span,
                          TIME local_work, TIME local_span) {
   
@@ -223,9 +222,9 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     // If the table_size + list_size is sufficiently small, add entry
     // to linked list.
     parasite_hashtable_linked_list_node_t *lst_entry;
-    if (NULL != ll_free_list) {
-      lst_entry = ll_free_list;
-      ll_free_list = ll_free_list->next;
+    if (NULL != linked_list_free_node_list) {
+      lst_entry = linked_list_free_node_list;
+      linked_list_free_node_list = linked_list_free_node_list->next;
     } else {
       lst_entry = (parasite_hashtable_linked_list_node_t*)malloc(sizeof(parasite_hashtable_linked_list_node_t));
     }
@@ -233,7 +232,7 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     lst_entry->index = index;
 
     /* lst_entry->entry.is_recursive = (0 != (RECURSIVE & inst_type)); */
-    lst_entry->entry.call_site_id = call_site_id;
+    lst_entry->entry.call_site_ID = call_site_ID;
     lst_entry->entry.work = work;
     lst_entry->entry.span = span;
     lst_entry->entry.count = 1; /* (0 != (RECORD & inst_type)); */
@@ -250,7 +249,9 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     }      
     lst_entry->entry.local_work = local_work;
     lst_entry->entry.local_span = local_span;
-    lst_entry->entry.local_count = 1;
+
+    lst_entry->entry.count = 1;
+
     lst_entry->next = NULL;
 
     if (NULL == (*table)->tail) {
@@ -273,17 +274,17 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     }
 
     // Otherwise, add it to the table directly
-    /* parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry(call_site_id, table); */
+    /* parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry(call_site_ID, table); */
     parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry_at_index(index, table);
     assert(NULL != entry);
-    assert(empty_hashtable_entry_p(entry) || can_override_entry(entry, call_site_id));
+    assert(hashtable_entry_is_empty(entry) || can_override_entry(entry, call_site_ID));
   
-    if (empty_hashtable_entry_p(entry)) {
+    if (hashtable_entry_is_empty(entry)) {
       /* entry->is_recursive = (0 != (RECURSIVE & inst_type)); */
 
-      entry->call_site_id = call_site_id;
+      entry->call_site_ID = call_site_ID;
 
-      entry->initialized = 1;
+      entry->is_initialized = 1;
       entry->work = work;
       entry->span = span;
       entry->count = 1; /* (0 != (RECORD & inst_type)); */
@@ -299,14 +300,14 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
       }
       entry->local_work = local_work;
       entry->local_span = local_span;
-      entry->local_count = 1;
-      /* (*table)->populated[ (*table)->table_size ] = hashtable_index(call_site_id); */
+      entry->count = 1;
+      /* (*table)->populated[ (*table)->table_size ] = hashtable_index(call_site_ID); */
       (*table)->populated[ (*table)->table_size ] = index;
       ++(*table)->table_size;
     } else {
       entry->local_work += local_work;
       entry->local_span += local_span;
-      entry->local_count += 1;
+      entry->count += 1;
       entry->work += work;
       entry->span += span;
       entry->count += 1; /* (0 != (RECORD & inst_type)); */
@@ -327,7 +328,7 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
 __attribute__((always_inline))
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
                                int index,
-                               CALL_SITE_ID call_site_id,
+                               CALLSITE call_site_ID,
                                TIME local_work, TIME local_span) {
 
   if (index >= (1 << (*table)->log_capacity) &&
@@ -336,15 +337,15 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
     // If the table_size + list_size is sufficiently small, add entry
     // to linked list.
     parasite_hashtable_linked_list_node_t *lst_entry;
-    if (NULL != ll_free_list) {
-      lst_entry = ll_free_list;
-      ll_free_list = ll_free_list->next;
+    if (NULL != linked_list_free_node_list) {
+      lst_entry = linked_list_free_node_list;
+      linked_list_free_node_list = linked_list_free_node_list->next;
     } else {
       lst_entry = (parasite_hashtable_linked_list_node_t*)malloc(sizeof(parasite_hashtable_linked_list_node_t));
     }
 
     lst_entry->index = index;
-    lst_entry->entry.call_site_id = call_site_id;
+    lst_entry->entry.call_site_ID = call_site_ID;
     lst_entry->entry.work = 0;
     lst_entry->entry.span = 0;
     lst_entry->entry.count = 0;
@@ -353,7 +354,7 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
     lst_entry->entry.top_count = 0;
     lst_entry->entry.local_work = local_work;
     lst_entry->entry.local_span = local_span;
-    lst_entry->entry.local_count = 1;
+    lst_entry->entry.count = 1;
     lst_entry->next = NULL;
 
     if (NULL == (*table)->tail) {
@@ -376,16 +377,16 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
     }
 
     // Otherwise, add it to the table directly
-    /* parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry(call_site_id, table); */
+    /* parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry(call_site_ID, table); */
     parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry_at_index(index, table);
     assert(NULL != entry);
-    assert(empty_hashtable_entry_p(entry) || can_override_entry(entry, call_site_id));
+    assert(hashtable_entry_is_empty(entry) || can_override_entry(entry, call_site_ID));
   
-    if (empty_hashtable_entry_p(entry)) {
+    if (hashtable_entry_is_empty(entry)) {
 
-      entry->call_site_id = call_site_id;
+      entry->call_site_ID = call_site_ID;
 
-      entry->initialized = 1;
+      entry->is_initialized = 1;
       entry->work = 0;
       entry->span = 0;
       entry->count = 0;
@@ -394,14 +395,14 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
       entry->top_count = 0;
       entry->local_work = local_work;
       entry->local_span = local_span;
-      entry->local_count = 1;
+      entry->count = 1;
       (*table)->populated[ (*table)->table_size ] = index;
       ++(*table)->table_size;
     } else {
-      assert(call_site_id == entry->call_site_id);
+      assert(call_site_ID == entry->call_site_ID);
       entry->local_work += local_work;
       entry->local_span += local_span;
-      entry->local_count += 1;
+      entry->count += 1;
     }
   }
 
@@ -453,13 +454,13 @@ parasite_hashtable_t* add_parasite_hashtables(parasite_hashtable_t **left, paras
   for (size_t i = 0; i < (*right)->table_size; ++i) {
 
     r_entry = &((*right)->entries[ (*right)->populated[i] ]);
-    assert(!empty_hashtable_entry_p(r_entry));
+    assert(!hashtable_entry_is_empty(r_entry));
 
     l_entry = &((*left)->entries[ (*right)->populated[i] ]);
     assert(NULL != l_entry);
-    assert(empty_hashtable_entry_p(l_entry) || can_override_entry(l_entry, r_entry->call_site_id));
+    assert(parasite_hashtable_is_empty(l_entry) || can_override_entry(l_entry, r_entry->call_site_ID));
 
-    if (empty_hashtable_entry_p(l_entry)) {
+    if (parasite_hashtable_is_empty(l_entry)) {
       
       // let the compiler do the struct copy
       *l_entry = *r_entry;
@@ -486,8 +487,8 @@ void clear_parasite_hashtable(parasite_hashtable_t *table) {
 
   if (NULL != table->head) {
     assert(NULL != table->tail);
-    table->tail->next = ll_free_list;
-    ll_free_list = table->head;
+    table->tail->next = linked_list_free_node_list;
+    linked_list_free_node_list = table->head;
   }
 
   table->head = NULL;
@@ -512,8 +513,8 @@ void free_parasite_hashtable(parasite_hashtable_t *table) {
   /* } */
   if (NULL != table->head) {
     assert(NULL != table->tail);
-    table->tail->next = ll_free_list;
-    ll_free_list = table->head;
+    table->tail->next = linked_list_free_node_list;
+    linked_list_free_node_list = table->head;
   }
   free(table->populated);
   free(table);
