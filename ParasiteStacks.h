@@ -34,6 +34,7 @@ typedef struct function_frame_t {
   // Running total of work and span for this call site
   TIME running_work;
   TIME running_span;
+  TIME running_lock_span;
 
   // Parent of this function on the same stack 
   struct function_frame_t *parent;

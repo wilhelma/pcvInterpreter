@@ -59,7 +59,7 @@ public:
 	void threadEnd(const Event* e);
 	void print();
 
-	unsigned long long getCurrentCallSite();
+	CALLSITE getCurrentCallSite();
 	ShadowThread* getCurrentThread();
 	FUN_SG getCurrentFunctionSignature();
 	

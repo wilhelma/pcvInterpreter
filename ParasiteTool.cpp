@@ -9,7 +9,7 @@
 
 // Helper functions
 
-unsigned long long ParasiteTool::getCurrentCallSite() {
+CALLSITE  ParasiteTool::getCurrentCallSite() {
 
 	return currentCallSiteID;
 }
@@ -73,7 +73,7 @@ void ParasiteTool::call(const Event* e) {
 	if (currentCallSiteID != _info->siteId)
 		currentCallSiteID = _info->siteId;
 
-    call_operations(main_stack, _info->siteId, _info->runtime);
+    call_operations(main_stack, _info->siteId, _info->runtime, last_strand_start, min_capacity);
 }
 
 
