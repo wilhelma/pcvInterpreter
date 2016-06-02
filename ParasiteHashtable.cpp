@@ -1,4 +1,8 @@
 #include "ParasiteHashtable.h"
+#include "Types.h"
+
+#define MIN_CAPACITY 2
+
 /**
  * Method implementations
  */
@@ -240,7 +244,6 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     if (is_top_fn) {
       lst_entry->entry.top_work = work;
       lst_entry->entry.top_span = span;
-      assert(0 != work);
       lst_entry->entry.top_count = 1;
     } else {
       lst_entry->entry.top_work = 0;
@@ -458,9 +461,9 @@ parasite_hashtable_t* add_parasite_hashtables(parasite_hashtable_t **left, paras
 
     l_entry = &((*left)->entries[ (*right)->populated[i] ]);
     assert(NULL != l_entry);
-    assert(parasite_hashtable_is_empty(l_entry) || can_override_entry(l_entry, r_entry->call_site_ID));
+    assert(hashtable_entry_is_empty(l_entry) || can_override_entry(l_entry, r_entry->call_site_ID));
 
-    if (parasite_hashtable_is_empty(l_entry)) {
+    if (hashtable_entry_is_empty(l_entry)) {
       
       // let the compiler do the struct copy
       *l_entry = *r_entry;

@@ -1,14 +1,15 @@
 #ifndef _PARASITE_HASHTABLE_H_
 #define _PARASITE_HASHTABLE_H_
 
+#include <string>
+#include <sstream>
+#include <iostream>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include "ParasiteToolUtilities.h"
-
-#define MIN_CAPACITY 2
 
 /**
  * Data structures

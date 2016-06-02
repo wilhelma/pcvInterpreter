@@ -26,6 +26,7 @@
 #include "Tool.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
+#include "Types.h"
 
 #include "ParasiteToolHelper.h"
 #include "ParasiteToolUtilities.h"
@@ -40,7 +41,7 @@ public:
 	TIME last_lock_start;
 	TIME last_strand_start;
 
-	int MIN_CAPACITY;
+	int min_capacity;
 
 	ParasiteTool();
 	~ParasiteTool();
@@ -65,7 +66,7 @@ public:
 private:
 
 	// keeps track of current call site
-	unsigned long long currentCallSiteID;
+	CALLSITE currentCallSiteID;
 
 	// keeps track of current thread
 	ShadowThread* currentThread;

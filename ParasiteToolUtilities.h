@@ -3,7 +3,6 @@
 
 // Auxiliary functions for Parasite Tool
 
-#include "ParasiteStacks.h"
 #include <limits.h>
 #include <string.h>
 #include <time.h>
