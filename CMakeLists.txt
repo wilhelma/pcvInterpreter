@@ -75,13 +75,13 @@ link_directories (${SQLITE_LIB_PATH})
 # ------------------------------------ CXX and C Flags --------------------------------------------- #
 
 #SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-#SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/${CMAKE_BUILD_TYPE}/)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/${CMAKE_BUILD_TYPE}/)
 
 if (MSVC)
   set(CMAKE_CXX_FLAGS "/Gm- /errorReport:prompt /WX- /Zc:forScope /EHsc")
 else ()
   set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -Wall -Wno-unknown-pragmas -std=c++11")
-  set(CMAKE_C_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -WALL -Wno-unknown-pragmas -std=c++11" )
+  set(CMAKE_C_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -Wall -Wno-unknown-pragmas" )
   set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 endif(MSVC)
 
