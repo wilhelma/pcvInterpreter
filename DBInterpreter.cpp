@@ -118,10 +118,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
                   thread_t& thread = it.second;
                   if (ins.instruction_id == thread.create_instruction_id) {
                     if (callT_.get(segment->call_id, &call) == IN_OK) {
-                      processFork(ins,
-                                  *segment,
-                                  *call,
-                                  thread);
+                      processFork(ins, *segment, *call, thread);
                     }
                   }
                 }
@@ -133,10 +130,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
                   thread_t& thread = it.second;
                   if (ins.instruction_id == thread.join_instruction_id) {
                     if (callT_.get(segment->call_id, &call) == IN_OK) {
-                      processFork(ins,
-                                  *segment,
-                                  *call,
-                                  thread);
+                      processJoin(ins, *segment, *call, thread);
                     }
                   }
                 }
@@ -326,9 +320,9 @@ int DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
-    ShadowThread *pT = threadMgr_->getThread(call.thread_id);
+    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT);
+    NewThreadInfo info(cT, pT, thread.num_cycles);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 
@@ -340,7 +334,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
                                const call_t& call,
                                const thread_t& thread) {
                                        
-    ShadowThread *pT = threadMgr_->getThread(call.thread_id);
+    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );

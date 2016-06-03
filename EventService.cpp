@@ -14,7 +14,7 @@
 bool EventService::publish(NewThreadEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::NEWTHREAD) != 0 ) {
+    if ( (it->second.events | Events::NEWTHREAD) != 0 ) {
 			it->first->create(event);
 		}
 	}
@@ -25,8 +25,8 @@ bool EventService::publish(NewThreadEvent *event) {
 bool EventService::publish(JoinEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::NEWTHREAD) != 0 ) {
-			it->first->create(event);
+    if ( (it->second.events | Events::JOIN) != 0 ) {
+      it->first->create(event);
 		}
 	}
 
@@ -36,7 +36,7 @@ bool EventService::publish(JoinEvent *event) {
 bool EventService::publish(AcquireEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::ACQUIRE) != 0 ) {
+    if ( (it->second.events | Events::ACQUIRE) != 0 ) {
 			it->first->acquire(event);
 		}
 	}
@@ -47,7 +47,7 @@ bool EventService::publish(AcquireEvent *event) {
 bool EventService::publish(ReleaseEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::RELEASE) != 0 ) {
+    if ( (it->second.events | Events::RELEASE) != 0 ) {
 			it->first->release(event);
 		}
 	}
@@ -58,7 +58,7 @@ bool EventService::publish(ReleaseEvent *event) {
 bool EventService::publish(AccessEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::ACCESS) != 0 ) {
+    if ( (it->second.events | Events::ACCESS) != 0 ) {
 			it->first->access(event);
 		}
 	}
@@ -70,7 +70,7 @@ bool EventService::publish(CallEvent *event)
 {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-		if ( (it->second.events & Events::CALL) != 0 ) {
+    if ( (it->second.events | Events::CALL) != 0 ) {
 			it->first->call(event);
 		}
 	}
