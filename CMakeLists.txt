@@ -74,7 +74,7 @@ link_directories (${SQLITE_LIB_PATH})
 
 # ------------------------------------ CXX and C Flags --------------------------------------------- #
 
-SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+#SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 #SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/${CMAKE_BUILD_TYPE}/)
 
 if (MSVC)
@@ -85,7 +85,10 @@ else ()
   set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 endif(MSVC)
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} ${HDR_LIST})
+#add_executable(${PROJECT_NAME} ${SRC_LIST} ${HDR_LIST})
 
-target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
+#target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
 
+
+# Add subdirectories
+add_subdirectory(src)
