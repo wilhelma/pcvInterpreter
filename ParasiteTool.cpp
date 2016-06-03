@@ -47,10 +47,12 @@ void ParasiteTool::create(const Event* e) {
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
-	currentThread = _info->childThread;
+	currentThreadId = _info->childThread->threadId;
+	time_t create_time = _info->runtime;
 
-	// TIME create_time = _info->runtime;
-	// create_thread_operations(main_stack);
+	thread_stack.push(currentThreadId);
+
+	create_thread_operations(main_stack, create_time);
 }
 
 // this is a SYNC EVENT 
@@ -58,9 +60,16 @@ void ParasiteTool::join(const Event* e) {
 
 	JoinEvent* joinEvent = (JoinEvent*) e;
 	const JoinInfo *_info = joinEvent->getJoinInfo();
+	childThreadId = _info->childThread->threadId;
+	parentThreadId = _info->parentThread->threadId;
 
-	// TIME joinTime = 0; 
-	// join_operations(main_stack, joinTime);
+	assert(parentThreadId == thread_stack->bottom->threadId);
+
+	thread_stack.pop();
+
+	currentThreadId = parentThreadId;
+
+	join_operations(main_stack);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -68,22 +77,33 @@ void ParasiteTool::call(const Event* e) {
 	CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo *_info = callEvent->getCallInfo();
 
-	currentFunctionSignature = _info->fnSignature;
+	FUN_SG calledFunctionSignature = _info->fnSignature;
+	TRD_ID calledThreadID = _info->getThread()->threadId;
+	CALLSITE calledSiteID = _info->siteId;
+	TIME callTime = _info->runtime;
 
-	if (currentCallSiteID != _info->siteId)
-		currentCallSiteID = _info->siteId;
+	bottomFunctionSignature = main_stack->function_stack->bottom->functionSignature;
 
-    call_operations(main_stack, _info->siteId, _info->runtime, last_strand_start, min_capacity);
-}
+	if (calledFunctionSignature != bottomFunctionSignature) {
 
+		return_of_called_operations(main_stack, return_time, last_strand_start);
+	}
 
-// memory access event - the only related event to returns
-void ParasiteTool::access(const Event* e) {
+	currentFunctionSignature = calledFunctionSignature;
 
-	AccessEvent* accessEvent = (AccessEvent*) e;
-	const AccessInfo *_info = accessEvent->getAccessInfo();
+	bottomThreadID = main_stack->function_stack->bottom->functionSignature;
 
-	// memory_access_operations(main_stack);
+	if (calledThreadID != bottomThreadID) {
+
+		thread_end_operations(main_stack, callTime, last_strand_start)
+	}
+
+	currenThreadID = calledThreadID;
+
+	if (calledSiteID != currentCallSiteID)
+		currentCallSiteID = calledSiteID;
+	
+    call_operations(main_stack, calledSiteID, callTime, last_strand_start, min_capacity);
 }
 
 // lock acquire event 
@@ -91,39 +111,22 @@ void ParasiteTool::acquire(const Event* e) {
 
 	AcquireEvent* acquireEvent = (AcquireEvent*) e;
 	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
+	ShadowLock *acquiredLock = _info->lock;
 
-	// last_lock_start = e->runtime;
-
+	acquiredLock->last_acquire_time = e->runtime;
 	lock_acquire_operations(main_stack);
 }
 
-// lock release event: IMPORTANT
+// lock release event
 void ParasiteTool::release(const Event* e) {
 
 	ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
 	const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
+	ShadowLock *releasedLock = _info->lock;
 
-	// double lock_span = e->runtime - getLastLockStart(F_signature);
-	double lock_span = 10.0;
-
-	lock_release_operations(main_stack);
+	double lock_span = e->runtime - releasedLock->last_acquire_time;
+	lock_release_operations(main_stack, lock_span);
 }
 
-// NOT YET IMPLEMENTED IN PCVINTERPRETER
-void ParasiteTool::returnOfCalled(const Event* e){
 
-	// ReturnOfCalledEvent* returnOfCalledEvent = (ReturnOfCalledEvent*) e;
-	// returnOfCalledInfo *_info = e->getReturnOfCalledInfo();
-
-	// return_of_called_operations(main_stack, return_time);
-}
-
-// NOT YET IMPLEMENTED IN PCVINTERPRETER
-void ParasiteTool::threadEnd(const Event* e){
-
-	// ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
-	// threadEndInfo *_info = e->getThreadEndInfo();
-
-	// thread_end_operations(main_stack, thread_end_time);
-}
 

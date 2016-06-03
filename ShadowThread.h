@@ -21,6 +21,9 @@ public:
 	ShadowThread(ThreadId threadId);
 	const ThreadId threadId;
 
+	CALLSITE currentCallSiteID;
+	FUN_SG currentFunctionSignature; 
+
 	bool operator < (const ShadowThread& other) const;
 
 	//template<typename Key, typename Value> static Decoration<Key, Value> makeDec(const Value& init) {

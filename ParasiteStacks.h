@@ -41,6 +41,17 @@ typedef struct function_frame_t {
 
 } function_frame_t;
 
+// Type for thread stack frame
+typedef struct thread_stack_frame_t {
+
+  // Thread ID 
+  TRD_ID threadId;
+
+  // Pointer to the frame's parent
+  struct thread_stack_frame_t *parent;
+
+} thread_stack_frame_t;
+
 // Type for parasite stack frame
 typedef struct parasite_stack_frame_t {
 
@@ -107,6 +118,18 @@ typedef int32_t function_status_t;
 const uint32_t RECURSIVE = 1;
 const int32_t OFF_STACK = INT32_MIN;
 const int32_t UNINITIALIZED = INT32_MIN;
+
+// Type for a thread stack
+typedef struct {
+
+  // Pointer to bottom of the stack, onto which frames are pushed.
+  thread_stack_frame_t *bottom_thread_frame;
+
+  // Free list of parasite stack frames
+  thread_stack_frame_t *thread_frame_free_list;
+
+} thread_stack_t;
+
 
 // Type for a parasite stack
 typedef struct {

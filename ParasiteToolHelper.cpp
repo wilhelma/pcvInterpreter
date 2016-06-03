@@ -2,10 +2,6 @@
 
 #define BURDENING 0 
 
-void memory_access_operations(parasite_stack_t* main_stack) {
-
-  return;
-}
 
 void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME create_time) {
 
@@ -28,7 +24,7 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
   // else
   //    F.p += F.c
   // F.c = 0
-  // F.l = 0s
+  // F.l = 0
   // F.longest_child_lock_span = 0
 
   TIME strand_len = last_strand_start; // join_time - 

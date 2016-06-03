@@ -36,11 +36,10 @@ class ParasiteTool : public Tool {
 
 public:
 	
+	thread_stack_t *thread_stack;
 	parasite_stack_t *main_stack;
 
-	TIME last_lock_start;
 	TIME last_strand_start;
-
 	int min_capacity;
 
 	ParasiteTool();
@@ -60,7 +59,7 @@ public:
 	void print();
 
 	CALLSITE getCurrentCallSite();
-	ShadowThread* getCurrentThread();
+	TRD_ID getCurrentThreadID();
 	FUN_SG getCurrentFunctionSignature();
 	
 private:
@@ -68,8 +67,8 @@ private:
 	// keeps track of current call site
 	CALLSITE currentCallSiteID;
 
-	// keeps track of current thread
-	ShadowThread* currentThread;
+	// keeps track of current thread ID
+	TRD_ID currentThreadID;
 
 	// keeps track of current function signature 
 	FUN_SG currentFunctionSignature;
