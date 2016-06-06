@@ -13,6 +13,7 @@
 #define TYPES_H_
 
 #include <boost/serialization/strong_typedef.hpp>
+#include <string>
 
 // Define ID to be unsigned
 typedef unsigned ID;

@@ -9,6 +9,7 @@
 #define SHADOWLOCK_H_
 
 #include <map>
+#include "Types.h"
 
 /******************************************************************************
  * ShadowLock
@@ -19,8 +20,10 @@ public:
 	typedef unsigned int LockId;
 	ShadowLock(LockId lockId);
 	~ShadowLock();
-												   
+	
 	const LockId lockId;
+	TIME last_acquire_time;	
+	
 	bool operator < (const ShadowLock& other) const;
 
 private:

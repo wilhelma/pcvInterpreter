@@ -95,7 +95,7 @@ private:
  * New Thread Event
  *****************************************************************************/
 struct NewThreadInfo {
-	ShadowThread* childThread;
+  ShadowThread* childThread;
   ShadowThread* parentThread;
   time_t runtime;
   NewThreadInfo(ShadowThread* childThread,
@@ -116,7 +116,7 @@ private:
 	const NewThreadInfo *_info;
 
 	// prevent generated functions
-  NewThreadEvent(const NewThreadEvent&);
+    NewThreadEvent(const NewThreadEvent&);
 	NewThreadEvent& operator=(const NewThreadEvent&);
 };
 
@@ -125,7 +125,7 @@ private:
  * Join Event
  *****************************************************************************/
 struct JoinInfo {
-	ShadowThread* childThread;
+  ShadowThread* childThread;
   ShadowThread* parentThread;
   JoinInfo(ShadowThread* childThread, ShadowThread* parentThread)
     : childThread(childThread), parentThread(parentThread) {}
