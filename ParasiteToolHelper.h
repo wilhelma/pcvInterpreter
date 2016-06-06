@@ -11,7 +11,7 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
 
 void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time, TIME last_strand_start);
 
-void lock_release_operations(parasite_stack_t* main_stack);
+void lock_release_operations(parasite_stack_t* main_stack, double lock_span);
 
 void lock_acquire_operations(parasite_stack_t* main_stack);
 

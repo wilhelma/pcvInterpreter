@@ -194,6 +194,23 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
 
 }
 
+
+__attribute__((always_inline))
+void resize_thread_stack(thread_frame_t **thread_stack, int *thread_stack_capacity) {
+  int new_thread_stack_capacity = 2 * (*thread_stack_capacity);
+  thread_frame_t *new_thread_stack = (thread_frame_t*)malloc(sizeof(thread_frame_t)
+                                                    * new_thread_stack_capacity);
+  for (int i = 0; i < *thread_stack_capacity; ++i) {
+    new_thread_stack[i] = (*thread_stack)[i];
+  }
+
+  free(*thread_stack);
+  *thread_stack = new_thread_stack;
+  *thread_stack_capacity = new_thread_stack_capacity;
+
+}
+
+
 // Initializes C function frame *function_frame
 static inline
 void function_frame_init(function_frame_t *function_frame) {
@@ -361,33 +378,34 @@ void resize_function_status_vector(function_status_t **old_status_vec,
   *old_vec_capacity = new_vec_capacity;
 }
 
-void resize_thread_status_vector() {
+void resize_thread_status_vector(thread_status_t **old_status_vector, 
+                                 int *old_vector_capacity) {
 
-  int new_vec_capacity = *old_vec_capacity * 2;
-  thread_status_t *new_status_vec = (thread_status_t*)malloc(sizeof(thread_status_t)
-                                                     * new_vec_capacity);
+  int new_vector_capacity = *old_vector_capacity * 2;
+  thread_status_t *new_status_vector = (thread_status_t*)malloc(sizeof(thread_status_t)
+                                                     * new_vector_capacity);
   int i;
-  for (i = 0; i < *old_vec_capacity; ++i) {
-    thread_status_vec[i] = (*thread_status_vec)[i];
+  for (i = 0; i < *old_vector_capacity; ++i) {
+    new_status_vector[i] = (*old_status_vector)[i];
   }
-  for ( ; i < new_vec_capacity; ++i) {
-    thread_status_vec[i] = OFF_STACK;
+  for ( ; i < new_vector_capacity; ++i) {
+    new_status_vector[i] = OFF_STACK;
   }
 
-  free(*old_status_vec);
-  *old_status_vec = new_status_vec;
-  *old_vec_capacity = new_vec_capacity;
+  free(*old_status_vector);
+  *old_status_vector = new_status_vector;
+  *old_vector_capacity = new_vector_capacity;
 }
 
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
-void thread_push(parasite_stack_t *stack)
+thread_frame_t* thread_push(parasite_stack_t *stack)
 {
     assert(NULL != stack->bottom_parasite_frame);
 
     ++stack->thread_stack_tail_index;
 
     if (stack->thread_stack_tail_index >= stack->thread_stack_capacity) {
-      resize_function_stack(&(stack->thread_stack), &(stack->thread_stack_capacity));
+      resize_thread_stack(&(stack->thread_stack), &(stack->thread_stack_capacity));
     } 
 
     thread_frame_init(&(stack->thread_stack[stack->thread_stack_tail_index]));
@@ -395,28 +413,11 @@ void thread_push(parasite_stack_t *stack)
   return &(stack->thread_stack[stack->thread_stack_tail_index]);
 }
 
-  // Push new frame of C function onto the C function stack starting at
-// stack->bottom->function_frame.
-function_frame_t* function_push(parasite_stack_t *stack)
-{
-  assert(NULL != stack->bottom_parasite_frame);
-
-  ++stack->function_stack_tail_index;
-
-  if (stack->function_stack_tail_index >= stack->function_stack_capacity) {
-    resize_function_stack(&(stack->function_stack), &(stack->function_stack_capacity));
-  }
-
-  funtion_frame_init(&(stack->function_stack[stack->function_stack_tail_index]));
-
-  return &(stack->function_stack[stack->function_stack_tail_index]);
-}
-
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
-thread_stack_frame_t* thread_pop(parasite_stack_t *stack)
+thread_stack_frame_t* thread_pop(parasite_stack_t *main_stack)
 {
-  function_frame_t *old_thread_stack_bottom = &(main_stack->thread_stack[stack->thread_stack_tail_index]);
-  --stack->thread_stack_tail_index;
+  thread_frame_t *old_thread_stack_bottom = &(main_stack->thread_stack[main_stack->thread_stack_tail_index]);
+  --main_stack->thread_stack_tail_index;
   assert(main_stack->thread_stack_tail_index >= main_stack->bottom_parasite_frame->head_thread_index);
   return old_thread_stack_bottom;
 }
@@ -426,9 +427,9 @@ thread_stack_frame_t* thread_pop(parasite_stack_t *stack)
 // stack->bottom->function_frame, and returns a pointer to it.
 function_frame_t* function_pop(parasite_stack_t *main_stack)
 {
-  function_frame_t *old_function_stack_bottom = &(main_stack->function_stack[stack->function_stack_tail_index]);
-  --stack->function_stack_tail_index;
-  assert(stack->function_stack_tail_index >= main_stack->bottom_parasite_frame->head_function_index);
+  function_frame_t *old_function_stack_bottom = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
+  --main_stack->function_stack_tail_index;
+  assert(main_stack->function_stack_tail_index >= main_stack->bottom_parasite_frame->head_function_index);
   return old_function_stack_bottom;
 }
 

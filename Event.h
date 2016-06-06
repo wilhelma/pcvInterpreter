@@ -97,10 +97,11 @@ private:
 struct NewThreadInfo {
   ShadowThread* childThread;
   ShadowThread* parentThread;
-  time_t runtime;
+  // can this be turned into a TIME type?
+  NUM_CYCLES runtime;
   NewThreadInfo(ShadowThread* childThread,
                 ShadowThread* parentThread,
-                time_t runtime)
+                NUM_CYCLES runtime)
     : childThread(childThread), parentThread(parentThread), runtime(runtime) {}
 };
 

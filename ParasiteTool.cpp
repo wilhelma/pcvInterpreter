@@ -14,9 +14,9 @@ CALLSITE  ParasiteTool::getCurrentCallSite() {
 	return currentCallSiteID;
 }
 
-ShadowThread* ParasiteTool::getCurrentThread() {
+TRD_ID ParasiteTool::getCurrentThreadID() {
 
-	return currentThread;
+	return currentThreadID;
 }
 
 FUN_SG ParasiteTool::getCurrentFunctionSignature(){
@@ -47,12 +47,15 @@ void ParasiteTool::create(const Event* e) {
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
-	currentThreadId = _info->childThread->threadId;
-	time_t create_time = _info->runtime;
+	currentThreadID = _info->childThread->threadId;
 
-	thread_stack.push(currentThreadID);
+	// TIME create_time = _info->runtime;
 
-	create_thread_operations(main_stack, create_time);
+	TIME create_time = (clock_t) 1;
+
+	thread_push(main_stack);
+
+	create_thread_operations(main_stack, last_strand_start, create_time);
 }
 
 // this is a SYNC EVENT 
@@ -60,16 +63,18 @@ void ParasiteTool::join(const Event* e) {
 
 	JoinEvent* joinEvent = (JoinEvent*) e;
 	const JoinInfo *_info = joinEvent->getJoinInfo();
-	childThreadId = _info->childThread->threadId;
-	parentThreadId = _info->parentThread->threadId;
+	TRD_ID childThreadId = _info->childThread->threadId;
+	TRD_ID parentThreadId = _info->parentThread->threadId;
 
-	assert(parentThreadId == thread_stack->bottom->threadId);
+	assert(parentThreadId == main_stack->thread_stack[main_stack->thread_stack_tail_index].threadId);
 
-	thread_stack.pop();
+	thread_pop(main_stack);
 
-	currentThreadId = parentThreadId;
+	currentThreadID = parentThreadId;
 
-	join_operations(main_stack);
+	TIME join_time = (clock_t) 1;
+
+	join_operations(main_stack, join_time);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -78,27 +83,28 @@ void ParasiteTool::call(const Event* e) {
 	const CallInfo *_info = callEvent->getCallInfo();
 
 	FUN_SG calledFunctionSignature = _info->fnSignature;
-	TRD_ID calledThreadID = _info->getThread()->threadId;
+	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE calledSiteID = _info->siteId;
 	TIME callTime = _info->runtime;
+	TIME returnTime = _info->runtime;
 
-	bottomFunctionSignature = main_stack->function_stack->bottom->functionSignature;
+	FUN_SG bottomFunctionSignature = main_stack->function_stack[main_stack->function_stack_tail_index].functionSignature;
 
 	if (calledFunctionSignature != bottomFunctionSignature) {
 
-		return_of_called_operations(main_stack, return_time, last_strand_start);
+		return_of_called_operations(main_stack, returnTime, last_strand_start);
 	}
 
 	currentFunctionSignature = calledFunctionSignature;
 
-	bottomThreadID = main_stack->function_stack->bottom->functionSignature;
+	TRD_ID bottomThreadID = main_stack->thread_stack[main_stack->thread_stack_tail_index].threadId;
 
 	if (calledThreadID != bottomThreadID) {
 
-		thread_end_operations(main_stack, callTime, last_strand_start)
+		thread_end_operations(main_stack, callTime, last_strand_start);
 	}
 
-	currenThreadID = calledThreadID;
+	currentThreadID = calledThreadID;
 
 	if (calledSiteID != currentCallSiteID)
 		currentCallSiteID = calledSiteID;
@@ -113,7 +119,7 @@ void ParasiteTool::acquire(const Event* e) {
 	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 	ShadowLock *acquiredLock = _info->lock;
 
-	acquiredLock->last_acquire_time = e->runtime;
+	// acquiredLock->last_acquire_time = e->runtime;
 	lock_acquire_operations(main_stack);
 }
 
@@ -124,8 +130,8 @@ void ParasiteTool::release(const Event* e) {
 	const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
 	ShadowLock *releasedLock = _info->lock;
 
-	double lock_span = e->runtime - releasedLock->last_acquire_time;
-	lock_release_operations(main_stack, lock_span);
+	// double lock_span = e->runtime - releasedLock->last_acquire_time;
+	// lock_release_operations(main_stack, lock_span);
 }
 
 

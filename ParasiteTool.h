@@ -36,7 +36,6 @@ class ParasiteTool : public Tool {
 
 public:
 	
-	thread_stack_t *thread_stack;
 	parasite_stack_t *main_stack;
 
 	TIME last_strand_start;
