@@ -15,9 +15,6 @@ set(SRC_LIST
 	LockSetChecker.cpp
 	main.cpp
 	NewThreadEvent.cpp
-	ParasiteHashtable.cpp
-	ParasiteTool.cpp
-	ParasiteToolHelper.cpp
 	RaceDetectionTool.cpp
 	ReleaseEvent.cpp
 	SAAPRunner.cpp
