@@ -9,6 +9,7 @@
 #define SHADOWLOCK_H_
 
 #include <map>
+#include "Types.h"
 
 /******************************************************************************
  * ShadowLock
