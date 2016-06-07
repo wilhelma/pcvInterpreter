@@ -3,7 +3,6 @@
 
 #include "ParasiteHashtable.h"
 #include "assert.h"
-#include "Types.h"
 
 // Used to size call site status vector 
 const int START_FUNCTION_STATUS_VECTOR_SIZE = 4;

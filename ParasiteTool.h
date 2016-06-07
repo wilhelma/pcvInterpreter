@@ -28,9 +28,9 @@
 #include "DBDataModel.h"
 #include "Types.h"
 
-#include "ParasiteToolHelper.h"
 #include "ParasiteToolUtilities.h"
 #include "ParasiteHashtable.h"
+#include "ParasiteStacks.h"
  
 class ParasiteTool : public Tool {
 
