@@ -11,11 +11,12 @@
 
 void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME create_time) {
 
+
+  thread_push(main_stack);
   double strand_len = create_time - last_strand_start;
   last_strand_start = create_time;
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
-
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
 }
 
@@ -645,10 +646,7 @@ void ParasiteTool::create(const Event* e) {
 	currentThreadID = _info->childThread->threadId;
 
 	// TIME create_time = _info->runtime;
-
 	TIME create_time = (TIME) 1;
-
-	thread_push(main_stack);
 
 	create_thread_operations(main_stack, last_strand_start, create_time);
 }

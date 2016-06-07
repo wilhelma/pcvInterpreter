@@ -64,6 +64,9 @@ typedef struct parasite_stack_frame_t {
   // Signature of head function in call stack
   FUN_SG headFunctionSignature;
 
+  // ID of head thread in thread stack
+  TRD_ID headThreadID;
+
   // Local continuation span of this function
   TIME local_continuation;
 
@@ -103,12 +106,13 @@ typedef struct parasite_stack_frame_t {
 
 // Metadata for a call site
 typedef struct {
-  /* uint32_t count_on_stack; */
-  /* FunctionType_t func_type; */
+
   FUN_SG tailFunctionSignature;
   int call_site_tail_function_index;
-  int call_site_function_index;
+
   FUN_SG fnSignature;
+  int call_site_function_index;
+
   uint32_t flags;
 } call_site_status_t;
 
@@ -210,10 +214,14 @@ void resize_thread_stack(thread_frame_t **thread_stack, int *thread_stack_capaci
 
 // Initializes C function frame *function_frame
 static inline
-void function_frame_init(function_frame_t *function_frame) {
+void function_frame_init(function_frame_t *function_frame) {//, CALLSITE csID, int call_site_index, FUN_SG funSg)
 
-  function_frame->call_site_ID = 0;
-  // function_frame->functionSignature = NULL;
+  // Signature for the function
+  FUN_SG functionSignature;
+
+  // function_frame->call_site_ID = csID;
+  // function_frame->call_site_index = call_site_index;
+  // function_frame->functionSignature = funSg;
 
   function_frame->local_work = 0;
   function_frame->running_work = 0;
@@ -222,9 +230,10 @@ void function_frame_init(function_frame_t *function_frame) {
 
 // Initializes thread frame *thread_frame
 static inline
-void thread_frame_init(thread_frame_t *thread_frame) {
+void thread_frame_init(thread_frame_t *thread_frame) {//, TRD_ID trd_id, thread_frame_t *parent) 
 
-  thread_frame->threadId = 0;
+  // thread_frame->threadId = trd_id;
+  // thread_frame->parent = parent;
 }
 
 
@@ -232,14 +241,24 @@ void thread_frame_init(thread_frame_t *thread_frame) {
 static inline
 void parasite_stack_frame_init(parasite_stack_frame_t *frame,
                                int func_type,
-                               int functionSignature)
+                               int head_function_index,
+                               int head_thread_index) // 
+                               //FUN_SG functionSignature,
+                               // TRD_ID threadID)
 {
   frame->parent = NULL;
   frame->func_type = func_type;
+  frame->headFunctionSignature = (FUN_SG) 0;
+  frame->headThreadID = (TRD_ID) 0;
+
+  frame->head_function_index = head_function_index;
+  frame->head_thread_index = head_thread_index;
+
   frame->local_span = 0;
   frame->local_continuation = 0;
   frame->prefix_span = 0; 
   frame->longest_child_span = 0;
+
 
   assert(parasite_hashtable_is_empty(frame->prefix_table));
   assert(parasite_hashtable_is_empty(frame->longest_child_table));
@@ -262,10 +281,25 @@ function_frame_t* function_push(parasite_stack_t *stack)
   }
 
   function_frame_init(&(stack->function_stack[stack->function_stack_tail_index]));
-
+ 
   return &(stack->function_stack[stack->function_stack_tail_index]);
 }
 
+// Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
+thread_frame_t* thread_push(parasite_stack_t *stack)
+{
+  assert(NULL != stack->bottom_parasite_frame);
+
+  ++stack->thread_stack_tail_index;
+
+  if (stack->thread_stack_tail_index >= stack->thread_stack_capacity) {
+    resize_thread_stack(&(stack->thread_stack), &(stack->thread_stack_capacity));
+  } 
+
+  thread_frame_init(&(stack->thread_stack[stack->thread_stack_tail_index]));
+
+  return &(stack->thread_stack[stack->thread_stack_tail_index]);
+}
 
 // Push new frame of function type func_type onto the stack *stack
 __attribute__((always_inline))
@@ -276,10 +310,10 @@ parasite_stack_push(parasite_stack_t *stack, int func_type)
   if (NULL != stack->stack_frame_free_list) {
     new_frame = stack->stack_frame_free_list;
     stack->stack_frame_free_list = stack->stack_frame_free_list->parent;
+
   } else {
 
     new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
-
     new_frame->prefix_table = parasite_hashtable_create();
     new_frame->longest_child_table = parasite_hashtable_create();
     new_frame->continuation_table = parasite_hashtable_create();
@@ -287,7 +321,7 @@ parasite_stack_push(parasite_stack_t *stack, int func_type)
   }
 
   function_push(stack);
-  parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail_index);
+  parasite_stack_frame_init(new_frame, func_type, stack->function_stack_tail_index, stack->thread_stack_tail_index);
   new_frame->parent = stack->bottom_parasite_frame;
   stack->bottom_parasite_frame = new_frame;
   return new_frame;
@@ -304,20 +338,26 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
   stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->function_stack_tail_index = 0;
 
+  stack->thread_stack = (thread_frame_t*)malloc(sizeof(thread_frame_t) * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->thread_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
+  stack->thread_stack_tail_index = 0;
+
   parasite_stack_frame_t *new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
 
   new_frame->prefix_table = parasite_hashtable_create();
   new_frame->longest_child_table = parasite_hashtable_create();
   new_frame->continuation_table = parasite_hashtable_create();
 
-  parasite_stack_frame_init(new_frame, func_type, 0);
+  parasite_stack_frame_init(new_frame, func_type, 0, 0);
   function_frame_init(&(stack->function_stack[0]));
+  thread_frame_init(&(stack->thread_stack[0]));
 
   stack->bottom_parasite_frame = new_frame;
 
   stack->work_table = parasite_hashtable_create();
   stack->call_site_status_vector_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
+  stack->thread_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
 
   stack->call_site_status_vector = (call_site_status_t*)malloc(sizeof(call_site_status_t)
                                           * START_FUNCTION_STATUS_VECTOR_SIZE);
@@ -325,12 +365,17 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
   stack->function_status_vector = (function_status_t*)malloc(sizeof(function_status_t)
                                           * START_FUNCTION_STATUS_VECTOR_SIZE);
 
+  stack->thread_status_vector = (thread_status_t*)malloc(sizeof(thread_status_t)
+                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
+
+
   for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
 
     stack->call_site_status_vector[i].call_site_tail_function_index = OFF_STACK;
     stack->call_site_status_vector[i].call_site_function_index = UNINITIALIZED;
     stack->call_site_status_vector[i].flags = 0;
     stack->function_status_vector[i] = OFF_STACK;
+    stack->thread_status_vector[i] = OFF_STACK;
   }
 }
 
@@ -392,22 +437,6 @@ void resize_thread_status_vector(thread_status_t **old_status_vector,
   free(*old_status_vector);
   *old_status_vector = new_status_vector;
   *old_vector_capacity = new_vector_capacity;
-}
-
-// Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
-thread_frame_t* thread_push(parasite_stack_t *stack)
-{
-    assert(NULL != stack->bottom_parasite_frame);
-
-    ++stack->thread_stack_tail_index;
-
-    if (stack->thread_stack_tail_index >= stack->thread_stack_capacity) {
-      resize_thread_stack(&(stack->thread_stack), &(stack->thread_stack_capacity));
-    } 
-
-    thread_frame_init(&(stack->thread_stack[stack->thread_stack_tail_index]));
-
-  return &(stack->thread_stack[stack->thread_stack_tail_index]);
 }
 
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.

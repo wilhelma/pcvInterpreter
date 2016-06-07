@@ -98,6 +98,7 @@ struct NewThreadInfo {
   ShadowThread* childThread;
   ShadowThread* parentThread;
   // can this be turned into a TIME type?
+  // TIME runtime
   NUM_CYCLES runtime;
   NewThreadInfo(ShadowThread* childThread,
                 ShadowThread* parentThread,
@@ -126,6 +127,8 @@ private:
  * Join Event
  *****************************************************************************/
 struct JoinInfo {
+
+  // TIME runtime;
   ShadowThread* childThread;
   ShadowThread* parentThread;
   JoinInfo(ShadowThread* childThread, ShadowThread* parentThread)
@@ -152,6 +155,8 @@ private:
  * Acquire Event
  *****************************************************************************/
 struct AcquireInfo {
+
+	// TIME runtime;
 	ShadowLock *lock;
 	AcquireInfo(ShadowLock *lock) : lock(lock) {}
 };
@@ -176,6 +181,8 @@ private:
  * Release Event
  *****************************************************************************/
 struct ReleaseInfo {
+
+	// TIME runtime;
 	ShadowLock *lock;
 	ReleaseInfo(ShadowLock* lock) : lock(lock) {}
 };
