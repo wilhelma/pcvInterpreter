@@ -26,11 +26,12 @@
 #include "Tool.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
-#include "Types.h"
-
-#include "ParasiteToolUtilities.h"
-#include "ParasiteHashtable.h"
+// #include "ParasiteHashtable.h"
 #include "ParasiteStacks.h"
+
+
+const char *FunctionType_string[FUNCTIONTYPE_END] = 
+{ "empty", "recursive", "main", "INVALID", "cilk", "INVALID", "helper", "INVALID", "c" };
  
 class ParasiteTool : public Tool {
 

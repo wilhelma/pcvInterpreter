@@ -309,12 +309,12 @@ void print_parallelism_data(parasite_stack_t* main_stack) {
 
     if (main_stack->call_site_status_vector[i].flags & RECURSIVE) {  // recursive function
         fprintf(fout, "%s %s, ",
-            FunctionType_str[func_type],
-            FunctionType_str[IS_RECURSIVE]);
+            FunctionType_string[func_type],
+            FunctionType_string[IS_RECURSIVE]);
     } 
 
     else {
-        fprintf(fout, "%s, ", FunctionType_str[func_type]);
+        fprintf(fout, "%s, ", FunctionType_string[func_type]);
     }
     
     fprintf(fout, "%f, %f, %g, %f, %f, %f, %g, %f, %f, %f, %g, %f, ", 

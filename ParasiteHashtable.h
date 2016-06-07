@@ -1,16 +1,33 @@
 #ifndef _PARASITE_HASHTABLE_H_
 #define _PARASITE_HASHTABLE_H_
 
-#include <string>
+// #include <string>
 #include <sstream>
 #include <iostream>
-#include <stdbool.h>
-#include <stdio.h>
+#include "Types.h"
+
+#include <float.h>
+#include <sys/types.h>
+#include <inttypes.h>
+#include <execinfo.h>
+#include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
 #include <assert.h>
 
-#include "ParasiteToolUtilities.h"
-#include "Types.h"
+// Types of functions
+typedef enum {
+  EMPTY = 0,
+  IS_RECURSIVE = 1,
+  MAIN = 2,
+  SPAWNER = 4,
+  HELPER = 6,
+  C_FUNCTION = 8,
+  FUNCTIONTYPE_END
+} FunctionType_t;
 
 /**
  * Data structures
