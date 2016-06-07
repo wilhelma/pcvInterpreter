@@ -113,6 +113,8 @@ typedef struct {
   FUN_SG fnSignature;
   int call_site_function_index;
 
+  int last_index_used;
+
   uint32_t flags;
 } call_site_status_t;
 
@@ -228,15 +230,6 @@ void function_frame_init(function_frame_t *function_frame) {//, CALLSITE csID, i
   function_frame->running_span = 0;
 }
 
-// Initializes thread frame *thread_frame
-static inline
-void thread_frame_init(thread_frame_t *thread_frame) {//, TRD_ID trd_id, thread_frame_t *parent) 
-
-  // thread_frame->threadId = trd_id;
-  // thread_frame->parent = parent;
-}
-
-
 // Initializes the parasite stack frame *frame
 static inline
 void parasite_stack_frame_init(parasite_stack_frame_t *frame,
@@ -296,8 +289,6 @@ thread_frame_t* thread_push(parasite_stack_t *stack)
     resize_thread_stack(&(stack->thread_stack), &(stack->thread_stack_capacity));
   } 
 
-  thread_frame_init(&(stack->thread_stack[stack->thread_stack_tail_index]));
-
   return &(stack->thread_stack[stack->thread_stack_tail_index]);
 }
 
@@ -350,7 +341,6 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
 
   parasite_stack_frame_init(new_frame, func_type, 0, 0);
   function_frame_init(&(stack->function_stack[0]));
-  thread_frame_init(&(stack->thread_stack[0]));
 
   stack->bottom_parasite_frame = new_frame;
 

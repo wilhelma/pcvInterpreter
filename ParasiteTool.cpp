@@ -9,10 +9,13 @@
 
 #define BURDENING 0 
 
-void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME create_time) {
+void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME create_time, TRD_ID new_thread_ID) {
 
+  thread_frame_t *new_thread_frame = thread_push(main_stack);
+  new_thread_frame->threadId = new_thread_ID;
+  int parent_index = main_stack->thread_stack_tail_index - 1;
+  new_thread_frame->parent = &(main_stack->thread_stack[parent_index]);
 
-  thread_push(main_stack);
   double strand_len = create_time - last_strand_start;
   last_strand_start = create_time;
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
@@ -20,7 +23,7 @@ void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_sta
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
 }
 
-void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME join_time, int min_capacity) {
+void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME join_time) {
 
   // F syncs
 
@@ -34,15 +37,18 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
   // F.l = 0
   // F.longest_child_lock_span = 0
 
-  TIME strand_len = last_strand_start; // join_time - 
+  // thread_stack_frame_t* old_thread_frame = 
+  thread_pop(main_stack);
+
+  double strand_len = join_time - last_strand_start; 
   last_strand_start = join_time;
+
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
 
   assert(main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index);
 
-  function_frame_t *bottom_function_frame= &(main_stack->function_stack[main_stack->function_stack_tail_index]);
-
+  function_frame_t *bottom_function_frame = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
   bottom_function_frame->running_span += main_stack->bottom_parasite_frame->local_continuation;
 
   // if F.l > F.c
@@ -53,7 +59,7 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
     // F.p -= F.longest_child_lock_span
     main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_span;
     main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->lock_span;
-    main_stack->bottom_parasite_frame->prefix_span += main_stack->bottom_parasite_frame->longest_child_lock_span;
+    main_stack->bottom_parasite_frame->prefix_span -= main_stack->bottom_parasite_frame->longest_child_lock_span;
 
     // local_span does not increase, because critical path goes through
     // spawned child.
@@ -78,6 +84,7 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
   // F.c = 0
   // F.l = 0
   // F.longest_child_lock_span = 0
+
   main_stack->bottom_parasite_frame->local_continuation = 0;
   main_stack->bottom_parasite_frame->longest_child_span = 0;
   main_stack->bottom_parasite_frame->longest_child_lock_span = 0;
@@ -92,8 +99,7 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
 }
 
 
-void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_index, TIME call_time, TIME last_strand_start,
-                     int min_capacity) {
+void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME call_time, TIME last_strand_start, int* min_capacity) {
 
     // F spawns or calls G:
     // G.w = 0
@@ -101,47 +107,72 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_index, TIM
     // G.l = 0
     // G.c = 0
 
+    // TODO: CREATE HASHTABLE THAT MATCHES CALL SITES TO CALL SITE INDEX
+    int call_site_index = 0;
+
     double strand_len = call_time - last_strand_start;
     last_strand_start = call_time;
     main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
 
+
+    // in this case, the called function is the head of the stack 
     if (main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index) {
 
       main_stack->bottom_parasite_frame->local_continuation += strand_len;
     }
 
-    // Push new frame for this C function onto the main_stack
+    // Push new frame for this function onto the main_stack
     function_frame_t *bottom_function_frame = function_push(main_stack);
 
     bottom_function_frame->call_site_index = call_site_index;
+    bottom_function_frame->call_site_ID = call_site_id;
 
     if ( (int) call_site_index >= main_stack->call_site_status_vector_capacity) {
       resize_call_site_status_vector(&(main_stack->call_site_status_vector), &(main_stack->call_site_status_vector_capacity));
     }
-    int32_t cs_tail = main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index;
-    if (OFF_STACK != cs_tail) {
+
+    int call_site_tail_function_index = main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index;
+
+    // if call site is on the stack
+    if (OFF_STACK != call_site_tail_function_index) {
+
+      // if call site is not recursive 
       if (!(main_stack->call_site_status_vector[call_site_index].flags & RECURSIVE)) {
+
+        // set the flag as recursive
         main_stack->call_site_status_vector[call_site_index].flags |= RECURSIVE;
       }
-    } else {
-      int32_t call_site_function_index = 0;
+    } 
+
+    else {
+
+      int call_site_function_index = 0;
+
       if (UNINITIALIZED == main_stack->call_site_status_vector[call_site_index].call_site_function_index) {
 
-        min_capacity = call_site_index + 1;
+        *min_capacity = call_site_index + 1;
+
+        // TODO: CHECK if this actually works
+        call_site_function_index = main_stack->call_site_status_vector[call_site_index].last_index_used + 1;
 
         main_stack->call_site_status_vector[call_site_index].call_site_function_index = call_site_function_index;
-        if (call_site_function_index >= main_stack->function_status_vector_capacity) {
+
+        if (call_site_function_index >= main_stack->function_status_vector_capacity)
           resize_function_status_vector(&(main_stack->function_status_vector), &(main_stack->function_status_vector_capacity));
-        }
-      } else {
+      } 
+
+      else {
         call_site_function_index = main_stack->call_site_status_vector[call_site_index].call_site_function_index;
       }
+
       main_stack->call_site_status_vector[call_site_index].call_site_tail_function_index = main_stack->function_stack_tail_index;
-      if (OFF_STACK == main_stack->function_status_vector[call_site_function_index]) {
+
+      if (OFF_STACK == main_stack->function_status_vector[call_site_function_index])
         main_stack->function_status_vector[call_site_function_index] = main_stack->function_stack_tail_index;
-      }
     }
 }
+
+// REVIEWED CODE UNTIL HERE 
 
 
 void destroy_stack(parasite_stack_t* main_stack) {
@@ -643,12 +674,12 @@ void ParasiteTool::create(const Event* e) {
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
-	currentThreadID = _info->childThread->threadId;
+	TRD_ID newThreadID = _info->childThread->threadId;
 
 	// TIME create_time = _info->runtime;
 	TIME create_time = (TIME) 1;
 
-	create_thread_operations(main_stack, last_strand_start, create_time);
+	create_thread_operations(main_stack, last_strand_start, create_time, newThreadID);
 }
 
 // this is a SYNC EVENT 
@@ -661,13 +692,11 @@ void ParasiteTool::join(const Event* e) {
 
 	assert(parentThreadId == main_stack->thread_stack[main_stack->thread_stack_tail_index].threadId);
 
-	thread_pop(main_stack);
-
 	currentThreadID = parentThreadId;
 
 	TIME join_time = (TIME) 1;
 
-	join_operations(main_stack, last_strand_start, join_time, min_capacity);
+	join_operations(main_stack, last_strand_start, join_time);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -702,7 +731,7 @@ void ParasiteTool::call(const Event* e) {
 	if (calledSiteID != currentCallSiteID)
 		currentCallSiteID = calledSiteID;
 	
-    call_operations(main_stack, calledSiteID, callTime, last_strand_start, min_capacity);
+    call_operations(main_stack, calledSiteID, callTime, last_strand_start, &min_capacity);
 }
 
 // lock acquire event 
