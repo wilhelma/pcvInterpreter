@@ -1,5 +1,4 @@
 #include "ParasiteHashtable.h"
-#include "Types.h"
 
 #define MIN_CAPACITY 2
 
@@ -15,7 +14,7 @@
 
 int MIN_HASHTABLE_CAPACITY = 1;
 
-parasite_hashtable_linked_list_node_t *linked_list_free_list = NULL;
+parasite_hashtable_linked_list_node_t *linked_list_free_node_list = NULL;
 
 // Return true if this entry is empty, false otherwise.
 bool hashtable_entry_is_empty(const parasite_hashtable_entry_t *entry) {
@@ -191,7 +190,7 @@ void flush_parasite_hashtable_list(parasite_hashtable_t **table) {
 
   if (NULL != (*table)->head) {
     assert(NULL != (*table)->tail);
-    (*table)->tail->next = linked_list_free_list;
+    (*table)->tail->next = linked_list_free_node_list;
     linked_list_free_node_list = (*table)->head;
   }
 
@@ -217,8 +216,8 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          bool is_top_fn,
                          int index,
                          CALLSITE call_site_ID,
-                         TIME work, TIME span,
-                         TIME local_work, TIME local_span) {
+                         double work, double span,
+                         double local_work, double local_span) {
   
   if (index >= (1 << (*table)->log_capacity) &&
       /* (1 << (*table)->log_capacity) < MIN_CAPACITY && */
@@ -236,7 +235,7 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     lst_entry->index = index;
 
     /* lst_entry->entry.is_recursive = (0 != (RECURSIVE & inst_type)); */
-    lst_entry->entry.call_site_ID = call_site_ID;
+    // lst_entry->entry.call_site_ID = call_site_ID;
     lst_entry->entry.work = work;
     lst_entry->entry.span = span;
     lst_entry->entry.count = 1; /* (0 != (RECORD & inst_type)); */
@@ -280,12 +279,12 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
     /* parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry(call_site_ID, table); */
     parasite_hashtable_entry_t *entry = get_parasite_hashtable_entry_at_index(index, table);
     assert(NULL != entry);
-    assert(hashtable_entry_is_empty(entry) || can_override_entry(entry, call_site_ID));
+    // assert(hashtable_entry_is_empty(entry) || can_override_entry(entry, call_site_ID));
   
     if (hashtable_entry_is_empty(entry)) {
       /* entry->is_recursive = (0 != (RECURSIVE & inst_type)); */
 
-      entry->call_site_ID = call_site_ID;
+      // entry->call_site_ID = call_site_ID;
 
       entry->is_initialized = 1;
       entry->work = work;
@@ -332,7 +331,7 @@ __attribute__((always_inline))
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
                                int index,
                                CALLSITE call_site_ID,
-                               TIME local_work, TIME local_span) {
+                               double local_work, double local_span) {
 
   if (index >= (1 << (*table)->log_capacity) &&
       /* (1 << (*table)->log_capacity) < MIN_CAPACITY && */

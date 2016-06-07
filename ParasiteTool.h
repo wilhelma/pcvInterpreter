@@ -49,7 +49,6 @@ public:
 	void join(const Event* e);
 	void acquire(const Event* e);
 	void release(const Event* e);
-	void access(const Event* e);
 	void call(const Event* e);
 
 	// Events added for this tool specifically

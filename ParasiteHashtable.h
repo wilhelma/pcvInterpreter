@@ -10,6 +10,7 @@
 #include <assert.h>
 
 #include "ParasiteToolUtilities.h"
+#include "Types.h"
 
 /**
  * Data structures
@@ -109,15 +110,13 @@ void flush_parasite_hashtable(parasite_hashtable_t **table);
 bool add_to_parasite_hashtable(parasite_hashtable_t **table,
                          bool is_top_fn,
                          int index,
-                         int call_site_id,
-                         // CALL_SITE_ID call_site_id,
+                         CALLSITE call_site_id,
                          double work, double span,
                          double local_work, double local_span);
 
 bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
                                int index,
-                               int call_site_id,
-                               // CALL_SITE_ID call_site_id,
+                               CALLSITE call_site_id,
                                double local_work, double local_span);
 
 void free_parasite_hashtable(parasite_hashtable_t *table); 

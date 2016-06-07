@@ -15,11 +15,9 @@ const int START_CALL_SITE_STACK_SIZE = 8;
 typedef struct function_frame_t {
 
   // ID for the function's call site
-  // CALL_SITE_ID call_site_ID;
-  int call_site_ID;
+  CALLSITE call_site_ID;
 
-  // ID for the function's call site
-  // CALL_SITE_ID call_site_ID;
+  // index for the function's call site
   int call_site_index;
 
   // Signature for the function

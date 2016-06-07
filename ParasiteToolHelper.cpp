@@ -104,7 +104,7 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_index, TIM
     }
 
     // Push new frame for this C function onto the main_stack
-    function_frame_t *bottom_function_frame= parasite_function_push(main_stack);
+    function_frame_t *bottom_function_frame = function_push(main_stack);
 
     bottom_function_frame->call_site_index = call_site_index;
 
@@ -117,7 +117,7 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_index, TIM
         main_stack->call_site_status_vector[call_site_index].flags |= RECURSIVE;
       }
     } else {
-      int32_t call_site_function_index;
+      int32_t call_site_function_index = 0;
       if (UNINITIALIZED == main_stack->call_site_status_vector[call_site_index].call_site_function_index) {
 
         min_capacity = call_site_index + 1;
@@ -342,11 +342,9 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
     // F.c += G.p
     // F.lock_span += G.lock_span
 
-    const function_frame_t *bottom_function_frame= &(main_stack->function_stack[main_stack->function_stack_tail_index]);
+    const function_frame_t *old_bottom_function_frame= &(main_stack->function_stack[main_stack->function_stack_tail_index]);
   
     bool add_success;
-
-    const function_frame_t *old_bottom_function_frame;
   
     // stop the timer and attribute the elapsed time to this returning
     // function
@@ -359,7 +357,7 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
     assert(main_stack->function_stack_tail_index > main_stack->bottom_parasite_frame->head_function_index);
   
     // Pop the main_stack
-    old_bottom_function_frame = parasite_function_pop(main_stack);
+    old_bottom_function_frame = function_pop(main_stack);
     double local_work = old_bottom_function_frame->local_work;
     double local_lock_span = old_bottom_function_frame->local_lock_span;
 
@@ -396,7 +394,7 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
       add_success = add_to_parasite_hashtable(&(main_stack->work_table),
                                         main_stack->function_stack_tail_index == main_stack->function_status_vector[call_site_function_index],
                                         call_site_index,
-                                        old_bottom_function_frame->call_site_index,
+                                        old_bottom_function_frame->call_site_ID,
                                         running_work,
                                         running_span,
                                         local_work,
@@ -406,7 +404,7 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
       add_success = add_to_parasite_hashtable(&(main_stack->bottom_parasite_frame->continuation_table),
                                         main_stack->function_stack_tail_index == main_stack->function_status_vector[call_site_function_index],
                                         call_site_index,
-                                        old_bottom_function_frame->call_site_index,
+                                        old_bottom_function_frame->call_site_ID,
                                         running_work,
                                         running_span,
                                         local_work,
@@ -416,16 +414,23 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
 
       // Only record the local work and local span
       /* fprintf(stderr, "adding to work table\n"); */
+
+      // bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
+      //                          int index,
+      //                          CALLSITE call_site_ID,
+      //                          double local_work, double local_span)
+
+
       add_success = add_local_to_parasite_hashtable(&(main_stack->work_table),
                                               call_site_index,
-                                              old_bottom_function_frame->call_site_index,
+                                              old_bottom_function_frame->call_site_ID,
                                               local_work,
                                               local_work);
       assert(add_success);
       /* fprintf(stderr, "adding to contin table\n"); */
       add_success = add_local_to_parasite_hashtable(&(main_stack->bottom_parasite_frame->continuation_table),
                                               call_site_index,
-                                              old_bottom_function_frame->call_site_index,
+                                              old_bottom_function_frame->call_site_ID,
                                               local_work,
                                               local_work);
       assert(add_success);
@@ -499,7 +504,7 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
     add_success = add_to_parasite_hashtable(&(main_stack->work_table),
                                       main_stack->function_stack_tail_index == main_stack->function_status_vector[call_site_function_index],
                                       call_site_index,
-                                      old_bottom_function_frame->call_site_index,
+                                      old_bottom_function_frame->call_site_ID,
                                       old_bottom_function_frame->running_work,
                                       old_bottom_parasite_frame->prefix_span,
                                       old_bottom_function_frame->local_work,
@@ -510,7 +515,7 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
     add_success = add_to_parasite_hashtable(&(old_bottom_parasite_frame->prefix_table),
                                       main_stack->function_stack_tail_index == main_stack->function_status_vector[call_site_function_index],
                                       call_site_index,
-                                      old_bottom_function_frame->call_site_index,
+                                      old_bottom_function_frame->call_site_ID,
                                       old_bottom_function_frame->running_work,
                                       old_bottom_parasite_frame->prefix_span,
                                       old_bottom_function_frame->local_work,
@@ -520,17 +525,23 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
 
   else {
 
+
+    // bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
+    //                            int index,
+    //                            CALLSITE call_site_ID,
+    //                            double local_work, double local_span)
+
     // Only record the local work and local span
     add_success = add_local_to_parasite_hashtable(&(main_stack->work_table),
                                             call_site_index,
-                                            old_bottom_function_frame->call_site_index,
+                                            old_bottom_function_frame->call_site_ID,
                                             old_bottom_function_frame->local_work,
                                             old_bottom_parasite_frame->local_span);
     assert(add_success);
 
     add_success = add_local_to_parasite_hashtable(&(old_bottom_parasite_frame->prefix_table),
                                             call_site_index,
-                                            old_bottom_function_frame->call_site_index,
+                                            old_bottom_function_frame->call_site_ID,
                                             old_bottom_function_frame->local_work,
                                             old_bottom_parasite_frame->local_span);
     assert(add_success);

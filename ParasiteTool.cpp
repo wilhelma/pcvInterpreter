@@ -51,7 +51,7 @@ void ParasiteTool::create(const Event* e) {
 
 	// TIME create_time = _info->runtime;
 
-	TIME create_time = (clock_t) 1;
+	TIME create_time = (TIME) 1;
 
 	thread_push(main_stack);
 
@@ -72,9 +72,9 @@ void ParasiteTool::join(const Event* e) {
 
 	currentThreadID = parentThreadId;
 
-	TIME join_time = (clock_t) 1;
+	TIME join_time = (TIME) 1;
 
-	join_operations(main_stack, join_time);
+	join_operations(main_stack, last_strand_start, join_time, min_capacity);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -115,20 +115,20 @@ void ParasiteTool::call(const Event* e) {
 // lock acquire event 
 void ParasiteTool::acquire(const Event* e) {
 
-	AcquireEvent* acquireEvent = (AcquireEvent*) e;
-	const AcquireInfo *_info = acquireEvent->getAcquireInfo();
-	ShadowLock *acquiredLock = _info->lock;
+	// AcquireEvent* acquireEvent = (AcquireEvent*) e;
+	// const AcquireInfo *_info = acquireEvent->getAcquireInfo();
+	// ShadowLock *acquiredLock = _info->lock;
 
 	// acquiredLock->last_acquire_time = e->runtime;
-	lock_acquire_operations(main_stack);
+	// lock_acquire_operations(main_stack);
 }
 
 // lock release event
 void ParasiteTool::release(const Event* e) {
 
-	ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
-	const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
-	ShadowLock *releasedLock = _info->lock;
+	// ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
+	// const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
+	// ShadowLock *releasedLock = _info->lock;
 
 	// double lock_span = e->runtime - releasedLock->last_acquire_time;
 	// lock_release_operations(main_stack, lock_span);
