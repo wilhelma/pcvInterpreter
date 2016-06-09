@@ -152,7 +152,7 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME c
 
         *min_capacity = call_site_index + 1;
 
-        // TODO: CHECK if this actually works
+        // TODO: CHECK if this actually works, find a different way if not 
         call_site_function_index = main_stack->call_site_status_vector[call_site_index].last_index_used + 1;
 
         main_stack->call_site_status_vector[call_site_index].call_site_function_index = call_site_function_index;
@@ -171,9 +171,6 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME c
         main_stack->function_status_vector[call_site_function_index] = main_stack->function_stack_tail_index;
     }
 }
-
-// REVIEWED CODE UNTIL HERE 
-
 
 void destroy_stack(parasite_stack_t* main_stack) {
 
@@ -201,6 +198,7 @@ void destroy_stack(parasite_stack_t* main_stack) {
     free(main_stack->call_site_status_vector);
     free(main_stack->function_status_vector);
     free(main_stack->function_stack);
+    free(main_stack->thread_stack);
 
     parasite_hashtable_linked_list_node_t *free_list_node = linked_list_free_node_list;
     parasite_hashtable_linked_list_node_t *next_free_list_node;
@@ -488,6 +486,9 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
   //    F.p += G.c
   //    F.c = 0
 
+  //thread_frame_t* old_thread_frame = 
+  thread_pop(main_stack);
+
   parasite_stack_frame_t *old_bottom_parasite_frame;
   bool add_success;
 
@@ -563,12 +564,6 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
 
   else {
 
-
-    // bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
-    //                            int index,
-    //                            CALLSITE call_site_ID,
-    //                            double local_work, double local_span)
-
     // Only record the local work and local span
     add_success = add_local_to_parasite_hashtable(&(main_stack->work_table),
                                             call_site_index,
@@ -636,6 +631,7 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
     old_bottom_parasite_frame->parent = main_stack->stack_frame_free_list;
     main_stack->stack_frame_free_list = old_bottom_parasite_frame;
 }
+
 CALLSITE  ParasiteTool::getCurrentCallSite() {
 
 	return currentCallSiteID;
@@ -741,8 +737,8 @@ void ParasiteTool::acquire(const Event* e) {
 	// const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 	// ShadowLock *acquiredLock = _info->lock;
 
-	// acquiredLock->last_acquire_time = e->runtime;
-	// lock_acquire_operations(main_stack);
+  // acquire_time = e->runtime
+	// acquiredLock->last_acquire_time = acquire_time;
 }
 
 // lock release event
@@ -753,7 +749,7 @@ void ParasiteTool::release(const Event* e) {
 	// ShadowLock *releasedLock = _info->lock;
 
 	// double lock_span = e->runtime - releasedLock->last_acquire_time;
-	// lock_release_operations(main_stack, lock_span);
+	// main_stack->bottom_parasite_frame->lock_span += lock_span;
 }
 
 
