@@ -2,6 +2,8 @@
 #define EVENT_H_
 
 #include <cstring>
+#include <stdlib.h>  
+
 #include <map>
 #include "DataModel.h"
 
