@@ -322,7 +322,7 @@ int DBInterpreter::processFork(const instruction_t& instruction,
                                const thread_t& thread) {
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.num_cycles);
+    NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 

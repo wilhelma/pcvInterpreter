@@ -25,7 +25,7 @@ recursive_trace/
 *.orig
 
 # Whatever .txt file to check the output
-*.txt
+#*.txt
 
 # DOT file and PNG representation of the graph
 *.dot

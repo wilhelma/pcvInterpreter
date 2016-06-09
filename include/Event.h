@@ -43,6 +43,14 @@ bool operator!= (Events A, T b ) noexcept {
 	return !( A == b );
 }
 
+/// Converts a time in the format `YYYY-MM-DD|T|hh:mm:ss|.|CLOCK|Z| into 
+/// a `TIME` variable (i.e. `clock_t`)
+inline
+const TIME timeStringToTime(const TIME_STRING& t) {
+	int found = t.find_last_of('.');
+	return static_cast<TIME>(atoi(t.substr(found + 1).c_str()));
+}
+
 //******************************************************************************
 // * Decoratable
 // *****************************************************************************/
@@ -97,13 +105,14 @@ private:
 struct NewThreadInfo {
   ShadowThread* childThread;
   ShadowThread* parentThread;
-  // can this be turned into a TIME type?
-  // TIME runtime
   NUM_CYCLES runtime;
+  TIME startTime;
   NewThreadInfo(ShadowThread* childThread,
                 ShadowThread* parentThread,
-                NUM_CYCLES runtime)
-    : childThread(childThread), parentThread(parentThread), runtime(runtime) {}
+                NUM_CYCLES runtime,
+                TIME_STRING startTimeString)
+    : childThread(childThread), parentThread(parentThread),
+	  runtime(runtime), startTime(timeStringToTime(startTimeString)) {}
 };
 
 class NewThreadEvent : public Event {
