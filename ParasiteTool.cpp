@@ -337,6 +337,9 @@ void print_parallelism_data(parasite_stack_t* main_stack) {
 
     int func_type = entry->func_type;
 
+    const char *FunctionType_string[FUNCTIONTYPE_END] = 
+    { "empty", "recursive", "main", "INVALID", "cilk", "INVALID", "helper", "INVALID", "c" };
+
     if (main_stack->call_site_status_vector[i].flags & RECURSIVE) {  // recursive function
         fprintf(fout, "%s %s, ",
             FunctionType_string[func_type],

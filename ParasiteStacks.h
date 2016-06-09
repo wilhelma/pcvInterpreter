@@ -182,7 +182,7 @@ typedef struct {
 /*----------------------------------------------------------------------*/
 
 // Resizes the C stack
-__attribute__((always_inline))
+static inline
 void resize_function_stack(function_frame_t **function_stack, int *function_stack_capacity) {
   int new_function_stack_capacity = 2 * (*function_stack_capacity);
   function_frame_t *new_function_stack = (function_frame_t*)malloc(sizeof(function_frame_t)
@@ -197,8 +197,7 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
 
 }
 
-
-__attribute__((always_inline))
+static inline
 void resize_thread_stack(thread_frame_t **thread_stack, int *thread_stack_capacity) {
   int new_thread_stack_capacity = 2 * (*thread_stack_capacity);
   thread_frame_t *new_thread_stack = (thread_frame_t*)malloc(sizeof(thread_frame_t)
@@ -262,6 +261,7 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
 
 // Push new frame of C function onto the C function stack starting at
 // stack->bottom->function_frame.
+static inline
 function_frame_t* function_push(parasite_stack_t *stack)
 {
   /* fprintf(stderr, "pushing C stack\n"); */
@@ -279,6 +279,7 @@ function_frame_t* function_push(parasite_stack_t *stack)
 }
 
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
+static inline
 thread_frame_t* thread_push(parasite_stack_t *stack)
 {
   assert(NULL != stack->bottom_parasite_frame);
@@ -293,9 +294,10 @@ thread_frame_t* thread_push(parasite_stack_t *stack)
 }
 
 // Push new frame of function type func_type onto the stack *stack
-__attribute__((always_inline))
-parasite_stack_frame_t*
-parasite_stack_push(parasite_stack_t *stack, int func_type)
+//__attribute__((always_inline))
+
+static inline
+parasite_stack_frame_t* parasite_stack_push(parasite_stack_t *stack, int func_type)
 {
   parasite_stack_frame_t *new_frame;
   if (NULL != stack->stack_frame_free_list) {
@@ -318,8 +320,8 @@ parasite_stack_push(parasite_stack_t *stack, int func_type)
   return new_frame;
 }
 
-
 // Initializes the parasite stack
+static inline
 void parasite_stack_init(parasite_stack_t *stack, int func_type)
 {
   stack->bottom_parasite_frame = NULL;
@@ -370,6 +372,7 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
 }
 
 // Doubles the capacity of a call_site status vector
+static inline
 void resize_call_site_status_vector(call_site_status_t **old_status_vec,
                              int *old_vec_capacity) {
   int new_vec_capacity = *old_vec_capacity * 2;
@@ -392,6 +395,7 @@ void resize_call_site_status_vector(call_site_status_t **old_status_vec,
 }
 
 // Doubles the capacity of a function status vector
+static inline
 void resize_function_status_vector(function_status_t **old_status_vec,
                              int *old_vec_capacity) {
   int new_vec_capacity = *old_vec_capacity * 2;
@@ -410,6 +414,7 @@ void resize_function_status_vector(function_status_t **old_status_vec,
   *old_vec_capacity = new_vec_capacity;
 }
 
+static inline
 void resize_thread_status_vector(thread_status_t **old_status_vector, 
                                  int *old_vector_capacity) {
 
@@ -430,6 +435,7 @@ void resize_thread_status_vector(thread_status_t **old_status_vector,
 }
 
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
+static inline
 thread_stack_frame_t* thread_pop(parasite_stack_t *main_stack)
 {
   thread_frame_t *old_thread_stack_bottom = &(main_stack->thread_stack[main_stack->thread_stack_tail_index]);
@@ -441,6 +447,7 @@ thread_stack_frame_t* thread_pop(parasite_stack_t *main_stack)
 
 // Pops the bottommost C frame off of the stack
 // stack->bottom->function_frame, and returns a pointer to it.
+static inline
 function_frame_t* function_pop(parasite_stack_t *main_stack)
 {
   function_frame_t *old_function_stack_bottom = &(main_stack->function_stack[main_stack->function_stack_tail_index]);
@@ -452,6 +459,7 @@ function_frame_t* function_pop(parasite_stack_t *main_stack)
 
 // Pops the bottommost frame off of the stack *stack, and returns a
 // pointer to it.
+static inline
 parasite_stack_frame_t* parasite_stack_pop(parasite_stack_t *stack)
 {
   parasite_stack_frame_t *old_bottom_parasite_frame = stack->bottom_parasite_frame;

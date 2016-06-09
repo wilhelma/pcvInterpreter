@@ -5,13 +5,13 @@
  *      Author: wilhelma
  */
 
+// #include "RaceDetectionTool.h"
+// #include "LockSetChecker.h"
+
 #include <boost/log/trivial.hpp>
 #include "SAAPRunner.h"
 #include "EventService.h"
 #include "DBInterpreter.h"
-
-//#include "RaceDetectionTool.h"
-//#include "LockSetChecker.h"
 
 #include "ParasiteTool.h"
 #include "FunctionTrackerTool.h"

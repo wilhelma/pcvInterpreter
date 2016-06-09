@@ -27,9 +27,6 @@
 #include "DataModel.h"
 #include "DBDataModel.h"
 #include "ParasiteStacks.h"
-
-const char *FunctionType_string[FUNCTIONTYPE_END] = 
-{ "empty", "recursive", "main", "INVALID", "cilk", "INVALID", "helper", "INVALID", "c" };
  
 class ParasiteTool : public Tool {
 
