@@ -34,7 +34,6 @@ public:
 	
 	parasite_stack_t *main_stack;
 
-	TIME last_strand_start;
 	int min_capacity;
 
 	ParasiteTool();

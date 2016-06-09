@@ -9,21 +9,21 @@
 
 #define BURDENING 0 
 
-void create_thread_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME create_time, TRD_ID new_thread_ID) {
+void create_thread_operations(parasite_stack_t* main_stack, TIME create_time, TRD_ID new_thread_ID) {
 
   thread_frame_t *new_thread_frame = thread_push(main_stack);
   new_thread_frame->threadId = new_thread_ID;
   int parent_index = main_stack->thread_stack_tail_index - 1;
   new_thread_frame->parent = &(main_stack->thread_stack[parent_index]);
 
-  double strand_len = create_time - last_strand_start;
-  last_strand_start = create_time;
+  double strand_len = create_time - main_stack->last_strand_start;
+  main_stack->last_strand_start = create_time;
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
   assert(main_stack->function_stack_tail_index == main_stack->bottom_parasite_frame->head_function_index);
 }
 
-void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME join_time) {
+void join_operations(parasite_stack_t* main_stack, TIME join_time) {
 
   // F syncs
 
@@ -40,8 +40,8 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
   // thread_stack_frame_t* old_thread_frame = 
   thread_pop(main_stack);
 
-  double strand_len = join_time - last_strand_start; 
-  last_strand_start = join_time;
+  double strand_len = join_time - main_stack->last_strand_start; 
+  main_stack->last_strand_start = join_time;
 
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
   main_stack->bottom_parasite_frame->local_continuation += strand_len;
@@ -99,7 +99,7 @@ void join_operations(parasite_stack_t* main_stack, TIME last_strand_start, TIME 
 }
 
 
-void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME call_time, TIME last_strand_start, int* min_capacity) {
+void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME call_time, int* min_capacity) {
 
     // F spawns or calls G:
     // G.w = 0
@@ -110,8 +110,8 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME c
     // TODO: CREATE HASHTABLE THAT MATCHES CALL SITES TO CALL SITE INDEX
     int call_site_index = 0;
 
-    double strand_len = call_time - last_strand_start;
-    last_strand_start = call_time;
+    double strand_len = call_time - main_stack->last_strand_start;
+    main_stack->last_strand_start = call_time;
     main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
 
 
@@ -373,7 +373,7 @@ void print_parallelism_data(parasite_stack_t* main_stack) {
     work / (float)span);
 }
 
-void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time, TIME last_strand_start) {
+void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time) {
 
     // Called G returns to F:
     // G.p += G.c
@@ -389,8 +389,8 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
     // function
 
     // G.p += G.c
-    double strand_len = return_time - last_strand_start;
-    last_strand_start = return_time;
+    double strand_len = return_time - main_stack->last_strand_start;
+    main_stack->last_strand_start = return_time;
     main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
   
     assert(main_stack->function_stack_tail_index > main_stack->bottom_parasite_frame->head_function_index);
@@ -477,7 +477,7 @@ void return_of_called_operations(parasite_stack_t* main_stack, TIME return_time,
 }
 
 
-void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, TIME last_strand_start) {
+void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time) {
 
   // Created G returns to F
   // G.p += G.c
@@ -496,8 +496,8 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time, T
   bool add_success;
 
   // G.p += G.c
-  double strand_len = thread_end_time - last_strand_start;
-  last_strand_start = thread_end_time;
+  double strand_len = thread_end_time - main_stack->last_strand_start;
+  main_stack->last_strand_start = thread_end_time;
   main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
 
   // F.w += G.w
@@ -674,11 +674,9 @@ void ParasiteTool::create(const Event* e) {
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 
 	TRD_ID newThreadID = _info->childThread->threadId;
+	TIME create_time = _info->startTime;
 
-	// TIME create_time = _info->runtime;
-	TIME create_time = (TIME) 1;
-
-	create_thread_operations(main_stack, last_strand_start, create_time, newThreadID);
+	create_thread_operations(main_stack, create_time, newThreadID);
 }
 
 // this is a SYNC EVENT 
@@ -695,7 +693,7 @@ void ParasiteTool::join(const Event* e) {
 
 	TIME join_time = (TIME) 1;
 
-	join_operations(main_stack, last_strand_start, join_time);
+	join_operations(main_stack, join_time);
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -713,7 +711,7 @@ void ParasiteTool::call(const Event* e) {
 
 	if (calledFunctionSignature != bottomFunctionSignature) {
 
-		return_of_called_operations(main_stack, returnTime, last_strand_start);
+		return_of_called_operations(main_stack, returnTime);
 	}
 
 	currentFunctionSignature = calledFunctionSignature;
@@ -722,7 +720,7 @@ void ParasiteTool::call(const Event* e) {
 
 	if (calledThreadID != bottomThreadID) {
 
-		thread_end_operations(main_stack, callTime, last_strand_start);
+		thread_end_operations(main_stack, callTime);
 	}
 
 	currentThreadID = calledThreadID;
@@ -730,7 +728,7 @@ void ParasiteTool::call(const Event* e) {
 	if (calledSiteID != currentCallSiteID)
 		currentCallSiteID = calledSiteID;
 	
-    call_operations(main_stack, calledSiteID, callTime, last_strand_start, &min_capacity);
+    call_operations(main_stack, calledSiteID, callTime, &min_capacity);
 }
 
 // lock acquire event 

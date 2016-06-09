@@ -131,6 +131,9 @@ const int32_t UNINITIALIZED = INT32_MIN;
 // Type for a parasite stack
 typedef struct {
 
+  // start of last strand
+  TIME last_strand_start;
+
   // Capacity of call-site status vector
   int call_site_status_vector_capacity;
 
