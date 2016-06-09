@@ -9,8 +9,11 @@
 #include "SAAPRunner.h"
 #include "EventService.h"
 #include "DBInterpreter.h"
+
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
+
+#include "ParasiteTool.h"
 #include "FunctionTrackerTool.h"
 #include "LockMgr.h"
 #include "ThreadMgr.h"
@@ -39,21 +42,32 @@ int main(int argc, char* argv[]) {
 	// create and register tools
 	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
+
+	ParasiteTool *parasiteTool = new ParasiteTool();
 	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
-	// register functionTool, no filters, only CALL events
-  runner->registerTool(functionTool, NULL,
+
+	// register functionTool, no filters, only CALL and NEWTHREAD events
+    runner->registerTool(functionTool, NULL,
                        Events::CALL | Events::NEWTHREAD );
+
+    // register functionTool, TODO: check if filters are applicable here 
+    runner->registerTool(parasiteTool, NULL,
+                       Events::CALL | Events::NEWTHREAD | 
+                       Events::ACQUIRE | Events::RELEASE |
+                       Events::JOIN );
 
 	// Start interpretation
 	runner->interpret();
 
 	// unregister
 	runner->removeTool(functionTool);
+	runner->removeTool(parasiteTool);
 
 	delete interpreter;
 	delete service;
 	delete runner;
 	delete functionTool;
+	delete parasiteTool;
 
 	return 0;
 }

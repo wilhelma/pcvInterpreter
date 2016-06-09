@@ -752,5 +752,13 @@ void ParasiteTool::release(const Event* e) {
 	// main_stack->bottom_parasite_frame->lock_span += lock_span;
 }
 
+// lock release event
+void ParasiteTool::access(const Event* e) {
+
+  // DOES NOTHING
+  return;
+}
+
+
 
 
