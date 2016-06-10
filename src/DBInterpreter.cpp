@@ -24,6 +24,8 @@
 #include "ThreadMgr.h"
 #include "DBTable.h"
 
+//TODO: go into process<...> functions and add all needed information
+
 DBInterpreter::DBInterpreter(const char* DBPath,
                              const char* logFile,
                              EventService *service,
@@ -203,12 +205,13 @@ int DBInterpreter::processCall(CAL_ID callId,
       auto searchFile = fileT_.find(search->second.file_id);
       if (searchFile != fileT_.end()) {
         CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
-                       (TIME) (call.end_time - call.start_time),
                        (FUN_SG)search->second.signature,
                        (SEG_ID) call.sql_id, // XXX BUG segment or call?
                        search->second.type,
                        (FIL_PT)searchFile->second.file_name,
-                       (FIL_PT)searchFile->second.file_path);
+                       (FIL_PT)searchFile->second.file_path,
+                       (TIME) call.start_time, 
+                       (TIME) call.end_time);
 
         ShadowThread* thread = threadMgr_->getThread(call.thread_id);
         CallEvent event(thread, &info);
@@ -316,6 +319,7 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
     return 0;
 }
 
+// TODO: added needed info to NewThreadInfo
 int DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
@@ -329,6 +333,7 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     return 0;
 }
 
+// TOOD: add needed info to JoinInfo
 int DBInterpreter::processJoin(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,

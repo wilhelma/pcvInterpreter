@@ -352,15 +352,10 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
   new_frame->longest_child_table = parasite_hashtable_create();
   new_frame->continuation_table = parasite_hashtable_create();
 
-  std::cout << "LOCATION 3 parasite_stack_init " << std::endl;
 
   parasite_stack_frame_init(new_frame, func_type, 0, 0);
 
-  std::cout << "LOCATION 4 parasite_stack_init " << std::endl;
-
   function_frame_init(&(stack->function_stack[0]));
-
-  std::cout << "LOCATION 5 parasite_stack_init " << std::endl;
 
   stack->bottom_parasite_frame = new_frame;
 
@@ -369,15 +364,11 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
   stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->thread_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
 
-   std::cout << "LOCATION 6 parasite_stack_init " << std::endl;
-
   stack->call_site_status_vector = new call_site_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
 
   stack->function_status_vector = new function_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
 
   stack->thread_status_vector = new thread_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
-
-  std::cout << "LOCATION 7 parasite_stack_init " << std::endl;
 
 
   for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
@@ -389,7 +380,6 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
     stack->thread_status_vector[i] = OFF_STACK;
   }
 
-  std::cout << "LOCATION 8 parasite_stack_init " << std::endl;
 }
 
 // Doubles the capacity of a call_site status vector

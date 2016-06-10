@@ -249,23 +249,25 @@ private:
  *****************************************************************************/
 typedef struct CallInfo {
   CALLSITE siteId;
-	TIME runtime;
   FUN_SG fnSignature;
 	SEG_ID segment;
 	FunctionType fnType;
 	FIL_PT fileName;
   FIL_PT filePath;
+  TIME startTime;
+  TIME endTime;
 
     explicit
   CallInfo(CALLSITE SiteId,
-           TIME Runtime,
            FUN_SG FnSignature,
            SEG_ID Segment,
            FunctionType FnType,
            FIL_PT FileName,
-           FIL_PT FilePath)
-    : siteId(SiteId), runtime(Runtime), fnSignature(FnSignature),
-      segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
+           FIL_PT FilePath,
+           TIME StartTime,
+           TIME EndTime)
+    : siteId(SiteId), fnSignature(FnSignature),
+      segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath), startTime(StartTime), endTime(EndTime) {}
 } CallInfo;
 
 class CallEvent : public Event {

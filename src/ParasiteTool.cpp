@@ -707,8 +707,9 @@ void ParasiteTool::call(const Event* e) {
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE calledSiteID = _info->siteId;
   
-	TIME callTime = _info->runtime;
-	TIME returnTime = _info->runtime;
+  // TODO: double check this 
+	TIME callTime = _info->startTime;
+	TIME returnTime = _info->startTime;
 
 	FUN_SG bottomFunctionSignature = main_stack->function_stack[main_stack->function_stack_tail_index].functionSignature;
 
