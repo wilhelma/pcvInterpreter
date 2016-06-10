@@ -11,12 +11,12 @@ const int START_FUNCTION_STATUS_VECTOR_SIZE = 4;
 const int START_CALL_SITE_STACK_SIZE = 8;
 
 // frame for each function
-typedef struct function_frame_t {
+struct function_frame_t {
 
   // ID for the function's call site
   CALLSITE call_site_ID;
 
-  // index for the function's call site
+  // index for the function's call sit
   int call_site_index;
 
   // Signature for the function
@@ -36,10 +36,10 @@ typedef struct function_frame_t {
   // Parent of this function on the same stack 
   struct function_frame_t *parent;
 
-} function_frame_t;
+};
 
 // Type for thread stack frame
-typedef struct thread_stack_frame_t {
+struct thread_stack_frame_t {
 
   // Thread ID 
   TRD_ID threadId;
@@ -47,10 +47,10 @@ typedef struct thread_stack_frame_t {
   // Pointer to the frame's parent
   struct thread_stack_frame_t *parent;
 
-} thread_frame_t;
+};
 
 // Type for parasite stack frame
-typedef struct parasite_stack_frame_t {
+struct parasite_stack_frame_t {
 
   // Function type
   int func_type;
@@ -102,10 +102,12 @@ typedef struct parasite_stack_frame_t {
   // Pointer to the frame's parent
   struct parasite_stack_frame_t *parent;
 
-} parasite_stack_frame_t;
+  parasite_stack_frame_t(){};
+
+};
 
 // Metadata for a call site
-typedef struct {
+struct call_site_status_t {
 
   FUN_SG tailFunctionSignature;
   int call_site_tail_function_index;
@@ -116,7 +118,8 @@ typedef struct {
   int last_index_used;
 
   uint32_t flags;
-} call_site_status_t;
+
+};
 
 // Metadata for a function
 typedef int32_t function_status_t;
@@ -129,7 +132,7 @@ const int32_t OFF_STACK = INT32_MIN;
 const int32_t UNINITIALIZED = INT32_MIN;
 
 // Type for a parasite stack
-typedef struct {
+struct parasite_stack_t {
 
   // start of last strand
   TIME last_strand_start;
@@ -159,7 +162,7 @@ typedef struct {
   function_frame_t *function_stack;
 
   // Stack of thread frames
-  thread_frame_t *thread_stack;
+  thread_stack_frame_t *thread_stack;
 
   // Vector of status flags for different call sites
   call_site_status_t *call_site_status_vector;
@@ -179,7 +182,9 @@ typedef struct {
   // Free list of parasite stack frames
   parasite_stack_frame_t *stack_frame_free_list;
 
-} parasite_stack_t;
+  parasite_stack_t(){};
+
+};
 
 
 /*----------------------------------------------------------------------*/
@@ -187,9 +192,11 @@ typedef struct {
 // Resizes the C stack
 static inline
 void resize_function_stack(function_frame_t **function_stack, int *function_stack_capacity) {
+
   int new_function_stack_capacity = 2 * (*function_stack_capacity);
-  function_frame_t *new_function_stack = (function_frame_t*)malloc(sizeof(function_frame_t)
-                                                    * new_function_stack_capacity);
+
+  function_frame_t *new_function_stack = new function_frame_t[new_function_stack_capacity];
+
   for (int i = 0; i < *function_stack_capacity; ++i) {
     new_function_stack[i] = (*function_stack)[i];
   }
@@ -201,10 +208,11 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
 }
 
 static inline
-void resize_thread_stack(thread_frame_t **thread_stack, int *thread_stack_capacity) {
+void resize_thread_stack(thread_stack_frame_t **thread_stack, int *thread_stack_capacity) {
   int new_thread_stack_capacity = 2 * (*thread_stack_capacity);
-  thread_frame_t *new_thread_stack = (thread_frame_t*)malloc(sizeof(thread_frame_t)
-                                                    * new_thread_stack_capacity);
+
+  thread_stack_frame_t *new_thread_stack = new thread_stack_frame_t[new_thread_stack_capacity];
+
   for (int i = 0; i < *thread_stack_capacity; ++i) {
     new_thread_stack[i] = (*thread_stack)[i];
   }
@@ -241,10 +249,10 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
                                //FUN_SG functionSignature,
                                // TRD_ID threadID)
 {
+
   frame->parent = NULL;
+
   frame->func_type = func_type;
-  frame->headFunctionSignature = (FUN_SG) 0;
-  frame->headThreadID = (TRD_ID) 0;
 
   frame->head_function_index = head_function_index;
   frame->head_thread_index = head_thread_index;
@@ -253,7 +261,6 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
   frame->local_continuation = 0;
   frame->prefix_span = 0; 
   frame->longest_child_span = 0;
-
 
   assert(parasite_hashtable_is_empty(frame->prefix_table));
   assert(parasite_hashtable_is_empty(frame->longest_child_table));
@@ -267,7 +274,7 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
 static inline
 function_frame_t* function_push(parasite_stack_t *stack)
 {
-  /* fprintf(stderr, "pushing C stack\n"); */
+  /* fprintf(stderr, "pushing C stack" << std::endl; */
   assert(NULL != stack->bottom_parasite_frame);
 
   ++stack->function_stack_tail_index;
@@ -283,7 +290,7 @@ function_frame_t* function_push(parasite_stack_t *stack)
 
 // Pops the bottommost thread frame off of the thread stack, and returns a pointer to it.
 static inline
-thread_frame_t* thread_push(parasite_stack_t *stack)
+thread_stack_frame_t* thread_push(parasite_stack_t *stack)
 {
   assert(NULL != stack->bottom_parasite_frame);
 
@@ -297,7 +304,6 @@ thread_frame_t* thread_push(parasite_stack_t *stack)
 }
 
 // Push new frame of function type func_type onto the stack *stack
-//__attribute__((always_inline))
 
 static inline
 parasite_stack_frame_t* parasite_stack_push(parasite_stack_t *stack, int func_type)
@@ -309,7 +315,7 @@ parasite_stack_frame_t* parasite_stack_push(parasite_stack_t *stack, int func_ty
 
   } else {
 
-    new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
+    new_frame = new parasite_stack_frame_t();
     new_frame->prefix_table = parasite_hashtable_create();
     new_frame->longest_child_table = parasite_hashtable_create();
     new_frame->continuation_table = parasite_hashtable_create();
@@ -327,25 +333,34 @@ parasite_stack_frame_t* parasite_stack_push(parasite_stack_t *stack, int func_ty
 static inline
 void parasite_stack_init(parasite_stack_t *stack, int func_type)
 {
+
   stack->bottom_parasite_frame = NULL;
   stack->stack_frame_free_list = NULL;
 
-  stack->function_stack = (function_frame_t*)malloc(sizeof(function_frame_t) * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->function_stack = new function_frame_t[START_FUNCTION_STATUS_VECTOR_SIZE];
+
   stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->function_stack_tail_index = 0;
 
-  stack->thread_stack = (thread_frame_t*)malloc(sizeof(thread_frame_t) * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->thread_stack = new thread_stack_frame_t[START_FUNCTION_STATUS_VECTOR_SIZE];
   stack->thread_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->thread_stack_tail_index = 0;
 
-  parasite_stack_frame_t *new_frame = (parasite_stack_frame_t *)malloc(sizeof(parasite_stack_frame_t));
+  parasite_stack_frame_t *new_frame = new parasite_stack_frame_t();
 
   new_frame->prefix_table = parasite_hashtable_create();
   new_frame->longest_child_table = parasite_hashtable_create();
   new_frame->continuation_table = parasite_hashtable_create();
 
+  std::cout << "LOCATION 3 parasite_stack_init " << std::endl;
+
   parasite_stack_frame_init(new_frame, func_type, 0, 0);
+
+  std::cout << "LOCATION 4 parasite_stack_init " << std::endl;
+
   function_frame_init(&(stack->function_stack[0]));
+
+  std::cout << "LOCATION 5 parasite_stack_init " << std::endl;
 
   stack->bottom_parasite_frame = new_frame;
 
@@ -354,14 +369,15 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
   stack->function_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
   stack->thread_stack_capacity = START_FUNCTION_STATUS_VECTOR_SIZE;
 
-  stack->call_site_status_vector = (call_site_status_t*)malloc(sizeof(call_site_status_t)
-                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
+   std::cout << "LOCATION 6 parasite_stack_init " << std::endl;
 
-  stack->function_status_vector = (function_status_t*)malloc(sizeof(function_status_t)
-                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->call_site_status_vector = new call_site_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
 
-  stack->thread_status_vector = (thread_status_t*)malloc(sizeof(thread_status_t)
-                                          * START_FUNCTION_STATUS_VECTOR_SIZE);
+  stack->function_status_vector = new function_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
+
+  stack->thread_status_vector = new thread_status_t[START_FUNCTION_STATUS_VECTOR_SIZE];
+
+  std::cout << "LOCATION 7 parasite_stack_init " << std::endl;
 
 
   for (int i = 0; i < START_FUNCTION_STATUS_VECTOR_SIZE; ++i) {
@@ -372,6 +388,8 @@ void parasite_stack_init(parasite_stack_t *stack, int func_type)
     stack->function_status_vector[i] = OFF_STACK;
     stack->thread_status_vector[i] = OFF_STACK;
   }
+
+  std::cout << "LOCATION 8 parasite_stack_init " << std::endl;
 }
 
 // Doubles the capacity of a call_site status vector
@@ -379,8 +397,8 @@ static inline
 void resize_call_site_status_vector(call_site_status_t **old_status_vec,
                              int *old_vec_capacity) {
   int new_vec_capacity = *old_vec_capacity * 2;
-  call_site_status_t *new_status_vec = (call_site_status_t*)malloc(sizeof(call_site_status_t)
-                                                     * new_vec_capacity);
+  call_site_status_t *new_status_vec = new call_site_status_t[new_vec_capacity];
+
   int i;
   for (i = 0; i < *old_vec_capacity; ++i) {
     new_status_vec[i] = (*old_status_vec)[i];
@@ -402,8 +420,8 @@ static inline
 void resize_function_status_vector(function_status_t **old_status_vec,
                              int *old_vec_capacity) {
   int new_vec_capacity = *old_vec_capacity * 2;
-  function_status_t *new_status_vec = (function_status_t*)malloc(sizeof(function_status_t)
-                                                     * new_vec_capacity);
+  function_status_t *new_status_vec = new function_status_t[new_vec_capacity];
+
   int i;
   for (i = 0; i < *old_vec_capacity; ++i) {
     new_status_vec[i] = (*old_status_vec)[i];
@@ -422,8 +440,8 @@ void resize_thread_status_vector(thread_status_t **old_status_vector,
                                  int *old_vector_capacity) {
 
   int new_vector_capacity = *old_vector_capacity * 2;
-  thread_status_t *new_status_vector = (thread_status_t*)malloc(sizeof(thread_status_t)
-                                                     * new_vector_capacity);
+  thread_status_t *new_status_vector = new thread_status_t[new_vector_capacity];
+
   int i;
   for (i = 0; i < *old_vector_capacity; ++i) {
     new_status_vector[i] = (*old_status_vector)[i];
@@ -441,7 +459,7 @@ void resize_thread_status_vector(thread_status_t **old_status_vector,
 static inline
 thread_stack_frame_t* thread_pop(parasite_stack_t *main_stack)
 {
-  thread_frame_t *old_thread_stack_bottom = &(main_stack->thread_stack[main_stack->thread_stack_tail_index]);
+  thread_stack_frame_t *old_thread_stack_bottom = &(main_stack->thread_stack[main_stack->thread_stack_tail_index]);
   --main_stack->thread_stack_tail_index;
   assert(main_stack->thread_stack_tail_index >= main_stack->bottom_parasite_frame->head_thread_index);
   return old_thread_stack_bottom;

@@ -11,7 +11,7 @@
 
 void create_thread_operations(parasite_stack_t* main_stack, TIME create_time, TRD_ID new_thread_ID) {
 
-  thread_frame_t *new_thread_frame = thread_push(main_stack);
+  thread_stack_frame_t *new_thread_frame = thread_push(main_stack);
   new_thread_frame->threadId = new_thread_ID;
   int parent_index = main_stack->thread_stack_tail_index - 1;
   new_thread_frame->parent = &(main_stack->thread_stack[parent_index]);
@@ -489,7 +489,7 @@ void thread_end_operations(parasite_stack_t* main_stack, TIME thread_end_time) {
   //    F.p += G.c
   //    F.c = 0
 
-  //thread_frame_t* old_thread_frame = 
+  //thread_stack_frame_t* old_thread_frame = 
   thread_pop(main_stack);
 
   parasite_stack_frame_t *old_bottom_parasite_frame;
@@ -657,6 +657,8 @@ void ParasiteTool::print()
 
 ParasiteTool::ParasiteTool() {
 
+  min_capacity = 8;
+  main_stack = new parasite_stack_t();
 	parasite_stack_init(main_stack, MAIN);
 }
 
@@ -704,6 +706,7 @@ void ParasiteTool::call(const Event* e) {
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE calledSiteID = _info->siteId;
+  
 	TIME callTime = _info->runtime;
 	TIME returnTime = _info->runtime;
 
