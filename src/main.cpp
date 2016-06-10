@@ -61,14 +61,14 @@ int main(int argc, char* argv[]) {
 	runner->interpret();
 
 	// unregister
-	// runner->removeTool(functionTool);
-	// runner->removeTool(parasiteTool);
+	runner->removeTool(functionTool);
+	runner->removeTool(parasiteTool);
 
 	delete interpreter;
 	delete service;
 	delete runner;
 	delete functionTool;
-	// delete parasiteTool;
+	delete parasiteTool;
 
 	return 0;
 }

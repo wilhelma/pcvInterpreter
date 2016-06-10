@@ -189,23 +189,23 @@ void destroy_stack(parasite_stack_t* main_stack) {
       free_parasite_hashtable(free_frame->prefix_table);
       free_parasite_hashtable(free_frame->longest_child_table);
       free_parasite_hashtable(free_frame->continuation_table);
-      free(free_frame);
+      delete free_frame;
       free_frame = next_free_frame;
     }
 
     main_stack->stack_frame_free_list = NULL;
 
-    free(main_stack->call_site_status_vector);
-    free(main_stack->function_status_vector);
-    free(main_stack->function_stack);
-    free(main_stack->thread_stack);
+    delete main_stack->call_site_status_vector;
+    delete main_stack->function_status_vector;
+    delete main_stack->function_stack;
+    delete main_stack->thread_stack;
 
     parasite_hashtable_linked_list_node_t *free_list_node = linked_list_free_node_list;
     parasite_hashtable_linked_list_node_t *next_free_list_node;
 
     while (NULL != free_list_node) {
       next_free_list_node = free_list_node->next;
-      free(free_list_node);
+      delete free_list_node;
       free_list_node = next_free_list_node;
     }
     linked_list_free_node_list = NULL;

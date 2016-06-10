@@ -32,11 +32,9 @@ static parasite_hashtable_t* parasite_hashtable_alloc(int log_capacity) {
 
   assert(log_capacity >= START_HASHTABLE_LOG_CAPACITY);
   size_t capacity = 1 << log_capacity;
-  parasite_hashtable_t *table =
-    (parasite_hashtable_t*)malloc(sizeof(parasite_hashtable_t)
-			    + (capacity * sizeof(parasite_hashtable_entry_t)));
+  parasite_hashtable_t *table = new parasite_hashtable_t();
 
-  int *populated_entries = (int*)malloc(sizeof(int) * capacity);
+  int *populated_entries = new int[capacity];
 
   table->log_capacity = log_capacity;
   table->list_size = 0;
@@ -140,9 +138,9 @@ get_parasite_hashtable_entry_at_index(int index, parasite_hashtable_t **table) {
     (*table)->head = NULL;
     (*table)->tail = NULL;
 
-    free((*table)->populated);
-    free(*table);
-    *table= new_table;
+    delete (*table)->populated;
+    delete (*table);
+    *table = new_table;
   }
 
   return &((*table)->entries[index]);
@@ -229,7 +227,7 @@ bool add_to_parasite_hashtable(parasite_hashtable_t **table,
       lst_entry = linked_list_free_node_list;
       linked_list_free_node_list = linked_list_free_node_list->next;
     } else {
-      lst_entry = (parasite_hashtable_linked_list_node_t*)malloc(sizeof(parasite_hashtable_linked_list_node_t));
+      lst_entry = new parasite_hashtable_linked_list_node_t();
     }
 
     lst_entry->index = index;
@@ -343,7 +341,7 @@ bool add_local_to_parasite_hashtable(parasite_hashtable_t **table,
       lst_entry = linked_list_free_node_list;
       linked_list_free_node_list = linked_list_free_node_list->next;
     } else {
-      lst_entry = (parasite_hashtable_linked_list_node_t*)malloc(sizeof(parasite_hashtable_linked_list_node_t));
+      lst_entry = new parasite_hashtable_linked_list_node_t();
     }
 
     lst_entry->index = index;
@@ -518,8 +516,8 @@ void free_parasite_hashtable(parasite_hashtable_t *table) {
     table->tail->next = linked_list_free_node_list;
     linked_list_free_node_list = table->head;
   }
-  free(table->populated);
-  free(table);
+  delete table->populated;
+  delete table;
 }
 
 bool parasite_hashtable_is_empty(const parasite_hashtable_t *table) {

@@ -201,7 +201,7 @@ void resize_function_stack(function_frame_t **function_stack, int *function_stac
     new_function_stack[i] = (*function_stack)[i];
   }
 
-  free(*function_stack);
+  delete *function_stack;
   *function_stack = new_function_stack;
   *function_stack_capacity = new_function_stack_capacity;
 
@@ -217,7 +217,7 @@ void resize_thread_stack(thread_stack_frame_t **thread_stack, int *thread_stack_
     new_thread_stack[i] = (*thread_stack)[i];
   }
 
-  free(*thread_stack);
+  delete *thread_stack;
   *thread_stack = new_thread_stack;
   *thread_stack_capacity = new_thread_stack_capacity;
 
@@ -410,7 +410,7 @@ void resize_call_site_status_vector(call_site_status_t **old_status_vec,
     new_status_vec[i].flags = 0;
   }
 
-  free(*old_status_vec);
+  delete *old_status_vec;
   *old_status_vec = new_status_vec;
   *old_vec_capacity = new_vec_capacity;
 }
@@ -430,7 +430,7 @@ void resize_function_status_vector(function_status_t **old_status_vec,
     new_status_vec[i] = OFF_STACK;
   }
 
-  free(*old_status_vec);
+  delete *old_status_vec;
   *old_status_vec = new_status_vec;
   *old_vec_capacity = new_vec_capacity;
 }
@@ -450,7 +450,7 @@ void resize_thread_status_vector(thread_status_t **old_status_vector,
     new_status_vector[i] = OFF_STACK;
   }
 
-  free(*old_status_vector);
+  delete *old_status_vector;
   *old_status_vector = new_status_vector;
   *old_vector_capacity = new_vector_capacity;
 }

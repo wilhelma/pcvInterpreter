@@ -34,7 +34,7 @@ typedef enum {
  */
 
 // Structure for a hashtable entry
-typedef struct {
+struct parasite_hashtable_entry_t {
 
   // Store whether this entry is initialized
   bool is_initialized;
@@ -74,10 +74,10 @@ typedef struct {
   // Span associated with top-level invocations of call_site_ID
   double top_span;
 
-} parasite_hashtable_entry_t;
+};
 
 // Structure for making a linked list of parasite_hashtable entries
-typedef struct parasite_hashtable_linked_list_node_t {
+struct parasite_hashtable_linked_list_node_t {
 
   // Index in table for this entry
   int index;
@@ -88,10 +88,10 @@ typedef struct parasite_hashtable_linked_list_node_t {
   // Hashtable entry data
   parasite_hashtable_entry_t entry;
 
-} parasite_hashtable_linked_list_node_t;
+};
 
 // Structure for the hashtable
-typedef struct {
+struct parasite_hashtable_t{
 
   // Logarithm of capacity of hash table
   int log_capacity;
@@ -112,7 +112,7 @@ typedef struct {
   // Entries of the hash table
   parasite_hashtable_entry_t entries[0];
 
-} parasite_hashtable_t;
+};
 
 extern parasite_hashtable_linked_list_node_t *linked_list_free_node_list;  
 
