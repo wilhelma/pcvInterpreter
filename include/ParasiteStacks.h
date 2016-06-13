@@ -3,11 +3,12 @@
 
 #include "ParasiteHashtable.h"
 #include "assert.h"
+#include <map>
 
-// Used to size call site status vector 
+// Used to size call site and function status vectors
 const int START_FUNCTION_STATUS_VECTOR_SIZE = 4;
 
-// Used to size function call site stack
+// Used to size call site stack
 const int START_CALL_SITE_STACK_SIZE = 8;
 
 // frame for each function
@@ -16,7 +17,7 @@ struct function_frame_t {
   // ID for the function's call site
   CALLSITE call_site_ID;
 
-  // index for the function's call sit
+  // index for the function's call site
   int call_site_index;
 
   // Signature for the function
@@ -28,7 +29,7 @@ struct function_frame_t {
   TIME local_lock_span;
   TIME last_lock_start;
 
-  // Running total of work and span for this call site
+  // Running total of work and span for the call site of this function
   TIME running_work;
   TIME running_span;
   TIME running_lock_span;
@@ -55,10 +56,10 @@ struct parasite_stack_frame_t {
   // Function type
   int func_type;
 
-  // Index of head C function in stack
+  // Index of head function in function stack
   int head_function_index;
 
-  // Index of head thread in stack
+  // Index of head thread in thread stack
   int head_thread_index;
 
   // Signature of head function in call stack
@@ -67,28 +68,28 @@ struct parasite_stack_frame_t {
   // ID of head thread in thread stack
   TRD_ID headThreadID;
 
-  // Local continuation span of this function
+  // Local continuation span of head function
   TIME local_continuation;
 
-  // Local span of this function
+  // Local span of head function
   TIME local_span;
 
-  // Span of the prefix of this function and its child C functions
+  // Span of the prefix of the head function and its child functions
   TIME prefix_span;
 
-  // lock span of this function
+  // lock span of the head function
   TIME lock_span;
 
   // Span of the longest spawned child of this function observed so
   // far
   TIME longest_child_span;
 
-  // Span of the longest spawned child of this function observed so
+  // Lock span of the longest spawned child of this function observed so
   // far
   TIME longest_child_lock_span;
 
   // The span of the continuation is stored in the running_span
-  // variable in the topmost function_frame
+  // variable in the topmost head function_frame
 
   // Data associated with the function's prefix
   parasite_hashtable_t* prefix_table;
@@ -112,6 +113,7 @@ struct call_site_status_t {
   FUN_SG tailFunctionSignature;
   int call_site_tail_function_index;
 
+  // current function signature and function index in stack of the call site
   FUN_SG fnSignature;
   int call_site_function_index;
 
@@ -136,6 +138,12 @@ struct parasite_stack_t {
 
   // start of last strand
   TIME last_strand_start;
+
+  // map of call_site_indices to call_site_ID
+  std::map<CALLSITE, int> call_site_index_map;
+
+  // highest call_site_index used so far
+  int highest_call_site_index;
 
   // Capacity of call-site status vector
   int call_site_status_vector_capacity;
@@ -189,7 +197,6 @@ struct parasite_stack_t {
 
 /*----------------------------------------------------------------------*/
 
-// Resizes the C stack
 static inline
 void resize_function_stack(function_frame_t **function_stack, int *function_stack_capacity) {
 
@@ -224,20 +231,14 @@ void resize_thread_stack(thread_stack_frame_t **thread_stack, int *thread_stack_
 }
 
 
-// Initializes C function frame *function_frame
+// Initializes function frame *function_frame
 static inline
-void function_frame_init(function_frame_t *function_frame) {//, CALLSITE csID, int call_site_index, FUN_SG funSg)
-
-  // Signature for the function
-  FUN_SG functionSignature;
-
-  // function_frame->call_site_ID = csID;
-  // function_frame->call_site_index = call_site_index;
-  // function_frame->functionSignature = funSg;
+void function_frame_init(function_frame_t *function_frame) {
 
   function_frame->local_work = 0;
   function_frame->running_work = 0;
   function_frame->running_span = 0;
+  function_frame->running_lock_span = 0;
 }
 
 // Initializes the parasite stack frame *frame
@@ -245,9 +246,7 @@ static inline
 void parasite_stack_frame_init(parasite_stack_frame_t *frame,
                                int func_type,
                                int head_function_index,
-                               int head_thread_index) // 
-                               //FUN_SG functionSignature,
-                               // TRD_ID threadID)
+                               int head_thread_index) 
 {
 
   frame->parent = NULL;
@@ -269,12 +268,11 @@ void parasite_stack_frame_init(parasite_stack_frame_t *frame,
 }
 
 
-// Push new frame of C function onto the C function stack starting at
-// stack->bottom->function_frame.
+// Push new frame of function onto the function stack starting at
+// stack->bottom->function_frame. Return frame address. 
 static inline
 function_frame_t* function_push(parasite_stack_t *stack)
 {
-  /* fprintf(stderr, "pushing C stack" << std::endl; */
   assert(NULL != stack->bottom_parasite_frame);
 
   ++stack->function_stack_tail_index;
@@ -303,8 +301,8 @@ thread_stack_frame_t* thread_push(parasite_stack_t *stack)
   return &(stack->thread_stack[stack->thread_stack_tail_index]);
 }
 
-// Push new frame of function type func_type onto the stack *stack
-
+// Push new parasite stack frame of function type func_type onto the parasite stack *stack
+// Return address of frame
 static inline
 parasite_stack_frame_t* parasite_stack_push(parasite_stack_t *stack, int func_type)
 {

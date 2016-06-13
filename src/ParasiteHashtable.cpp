@@ -65,7 +65,7 @@ int can_override_entry(parasite_hashtable_entry_t *entry, uintptr_t new_call_sit
   return (entry->call_site_ID == new_call_site_ID);
 }
 
-
+// add value of all entries
 static inline
 void combine_entries(parasite_hashtable_entry_t *entry,
                      const parasite_hashtable_entry_t *entry_add) {

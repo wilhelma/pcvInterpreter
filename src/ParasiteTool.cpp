@@ -9,7 +9,26 @@
 
 #define BURDENING 0 
 
+int getCallSiteIndex(parasite_stack_t* main_stack, CALLSITE call_site_ID) {
+
+  // TODO: implement function here to get index of call site
+
+  if (main_stack->call_site_index_map.count(call_site_ID) > 0) {
+    index = main_stack->call_site_index_map[call_site_ID];
+  }
+
+  else {
+    index = main_stack->highest_call_site_index + 1;
+    main_stack->highest_call_site_index += 1;
+  }
+
+  return index;
+}
+
+
 void create_thread_operations(parasite_stack_t* main_stack, TIME create_time, TRD_ID new_thread_ID) {
+
+  parasite_stack_push(main_stack, SPAWNER);
 
   thread_stack_frame_t *new_thread_frame = thread_push(main_stack);
   new_thread_frame->threadId = new_thread_ID;
@@ -107,15 +126,14 @@ void call_operations(parasite_stack_t* main_stack, CALLSITE call_site_id, TIME c
     // G.l = 0
     // G.c = 0
 
-    // TODO: CREATE HASHTABLE THAT MATCHES CALL SITES TO CALL SITE INDEX
-    int call_site_index = 0;
+    call_site_index = getCallSiteIndex(call_site_ID);
 
     double strand_len = call_time - main_stack->last_strand_start;
     main_stack->last_strand_start = call_time;
     main_stack->function_stack[main_stack->function_stack_tail_index].local_work += strand_len;
 
 
-    // in this case, the called function is the head of the stack 
+    // in this case the function being called has no child functions in the same thread (?)
     if (main_stack->bottom_parasite_frame->head_function_index == main_stack->function_stack_tail_index) {
 
       main_stack->bottom_parasite_frame->local_continuation += strand_len;
