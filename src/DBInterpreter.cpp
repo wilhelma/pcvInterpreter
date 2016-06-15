@@ -192,42 +192,44 @@ int DBInterpreter::processCall(CAL_ID callId,
                                const segment_t& seg,
                                const instruction_t& ins) {
 
-    // fetch called function 
-  auto search = functionT_.find(call.function_id);
-  if (search != functionT_.end()) {
+	// fetch called function 
+	auto search = functionT_.find(call.function_id);
 
-    switch(search->second.type) {
-    case FunctionType::FUNCTION:
-    case FunctionType::METHOD:
-    {
-      auto searchFile = fileT_.find(search->second.file_id);
-      if (searchFile != fileT_.end()) {
-        CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
-                       (TIME) (call.end_time - call.start_time),
-                       (FUN_SG)search->second.signature,
-                       (SEG_ID) call.sql_id, // XXX BUG segment or call?
-                       search->second.type,
-                       (FIL_PT)searchFile->second.file_name,
-                       (FIL_PT)searchFile->second.file_path);
+	// check that the function exists
+	if (search == functionT_.end()) {
+		BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
+		return IN_NO_ENTRY;
+	}
 
-        ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-        CallEvent event(thread, &info);
-        _eventService->publish(&event);
-      } else {
-        BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
-        return 1;
-      }
-      break;
-    }
-    default:
-      break;
-    }
-  } else {
-        BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
-        return IN_NO_ENTRY;
-    }
+	switch(search->second.type) {
+		case FunctionType::FUNCTION:
+		case FunctionType::METHOD:
+			{
+				// serch for the file where the call has happened from
+				auto searchFile = fileT_.find(search->second.file_id);
+				if (searchFile == fileT_.end()) {
+					BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
+					return 1;
+				}
 
-    return IN_OK;
+				CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
+						(TIME) (call.end_time - call.start_time),
+						(FUN_SG)search->second.signature,
+						(SEG_ID) call.sql_id, // XXX BUG segment or call?
+						search->second.type,
+						(FIL_PT)searchFile->second.file_name,
+						(FIL_PT)searchFile->second.file_path);
+
+				ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+				CallEvent event(thread, &info);
+				_eventService->publish(&event);
+				break;
+			}
+		default:
+			break;
+	}
+
+	return IN_OK;
 }
 
 int DBInterpreter::processAccessGeneric(ACC_ID accessId,
