@@ -1,3 +1,6 @@
+
+#ifndef INCLUDED_CC_HASHTABLE_H
+
 #include <map>
 #include "stdbool.h"
 
@@ -74,9 +77,26 @@ struct call_site_profile_t {
 
 }
 
-// hashtable mapping call sites to their data
-typedef std::map<CALLSITE, call_site_profile_t> call_site_hashtable_t;
 
+// hashtable mapping call sites to their data
+typedef std::map<CALLSITE, call_site_profile_t*> call_site_hashtable_t;
+
+call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t **left, 
+												call_site_hashtable_t **right);
+
+// adds work, span, local_work, and local_span tto profile for call_site
+bool add_to_call_site_hashtable(call_site_hashtable_t **table,
+                         bool is_top_function,
+                         CALLSITE call_site,
+                         double work, double span,
+                         double local_work, double local_span);
+
+// adds local work and span to profile for call_site
+bool add_to_call_site_hashtable_local(call_site_hashtable_t **table,
+                               CALLSITE call_site,
+                               int local_work, int local_span);
+
+#endif
 
 
 
