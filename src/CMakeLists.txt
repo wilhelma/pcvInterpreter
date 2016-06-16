@@ -1,4 +1,6 @@
-set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include)
+set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
+						${SAAPFramework_SOURCE_DIR}/include/tables
+						${SAAPFramework_SOURCE_DIR}/include/tools)
 include_directories(${INCLUDE_DIRECTORIES})
 set(SRC_LIST
 	AccessInfo.cpp
