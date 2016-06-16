@@ -24,6 +24,44 @@
 class LockMgr;
 class ThreadMgr;
 
+enum class StackAction: bool {
+	PUSH = 0,
+	POP  = 1
+};
+
+/// Simple stack wrapping a `std::vector`
+class CallStack {
+	public:
+		/// Pop a value from the top of the stack
+		const CAL_ID pop() {
+			CAL_ID call = Stack_.back();
+			Stack_.pop_back();
+			return call;
+		}
+		/// Push a value on top of the stack
+		void push(CAL_ID id) { Stack_.push_back(id); }
+
+		/// Check whether the stack is empty
+		const bool isEmpty() const { return Stack_.empty(); }
+
+		/// Top of the stack
+		/// @return The value at the top of the stack without popping it
+		const CAL_ID& top() const { return Stack_.back(); }
+
+//		StackAction update(CAL_ID parent_id) {
+//			if (isEmpty()) {
+//				push(parent_id);
+//				return StackAction::PUSH;
+//			}
+//
+//			if (top() == parent_id)
+//		}
+
+		
+	private:
+		std::vector<CAL_ID> Stack_;
+};
+
 /******************************************************************************
  * Database Interpreter
  *****************************************************************************/
@@ -58,12 +96,14 @@ private:
 	DBTable<FUN_ID, function_t> functionT_;
 	DBTable<INS_ID, instruction_t> instructionT_;
 	DBTable<LOP_ID, loop_t> loopT_;
-  DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
+	DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
 	DBTable<REF_ID, reference_t> referenceT_;
 	DBTable<LOI_ID, loopIteration_t> loopIterationT_;
 	DBTable<SEG_ID, segment_t> segmentT_; 
-  DBTable<TRD_ID, thread_t> threadT_;
+	DBTable<TRD_ID, thread_t> threadT_;
 
+	CallStack callStack_;
+  
 	insAccessMap_t _insAccessMap;
 //	refNoIdMap_t _refNoIdMap;
 	const char* _dbPath;
@@ -90,6 +130,8 @@ private:
 	int fillReference(sqlite3_stmt *stmt);
 	int fillSegment(sqlite3_stmt *stmt);
 	int fillThread(sqlite3_stmt *stmt);
+
+	int processReturn(const instruction_t& ins);
 
 	int processInstruction(const instruction_t& instruction);
 	int processSegment(SEG_ID segmentId,
@@ -133,6 +175,15 @@ private:
                   const thread_t& thread);
 
   size_t getHash(unsigned funId, unsigned lineNo) const;
+
+  /// Parent call ID of an instruction
+  /// @return The call ID, if it's found in `segmentT_`
+  /// or `IN_NO_ENTRY` otherwise.
+  const CAL_ID getCallerID(const instruction_t& ins) const;
+  /// Call ID of a call instruction
+  /// @return The call ID, if it's found in `callT_`
+  /// or `IN_NO_ENTRY` otherwise.
+  const CAL_ID getCallID(const instruction_t& ins) const;
 
 	// prevent generated functions
 	DBInterpreter(const DBInterpreter&);
