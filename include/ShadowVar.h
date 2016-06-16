@@ -8,21 +8,14 @@
 #ifndef SHADOWVAR_H_
 #define SHADOWVAR_H_
 
-#include "DBDataModel.h"
-
+#include "DataModel.h"
+#include "Types.h"
 
 /******************************************************************************
  * Shadow variable
  *****************************************************************************/
 class ShadowVar {
 public:
-//	typedef enum { STACK 	= 0x1,
-//				   GLOBAL	= 0x2,
-//				   HEAP		= 0x4,
-//				   STATIC 	= 0x8,
-//				   ERROR	= 0x0
-//				 } VarType;
-
 	ShadowVar(const ReferenceType Type,
 			  const REF_ID Id,
 			  const REF_SIZE Size,
@@ -34,7 +27,6 @@ public:
 
 	const ReferenceType type;
 	const REF_ID id;
-	//const REF_ADDR addr;
 	const REF_SIZE size;
 	const REF_NAME name;
 
