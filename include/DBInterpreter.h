@@ -21,6 +21,7 @@
 #include "Call.h"
 #include "File.h"
 #include "Function.h"
+#include "Instruction.h"
 #include "DBDataModel.h"
 #include "DBTable.h"
 
