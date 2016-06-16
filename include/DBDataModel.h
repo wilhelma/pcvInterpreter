@@ -16,19 +16,6 @@
 #include "DataModel.h"
 #include "Types.h"
 
-
-typedef struct loop_t {
-    LOP_ID sql_id;
-    unsigned line_number;
-
-    explicit
-    loop_t(LOP_ID sqlID,
-           int lineNumber)
-        : sql_id(sqlID), line_number(lineNumber)
-    {}
-
-} loop_t;
-
 typedef struct loopExecution_t {
     LOE_ID sql_id;
     LOE_ID loop_id;

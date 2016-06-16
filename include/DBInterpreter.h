@@ -22,6 +22,7 @@
 #include "File.h"
 #include "Function.h"
 #include "Instruction.h"
+#include "Loop.h"
 #include "DBDataModel.h"
 #include "DBTable.h"
 
