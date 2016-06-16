@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <map>
+#include <iostream>
 #include "DataModel.h"
 
 // to retrieve the custom typedefs
@@ -13,13 +14,14 @@ class ShadowLock;
 class ShadowVar;
 
 enum class Events: unsigned char {
-    NEWTHREAD = 0x1,
-    JOIN      = 0x2,
-    ACQUIRE   = 0x4,
-    RELEASE   = 0x8,
-    ACCESS    = 0x10,
-    CALL      = 0x20,
-    ALL       = 0xFF  // 255
+    NEWTHREAD = 0x1,  // 00000001
+    JOIN      = 0x2,  // 00000010
+    ACQUIRE   = 0x4,  // 00000100
+    RELEASE   = 0x8,  // 00001000
+    ACCESS    = 0x10, // 00010000
+    CALL      = 0x20, // 00100000
+	RETURN    = 0x40, // 01000000
+    ALL       = 0xFF  // 11111111
 };
 
 constexpr inline
@@ -274,6 +276,21 @@ private:
 	// prevent generated functions
 	CallEvent(const CallEvent&);
 	CallEvent& operator=(const CallEvent&);
+};
+
+typedef struct ReturnInfo {
+	CAL_ID call;
+	TIME   endTime;
+
+	ReturnInfo(CAL_ID call,
+			   TIME endTime)
+		: call(call), endTime(endTime)
+	{}
+} ReturnInfo;
+
+class ReturnEvent : public Event {
+	public:
+		Events getEventType() const override { return Events::RETURN; }
 };
 
 #endif /* EVENT_H_ */
