@@ -18,6 +18,8 @@
 #include "ShadowVar.h"
 
 #include "Access.h"
+#include "Call.h"
+#include "File.h"
 #include "DBDataModel.h"
 #include "DBTable.h"
 
