@@ -32,7 +32,7 @@ class ParasiteTool : public Tool {
 
 public:
 	
-	parasite_stack_t *main_stack;
+	thread_stack_t *main_stack;
 
 	int min_capacity;
 
