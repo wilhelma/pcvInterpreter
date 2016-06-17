@@ -199,7 +199,7 @@ public:
 					 Event(thread), _info(info) {}
 
 	Events getEventType() const override { return Events::RELEASE; }
-	const ReleaseInfo* getReleaseInfo() const;
+	const ReleaseInfo* getReleaseInfo() const { return _info; };
 
 private:
 	const struct ReleaseInfo *_info;

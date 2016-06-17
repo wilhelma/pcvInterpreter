@@ -14,7 +14,6 @@ set(SRC_LIST
 	LockSetChecker.cpp
 	main.cpp
 	RaceDetectionTool.cpp
-	ReleaseEvent.cpp
 	SAAPRunner.cpp
 	ShadowLock.cpp
 	ShadowThread.cpp
