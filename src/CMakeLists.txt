@@ -4,14 +4,12 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 include_directories(${INCLUDE_DIRECTORIES})
 set(SRC_LIST
 	AccessInfo.cpp
-	AcquireEvent.cpp
 	CallEvent.cpp
 	DBInterpreter.cpp
 	dotFuncTracker.cpp
 	EventService.cpp
 	FunctionTrackerTool.cpp
 	Interpreter.cpp
-	JoinEvent.cpp
 	LockMgr.cpp
 	LockSetChecker.cpp
 	main.cpp

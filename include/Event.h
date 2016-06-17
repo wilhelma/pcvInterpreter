@@ -174,7 +174,7 @@ public:
 				 const struct AcquireInfo *info) :
 					 Event(thread), _info(info) {}
 	Events getEventType() const override { return Events::ACQUIRE; }
-	const AcquireInfo* getAcquireInfo() const;
+	const AcquireInfo* getAcquireInfo() const { return _info; };
 
 private:
 	const struct AcquireInfo *_info;
