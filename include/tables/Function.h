@@ -13,6 +13,7 @@
 #define  FUNCTION_H_
 
 #include "Types.h"
+#include "DataModel.h"
 
 typedef struct function_t {
     FUN_ID sql_id;

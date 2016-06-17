@@ -13,6 +13,7 @@
 #define  SEGMENT_iNC
 
 #include "Types.h"
+#include "DataModel.h"
 
 typedef struct segment_t {
     SEG_ID sql_id;

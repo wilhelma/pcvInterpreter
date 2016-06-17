@@ -13,6 +13,7 @@
 #define  REFERENCE_H_
 
 #include "Types.h"
+#include "DataModel.h"
 
 typedef struct reference_t {
     REF_ID id;

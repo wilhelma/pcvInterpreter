@@ -13,6 +13,7 @@
 #define  INSTRUCTION_H_
 
 #include "Types.h"
+#include "DataModel.h"
 
 typedef struct instruction_t {
     INS_ID instruction_id;
