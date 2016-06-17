@@ -16,27 +16,6 @@
 #include "DataModel.h"
 #include "Types.h"
 
-typedef struct reference_t {
-    REF_ID id;
-    //REF_ADDR address;
-    REF_SIZE size;
-    ReferenceType memory_type;
-    REF_NAME name;
-    INS_ID allocinstr;
-
-    explicit
-    reference_t(REF_ID refId,
-                REF_SIZE refSize,
-                ReferenceType memoryType,
-                REF_NAME refName,
-                INS_ID allocInstr)
-        : id(refId), size(refSize), memory_type(memoryType),
-          name(refName), allocinstr(allocInstr)
-    {
-    }
-
-} reference_t;
-
 typedef struct segment_t {
     SEG_ID sql_id;
     CAL_ID call_id;
