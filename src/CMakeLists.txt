@@ -11,7 +11,6 @@ set(SRC_LIST
 	main.cpp
 	SAAPRunner.cpp
 	ShadowLock.cpp
-	ShadowThread.cpp
 	ThreadMgr.cpp)
 
 set(SRC_LIST ${SRC_LIST}
