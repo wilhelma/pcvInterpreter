@@ -24,6 +24,7 @@
 #include "Instruction.h"
 #include "Loop.h"
 #include "LoopExecution.h"
+#include "LoopIteration.h"
 #include "DBDataModel.h"
 #include "DBTable.h"
 
