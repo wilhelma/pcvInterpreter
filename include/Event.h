@@ -123,7 +123,7 @@ public:
 				   const struct NewThreadInfo *info) :
 					   Event(thread), _info(info) {}
 	Events getEventType() const override { return Events::NEWTHREAD; }
-	const NewThreadInfo* getNewThreadInfo() const;
+	const NewThreadInfo* getNewThreadInfo() const {return _info; };
 
 private:
 	const NewThreadInfo *_info;

@@ -13,7 +13,6 @@ set(SRC_LIST
 	LockMgr.cpp
 	LockSetChecker.cpp
 	main.cpp
-	NewThreadEvent.cpp
 	RaceDetectionTool.cpp
 	ReleaseEvent.cpp
 	SAAPRunner.cpp
