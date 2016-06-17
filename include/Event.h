@@ -268,7 +268,7 @@ public:
 			  const struct CallInfo *info) :
 					 Event(thread), _info(info) {}
 	Events getEventType() const override { return Events::CALL; }
-	const CallInfo* getCallInfo() const;
+	const CallInfo* getCallInfo() const { return _info; };
 
 private:
 	const struct CallInfo *_info;
