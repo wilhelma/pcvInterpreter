@@ -228,7 +228,7 @@ public:
 					 Event(thread), _info(info) {}
 
 	Events getEventType() const override { return Events::ACCESS; }
-	const AccessInfo *getAccessInfo() const;
+	const AccessInfo *getAccessInfo() const { return _info; };
 
 private:
 	const struct AccessInfo *_info;

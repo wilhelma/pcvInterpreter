@@ -3,7 +3,6 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 						${SAAPFramework_SOURCE_DIR}/include/tools)
 include_directories(${INCLUDE_DIRECTORIES})
 set(SRC_LIST
-	AccessInfo.cpp
 	CallEvent.cpp
 	DBInterpreter.cpp
 	dotFuncTracker.cpp
