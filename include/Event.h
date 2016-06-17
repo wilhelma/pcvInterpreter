@@ -150,7 +150,7 @@ public:
 			  const struct JoinInfo *info) :
 			  Event(thread), _info(info) {}
 	Events getEventType() const override { return Events::JOIN; }
-	const JoinInfo* getJoinInfo() const;
+	const JoinInfo* getJoinInfo() const { return _info; };
 
 private:
 	const JoinInfo *_info;
