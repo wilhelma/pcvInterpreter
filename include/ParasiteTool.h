@@ -1,16 +1,13 @@
 /*
  * ParasiteTool.h
  *
- *  Created on: Dec 12, 2015
+ *  Created on: June 17, 2016
  *      Author: knapp
  */
 
 #ifndef ParasiteTOOL_H_
 #define ParasiteTOOL_H_
 
-#define BURDENING 0
-
-#include <vector>
 #include <iostream>
 #include <array>
 #include <set>
@@ -32,46 +29,34 @@ class ParasiteTool : public Tool {
 
 public:
 	
-	thread_stack_t *main_stack;
+	// contains both function stack and thread stack 
+	main_stack_t *main_stack;
 
-	int min_capacity;
+	// contains profile information at end of tool 
+	parasite_profile_t *parasite_profile;
+
+	TIME last_strand_start_time;
+	TIME last_lock_acquire_time;
 
 	ParasiteTool();
 	~ParasiteTool();
 
-	// Events already in all Tools
 	void create(const Event* e);
 	void join(const Event* e);
 	void acquire(const Event* e);
 	void release(const Event* e);
 	void access(const Event* e);
 	void call(const Event* e);
-
-	// Events added for this tool specifically
 	void returnOfCalled(const Event* e);
 	void threadEnd(const Event* e);
-	void print();
+	void printProfile();
+	void getEndProfile();
 
-	CALLSITE getCurrentCallSite();
-	TRD_ID getCurrentThreadID();
-	FUN_SG getCurrentFunctionSignature();
-	
 private:
-
-	// keeps track of current call site
-	CALLSITE currentCallSiteID;
-
-	// keeps track of current thread ID
-	TRD_ID currentThreadID;
-
-	// keeps track of current function signature 
-	FUN_SG currentFunctionSignature;
 
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);
 	ParasiteTool& operator=(const ParasiteTool&);
 };
-
-
 
 #endif /* ParasiteTOOL_H_ */

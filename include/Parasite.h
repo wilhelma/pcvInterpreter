@@ -1,3 +1,13 @@
+/*
+ * Parasite.h
+ *
+ * Created on: June 16, 2016
+ *      Author: knapp
+ * 
+ * Includes struct declarations for parasite profile, call site profile, and hashtable
+ * Includes method declarations for hasthable operations
+ */
+
 
 #ifndef INCLUDED_CC_HASHTABLE_H
 

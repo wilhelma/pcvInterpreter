@@ -1,3 +1,10 @@
+/*
+ * ParasiteTool.h
+ *
+ *  Created on: June 16, 2016
+ *      Author: knapp
+ */
+
 struct function_frame_t {
 
 	CALLSITE call_site;
@@ -48,13 +55,13 @@ struct thread_frame_t {
   	thread_frame_t *parent_thread;
 };
 
-struct main_stack {
+struct main_stack_t {
 
   	// vector representing the stack of ALL functions
-  	std::vector<function_frame_t> function_stack;
+  	std::vector<function_frame_t*> function_stack;
 
   	// vector representing the stack of ALL threads 
-  	std::vector<thread_frame_t> thread_stack;
+  	std::vector<thread_frame_t*> thread_stack;
 
   	// running work data of all threads
   	call_site_hashtable_t *work_table;
