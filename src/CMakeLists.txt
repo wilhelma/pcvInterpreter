@@ -8,7 +8,6 @@ set(SRC_LIST
 	CallEvent.cpp
 	DBInterpreter.cpp
 	dotFuncTracker.cpp
-	Event.cpp
 	EventService.cpp
 	FunctionTrackerTool.cpp
 	Interpreter.cpp
