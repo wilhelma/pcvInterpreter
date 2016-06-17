@@ -8,7 +8,6 @@
 #ifndef SHADOWLOCK_H_
 #define SHADOWLOCK_H_
 
-#include <map>
 #include "Types.h"
 
 /******************************************************************************
@@ -18,13 +17,14 @@ class ShadowLock {
 public:
 
 	typedef unsigned int LockId;
-	ShadowLock(LockId lockId);
-	~ShadowLock();
+	ShadowLock(LockId lockId)
+		: lockId(lockId)
+	{};
 	
 	const LockId lockId;
 	TIME last_acquire_time;	
 	
-	bool operator < (const ShadowLock& other) const;
+	bool operator < (const ShadowLock& other) const { return lockId < other.lockId; };
 
 private:
 	
