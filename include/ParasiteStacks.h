@@ -71,6 +71,9 @@ struct main_stack_t {
   	// running work data of all threads
   	call_site_hashtable_t *work_table;
 
+  	int current_function_index;
+  	int current_thread_index;
+
   	main_stack_t(){};
 };
 
@@ -94,6 +97,15 @@ void init_thread_frame(thread_frame_t *frame, int head_function_index) {
   	frame->local_continuation = 0;
 	frame->prefix_span = 0; 
 	frame->longest_child_span = 0;
+}
+
+static inline 
+// push a new thread frame onto the thread stack and return reference to it 
+thread_frame_t* thread_stack_push(main_stack_t *main_stack) {
+
+	thread_frame_t* new_thread_frame = new thread_frame_t();
+	main_stack->thread_stack.push_back(new_thread_frame);
+	return new_thread_frame;
 }
 
 

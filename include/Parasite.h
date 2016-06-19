@@ -117,7 +117,7 @@ struct call_site_end_profile_t {
 // hashtable mapping call sites to their data
 typedef std::map<CALLSITE, call_site_profile_t*> call_site_hashtable_t;
 
-// hashtable mapping call sites to their data in a format that is printed
+// hashtable mapping call sites to their data in a format that is used for more statistics and is printed
 typedef std::map<CALLSITE, call_site_end_profile_t*> call_site_end_hashtable_t;
 
 call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *left, 

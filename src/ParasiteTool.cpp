@@ -110,6 +110,9 @@ void ParasiteTool::getEndProfile() {
 
 // calculates the profile information, then prints out the profile 
 void ParasiteTool::printProfile(){
+
+  // first, calculate all the end profiles before outputting them 
+  this->getEndProfile();
   
   // TODO:
   // 1. decide which format to use for printing overall parasite profile
@@ -128,12 +131,30 @@ ParasiteTool::~ParasiteTool() {
 }
 
 
+// IN PROGRESS:
+// actions for creating a thread
+// cilk spawn prepare, cilk spawn, cilk_enter_begin, 
 void ParasiteTool::create(const Event* e) {
 
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 	TRD_ID newThreadID = _info->childThread->threadId;
 	TIME create_time = _info->startTime;
+
+  double strand_length = create_time - last_strand_start_time;
+  thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
+  bottom_thread_frame->local_continuation += strand_length;
+  thread_frame_t* new_thread_frame = thread_stack_push(main_stack);
+
+  new_thread_frame->local_span = 0.0;
+  new_thread_frame->prefix_span = 0.0;
+  new_thread_frame->longest_child_span = 0.0;
+
+  new_thread_frame->thread = newThreadID;
+  new_thread_frame->head_function_index = main_stack->current_function_index + 1;
+  new_thread_frame->parent_thread = main_stack->thread_stack.at(main_stack->current_thread_index);
+
+  main_stack->current_thread_index += 1;
 }
 
 // this is a SYNC EVENT 
@@ -155,6 +176,8 @@ void ParasiteTool::call(const Event* e) {
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE calledSiteID = _info->siteId;
 	TIME callTime = _info->startTime;
+
+
 }
 
 void ParasiteTool::returnOfCalled(const Event* e) {
