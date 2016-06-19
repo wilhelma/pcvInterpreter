@@ -1,3 +1,4 @@
+#include "Parasite.h"
 
 call_site_profile_t* create_callsite_profile(CALLSITE call_site,
 						 bool is_top_function,
@@ -23,6 +24,8 @@ call_site_profile_t* create_callsite_profile(CALLSITE call_site,
   	new_profile->span = span;
   	new_profile->top_work = work;
   	new_profile->top_span = span;
+
+  	return new_profile;
 }
 
 
@@ -30,51 +33,55 @@ call_site_profile_t* create_callsite_profile(CALLSITE call_site,
 void combine_callsite_profile_entries(call_site_profile_t *profile,
                      const call_site_profile_t *profile_to_add) {
 
-  profile->local_work += profile_add->local_work;
-  profile->local_span += profile_add->local_span;
-  profile->local_count += profile_add->local_count;
-  profile->work += profile_add->work;
-  profile->span += profile_add->span;
-  profile->count += profile_add->count;
-  profile->top_work += profile_add->top_work;
-  profile->top_span += profile_add->top_span;
-  profile->top_count += profile_add->top_count;
+  profile->local_work += profile_to_add->local_work;
+  profile->local_span += profile_to_add->local_span;
+  profile->local_count += profile_to_add->local_count;
+  profile->work += profile_to_add->work;
+  profile->span += profile_to_add->span;
+  profile->count += profile_to_add->count;
+  profile->top_work += profile_to_add->top_work;
+  profile->top_span += profile_to_add->top_span;
+  profile->top_count += profile_to_add->top_count;
 }
 
 // adds right hashtable into left hashtable
 call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *hashtable, 
 												call_site_hashtable_t *hashtable_to_add) {
 
-	for (auto const &it : hashtable_to_add) {
+	for (auto const &it : *hashtable_to_add) {
 
 		CALLSITE key = it.first;
-		call_site_profile_t* profile_to_add = hashtable_to_add[key];
+		call_site_profile_t* profile_to_add = hashtable_to_add->at(key);
 
 		// if call site profile being added exists in both hashtables, combine them
-		if (hashtable.count(key)) {
+		if (hashtable->count(key)) {
 
-			call_site_profile_t* profile = hashtable[key];
+			call_site_profile_t* profile = hashtable->at(key);
 			combine_callsite_profile_entries(profile, profile_to_add);
 		}
 
 		// if not, insert added call site profile into the hashtable
-		else 
-			hashtable.insert(std::pair<CALLSITE, call_site_profile_t>(key, profile_to_add));
+		else  {
+			std::pair<CALLSITE, call_site_profile_t*> newPair;
+			newPair.first = key;
+			newPair.second = profile_to_add;
+			hashtable->insert(newPair);
+		}
 	}
 
-	return left;
+	return hashtable;
 }
 
 // add given call site profile data to the hashtable 
-bool add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
+void add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
                          bool is_top_function,
                          CALLSITE call_site,
                          double work, double span,
                          double local_work, double local_span) {
 
-	if (hashtable.count(call_site)) {
+	if (hashtable->count(call_site)) {
 
-		call_site_profile_t* profile = hashtable[call_site];
+		call_site_profile_t* profile = hashtable->at(call_site);
 
 		profile->local_count += 1;
   		profile->local_work += local_work;
@@ -93,8 +100,10 @@ bool add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
 
 	else {
 
-		call_site_profile_t* new_profile = create_callsite_profile(call_site, work, span, local_work, local_span);
-		hashtable.insert(std::pair<CALLSITE, call_site_profile_t>(key, new_profile));
+		call_site_profile_t* new_profile = create_callsite_profile(call_site, is_top_function, work, span, local_work, local_span);
+
+		std::pair<CALLSITE, call_site_profile_t*> newPair(call_site, new_profile);
+		hashtable->insert(newPair);
 	}
 }
 
@@ -103,9 +112,9 @@ bool add_to_call_site_hashtable_local(call_site_hashtable_t *hashtable,
                                CALLSITE call_site,
                                int local_work, int local_span) {
 
-	if (hashtable.count(call_site)) {
+	if (hashtable->count(call_site)) {
 
-		call_site_profile_t* profile = hashtable[call_site];
+		call_site_profile_t* profile = hashtable->at(call_site);
 
 		profile->local_count += 1;
   		profile->local_work += local_work;
@@ -114,7 +123,8 @@ bool add_to_call_site_hashtable_local(call_site_hashtable_t *hashtable,
 
 	else {
 
-		call_site_profile_t* new_profile = create_callsite_profile(call_site, work, span, local_work, local_span);
-		hashtable.insert(std::pair<CALLSITE, call_site_profile_t>(key, new_profile));
+		// THROW EXCEPTION
+
+		std::cout << "ERROR: cannot add local values to hashtable entry that already exists" << std::endl;
 	}
 }

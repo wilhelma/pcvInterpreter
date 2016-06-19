@@ -1,9 +1,11 @@
 /*
- * ParasiteTool.h
+ * ParasiteStacks.h
  *
  *  Created on: June 16, 2016
  *      Author: knapp
  */
+
+#include "Parasite.h"
 
 struct function_frame_t {
 
