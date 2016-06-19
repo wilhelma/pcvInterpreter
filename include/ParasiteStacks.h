@@ -5,6 +5,9 @@
  *      Author: knapp
  */
 
+#ifndef PARASITE_STACKS_H_
+#define PARASITE_STACKS_H_
+
 #include "Parasite.h"
 
 struct function_frame_t {
@@ -67,6 +70,8 @@ struct main_stack_t {
 
   	// running work data of all threads
   	call_site_hashtable_t *work_table;
+
+  	main_stack_t(){};
 };
 
 
@@ -92,5 +97,5 @@ void init_thread_frame(thread_frame_t *frame, int head_function_index) {
 }
 
 
-
+#endif /* PARASITE_STACKS_H_ */
 

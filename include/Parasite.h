@@ -9,7 +9,8 @@
  */
 
 
-#ifndef INCLUDED_CC_HASHTABLE_H
+#ifndef PARASITE_H_
+#define PARASITE_H_
 
 #include <map>
 #include <limits>
@@ -63,7 +64,7 @@ struct call_site_profile_t {
   	// Span associated with top-level invocations of call_site
   	double top_span;
 
-  	call_site_profile_t();
+  	call_site_profile_t(){};
 
 };
 
@@ -108,6 +109,8 @@ struct call_site_end_profile_t {
 	double parallelism_span;
 	double count_span;
 
+	call_site_end_profile_t(){};
+
 };
 
 
@@ -117,22 +120,22 @@ typedef std::map<CALLSITE, call_site_profile_t*> call_site_hashtable_t;
 // hashtable mapping call sites to their data in a format that is printed
 typedef std::map<CALLSITE, call_site_end_profile_t*> call_site_end_hashtable_t;
 
-call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t **left, 
-												call_site_hashtable_t **right);
+call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *left, 
+												call_site_hashtable_t *right);
 
 // adds work, span, local_work, and local_span tto profile for call_site
-bool add_to_callsite_hashtable(call_site_hashtable_t **table,
+void add_to_callsite_hashtable(call_site_hashtable_t **table,
                          bool is_top_function,
                          CALLSITE call_site,
                          double work, double span,
                          double local_work, double local_span);
 
 // adds local work and span to profile for call_site
-bool add_local_to_callsite_hashtable(call_site_hashtable_t **table,
+void add_local_to_callsite_hashtable(call_site_hashtable_t **table,
                                CALLSITE call_site,
                                int local_work, int local_span);
 
-#endif
+#endif /* PARASITE_H_ */
 
 
 

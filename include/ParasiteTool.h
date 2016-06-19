@@ -5,8 +5,8 @@
  *      Author: knapp
  */
 
-#ifndef ParasiteTOOL_H_
-#define ParasiteTOOL_H_
+#ifndef PARASITE_TOOL_H_
+#define PARASITE_TOOL_H_
 
 #include <iostream>
 #include <array>
@@ -60,4 +60,4 @@ private:
 	ParasiteTool& operator=(const ParasiteTool&);
 };
 
-#endif /* ParasiteTOOL_H_ */
+#endif /* PARASITE_TOOL_H_ */

@@ -28,7 +28,7 @@ void getEndCallSiteWorkProfile(call_site_profile_t* collected_profile, call_site
   end_profile->local_work_work = collected_profile->local_work;
   end_profile->local_span_work = collected_profile->local_span;
   end_profile->local_parallelism_work = end_profile->top_work_work/end_profile->top_span_work;
-  end_profile->local_count_work = collected_profile->top_count
+  end_profile->local_count_work = collected_profile->top_count;
 
 };
 
@@ -37,19 +37,19 @@ void getEndCallSiteSpanProfile(call_site_profile_t* collected_profile, call_site
  // span data excluding recursive calls
   end_profile->work_span = collected_profile->work;
   end_profile->span_span = collected_profile->span;
-  end_profile->parallelism_span = collected_profile->work_span / collected_profile->span_span;
+  end_profile->parallelism_span = end_profile->work_span / end_profile->span_span;
   end_profile->count_span = collected_profile->count;
 
   // data from top calls of call site
   end_profile->top_work_span = collected_profile->top_work;
   end_profile->top_span_span = collected_profile->top_span;
-  end_profile->top_parallelism_span = collected_profile->top_work_span / collected_profile->top_span_span;
+  end_profile->top_parallelism_span = end_profile->top_work_span / end_profile->top_span_span;
   end_profile->top_count_span = collected_profile->top_count;
 
   // local(?) span call site data
   end_profile->local_work_span = collected_profile->local_work;
   end_profile->local_span_span = collected_profile->local_span;
-  end_profile->local_parallelism_span = collected_profile->local_work_span / collected_profile->local_span_span;
+  end_profile->local_parallelism_span = end_profile->local_work_span / end_profile->local_span_span;
   end_profile->local_count_span  = collected_profile->local_count;
 
 };
@@ -81,19 +81,18 @@ void ParasiteTool::getEndProfile() {
   parasite_profile->parallelism = parasite_profile->work / parasite_profile->span;
 
   call_site_hashtable_t* final_work_table = main_stack->work_table;
-  call_site_print_info_hashtable_t* call_site_print_info_hashtable_t; 
 
   // parse the final work table in the main stack data structure 
   // iterate through all entries in the hashtable containing collected work profiles of call sites. 
   for (auto const &it : *final_work_table) {
 
     call_site_profile_t* current_call_site_profile = it.second;
-    call_site_profile_t* current_call_site_ID = it.first;
-    call_site_end_profile_t* current_call_site_end_profile;
+    CALLSITE current_call_site_ID = it.first;
+    call_site_end_profile_t* current_call_site_end_profile = new call_site_end_profile_t();
     getEndCallSiteWorkProfile(current_call_site_profile, current_call_site_end_profile);
 
     // add work information into the final profile for each call site 
-    call_site_end_profile.insert(current_call_site_ID, current_call_site_end_profile);
+    end_call_site_profile_hashtable->at(current_call_site_ID) = current_call_site_end_profile;
   }
 
   // parse the final span table in the main stack data structure 
@@ -101,8 +100,8 @@ void ParasiteTool::getEndProfile() {
   for (auto const &it : *final_span_table) {
 
     call_site_profile_t* current_call_site_profile = it.second;
-    call_site_profile_t* current_call_site_ID = it.first;
-    call_site_end_profile_t* current_call_site_end_profile = end_call_site_profile_hashtable[current_call_site_ID];
+    CALLSITE current_call_site_ID = it.first;
+    call_site_end_profile_t* current_call_site_end_profile = end_call_site_profile_hashtable->at(current_call_site_ID);
 
     // add span information into the final profile for each call site 
     getEndCallSiteSpanProfile(current_call_site_profile, current_call_site_end_profile);
@@ -120,9 +119,7 @@ void ParasiteTool::printProfile(){
 
 ParasiteTool::ParasiteTool() {
 
-  min_capacity = 8;
-  main_stack = new thread_stack_t();
-  thread_stack_init(main_stack, MAIN);
+  main_stack = new main_stack_t();
 }
 
 ParasiteTool::~ParasiteTool() {
@@ -146,7 +143,7 @@ void ParasiteTool::join(const Event* e) {
 	const JoinInfo *_info = joinEvent->getJoinInfo();
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
-  TIME join_time = _info->joinTime;
+  TIME join_time = (TIME) 0;//_info->joinTime;
 }
 
 void ParasiteTool::call(const Event* e) {

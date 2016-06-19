@@ -108,7 +108,7 @@ void add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
 }
 
 // add given call site profile data (only for local variables) to the hashtable 
-bool add_to_call_site_hashtable_local(call_site_hashtable_t *hashtable,
+void add_to_call_site_hashtable_local(call_site_hashtable_t *hashtable,
                                CALLSITE call_site,
                                int local_work, int local_span) {
 
