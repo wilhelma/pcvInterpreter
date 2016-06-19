@@ -158,6 +158,7 @@ void ParasiteTool::create(const Event* e) {
 }
 
 // this is a SYNC EVENT 
+// cilk sync begin, cilk sync begin
 void ParasiteTool::join(const Event* e) {
 
 	JoinEvent* joinEvent = (JoinEvent*) e;
@@ -165,6 +166,32 @@ void ParasiteTool::join(const Event* e) {
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
   TIME join_time = (TIME) 0;//_info->joinTime;
+
+  function_frame_t* bottom_function_frame = main_stack->function_stack.back();
+  thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
+  bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
+
+  if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
+
+    bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
+    add_call_site_hashtables(bottom_thread_frame->prefix_table, bottom_thread_frame->longest_child_table);
+    // local_span does not increase, because critical path goes through spawned child.
+  }
+
+  else {
+
+    bottom_thread_frame->prefix_span += bottom_function_frame->running_span;
+    // Critical path goes through continuation, which is local. Add
+    // local_continuation to local_span.
+    bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
+    add_call_site_hashtables(bottom_thread_frame->prefix_table, bottom_thread_frame->continuation_table);
+  }
+
+  // reset longest child and continuation span variables
+  bottom_thread_frame->longest_child_span = 0;
+  bottom_function_frame->running_span = 0;
+  bottom_thread_frame->local_continuation = 0;
+
 }
 
 void ParasiteTool::call(const Event* e) {
