@@ -146,13 +146,10 @@ void ParasiteTool::create(const Event* e) {
   bottom_thread_frame->local_continuation += strand_length;
   thread_frame_t* new_thread_frame = thread_stack_push(main_stack);
 
-  new_thread_frame->local_span = 0.0;
-  new_thread_frame->prefix_span = 0.0;
-  new_thread_frame->longest_child_span = 0.0;
-
   new_thread_frame->thread = newThreadID;
-  new_thread_frame->head_function_index = main_stack->current_function_index + 1;
   new_thread_frame->parent_thread = main_stack->thread_stack.at(main_stack->current_thread_index);
+
+  init_thread_frame(new_thread_frame, main_stack->current_function_index + 1);
 
   main_stack->current_thread_index += 1;
 }
@@ -201,13 +198,20 @@ void ParasiteTool::call(const Event* e) {
 
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
-	CALLSITE calledSiteID = _info->siteId;
+	CALLSITE callsiteID = _info->siteId;
 	TIME callTime = _info->startTime;
 
-
+  function_frame_t* new_function_frame = function_stack_push(main_stack);
+  init_function_frame(new_function_frame);
+  main_stack->current_function_index += 1;
+  new_function_frame->function_signature = calledFunctionSignature;
+  new_function_frame->call_site = callsiteID;
 }
 
 void ParasiteTool::returnOfCalled(const Event* e) {
+
+  ReturnEvent* returnEvent = (ReturnEvent*) e;
+  const ReturnInfo *_info = returnEvent->getReturnOfCallInfo();
 
 
 }

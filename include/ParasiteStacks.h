@@ -108,6 +108,15 @@ thread_frame_t* thread_stack_push(main_stack_t *main_stack) {
 	return new_thread_frame;
 }
 
+static inline 
+// push a new function frame onto the function stack and return reference to it 
+function_frame_t* function_stack_push(main_stack_t *main_stack) {
+
+	function_frame_t* new_function_frame = new function_frame_t();
+	main_stack->function_stack.push_back(new_function_frame);
+	return new_function_frame;
+}
+
 
 #endif /* PARASITE_STACKS_H_ */
 
