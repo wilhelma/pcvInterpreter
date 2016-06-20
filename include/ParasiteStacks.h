@@ -49,6 +49,9 @@ struct thread_frame_t {
 	// Local span of this thread's head function
 	double local_span;
 
+	// local lock span of this thread's head function
+	double local_lock_span;
+
 	// Span of the prefix of the thread's head function and its child functions
 	double prefix_span;
 

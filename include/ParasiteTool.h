@@ -40,6 +40,7 @@ public:
 	call_site_end_hashtable_t* end_call_site_profile_hashtable;
 
 	TIME last_strand_start_time;
+	int total_locks_running;
 
 	ParasiteTool();
 	~ParasiteTool();

@@ -11,7 +11,6 @@
 // converts call site information collected to the end profile with the needed information
 void getEndCallSiteWorkProfile(call_site_profile_t* collected_profile, call_site_end_profile_t* end_profile) {
 
-
   // work excluding recurisve calls
   end_profile->work_work = collected_profile->work;
   end_profile->span_work = collected_profile->span;
@@ -53,8 +52,6 @@ void getEndCallSiteSpanProfile(call_site_profile_t* collected_profile, call_site
   end_profile->local_count_span  = collected_profile->local_count;
 
 };
-
-
 
 // converts the information in the thread and function stacks to the parasite profile information
 void ParasiteTool::getEndProfile() {
@@ -370,10 +367,11 @@ void ParasiteTool::acquire(const Event* e) {
 
   else {
 
-    std::pair <std::string,double> product2 ("tomatoes",2.30); 
     std::pair<unsigned int, int> newPair(lockId, main_stack->current_function_index);
     lock_hashtable.insert(newPair);
   }
+
+  total_locks_running += 1;
 }
 
 // lock release event
@@ -395,7 +393,11 @@ void ParasiteTool::release(const Event* e) {
 
   int unlocked_function_index = lock_hashtable.at(lockId);
   function_frame_t* unlocked_function_frame = main_stack->function_stack.at(unlocked_function_index);
-  unlocked_function_frame->local_lock_span += lock_span;
+
+  if (total_locks_running == 1)
+    unlocked_function_frame->local_lock_span += lock_span;
+
+  total_locks_running -= 1;
 }
 
 // lock release event

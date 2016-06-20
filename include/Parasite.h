@@ -25,6 +25,7 @@ struct parasite_profile_t {
 	// TODO: add commments explaning what each of these means
 	double work;
 	double span;
+	double lock_span;
 	double parallelism;
 
 };
@@ -46,6 +47,9 @@ struct call_site_profile_t {
   	// Local span associated with call_site
   	double local_span;
 
+  	// Local lock span associated with call_site
+  	double local_lock_span;
+
   	// Number of invocations of call_site, excluding recursive instances.
   	int count;
 
@@ -58,11 +62,17 @@ struct call_site_profile_t {
   	// Span associated with call_site, excluding recursive instances
   	double span;
 
+  	// Lock span associated with call_site, excluding recursive instances
+  	double lock_span;
+
   	// Work associated with top-level invocations of call_site
   	double top_work;
 
   	// Span associated with top-level invocations of call_site
   	double top_span;
+
+  	// Lock span associated with top-level invocations of call_site
+  	double top_lock_span;
 
   	call_site_profile_t(){};
 
@@ -80,12 +90,14 @@ struct call_site_end_profile_t {
 
 	// work data from top calls of call site
 	double top_work_work;
+	double top_lock_span_work;
 	double top_span_work;
 	double top_parallelism_work;
 	double top_count_work;
 
 	// local work call site data
 	double local_work_work;
+	double local_lock_span_work;
 	double local_span_work;
 	double local_parallelism_work;
 	double local_count_work;
@@ -93,12 +105,14 @@ struct call_site_end_profile_t {
 
 	// span data from top calls of call site
 	double top_work_span;
+	double top_lock_span_span;
 	double top_span_span;
 	double top_parallelism_span;
 	double top_count_span;
 
 	// local(?) span call site data
 	double local_work_span;
+	double local_lock_span_span;
 	double local_span_span;
 	double local_parallelism_span;
 	double local_count_span;
@@ -106,6 +120,7 @@ struct call_site_end_profile_t {
 	// span data excluding recursive calls
 	double work_span;
 	double span_span;
+	double lock_span_span;
 	double parallelism_span;
 	double count_span;
 
