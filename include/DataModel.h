@@ -20,10 +20,5 @@ typedef unsigned RefNo; // unsigned
 
 
 
-/*! @brief The type of the segment */
-enum class SegmentType : bool {
-    REGION = 0,
-    LOOP   = 1
-};
 
 #endif /* DATAMODEL_H_ */

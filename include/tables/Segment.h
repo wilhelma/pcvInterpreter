@@ -13,7 +13,12 @@
 #define  SEGMENT_iNC
 
 #include "Types.h"
-#include "DataModel.h"
+
+/*! @brief The type of the segment */
+enum class SegmentType : bool {
+    REGION = 0,
+    LOOP   = 1
+};
 
 typedef struct segment_t {
     SEG_ID sql_id;
