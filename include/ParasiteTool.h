@@ -32,12 +32,14 @@ public:
 	// contains both function stack and thread stack 
 	main_stack_t *main_stack;
 
+	// keeps track of the index for each function
+	std::map<unsigned int, int> lock_hashtable;
+
 	// contains profile information at end of tool 
 	parasite_profile_t *parasite_profile;
 	call_site_end_hashtable_t* end_call_site_profile_hashtable;
 
 	TIME last_strand_start_time;
-	TIME last_lock_acquire_time;
 
 	ParasiteTool();
 	~ParasiteTool();

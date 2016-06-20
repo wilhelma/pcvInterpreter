@@ -356,9 +356,24 @@ void ParasiteTool::acquire(const Event* e) {
 	// AcquireEvent* acquireEvent = (AcquireEvent*) e;
 	// const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 	// ShadowLock *acquiredLock = _info->lock;
+	// acquiredLock->last_acquire_time = e->acquireTime;
 
-  // acquire_time = e->runtime
-	// acquiredLock->last_acquire_time = acquire_time;
+  // DUMMY LINES - will delete when AcquireEvent is implemented
+
+  // unsigned int lockId = acquiredLock->lockId;
+  unsigned int lockId = (unsigned int) 0;
+
+  if (lock_hashtable.count(lockId)) {
+
+    lock_hashtable.at(lockId) = main_stack->current_function_index;
+  }
+
+  else {
+
+    std::pair <std::string,double> product2 ("tomatoes",2.30); 
+    std::pair<unsigned int, int> newPair(lockId, main_stack->current_function_index);
+    lock_hashtable.insert(newPair);
+  }
 }
 
 // lock release event
@@ -368,12 +383,25 @@ void ParasiteTool::release(const Event* e) {
 	// const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
 	// ShadowLock *releasedLock = _info->lock;
 
+  // release_time = e->releaseTime;
+
+  // DUMMY lines used for debugging - will delete when ReleaseEvent is implemented:
+
+  // double lock_span = release_time - releasedLock->last_acquire_time;
+  double lock_span = 0.0;
+
+  // unsigned int lockId = releasedLock->lockId;
+  unsigned int lockId = (unsigned int) 0;
+
+  int unlocked_function_index = lock_hashtable.at(lockId);
+  function_frame_t* unlocked_function_frame = main_stack->function_stack.at(unlocked_function_index);
+  unlocked_function_frame->local_lock_span += lock_span;
 }
 
 // lock release event
 void ParasiteTool::access(const Event* e) {
 
-  // DOES NOTHING
+  printf("ERROR: Parasite Tool does not have any method implemented for the memory access event");
   return;
 }
 

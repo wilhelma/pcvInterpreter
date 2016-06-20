@@ -21,8 +21,14 @@ struct function_frame_t {
 	// local work of this function 
 	double local_work;
 
+	// local lock span of this function
+	double local_lock_span;
+
 	// running work of this function's call site
 	double running_work;
+
+	// running lock span of this function's call site
+	double running_lock_span;
 
 	// running span of this fucnction's call site
 	double running_span;
@@ -49,6 +55,10 @@ struct thread_frame_t {
 	// Span of the longest spawned child of this thread's head function observed so
 	// far
 	double longest_child_span;
+
+	// Lock span of the longest spawned child of this thread's head function observed so
+	// far
+	double longest_child_lock_span;
 
 	// prefix data for each call_site in this thread 
 	call_site_hashtable_t* prefix_table;
