@@ -13,7 +13,14 @@
 #define  REFERENCE_H_
 
 #include "Types.h"
-#include "DataModel.h"
+
+/*! @brief The type of the reference */
+enum class ReferenceType {
+    STACK     = 1,
+    HEAP      = (1 << 1),
+    STATICVAR = (1 << 2),
+    GLOBAL    = (1 << 3)
+};
 
 typedef struct reference_t {
     REF_ID id;

@@ -9,6 +9,7 @@
 #define SHADOWVAR_H_
 
 #include "DataModel.h"
+#include "Reference.h"
 #include "Types.h"
 
 /******************************************************************************

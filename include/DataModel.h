@@ -19,13 +19,6 @@ typedef unsigned RefNo; // unsigned
 
 
 
-/*! @brief The type of the reference */
-enum class ReferenceType {
-    STACK     = 1,
-    HEAP      = (1 << 1),
-    STATICVAR = (1 << 2),
-    GLOBAL    = (1 << 3)
-};
 
 /*! @brief The type of the segment */
 enum class SegmentType : bool {
