@@ -24,7 +24,6 @@
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ShadowLock.h"
-#include "DataModel.h"
 
 #include "Types.h"
 

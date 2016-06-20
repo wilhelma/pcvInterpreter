@@ -4,7 +4,6 @@
 #include <cstring>
 #include <map>
 #include <iostream>
-#include "DataModel.h"
 
 // to retrieve the custom typedefs
 #include "Types.h"

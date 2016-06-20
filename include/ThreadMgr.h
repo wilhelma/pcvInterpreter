@@ -8,8 +8,6 @@
 #ifndef THREADMGR_H_
 #define THREADMGR_H_
 
-#include "DataModel.h"
-
 #include <map>
 #include "ShadowThread.h"
 #include "Types.h"

@@ -8,7 +8,7 @@
 #ifndef LOCKMGR_H_
 #define LOCKMGR_H_
 
-#include "DataModel.h"
+#include "Types.h"
 #include "ShadowLock.h"
 
 #include <map>
@@ -21,12 +21,12 @@ public:
 	LockMgr() {}
 	~LockMgr() {}
 
-	ShadowLock* getLock(RefNo refNo);
-	void lockDestroyed(RefNo refNo);
+	ShadowLock* getLock(REF_ID refNo);
+	void lockDestroyed(REF_ID refNo);
 
 private:
 	static ShadowLock::LockId currentLockId_;
-	typedef std::map<RefNo, ShadowLock*> MemLockMap_;
+	typedef std::map<REF_ID, ShadowLock*> MemLockMap_;
 	
 	MemLockMap_ memLockMap_;
 
