@@ -131,9 +131,7 @@ ParasiteTool::~ParasiteTool() {
 }
 
 
-// IN PROGRESS:
 // actions for creating a thread
-// cilk spawn prepare, cilk spawn, cilk_enter_begin, 
 void ParasiteTool::create(const Event* e) {
 
 	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
@@ -154,8 +152,7 @@ void ParasiteTool::create(const Event* e) {
   main_stack->current_thread_index += 1;
 }
 
-// this is a SYNC EVENT 
-// cilk sync begin, cilk sync begin
+// actions for joining a thread
 void ParasiteTool::join(const Event* e) {
 
 	JoinEvent* joinEvent = (JoinEvent*) e;
@@ -191,6 +188,7 @@ void ParasiteTool::join(const Event* e) {
 
 }
 
+// actions for calling a function
 void ParasiteTool::call(const Event* e) {
 
 	CallEvent* callEvent = (CallEvent*) e;
@@ -208,12 +206,63 @@ void ParasiteTool::call(const Event* e) {
   new_function_frame->call_site = callsiteID;
 }
 
+// actions for returning from a function
 void ParasiteTool::returnOfCalled(const Event* e) {
 
-  ReturnEvent* returnEvent = (ReturnEvent*) e;
-  const ReturnInfo *_info = returnEvent->getReturnOfCallInfo();
+  // UNCOMMENT WHEN RETURN EVENT IMPLEMENTED
+  //ReturnEvent* returnEvent = (ReturnEvent*) e;
+  // const ReturnInfo *_info = returnEvent->getReturnOfCallInfo();
 
+  // This must be a dummy value until returnEvent object is implemented
+  TIME runTime = (TIME) 0;
+  TIME returnTime = (TIME) 0;
+  // TIME runTime = _info->runTime; // OR: = _info->returnTime - last_strand_start_time
+  // TIME returnTime = _info->returnTime;
+  last_strand_start_time = returnTime;
 
+  function_frame_t* returned_function_frame = main_stack->function_stack.back();
+  CALLSITE returning_call_site = returned_function_frame->call_site;
+  
+  double local_work = runTime;
+  returned_function_frame->local_work = local_work;
+  double running_work = returned_function_frame->running_work + local_work;
+  double running_span = returned_function_frame->running_span + local_work;
+  bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
+
+  function_frame_t *new_bottom_function_frame = main_stack->function_stack[main_stack->current_function_index - 1];
+  new_bottom_function_frame->running_work += running_work;
+  new_bottom_function_frame->running_span += running_span;
+
+  if (is_top_returning_function) {
+
+    add_to_callsite_hashtable(main_stack->work_table,
+                              is_top_returning_function,
+                              returning_call_site, 
+                              running_work, running_span,
+                              local_work, local_work);
+
+    add_to_callsite_hashtable(main_stack->thread_stack.back()->continuation_table,
+                              is_top_returning_function,
+                              returning_call_site, 
+                              running_work, running_span,
+                              local_work, local_work);
+  }
+
+  else {
+
+    add_local_to_callsite_hashtable(main_stack->work_table,
+                              returning_call_site, 
+                              local_work, local_work);
+
+    add_local_to_callsite_hashtable(main_stack->thread_stack.back()->continuation_table,
+                              returning_call_site, 
+                              local_work, local_work);
+
+  }
+
+  // pop_back() destroys the returned funciton frame, so popping function should be the last step here
+  main_stack->function_stack.pop_back();
+  main_stack->current_function_index -= 1;
 }
 
 void ParasiteTool::threadEnd(const Event* e) {

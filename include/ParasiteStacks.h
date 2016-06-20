@@ -15,7 +15,11 @@ struct function_frame_t {
 	CALLSITE call_site;
 	FUN_SG function_signature;
 
-	// local work of this function
+	// records whether function is a the first (top) function called from a call site
+	bool is_top_call_site_function;
+
+
+	// local work of this function 
 	double local_work;
 
 	// running work of this function's call site
@@ -116,6 +120,7 @@ function_frame_t* function_stack_push(main_stack_t *main_stack) {
 	main_stack->function_stack.push_back(new_function_frame);
 	return new_function_frame;
 }
+
 
 
 #endif /* PARASITE_STACKS_H_ */
