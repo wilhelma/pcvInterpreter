@@ -49,11 +49,14 @@ struct thread_frame_t {
 	// Local span of this thread's head function
 	double local_span;
 
-	// local lock span of this thread's head function
+	// Local lock span of this thread's head function
 	double local_lock_span;
 
 	// Span of the prefix of the thread's head function and its child functions
 	double prefix_span;
+
+	// Lock span of this thread
+	double lock_span;
 
 	// Span of the longest spawned child of this thread's head function observed so
 	// far
@@ -101,6 +104,8 @@ static inline
 void init_function_frame(function_frame_t *frame) {
 
 	frame->local_work = 0;
+	frame->local_lock_span = 0;
+	frame->running_lock_span = 0;
 	frame->running_work = 0;
 	frame->running_span = 0;
 }
@@ -110,9 +115,11 @@ void init_thread_frame(thread_frame_t *frame, int head_function_index) {
 
 	frame->head_function_index = head_function_index;
 	frame->local_span = 0;
+	frame->lock_span = 0;
   	frame->local_continuation = 0;
 	frame->prefix_span = 0; 
 	frame->longest_child_span = 0;
+	frame->longest_child_lock_span = 0;
 }
 
 static inline 
@@ -132,8 +139,6 @@ function_frame_t* function_stack_push(main_stack_t *main_stack) {
 	main_stack->function_stack.push_back(new_function_frame);
 	return new_function_frame;
 }
-
-
 
 #endif /* PARASITE_STACKS_H_ */
 
