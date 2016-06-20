@@ -17,7 +17,13 @@
 #include <vector>
 #include <memory>
 #include "Interpreter.h"
+
+#include "AccessEvent.h"
+#include "AcquireEvent.h"
+#include "JoinEvent.h"
+#include "NewThreadEvent.h"
 #include "Event.h"
+
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ShadowLock.h"

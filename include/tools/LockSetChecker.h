@@ -18,6 +18,9 @@
 #include <memory>
 #include "Interpreter.h"
 #include "Event.h"
+#include "AccessEvent.h"
+#include "AcquireEvent.h"
+#include "NewThreadEvent.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ShadowLock.h"
