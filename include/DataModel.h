@@ -18,15 +18,6 @@ typedef unsigned RefNo; // unsigned
 
 
 
-/*! @brief The type of the instruction */
-enum class InstructionType {
-    CALL   = 0,
-    ACCESS = 1,
-    ALLOC  = 2,
-    FREE   = 3,
-    FORK   = 4,
-    JOIN   = 5
-};
 
 /*! @brief The type of the reference */
 enum class ReferenceType {

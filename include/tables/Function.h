@@ -13,7 +13,6 @@
 #define  FUNCTION_H_
 
 #include "Types.h"
-#include "DataModel.h"
 
 /*! @brief The type of the function */
 enum class FunctionType : uint32_t  {

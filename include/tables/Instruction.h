@@ -13,7 +13,16 @@
 #define  INSTRUCTION_H_
 
 #include "Types.h"
-#include "DataModel.h"
+
+/*! @brief The type of the instruction */
+enum class InstructionType {
+    CALL   = 0,
+    ACCESS = 1,
+    ALLOC  = 2,
+    FREE   = 3,
+    FORK   = 4,
+    JOIN   = 5
+};
 
 typedef struct instruction_t {
     INS_ID instruction_id;
