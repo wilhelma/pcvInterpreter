@@ -12,6 +12,7 @@
 #ifndef  ACCESS_INFO_H_
 #define  ACCESS_INFO_H_
 
+#include "Access.h"
 #include "Event.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"

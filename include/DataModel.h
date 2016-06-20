@@ -15,19 +15,7 @@ typedef int MemAddress;
 //typedef TRD_ID ThreadId; // unsigned
 typedef unsigned RefNo; // unsigned
 
-/*! @brief The type of the access */
-enum class AccessType {
-	READ  = 1,
-	WRITE = 2
-};
 
-/*! @brief The state of the access */
-enum class AccessState {
-    INIT              = 0,
-    EXCLUSIVE         = 1,
-    READ_SHARED       = 2,
-    READ_WRITE_SHARED = 3
-};
 
 /*! @brief The type of the function */
 enum class FunctionType : uint32_t  {

@@ -12,8 +12,21 @@
 #ifndef  ACCESS_H_
 #define  ACCESS_H_
 
-#include "DataModel.h"
 #include "Types.h"
+
+/*! @brief The type of the access */
+enum class AccessType {
+	READ  = 1,
+	WRITE = 2
+};
+
+/*! @brief The state of the access */
+enum class AccessState {
+    INIT              = 0,
+    EXCLUSIVE         = 1,
+    READ_SHARED       = 2,
+    READ_WRITE_SHARED = 3
+};
 
 typedef struct access_t {
     ACC_ID sql_id;
