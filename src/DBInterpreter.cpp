@@ -132,7 +132,14 @@ int DBInterpreter::processReturn(const instruction_t& ins) {
 		CAL_ID parent_call_id = search->second.call_id;
 		while (parent_call_id != callStack_.top()) {
 			callStack_.pop();
-			// throw return event
+
+			// in this case, the call didn't happen in the
+			// parent ID scope, so the "parent" call has returned
+			auto parent_call = callT_.find(parent_call_id);
+			ReturnInfo info(parent_call_id, parent_call->second.end_time);
+			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
+			ReturnEvent event(thread, &info);
+			_eventService->publish(&event);
 		}
 	}
 

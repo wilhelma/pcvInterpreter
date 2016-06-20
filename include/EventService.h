@@ -23,6 +23,7 @@ public:
 	bool publish(JoinEvent *event);
 	bool publish(AcquireEvent *event);
 	bool publish(ReleaseEvent *event);
+	bool publish(ReturnEvent *event);
 	bool publish(AccessEvent *event);
 	bool publish(CallEvent *event);
 	bool subscribe(Tool* tool, const Filter* filter, enum Events events);
