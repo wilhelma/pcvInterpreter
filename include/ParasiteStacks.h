@@ -18,7 +18,6 @@ struct function_frame_t {
 	// records whether function is a the first (top) function called from a call site
 	bool is_top_call_site_function;
 
-
 	// local work of this function 
 	double local_work;
 

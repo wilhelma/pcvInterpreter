@@ -152,14 +152,13 @@ void ParasiteTool::create(const Event* e) {
   main_stack->current_thread_index += 1;
 }
 
-// actions for joining a thread
+// actions for joining a thread - don't need a time for this
 void ParasiteTool::join(const Event* e) {
 
 	JoinEvent* joinEvent = (JoinEvent*) e;
 	const JoinInfo *_info = joinEvent->getJoinInfo();
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
-  TIME join_time = (TIME) 0;//_info->joinTime;
 
   function_frame_t* bottom_function_frame = main_stack->function_stack.back();
   thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
@@ -235,13 +234,13 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 
   if (is_top_returning_function) {
 
-    add_to_callsite_hashtable(main_stack->work_table,
+    add_to_call_site_hashtable(main_stack->work_table,
                               is_top_returning_function,
                               returning_call_site, 
                               running_work, running_span,
                               local_work, local_work);
 
-    add_to_callsite_hashtable(main_stack->thread_stack.back()->continuation_table,
+    add_to_call_site_hashtable(main_stack->thread_stack.back()->continuation_table,
                               is_top_returning_function,
                               returning_call_site, 
                               running_work, running_span,
@@ -250,11 +249,11 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 
   else {
 
-    add_local_to_callsite_hashtable(main_stack->work_table,
+    add_local_to_call_site_hashtable(main_stack->work_table,
                               returning_call_site, 
                               local_work, local_work);
 
-    add_local_to_callsite_hashtable(main_stack->thread_stack.back()->continuation_table,
+    add_local_to_call_site_hashtable(main_stack->thread_stack.back()->continuation_table,
                               returning_call_site, 
                               local_work, local_work);
 
@@ -265,9 +264,90 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   main_stack->current_function_index -= 1;
 }
 
+// cilk leave begin
 void ParasiteTool::threadEnd(const Event* e) {
 
+  // ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
+  // const ThreadEndInfo *_info = threadEndEvent->getThreadEndInfo();
+  // TIME threadEndTime = _info->threadEndTime;
 
+  TIME threadEndTime = (TIME) 0;
+  double strand_length = threadEndTime - last_strand_start_time;
+  thread_frame_t* ending_thread_frame = main_stack->thread_stack.back();
+  thread_frame_t* parent_thread_frame = ending_thread_frame->parent_thread;
+
+  ending_thread_frame->local_continuation += strand_length;
+  function_frame_t *old_bottom_function_frame = main_stack->function_stack.back();
+  function_frame_t *new_bottom_function_frame = main_stack->function_stack[main_stack->current_function_index - 1];
+
+  ending_thread_frame->prefix_span += old_bottom_function_frame->running_span;
+  ending_thread_frame->local_span += ending_thread_frame->local_continuation;
+  old_bottom_function_frame->running_work += old_bottom_function_frame->local_work;
+  ending_thread_frame->prefix_span += ending_thread_frame->local_span;
+
+  // CHECK if operations on function frame are necessary for threadEvent
+  new_bottom_function_frame->running_work += old_bottom_function_frame->running_work;
+  bool is_top_call_site_function = old_bottom_function_frame->is_top_call_site_function;
+
+  if (is_top_call_site_function) {
+
+    add_to_call_site_hashtable(main_stack->work_table,
+                              old_bottom_function_frame->is_top_call_site_function,
+                              old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->running_work, ending_thread_frame->prefix_span,
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+
+    add_to_call_site_hashtable(main_stack->thread_stack.back()->prefix_table,
+                              old_bottom_function_frame->is_top_call_site_function,
+                              old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->running_work, ending_thread_frame->prefix_span,
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+  }
+
+  else {
+
+    add_local_to_call_site_hashtable(main_stack->work_table,
+                              old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+
+    add_local_to_call_site_hashtable(main_stack->thread_stack.back()->prefix_table,
+                              old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+
+  }
+
+  if (new_bottom_function_frame->running_span + ending_thread_frame->prefix_span > ending_thread_frame->longest_child_span) {
+
+
+      parent_thread_frame->prefix_span += new_bottom_function_frame->running_span;
+      parent_thread_frame->local_span += parent_thread_frame->local_continuation;
+
+      add_call_site_hashtables(parent_thread_frame->prefix_table, parent_thread_frame->continuation_table);
+
+
+      // Save old bottom thread frame tables in parent frame's longest child variable.
+      parent_thread_frame->longest_child_span = ending_thread_frame->prefix_span;
+      parent_thread_frame->longest_child_table->clear();
+
+      call_site_hashtable_t* temp_hashtable = parent_thread_frame->longest_child_table;
+      parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
+      ending_thread_frame->prefix_table = temp_hashtable;
+
+      ending_thread_frame->longest_child_table->clear();
+      ending_thread_frame->continuation_table->clear();
+  }
+
+  else {
+
+      ending_thread_frame->prefix_table->clear();
+      ending_thread_frame->longest_child_table->clear();
+      ending_thread_frame->continuation_table->clear();
+  }
+
+
+  // pop the thread off the stack last, because the pop operation destroys the frame
+  main_stack->thread_stack.pop_back();
+  main_stack->current_thread_index -= 1;
 }
 
 // lock acquire event 

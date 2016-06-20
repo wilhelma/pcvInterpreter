@@ -124,14 +124,14 @@ call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *left,
 												call_site_hashtable_t *right);
 
 // adds work, span, local_work, and local_span tto profile for call_site
-void add_to_callsite_hashtable(call_site_hashtable_t *table,
+void add_to_call_site_hashtable(call_site_hashtable_t *table,
                          bool is_top_function,
                          CALLSITE call_site,
                          double work, double span,
                          double local_work, double local_span);
 
 // adds local work and span to profile for call_site
-void add_local_to_callsite_hashtable(call_site_hashtable_t *table,
+void add_local_to_call_site_hashtable(call_site_hashtable_t *table,
                                CALLSITE call_site,
                                int local_work, int local_span);
 
