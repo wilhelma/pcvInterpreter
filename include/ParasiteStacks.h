@@ -126,7 +126,8 @@ static inline
 // push a new thread frame onto the thread stack and return reference to it 
 thread_frame_t* thread_stack_push(main_stack_t *main_stack) {
 
-	thread_frame_t* new_thread_frame = new thread_frame_t();
+	//thread_frame_t* new_thread_frame = new thread_frame_t();
+	std::unique_ptr<function_frame_t> new_h
 	main_stack->thread_stack.push_back(new_thread_frame);
 	return new_thread_frame;
 }
@@ -135,7 +136,8 @@ static inline
 // push a new function frame onto the function stack and return reference to it 
 function_frame_t* function_stack_push(main_stack_t *main_stack) {
 
-	function_frame_t* new_function_frame = new function_frame_t();
+	//function_frame_t* new_function_frame = new function_frame_t();
+
 	main_stack->function_stack.push_back(new_function_frame);
 	return new_function_frame;
 }
