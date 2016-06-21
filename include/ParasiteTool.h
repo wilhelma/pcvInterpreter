@@ -45,14 +45,17 @@ public:
 	void getEndProfile();
 	
 	// contains both function stack and thread stack 
-	main_stack_t *main_stack;
+	std::unique_ptr<ParasiteStack> main_stack;
 
 	// keeps track of the index for each function
 	std::map<unsigned int, int> lock_hashtable;
 
-	// contains profile information at end of tool 
-	parasite_profile_t *parasite_profile;
-	call_site_end_hashtable_t* end_call_site_profile_hashtable;
+	// contains profile information at end of tool use 
+	std::unique_ptr<parasite_profile_t> parasite_profile;
+
+	// contains profile information for each call site at end of tool use;
+
+	std::unique_ptr<call_site_end_hashtable_t> end_call_site_profile_hashtable;
 
 	TIME last_strand_start_time;
 	int total_locks_running;

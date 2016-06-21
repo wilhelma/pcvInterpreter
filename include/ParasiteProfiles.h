@@ -1,24 +1,3 @@
-/*
- * parasite.h
- *
- * Created on: June 16, 2016
- *      Author: knapp
- * 
- * Includes struct declarations for parasite profile, call site profile, call site end profile, and hashtables 
- * Includes method declarations for hasthable operations
- */
-
-
-#ifndef PARASITE_H_
-#define PARASITE_H_
-
-#include <iostream>
-#include <limits>
-#include <map>
-#include <stdbool.h>
-
-#include "Types.h"
-
 // all the information that parasite provides after exceuting its algorithm
 struct parasite_profile_t {
 
@@ -127,36 +106,3 @@ struct call_site_end_profile_t {
 	call_site_end_profile_t(){};
 
 };
-
-
-// hashtable mapping call sites to their data
-typedef std::map<CALLSITE, call_site_profile_t*> call_site_hashtable_t;
-
-// hashtable mapping call sites to their data in a format that is used for more statistics and is printed
-typedef std::map<CALLSITE, call_site_end_profile_t*> call_site_end_hashtable_t;
-
-// adds left hashtable into right hashtable
-call_site_hashtable_t* add_call_site_hashtables(const call_site_hashtable_t *left, 
-												call_site_hashtable_t *right);
-
-// adds work, span, local_work, and local_span tto profile for call_site
-void add_to_call_site_hashtable(bool is_top_function,
-                         CALLSITE call_site,
-                         double work, double span,
-                         double local_work, double local_span, 
-                         call_site_hashtable_t *table);
-
-// adds local work and span to profile for call_site
-void add_local_to_call_site_hashtable(CALLSITE call_site,
-                            		  double local_work, double local_span,
-                            		  call_site_hashtable_t *table);
-
-#endif // PARASITE_H_ 
-
-
-
-
-
-
-
-

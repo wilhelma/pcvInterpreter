@@ -5,12 +5,11 @@
  *      Author: knapp
  */
 
-#include "Parasite.h"
+#include "ParasiteProfiles.h"
 #include "ParasiteTool.h"
 
-
 // converts call site information collected to the end profile with the needed information
-void getEndCallSiteWorkProfile(call_site_profile_t* collected_profile, call_site_end_profile_t* end_profile) {
+void getEndCallSiteWorkProfile(std::unique_ptr<call_site_profile_t> collected_profile, std::unique_ptr<call_site_end_profile_t> end_profile) {
 
   // work excluding recurisve calls
   end_profile->work_work = collected_profile->work;
@@ -32,9 +31,9 @@ void getEndCallSiteWorkProfile(call_site_profile_t* collected_profile, call_site
 
 };
 
-void getEndCallSiteSpanProfile(call_site_profile_t* collected_profile, call_site_end_profile_t* end_profile) {
+void getEndCallSiteSpanProfile(std::unique_ptr<call_site_profile_t> collected_profile, std::unique_ptr<call_site_end_profile_t> end_profile) {
 
- // span data excluding recursive calls
+  // span data excluding recursive calls
   end_profile->work_span = collected_profile->work;
   end_profile->span_span = collected_profile->span;
   end_profile->parallelism_span = end_profile->work_span / end_profile->span_span;
@@ -54,11 +53,12 @@ void getEndCallSiteSpanProfile(call_site_profile_t* collected_profile, call_site
 
 };
 
+
 // converts the information in the thread and function stacks to the parasite profile information
 void ParasiteTool::getEndProfile() {
 
-  thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
-  function_frame_t* bottom_function_frame = main_stack->function_stack.back();
+  std::unique_ptr<thread_frame_t> bottom_thread_frame = main_stack->thread_stack.back();
+  std::unique_ptr<function_frame_t> bottom_function_frame = main_stack->function_stack.back();
 
   // Calculate span for entire program 
   parasite_profile->span = bottom_function_frame->running_span +
@@ -69,7 +69,7 @@ void ParasiteTool::getEndProfile() {
   add_call_site_hashtables(bottom_thread_frame->continuation_table, 
                            bottom_thread_frame->prefix_table);
 
-  call_site_hashtable_t* final_span_table = bottom_thread_frame->prefix_table;
+  std::unique_ptr<call_site_hashtable_t> final_span_table = bottom_thread_frame->prefix_table;
 
   // Calculate work for entire program
   parasite_profile->work = bottom_function_frame->running_work +
@@ -78,15 +78,15 @@ void ParasiteTool::getEndProfile() {
   // Calculate parallelism for entire program                     
   parasite_profile->parallelism = parasite_profile->work / parasite_profile->span;
 
-  call_site_hashtable_t* final_work_table = main_stack->work_table;
+  std::unique_ptr<call_site_hashtable_t> final_work_table = main_stack->work_table;
 
   // parse the final work table in the main stack data structure 
   // iterate through all entries in the hashtable containing collected work profiles of call sites. 
   for (auto const &it : *final_work_table) {
 
-    call_site_profile_t* current_call_site_profile = it.second;
+    std::unique_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
-    call_site_end_profile_t* current_call_site_end_profile = new call_site_end_profile_t();
+    std::unique_ptr<call_site_end_profile_t> current_call_site_end_profile(new call_site_end_profile_t());
     getEndCallSiteWorkProfile(current_call_site_profile, current_call_site_end_profile);
 
     // add work information into the final profile for each call site 
@@ -97,9 +97,9 @@ void ParasiteTool::getEndProfile() {
   // iterate through all entries in the hashtable containing collected span profiles of call sites. 
   for (auto const &it : *final_span_table) {
 
-    call_site_profile_t* current_call_site_profile = it.second;
+    std::unique_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
-    call_site_end_profile_t* current_call_site_end_profile = end_call_site_profile_hashtable->at(current_call_site_ID);
+    std::unique_ptr<call_site_end_profile_t> current_call_site_end_profile = end_call_site_profile_hashtable->at(current_call_site_ID);
 
     // add span information into the final profile for each call site 
     getEndCallSiteSpanProfile(current_call_site_profile, current_call_site_end_profile);
@@ -132,15 +132,15 @@ ParasiteTool::~ParasiteTool() {
 // actions for creating a thread
 void ParasiteTool::create(const Event* e) {
 
-	NewThreadEvent* newThreadEvent = (NewThreadEvent *) e;
+	std::unique_ptr<NewThreadEvent> newThreadEvent((NewThreadEvent *) e);
 	const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
 	TRD_ID newThreadID = _info->childThread->threadId;
 	TIME create_time = _info->startTime;
 
   double strand_length = create_time - last_strand_start_time;
-  thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
+  std::unique_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
   bottom_thread_frame->local_continuation += strand_length;
-  thread_frame_t* new_thread_frame = thread_stack_push(main_stack);
+  std::unique_ptr<thread_frame_t> new_thread_frame = thread_stack_push(main_stack);
 
   new_thread_frame->thread = newThreadID;
   new_thread_frame->parent_thread = main_stack->thread_stack.at(main_stack->current_thread_index);
@@ -153,13 +153,13 @@ void ParasiteTool::create(const Event* e) {
 // actions for joining a thread - don't need a time for this
 void ParasiteTool::join(const Event* e) {
 
-	JoinEvent* joinEvent = (JoinEvent*) e;
-	const JoinInfo *_info = joinEvent->getJoinInfo();
+	std::unique_ptr<JoinEvent> joinEvent((JoinEvent*) e);
+	const std::unique_ptr<JoinInfo> _info(joinEvent->getJoinInfo());
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
 
-  function_frame_t* bottom_function_frame = main_stack->function_stack.back();
-  thread_frame_t* bottom_thread_frame = main_stack->thread_stack.back();
+  std::unique_ptr<function_frame_t> bottom_function_frame(main_stack->function_stack.back());
+  std::unique_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
   bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
 
   if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
@@ -191,15 +191,15 @@ void ParasiteTool::join(const Event* e) {
 // actions for calling a function
 void ParasiteTool::call(const Event* e) {
 
-	CallEvent* callEvent = (CallEvent*) e;
-	const CallInfo *_info = callEvent->getCallInfo();
+	std::unique_ptr<CallEvent> callEvent((CallEvent*) e);
+	const std::unique_ptr<CallInfo< _info(callEvent->getCallInfo());
 
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE callsiteID = _info->siteId;
 	TIME callTime = _info->startTime;
 
-  function_frame_t* new_function_frame = function_stack_push(main_stack);
+  std::unique_ptr<function_frame_t> new_function_frame(function_stack_push(main_stack));
   init_function_frame(new_function_frame);
   main_stack->current_function_index += 1;
   new_function_frame->function_signature = calledFunctionSignature;
@@ -210,8 +210,8 @@ void ParasiteTool::call(const Event* e) {
 void ParasiteTool::returnOfCalled(const Event* e) {
 
   // UNCOMMENT WHEN RETURN EVENT IMPLEMENTED
-  // ReturnEvent* returnEvent = (ReturnEvent*) e;
-  // const ReturnInfo *_info = returnEvent->getReturnOfCallInfo();
+  // std::unique_ptr<ReturnEvent> returnEvent ((ReturnEvent*) e);
+  // const std::unique_ptr<ReturnInfo> _info(returnEvent->getReturnOfCallInfo());
 
   // This must be a dummy value until returnEvent object is implemented
   TIME runTime = (TIME) 0;
@@ -220,7 +220,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   // TIME returnTime = _info->returnTime;
   last_strand_start_time = returnTime;
 
-  function_frame_t* returned_function_frame = main_stack->function_stack.back();
+  std::unique_ptr<function_frame_t> returned_function_frame(main_stack->function_stack.back());
   CALLSITE returning_call_site = returned_function_frame->call_site;
   
   double local_work = runTime;
@@ -229,7 +229,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   double running_span = returned_function_frame->running_span + local_work;
   bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
 
-  function_frame_t *new_bottom_function_frame = main_stack->function_stack[main_stack->current_function_index - 1];
+  std::unique_ptr<function_frame_t> new_bottom_function_frame = main_stack->function_stack[main_stack->current_function_index - 1];
   new_bottom_function_frame->running_work += running_work;
   new_bottom_function_frame->running_span += running_span;
   new_bottom_function_frame->running_lock_span += returned_function_frame->running_lock_span;
@@ -268,18 +268,18 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 
 void ParasiteTool::threadEnd(const Event* e) {
 
-  // ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
-  // const ThreadEndInfo *_info = threadEndEvent->getThreadEndInfo();
+  // std::unique_ptr<ThreadEndEvent> threadEndEvent((ThreadEndEvent*) e);
+  // const std::unique_ptr<ThreadEndInfo> _info(threadEndEvent->getThreadEndInfo());
   // TIME threadEndTime = _info->threadEndTime;
 
   TIME threadEndTime = (TIME) 0;
   double strand_length = threadEndTime - last_strand_start_time;
-  thread_frame_t* ending_thread_frame = main_stack->thread_stack.back();
-  thread_frame_t* parent_thread_frame = ending_thread_frame->parent_thread;
+  std::unique_ptr<thread_frame_t> ending_thread_frame(main_stack->thread_stack.back());
+  std::unique_ptr<thread_frame_t> parent_thread_frame(ending_thread_frame->parent_thread);
 
   ending_thread_frame->local_continuation += strand_length;
-  function_frame_t *old_bottom_function_frame = main_stack->function_stack.back();
-  function_frame_t *new_bottom_function_frame = main_stack->function_stack[main_stack->current_function_index - 1];
+  std::unique_ptr<function_frame_t> old_bottom_function_frame(main_stack->function_stack.back());
+  std::unique_ptr<function_frame_t> new_bottom_function_frame(main_stack->function_stack[main_stack->current_function_index - 1]);
 
   ending_thread_frame->prefix_span += old_bottom_function_frame->running_span;
   ending_thread_frame->local_span += ending_thread_frame->local_continuation;
@@ -330,7 +330,7 @@ void ParasiteTool::threadEnd(const Event* e) {
       parent_thread_frame->longest_child_span = ending_thread_frame->prefix_span;
       parent_thread_frame->longest_child_table->clear();
 
-      call_site_hashtable_t* temp_hashtable = parent_thread_frame->longest_child_table;
+      std::unique_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame->longest_child_table);
       parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
       ending_thread_frame->prefix_table = temp_hashtable;
 
@@ -354,7 +354,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 // lock acquire event 
 void ParasiteTool::acquire(const Event* e) {
 
-	// AcquireEvent* acquireEvent = (AcquireEvent*) e;
+	// std::unique_ptr<AcquireEvent> acquireEvent((AcquireEvent*) e);
 	// const AcquireInfo *_info = acquireEvent->getAcquireInfo();
 	// ShadowLock *acquiredLock = _info->lock;
 	// acquiredLock->last_acquire_time = e->acquireTime;
@@ -381,9 +381,9 @@ void ParasiteTool::acquire(const Event* e) {
 // lock release event
 void ParasiteTool::release(const Event* e) {
 
-	// ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
-	// const ReleaseInfo *_info = releaseEvent->getReleaseInfo();
-	// ShadowLock *releasedLock = _info->lock;
+	// std::unique_ptr<ReleaseEvent> releaseEvent((ReleaseEvent*) e);
+	// const std::unique_ptr<ReleaseInfo> _info(releaseEvent->getReleaseInfo());
+	// std::unique_ptr<ShadowLock> releasedLock(_info->lock);
 
   // release_time = e->releaseTime;
 
@@ -396,7 +396,7 @@ void ParasiteTool::release(const Event* e) {
   unsigned int lockId = (unsigned int) 0;
 
   int unlocked_function_index = lock_hashtable.at(lockId);
-  function_frame_t* unlocked_function_frame = main_stack->function_stack.at(unlocked_function_index);
+  std::unique_ptr<function_frame_t> unlocked_function_frame(main_stack->function_stack.at(unlocked_function_index));
 
   if (total_locks_running == 1)
     unlocked_function_frame->local_lock_span += lock_span;

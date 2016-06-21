@@ -86,9 +86,9 @@ class ParasiteStack {
 
 		void init_function_frame(int function_index);
 		void init_thread_frame(int thread_index, int head_function_index);
-		void thread_stack_push();
 		void function_stack_push();
-
+		void thread_stack_push();
+		
 		// vector representing the stack of ALL functions
   		std::vector< std::unique_ptr<function_frame_t> > function_stack;
 
@@ -100,6 +100,12 @@ class ParasiteStack {
 
   		int current_function_index;
   		int current_thread_index;
+
+  	private:
+
+  		ParasiteStack(const ParasiteStack&);
+		ParasiteStack& operator=(const ParasiteStack&);
+}
 
 
 #endif // PARASITE_H_ 
