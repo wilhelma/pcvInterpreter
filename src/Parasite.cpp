@@ -30,8 +30,8 @@ call_site_profile_t* create_callsite_profile(CALLSITE call_site,
 
 
 // add entries in profile_to_add to entries in profile
-void combine_callsite_profile_entries(call_site_profile_t *profile,
-                     const call_site_profile_t *profile_to_add) {
+void combine_callsite_profile_entries(const call_site_profile_t *profile_to_add,
+									  call_site_profile_t *profile) {
 
   profile->local_work += profile_to_add->local_work;
   profile->local_span += profile_to_add->local_span;
@@ -45,8 +45,8 @@ void combine_callsite_profile_entries(call_site_profile_t *profile,
 }
 
 // adds right hashtable into left hashtable
-call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *hashtable, 
-												call_site_hashtable_t *hashtable_to_add) {
+call_site_hashtable_t* add_call_site_hashtables(const call_site_hashtable_t *hashtable_to_add,
+												call_site_hashtable_t *hashtable) {
 
 	for (auto const &it : *hashtable_to_add) {
 
@@ -73,11 +73,11 @@ call_site_hashtable_t* add_call_site_hashtables(call_site_hashtable_t *hashtable
 }
 
 // add given call site profile data to the hashtable 
-void add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
-                         bool is_top_function,
+void add_to_call_site_hashtable(bool is_top_function,
                          CALLSITE call_site,
                          double work, double span,
-                         double local_work, double local_span) {
+                         double local_work, double local_span, 
+                         call_site_hashtable_t *hashtable) {
 
 	if (hashtable->count(call_site)) {
 
@@ -108,9 +108,9 @@ void add_to_call_site_hashtable(call_site_hashtable_t *hashtable,
 }
 
 // add given call site profile data (only for local variables) to the hashtable 
-void add_local_to_call_site_hashtable(call_site_hashtable_t *hashtable,
-                               CALLSITE call_site,
-                               int local_work, int local_span) {
+void add_local_to_call_site_hashtable(CALLSITE call_site,
+                            		  double local_work, double local_span,
+                            		  call_site_hashtable_t *hashtable) {
 
 	if (hashtable->count(call_site)) {
 

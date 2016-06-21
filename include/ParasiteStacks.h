@@ -140,5 +140,5 @@ function_frame_t* function_stack_push(main_stack_t *main_stack) {
 	return new_function_frame;
 }
 
-#endif /* PARASITE_STACKS_H_ */
+#endif // PARASITE_STACKS_H_
 

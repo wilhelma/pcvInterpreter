@@ -8,39 +8,27 @@
 #ifndef PARASITE_TOOL_H_
 #define PARASITE_TOOL_H_
 
-#include <iostream>
 #include <array>
-#include <set>
+#include <iostream>
 #include <map>
-#include <vector>
 #include <memory>
+#include <set>
+#include <vector>
 
-#include "Interpreter.h"
-#include "Event.h"
-#include "ShadowThread.h"
-#include "ShadowVar.h"
-#include "ShadowLock.h"
-#include "Tool.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
+#include "Event.h"
+#include "Interpreter.h"
 #include "ParasiteStacks.h"
+#include "ShadowLock.h"
+#include "ShadowThread.h"
+#include "ShadowVar.h"
+#include "Tool.h"
+
  
 class ParasiteTool : public Tool {
 
 public:
-	
-	// contains both function stack and thread stack 
-	main_stack_t *main_stack;
-
-	// keeps track of the index for each function
-	std::map<unsigned int, int> lock_hashtable;
-
-	// contains profile information at end of tool 
-	parasite_profile_t *parasite_profile;
-	call_site_end_hashtable_t* end_call_site_profile_hashtable;
-
-	TIME last_strand_start_time;
-	int total_locks_running;
 
 	ParasiteTool();
 	~ParasiteTool();
@@ -55,6 +43,19 @@ public:
 	void threadEnd(const Event* e);
 	void printProfile();
 	void getEndProfile();
+	
+	// contains both function stack and thread stack 
+	main_stack_t *main_stack;
+
+	// keeps track of the index for each function
+	std::map<unsigned int, int> lock_hashtable;
+
+	// contains profile information at end of tool 
+	parasite_profile_t *parasite_profile;
+	call_site_end_hashtable_t* end_call_site_profile_hashtable;
+
+	TIME last_strand_start_time;
+	int total_locks_running;
 
 private:
 
@@ -63,4 +64,4 @@ private:
 	ParasiteTool& operator=(const ParasiteTool&);
 };
 
-#endif /* PARASITE_TOOL_H_ */
+#endif // PARASITE_TOOL_H_ 

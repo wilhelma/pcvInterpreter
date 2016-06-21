@@ -5,8 +5,9 @@
  *      Author: knapp
  */
 
-#include "ParasiteTool.h"
 #include "Parasite.h"
+#include "ParasiteTool.h"
+
 
 // converts call site information collected to the end profile with the needed information
 void getEndCallSiteWorkProfile(call_site_profile_t* collected_profile, call_site_end_profile_t* end_profile) {
@@ -65,8 +66,8 @@ void ParasiteTool::getEndProfile() {
                 bottom_thread_frame->local_span +
                 bottom_thread_frame->local_continuation;
 
-  add_call_site_hashtables(bottom_thread_frame->prefix_table, 
-                           bottom_thread_frame->continuation_table);
+  add_call_site_hashtables(bottom_thread_frame->continuation_table, 
+                           bottom_thread_frame->prefix_table);
 
   call_site_hashtable_t* final_span_table = bottom_thread_frame->prefix_table;
 
@@ -166,7 +167,7 @@ void ParasiteTool::join(const Event* e) {
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
     bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
     bottom_thread_frame->prefix_span -= bottom_thread_frame->longest_child_lock_span;
-    add_call_site_hashtables(bottom_thread_frame->prefix_table, bottom_thread_frame->longest_child_table);
+    add_call_site_hashtables(bottom_thread_frame->longest_child_table, bottom_thread_frame->prefix_table);
     // local_span does not increase, because critical path goes through spawned child.
   }
 
@@ -176,7 +177,7 @@ void ParasiteTool::join(const Event* e) {
     // Critical path goes through continuation, which is local. Add
     // local_continuation to local_span.
     bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
-    add_call_site_hashtables(bottom_thread_frame->prefix_table, bottom_thread_frame->continuation_table);
+    add_call_site_hashtables(bottom_thread_frame->continuation_table, bottom_thread_frame->prefix_table);
   }
 
   // reset longest child and continuation span variables
@@ -209,7 +210,7 @@ void ParasiteTool::call(const Event* e) {
 void ParasiteTool::returnOfCalled(const Event* e) {
 
   // UNCOMMENT WHEN RETURN EVENT IMPLEMENTED
-  //ReturnEvent* returnEvent = (ReturnEvent*) e;
+  // ReturnEvent* returnEvent = (ReturnEvent*) e;
   // const ReturnInfo *_info = returnEvent->getReturnOfCallInfo();
 
   // This must be a dummy value until returnEvent object is implemented
@@ -235,28 +236,28 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 
   if (is_top_returning_function) {
 
-    add_to_call_site_hashtable(main_stack->work_table,
-                              is_top_returning_function,
+    add_to_call_site_hashtable(is_top_returning_function,
                               returning_call_site, 
                               running_work, running_span,
-                              local_work, local_work);
+                              local_work, local_work,
+                              main_stack->work_table);
 
-    add_to_call_site_hashtable(main_stack->thread_stack.back()->continuation_table,
-                              is_top_returning_function,
+    add_to_call_site_hashtable(is_top_returning_function,
                               returning_call_site, 
                               running_work, running_span,
-                              local_work, local_work);
+                              local_work, local_work,
+                              main_stack->thread_stack.back()->continuation_table);
   }
 
   else {
 
-    add_local_to_call_site_hashtable(main_stack->work_table,
-                              returning_call_site, 
-                              local_work, local_work);
+    add_local_to_call_site_hashtable(returning_call_site, 
+                              local_work, local_work,
+                              main_stack->work_table);
 
-    add_local_to_call_site_hashtable(main_stack->thread_stack.back()->continuation_table,
-                              returning_call_site, 
-                              local_work, local_work);
+    add_local_to_call_site_hashtable(returning_call_site, 
+                              local_work, local_work,
+                              main_stack->thread_stack.back()->continuation_table);
 
   }
 
@@ -291,28 +292,28 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   if (is_top_call_site_function) {
 
-    add_to_call_site_hashtable(main_stack->work_table,
-                              old_bottom_function_frame->is_top_call_site_function,
+    add_to_call_site_hashtable(old_bottom_function_frame->is_top_call_site_function,
                               old_bottom_function_frame->call_site, 
                               old_bottom_function_frame->running_work, ending_thread_frame->prefix_span,
-                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span,
+                              main_stack->work_table);
 
-    add_to_call_site_hashtable(main_stack->thread_stack.back()->prefix_table,
-                              old_bottom_function_frame->is_top_call_site_function,
+    add_to_call_site_hashtable(old_bottom_function_frame->is_top_call_site_function,
                               old_bottom_function_frame->call_site, 
                               old_bottom_function_frame->running_work, ending_thread_frame->prefix_span,
-                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span,
+                              main_stack->thread_stack.back()->prefix_table);
   }
 
   else {
 
-    add_local_to_call_site_hashtable(main_stack->work_table,
-                              old_bottom_function_frame->call_site, 
-                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+    add_local_to_call_site_hashtable(old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span,
+                              main_stack->work_table);
 
-    add_local_to_call_site_hashtable(main_stack->thread_stack.back()->prefix_table,
-                              old_bottom_function_frame->call_site, 
-                              old_bottom_function_frame->local_work, ending_thread_frame->local_span);
+    add_local_to_call_site_hashtable(old_bottom_function_frame->call_site, 
+                              old_bottom_function_frame->local_work, ending_thread_frame->local_span,
+                              main_stack->thread_stack.back()->prefix_table);
 
   }
 
@@ -322,7 +323,7 @@ void ParasiteTool::threadEnd(const Event* e) {
       parent_thread_frame->prefix_span += new_bottom_function_frame->running_span;
       parent_thread_frame->local_span += parent_thread_frame->local_continuation;
 
-      add_call_site_hashtables(parent_thread_frame->prefix_table, parent_thread_frame->continuation_table);
+      add_call_site_hashtables(parent_thread_frame->continuation_table, parent_thread_frame->prefix_table);
 
 
       // Save old bottom thread frame tables in parent frame's longest child variable.
