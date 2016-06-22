@@ -55,6 +55,17 @@ bool EventService::publish(ReleaseEvent *event) {
 	return true;
 }
 
+bool EventService::publish(ReturnEvent *event) {
+	_observers_t::iterator it;
+	for (it = _observers.begin(); it != _observers.end(); ++it) {
+    if ( (it->second.events | Events::RETURN) != 0 ) {
+			it->first->release(event);
+		}
+	}
+
+	return true;
+}
+
 bool EventService::publish(AccessEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {

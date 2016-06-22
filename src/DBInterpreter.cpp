@@ -88,83 +88,137 @@ int DBInterpreter::process() {
     return 0;
 }
 
-int DBInterpreter::processInstruction(const instruction_t& ins) {
 
+const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
+	auto search = segmentT_.find(ins.segment_id);
+	if (search == segmentT_.end()) {
+		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
+			<< " not found in segmentT_ table";
+		return static_cast<CAL_ID>(IN_NO_ENTRY);
+	}
+	return search->second.call_id;
+}
+
+const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
+	// look for the call id of the instruction
+	CAL_ID call_id = static_cast<CAL_ID>(0);
+	bool found = false;
+	for (auto& it : callT_) {
+		// if there's a call whose instruction id is the same as
+		// ins.instruction_id, get its id
+		if (it.second.instruction_id == ins.instruction_id) {
+			call_id = it.second.sql_id;
+			found = true;
+			break;
+		}
+	}
+
+	// if the iterator reached the end, no entry has been found in callT_ 
+	if (!found) {
+		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
+			<< ins.instruction_id;
+		return static_cast<CAL_ID>(IN_NO_ENTRY);
+	}
+	
+	return call_id;
+}
+
+int DBInterpreter::processReturn(const instruction_t& ins) {
+	auto search = segmentT_.find(ins.segment_id);
+	if (search == segmentT_.end()) {
+		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
+		return IN_NO_ENTRY;
+	}
+
+	if (!callStack_.isEmpty()) {
+		CAL_ID parent_call_id = search->second.call_id;
+		while (parent_call_id != callStack_.top()) {
+			callStack_.pop();
+
+			// in this case, the call didn't happen in the
+			// parent ID scope, so the "parent" call has returned
+			auto parent_call = callT_.find(parent_call_id);
+			ReturnInfo info(parent_call_id, parent_call->second.end_time);
+			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
+			ReturnEvent event(thread, &info);
+			_eventService->publish(&event);
+		}
+	}
+
+	callStack_.push(getCallID(ins));
+	return IN_OK;
+}
+
+int DBInterpreter::processInstruction(const instruction_t& ins) {
     processAccess_t accessFunc = nullptr;
     segment_t* segment         = nullptr;
     call_t* call               = nullptr;
 
-    if ( segmentT_.get(ins.segment_id, &segment) == IN_OK) {  
-        switch( ins.instruction_type ) {
-        case InstructionType::CALL:
-                processSegment(ins.segment_id, *segment, ins);
-            break;
-        case InstructionType::ACCESS:
-            if ( callT_.get(segment->call_id, &call) == IN_OK) {
-                accessFunc = &DBInterpreter::processMemAccess;
-            }   
-            break;
-        case InstructionType::ALLOC:
-            if ( callT_.get(segment->call_id, &call) == IN_OK) {
-                accessFunc = &DBInterpreter::processAcqAccess;
-            }
-            break;
-        case InstructionType::FREE:
-            if ( callT_.get(segment->call_id, &call) == IN_OK) {
-                accessFunc = &DBInterpreter::processRelAccess;
-            }
-            break;
-        case InstructionType::FORK:
-            {
-                for (auto it : threadT_) {
-                  thread_t& thread = it.second;
-                  if (ins.instruction_id == thread.create_instruction_id) {
-                    if (callT_.get(segment->call_id, &call) == IN_OK) {
-                      processFork(ins, *segment, *call, thread);
-                    }
-                  }
-                }
-                break;
-            }
-        case InstructionType::JOIN:
-            {
-                for (auto it : threadT_) {
-                  thread_t& thread = it.second;
-                  if (ins.instruction_id == thread.join_instruction_id) {
-                    if (callT_.get(segment->call_id, &call) == IN_OK) {
-                      processJoin(ins, *segment, *call, thread);
-                    }
-                  }
-                }
-                break;
-            }
-        default:
-            return IN_NO_ENTRY;
-        }   
-    }            
+	// search for `ins.segment_id` in the `segmentT_` table and put
+	// its pointer into `segment`
+	if (segmentT_.get(ins.segment_id, &segment) == IN_OK) {  
+		// if the segment is found, check the instruction type
+		switch (ins.instruction_type) {
+			case InstructionType::CALL:
+				// XXX this doesn't change `accessFunc`
+				processSegment(ins.segment_id, *segment, ins);
+				processReturn(ins);
+				break;
+			case InstructionType::ACCESS:
+				if (callT_.get(segment->call_id, &call) == IN_OK)
+					accessFunc = &DBInterpreter::processMemAccess;
+				break;
+			case InstructionType::ALLOC:
+				if ( callT_.get(segment->call_id, &call) == IN_OK)
+					accessFunc = &DBInterpreter::processAcqAccess;
+				break;
+			case InstructionType::FREE:
+				if ( callT_.get(segment->call_id, &call) == IN_OK)
+					accessFunc = &DBInterpreter::processRelAccess;
+				break;
+			case InstructionType::FORK:
+				for (auto it : threadT_) {
+					thread_t& thread = it.second;
+					if (ins.instruction_id == thread.create_instruction_id)
+						if (callT_.get(segment->call_id, &call) == IN_OK)
+							processFork(ins, *segment, *call, thread);
+				}
+				break;
+			case InstructionType::JOIN:
+				for (auto it : threadT_) {
+					thread_t& thread = it.second;
+					if (ins.instruction_id == thread.join_instruction_id)
+						if (callT_.get(segment->call_id, &call) == IN_OK)
+							processJoin(ins, *segment, *call, thread);
+				}
+				break;
+			default:
+				return IN_NO_ENTRY;
+		}   
+	}            
 
-    if (accessFunc != nullptr) {
-        auto search = _insAccessMap.find(ins.instruction_id);
-        accessVector_t::iterator it;
-        for (it = search->second.begin(); it != search->second.end(); it++) {
+	if (accessFunc != nullptr) {
+		auto search = _insAccessMap.find(ins.instruction_id);
+		accessVector_t::iterator it;
+		for (it = search->second.begin(); it != search->second.end(); it++) {
 
-            auto searchAccess = accessT_.find(*it);
-            if (searchAccess != accessT_.end()) {
+			auto searchAccess = accessT_.find(*it);
+			if (searchAccess != accessT_.end()) {
 
-                processAccessGeneric((ACC_ID) search->first,
-                                     searchAccess->second,
-                                     ins,
-                                     *segment,
-                                     *call,
-                                     accessFunc);
-            } else {
-                BOOST_LOG_TRIVIAL(error) << "Access not found: " << *it;
-                return IN_NO_ENTRY;
-            }
-        }
-    }
+				processAccessGeneric((ACC_ID) search->first,
+						searchAccess->second,
+						ins,
+						*segment,
+						*call,
+						accessFunc);
+			} else {
+				BOOST_LOG_TRIVIAL(error) << "Access not found: " << *it;
+				return IN_NO_ENTRY;
+			}
+		}
+	}
 
-    return IN_OK;
+	return IN_OK;
 }
 
 int DBInterpreter::processSegment(SEG_ID segmentId,
