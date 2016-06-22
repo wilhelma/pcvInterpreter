@@ -8,6 +8,8 @@
 #ifndef PARASITE_STACK_H_
 #define PARASITE_STACK_H_
 
+#include "Types.h"
+
 struct function_frame_t {
 
 	CALLSITE call_site;
@@ -105,7 +107,7 @@ class ParasiteStack {
 
   		ParasiteStack(const ParasiteStack&);
 		ParasiteStack& operator=(const ParasiteStack&);
-}
+};
 
 
-#endif // PARASITE_H_ 
+#endif // PARASITE_STACK_H_ 

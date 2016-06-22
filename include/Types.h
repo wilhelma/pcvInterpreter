@@ -40,10 +40,6 @@ BOOST_STRONG_TYPEDEF( unsigned, POS )
 BOOST_STRONG_TYPEDEF( clock_t, TIME )
 BOOST_STRONG_TYPEDEF( size_t, CALLSITE )
 
-// Hashtable Types
-typedef std::map<CALLSITE, std::unique_ptr<call_site_profile_t> > call_site_hashtable_t;
-typedef std::map<CALLSITE, std::unique_ptr<call_site_end_profile_t> > call_site_end_hashtable_t;
-
 // File Types
 typedef std::string FIL_PT;
 

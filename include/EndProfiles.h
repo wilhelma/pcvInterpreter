@@ -1,3 +1,6 @@
+#ifndef END_PROFILES_H_
+#define END_PROFILES_H_
+
 // all the information that parasite provides after exceuting its algorithm
 struct parasite_profile_t {
 
@@ -7,54 +10,7 @@ struct parasite_profile_t {
 	double lock_span;
 	double parallelism;
 
-};
-
-struct call_site_profile_t {
-
-	// call site ID 
-	CALLSITE call_site;
-
-	// true is function is recursive, false otherwise
-	bool isRecursive;
-
-	// Total number of invocations of call_site
-	int local_count;
-
-	// Local work associated with call_site
-  	double local_work;
-
-  	// Local span associated with call_site
-  	double local_span;
-
-  	// Local lock span associated with call_site
-  	double local_lock_span;
-
-  	// Number of invocations of call_site, excluding recursive instances.
-  	int count;
-
-  	// Number of top-level invocations of call_site.
-  	int top_count;
-
-  	// Work associated with call_site, excluding recursive instances
-  	double work;
-
-  	// Span associated with call_site, excluding recursive instances
-  	double span;
-
-  	// Lock span associated with call_site, excluding recursive instances
-  	double lock_span;
-
-  	// Work associated with top-level invocations of call_site
-  	double top_work;
-
-  	// Span associated with top-level invocations of call_site
-  	double top_span;
-
-  	// Lock span associated with top-level invocations of call_site
-  	double top_lock_span;
-
-  	call_site_profile_t(){};
-
+	parasite_profile_t(){};
 };
 
 struct call_site_end_profile_t {
@@ -104,5 +60,8 @@ struct call_site_end_profile_t {
 	double count_span;
 
 	call_site_end_profile_t(){};
-
 };
+
+typedef std::map<CALLSITE, std::unique_ptr<call_site_profile_t> > call_site_end_hashtable_t;
+
+#endif // END_PROFILES_H_

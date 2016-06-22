@@ -15,17 +15,18 @@
 #include <set>
 #include <vector>
 
+#include "CallSiteProfile.h"
 #include "DataModel.h"
 #include "DBDataModel.h"
+#include "EndProfiles.h"
 #include "Event.h"
 #include "Interpreter.h"
-#include "ParasiteStacks.h"
+#include "ParasiteStack.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "Tool.h"
 
- 
 class ParasiteTool : public Tool {
 
 public:

@@ -4,6 +4,8 @@ set(SRC_LIST
 	AccessInfo.cpp
 	AcquireEvent.cpp
 	CallEvent.cpp
+	CallSiteHashtable.cpp
+	CallSiteProfile.cpp
 	DBInterpreter.cpp
 	dotFuncTracker.cpp
 	Event.cpp
@@ -15,7 +17,7 @@ set(SRC_LIST
 	LockSetChecker.cpp
 	main.cpp
 	NewThreadEvent.cpp
-	Parasite.cpp
+	ParasiteStack.cpp
 	ParasiteTool.cpp
 	RaceDetectionTool.cpp
 	ReleaseEvent.cpp

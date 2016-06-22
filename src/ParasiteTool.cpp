@@ -5,7 +5,6 @@
  *      Author: knapp
  */
 
-#include "ParasiteProfiles.h"
 #include "ParasiteTool.h"
 
 // converts call site information collected to the end profile with the needed information
@@ -210,14 +209,11 @@ void ParasiteTool::call(const Event* e) {
 void ParasiteTool::returnOfCalled(const Event* e) {
 
   // UNCOMMENT WHEN RETURN EVENT IMPLEMENTED
-  // std::unique_ptr<ReturnEvent> returnEvent ((ReturnEvent*) e);
-  // const std::unique_ptr<ReturnInfo> _info(returnEvent->getReturnOfCallInfo());
+  std::unique_ptr<ReturnEvent> returnEvent ((ReturnEvent*) e);
+  const std::unique_ptr<ReturnInfo> _info(returnEvent->getReturnInfo());
 
-  // This must be a dummy value until returnEvent object is implemented
-  TIME runTime = (TIME) 0;
-  TIME returnTime = (TIME) 0;
-  // TIME runTime = _info->runTime; // OR: = _info->returnTime - last_strand_start_time
-  // TIME returnTime = _info->returnTime;
+  TIME runTime = _info->runTime; // OR: = _info->returnTime - last_strand_start_time
+  TIME returnTime = _info->returnTime;
   last_strand_start_time = returnTime;
 
   std::unique_ptr<function_frame_t> returned_function_frame(main_stack->function_stack.back());

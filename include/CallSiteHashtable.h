@@ -9,8 +9,8 @@
  */
 
 
-#ifndef PARASITE_H_
-#define PARASITE_H_
+#ifndef CALL_SITE_HASHTABLE_H_
+#define CALL_SITE_HASHTABLE_H_
 
 #include <iostream>
 #include <limits>
@@ -18,7 +18,7 @@
 #include <stdbool.h>
 
 #include "Types.h"
-#include "ParasiteProfile.h"
+#include "CallSiteProfile.h"
 
 class CallSiteHashtable {
 
@@ -37,16 +37,14 @@ class CallSiteHashtable {
 		void add_local_data_to_hashtable(CALLSITE call_site,
 		                                 double local_work, double local_span);
 
-		call_site_hashtable_t hashtable;
+		std::map<CALLSITE, call_site_profile_t*> hashtable;
 
   	private:
 
   		CallSiteHashtable(const CallSiteHashtable&);
 		CallSiteHashtable& operator=(const CallSiteHashtable&);
+};
 
-
-}
-
-#endif // PARASITE_H_ 
+#endif // CALL_SITE_HASHTABLE_H_
 
 
