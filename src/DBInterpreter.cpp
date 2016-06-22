@@ -248,7 +248,6 @@ int DBInterpreter::processCall(CAL_ID callId,
                                const segment_t& seg,
                                const instruction_t& ins) {
 
-<<<<<<< HEAD
     // fetch called function 
   auto search = functionT_.find(call.function_id);
   if (search != functionT_.end()) {
