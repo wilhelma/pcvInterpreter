@@ -52,6 +52,8 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
 
 };
 
+ParasiteTool::ParasiteTool() {}
+
 
 // converts the information in the thread and function stacks to the parasite profile information
 void ParasiteTool::getEndProfile() {
@@ -200,7 +202,7 @@ void ParasiteTool::call(const Event* e) {
 
   main_stack->function_stack_push();
   std::shared_ptr<function_frame_t> new_function_frame = main_stack->function_stack.at(main_stack->current_function_index);
-  main_stack->init_function_frame(current_function_index);
+  main_stack->init_function_frame(main_stack->current_function_index);
   main_stack->current_function_index += 1;
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
@@ -213,14 +215,13 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   std::shared_ptr<ReturnEvent> returnEvent(returnEvnt);
   const ReturnInfo* _info(returnEvent->getReturnInfo());
 
-  TIME runTime = _info->runTime; // OR: = _info->returnTime - last_strand_start_time
-  TIME returnTime = _info->returnTime;
+  TIME returnTime = _info->endTime;
+  double local_work = returnTime - last_strand_start_time;
   last_strand_start_time = returnTime;
 
   std::shared_ptr<function_frame_t> returned_function_frame(main_stack->function_stack.back());
   CALLSITE returning_call_site = returned_function_frame->call_site;
   
-  double local_work = runTime;
   returned_function_frame->local_work = local_work;
   double running_work = returned_function_frame->running_work + local_work;
   double running_span = returned_function_frame->running_span + local_work;

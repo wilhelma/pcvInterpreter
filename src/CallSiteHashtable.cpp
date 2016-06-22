@@ -1,5 +1,8 @@
 #include "CallSiteHashtable.h"
 
+
+CallSiteHashtable::~CallSiteHashtable(){}
+
 CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable) {
 
 	hashtable = hshtable;

@@ -1,6 +1,9 @@
 #include "CallSiteProfile.h"
 
 
+CallSiteProfile::~CallSiteProfile() {}
+
+
 CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_profile_t> init_profile) {
 
   prof = init_profile;

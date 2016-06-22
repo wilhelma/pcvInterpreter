@@ -1,5 +1,7 @@
 #include "ParasiteStack.h"
 
+ParasiteStack::~ParasiteStack() {}
+
 void ParasiteStack::init_function_frame(int function_index) {
 
 	function_stack.at(function_index)->local_work = 0;
