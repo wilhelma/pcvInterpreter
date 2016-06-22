@@ -49,21 +49,19 @@ struct call_site_profile_t {
     double top_lock_span;
 };
 
-typedef std::map<CALLSITE, call_site_profile_t*> call_site_hashtable_t;
-
 class CallSiteProfile {
 
 	public:
 
-		CallSiteProfile(call_site_profile_t* profile);
+		CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
 		~CallSiteProfile();
 
-        void add_in_callsite_profile_entries(const call_site_profile_t* profile_to_add);
+        void add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add);
 
         void init_callsite_profile(CALLSITE call_site, bool is_top_function, double work, double span,
                                                                              double local_work, double local_span);
 
-       call_site_profile_t* prof;
+       std::shared_ptr<call_site_profile_t> prof;
 
   private:
 

@@ -19,13 +19,21 @@
 
 #include "Types.h"
 #include "CallSiteProfile.h"
+#include "EndProfiles.h"
+
+typedef std::map<CALLSITE, std::shared_ptr<call_site_profile_t>> call_site_hashtable_t;
+typedef std::map<CALLSITE, std::shared_ptr<call_site_end_profile_t> > call_site_end_hashtable_t;
 
 class CallSiteHashtable {
 
 	public:
 
+		CallSiteHashtable();
+		CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable);
+		~CallSiteHashtable();
+
 		// adds in hashtable into right hashtable
-		void add_in_hashtable(const std::unique_ptr<call_site_hashtable_t> added_hashtable);
+		void add_in_hashtable(const std::shared_ptr<call_site_hashtable_t> added_hashtable);
 
 		// adds work, span, local_work, and local_span tto profile for call_site
 		void add_data_to_hashtable(bool is_top_function,
@@ -37,7 +45,7 @@ class CallSiteHashtable {
 		void add_local_data_to_hashtable(CALLSITE call_site,
 		                                 double local_work, double local_span);
 
-		std::map<CALLSITE, call_site_profile_t*> hashtable;
+		std::shared_ptr<call_site_hashtable_t> hashtable;
 
   	private:
 

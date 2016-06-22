@@ -62,6 +62,4 @@ struct call_site_end_profile_t {
 	call_site_end_profile_t(){};
 };
 
-typedef std::map<CALLSITE, std::unique_ptr<call_site_profile_t> > call_site_end_hashtable_t;
-
 #endif // END_PROFILES_H_

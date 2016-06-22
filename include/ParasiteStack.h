@@ -8,7 +8,12 @@
 #ifndef PARASITE_STACK_H_
 #define PARASITE_STACK_H_
 
+ #include <vector> 
+
+
+#include "CallSiteHashtable.h"
 #include "Types.h"
+
 
 struct function_frame_t {
 
@@ -68,15 +73,15 @@ struct thread_frame_t {
 
 	// prefix data for each call_site in this thread 
 	// call_site_hashtable_t* prefix_table;
-	std::unique_ptr<call_site_hashtable_t> prefix_table;
+	std::shared_ptr<call_site_hashtable_t> prefix_table;
 
 	// longest child data for each call_site in this thread 
 	// call_site_hashtable_t* longest_child_table;
-	std::unique_ptr<call_site_hashtable_t> longest_child_table;
+	std::shared_ptr<call_site_hashtable_t> longest_child_table;
 
 	// continuation data for each call_site in this thread 
 	// call_site_hashtable_t* continuation_table;
-	std::unique_ptr<call_site_hashtable_t> continuation_table;
+	std::shared_ptr<call_site_hashtable_t> continuation_table;
 };
 
 class ParasiteStack {
@@ -92,13 +97,13 @@ class ParasiteStack {
 		void thread_stack_push();
 		
 		// vector representing the stack of ALL functions
-  		std::vector< std::unique_ptr<function_frame_t> > function_stack;
+  		std::vector< std::shared_ptr<function_frame_t> > function_stack;
 
   		// vector representing the stack of ALL threads 
-  		std::vector< std::unique_ptr<function_frame_t> > thread_stack;
+  		std::vector< std::shared_ptr<thread_frame_t> > thread_stack;
 
   		// running work data of all threads
-  		std::unique_ptr<call_site_hashtable_t> work_table;
+  		std::shared_ptr<call_site_hashtable_t> work_table;
 
   		int current_function_index;
   		int current_thread_index;

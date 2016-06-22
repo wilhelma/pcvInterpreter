@@ -55,7 +55,6 @@ public:
 	std::unique_ptr<parasite_profile_t> parasite_profile;
 
 	// contains profile information for each call site at end of tool use;
-
 	std::unique_ptr<call_site_end_hashtable_t> end_call_site_profile_hashtable;
 
 	TIME last_strand_start_time;
