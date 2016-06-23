@@ -5,22 +5,20 @@
  *      Author: knapp
  */
 
-#ifndef PARASITE_STACK_H_
-#define PARASITE_STACK_H_
+#ifndef PARASITESTACK_H_
+#define PARASITESTACK_H_
 
- #include <vector> 
-
+#include <vector> 
 
 #include "CallSiteHashtable.h"
 #include "Types.h"
 
-
 struct function_frame_t {
-
 	CALLSITE call_site;
 	FUN_SG function_signature;
 
-	// records whether function is a the first (top) function called from a call site
+	// records whether function is a the first (top) function 
+	// called from a call site
 	bool is_top_call_site_function;
 
 	// local work of this function 
@@ -40,12 +38,11 @@ struct function_frame_t {
 };
 
 struct thread_frame_t {
-
 	// the ID of the thread with this data
 	TRD_ID thread;
 
-	// the index of the thread's head function (the function called when the thread spawns), 
-	// in the function_stack variable of this frame's thread_stack_t
+	// the index of the thread's head function (the function called when the 
+	// thread spawns), in the function_stack variable of frame's thread_stack_t
 	int head_function_index;
 
 	// Local continuation span of this thread's head function
@@ -63,12 +60,12 @@ struct thread_frame_t {
 	// Lock span of this thread
 	double lock_span;
 
-	// Span of the longest spawned child of this thread's head function observed so
-	// far
+	// Span of the longest spawned child of this thread's head function
+	// observed so far
 	double longest_child_span;
 
-	// Lock span of the longest spawned child of this thread's head function observed so
-	// far
+	// Lock span of the longest spawned child of this thread's head
+	// function observed so far
 	double longest_child_lock_span;
 
 	// prefix data for each call_site in this thread 
@@ -85,9 +82,7 @@ struct thread_frame_t {
 };
 
 class ParasiteStack {
-
 	public:
-
 		ParasiteStack();
 		~ParasiteStack();
 
@@ -107,12 +102,10 @@ class ParasiteStack {
 
   		int current_function_index;
   		int current_thread_index;
-
-  	private:
-
+ 	private:
   		ParasiteStack(const ParasiteStack&);
 		ParasiteStack& operator=(const ParasiteStack&);
 };
 
 
-#endif // PARASITE_STACK_H_ 
+#endif  // PARASITESTACK_H_ 

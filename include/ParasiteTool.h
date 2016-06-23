@@ -28,9 +28,7 @@
 #include "Tool.h"
 
 class ParasiteTool : public Tool {
-
-public:
-
+ public:
 	ParasiteTool();
 	~ParasiteTool();
 
@@ -60,11 +58,10 @@ public:
 	TIME last_strand_start_time;
 	int total_locks_running;
 
-private:
-
+ private:
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);
 	ParasiteTool& operator=(const ParasiteTool&);
 };
 
-#endif // PARASITE_TOOL_H_ 
+#endif  // PARASITE_TOOL_H_ 

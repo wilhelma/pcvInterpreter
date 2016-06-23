@@ -3,19 +3,17 @@
 
 // all the information that parasite provides after exceuting its algorithm
 struct parasite_profile_t {
-
-	// TODO: add commments explaning what each of these means
+	// TODO(knapp): add commments explaning what each of these means
 	double work;
 	double span;
 	double lock_span;
 	double parallelism;
 
-	parasite_profile_t(){};
+	parasite_profile_t() {}
 };
 
 struct call_site_end_profile_t {
-
-	// TODO: provide more detailed explanations of variable names
+	// TODO(knapp): provide more detailed explanations of variable names
 
 	// work excluding recurisve calls
 	double work_work;
@@ -59,7 +57,7 @@ struct call_site_end_profile_t {
 	double parallelism_span;
 	double count_span;
 
-	call_site_end_profile_t(){};
+	call_site_end_profile_t() {}
 };
 
-#endif // END_PROFILES_H_
+#endif  // END_PROFILES_H_

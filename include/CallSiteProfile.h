@@ -5,7 +5,6 @@
 #include "Types.h"
 
 struct call_site_profile_t {
-
     // call site ID 
     CALLSITE call_site;
 
@@ -50,25 +49,24 @@ struct call_site_profile_t {
 };
 
 class CallSiteProfile {
+ public:
+    explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
+    ~CallSiteProfile();
 
-	public:
+    void add_in_callsite_profile_entries(const 
+                          std::shared_ptr<call_site_profile_t> profile_to_add);
 
-		CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
-		~CallSiteProfile();
+    void init_callsite_profile(CALLSITE call_site, bool is_top_function, 
+                                                    double work, double span,
+                                         double local_work, double local_span);
 
-        void add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add);
+    std::shared_ptr<call_site_profile_t> prof;
 
-        void init_callsite_profile(CALLSITE call_site, bool is_top_function, double work, double span,
-                                                                             double local_work, double local_span);
-
-       std::shared_ptr<call_site_profile_t> prof;
-
-  private:
-
-  	    CallSiteProfile(const CallSiteProfile&);
-	    CallSiteProfile& operator=(const CallSiteProfile&);
+ private:
+    CallSiteProfile(const CallSiteProfile&);
+    CallSiteProfile& operator=(const CallSiteProfile&);
 };
 
 
 
-#endif // CALL_SITE_PROFILE_H_
+#endif  // CALL_SITE_PROFILE_H_
