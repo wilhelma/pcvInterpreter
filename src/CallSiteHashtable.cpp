@@ -8,8 +8,6 @@ CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hsht
 	hashtable = hshtable;
 }
 
-
-
 void CallSiteHashtable::add_in_hashtable(const std::shared_ptr<call_site_hashtable_t> hashtable_to_add) {
 
 	for (auto const &it : *hashtable_to_add) {
