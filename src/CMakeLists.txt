@@ -5,6 +5,7 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST
+	LoopIterationTable.cpp
 	DBInterpreter.cpp
 	EventService.cpp
 	Interpreter.cpp

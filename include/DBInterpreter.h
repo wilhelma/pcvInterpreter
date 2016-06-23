@@ -32,6 +32,9 @@
 #include "Thread.h"
 #include "DBTable.h"
 
+
+#include "LoopIterationTable.h"
+
 #include "Types.h"
 
 class LockMgr;
@@ -81,9 +84,11 @@ private:
 	DBTable<LOP_ID, loop_t> loopT_;
 	DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
 	DBTable<REF_ID, reference_t> referenceT_;
-	DBTable<LOI_ID, loopIteration_t> loopIterationT_;
+//	DBTable<LOI_ID, loopIteration_t> loopIterationT_;
 	DBTable<SEG_ID, segment_t> segmentT_; 
 	DBTable<TRD_ID, thread_t> threadT_;
+
+	LoopIterationTable loopIterationTable;
 
 	CallStack callStack_;
   
@@ -102,6 +107,7 @@ private:
 	int closeDB(sqlite3 **db);
 	int fillStructures(sqlite3 **db);
 	int fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func);
+	int fillGeneric(const char *sql, sqlite3 **db, LoopIterationTable& loiTable);
 	int fillAccess(sqlite3_stmt *stmt);
 	int fillCall(sqlite3_stmt *stmt);
 	int fillFile(sqlite3_stmt *stmt);
@@ -109,7 +115,7 @@ private:
 	int fillInstruction(sqlite3_stmt *stmt);
 	int fillLoop(sqlite3_stmt *stmt);
 	int fillLoopExecution(sqlite3_stmt *stmt);
-	int fillLoopIteration(sqlite3_stmt *stmt);
+//	int fillLoopIteration(sqlite3_stmt *stmt);
 	int fillReference(sqlite3_stmt *stmt);
 	int fillSegment(sqlite3_stmt *stmt);
 	int fillThread(sqlite3_stmt *stmt);

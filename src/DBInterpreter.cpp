@@ -414,7 +414,7 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
     if ((rc = fillGeneric("SELECT * from LoopExecution;",
                           db, &DBInterpreter::fillLoopExecution)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from LoopIteration;",
-                          db, &DBInterpreter::fillLoopIteration)) != 0) return rc;
+                          db, loopIterationTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Reference;",
                           db, &DBInterpreter::fillReference)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Segment;",
@@ -477,6 +477,35 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
    }
 
    return 0;
+}
+
+int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, LoopIterationTable& loiTable) {
+	sqlite3_stmt *sqlstmt = 0;
+
+	/* Execute SQL statement */
+	if (sqlite3_prepare_v2(*db, sql, strlen(sql), &sqlstmt, NULL) != SQLITE_OK) {
+		BOOST_LOG_TRIVIAL(error) << "Error preparing db: " << sqlite3_errmsg(*db);
+		return 1;
+	}
+
+	// cycles through the entries till the database is over
+	bool reading = true;
+	while (reading) {
+		switch(sqlite3_step(sqlstmt)) {
+			case SQLITE_ROW:
+				// process the statement with the function passed as argument
+				loiTable.fill(sqlstmt);
+				break;
+			case SQLITE_DONE:
+				reading = false;
+				break;
+			default:
+				BOOST_LOG_TRIVIAL(trace) << "Iterating db failed!";
+				return 2;
+		}
+	}
+
+	return 0;
 }
 
 int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
@@ -591,18 +620,18 @@ int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
 
 //TODO
 /// @todo
-int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
-    LOI_ID id            = (LOI_ID)sqlite3_column_int(sqlstmt, 0);
-    LOE_ID loopExecution = (LOE_ID)sqlite3_column_int(sqlstmt, 1);
-    LOI_ID loopIteration = (LOI_ID)sqlite3_column_int(sqlstmt, 2);
-
-    loopIteration_t *tmp = new loopIteration_t(id,
-                                               loopExecution,
-                                               loopIteration);
-
-    loopIterationT_.fill(id, *tmp);
-    return 0;
-}
+//int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
+//    LOI_ID id            = (LOI_ID)sqlite3_column_int(sqlstmt, 0);
+//    LOE_ID loopExecution = (LOE_ID)sqlite3_column_int(sqlstmt, 1);
+//    LOI_ID loopIteration = (LOI_ID)sqlite3_column_int(sqlstmt, 2);
+//
+//    loopIteration_t *tmp = new loopIteration_t(id,
+//                                               loopExecution,
+//                                               loopIteration);
+//
+//    loopIterationT_.fill(id, *tmp);
+//    return 0;
+//}
 
 int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
     REF_ID id                 = (REF_ID)sqlite3_column_int(sqlstmt, 0);
