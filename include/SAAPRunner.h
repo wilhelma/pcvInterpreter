@@ -9,8 +9,9 @@
 #define SAAPRUNNER_H_
 
 #include "Event.h"
+#include "Interpreter.h"
 
-class Interpreter;
+//class Interpreter;
 class Tool;
 class Filter;
 
@@ -21,11 +22,11 @@ public:
 
 	bool registerTool(Tool* tool, const Filter* filter, enum Events events);
 	bool removeTool(Tool* tool);
-	void interpret();
+	void interpret() { _interpreter->process(); };
 
 private:
 	// private data members
-	Interpreter* _interpreter;
+	Interpreter* const _interpreter;
 
 	// prevent generated functions
 	SAAPRunner(const SAAPRunner&);
