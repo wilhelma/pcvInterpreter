@@ -42,11 +42,19 @@ class ThreadMgr;
  *****************************************************************************/
 class DBInterpreter : public Interpreter {
 public:
-	DBInterpreter(const char* DBPath, const char* logFile, 
-				  EventService *service, LockMgr *lockMgr, ThreadMgr *threadMgr);
+	DBInterpreter(const char* DBPath,
+			      const char* logFile, 
+				  EventService *service,
+				  LockMgr *lockMgr,
+				  ThreadMgr *threadMgr)
+		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
+		  _logFile(logFile), _eventService(service)
+	{};
+
+	~DBInterpreter() {};
+
+	EventService* getEventService() override { return _eventService; };
 	int process() override;
-	EventService* getEventService() override;
-	~DBInterpreter();
 
 private:
 
