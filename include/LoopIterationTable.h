@@ -18,13 +18,9 @@
 
 #include <sqlite3.h>
 
-class LoopIterationTable {
+class LoopIterationTable: public DBTable<LOI_ID, const loopIteration_t> {
 	public:
 		int fill(sqlite3_stmt *sqlstmt);
-
-	private:
-		DBTable<LOI_ID, const loopIteration_t> loopIterationT_;
-
 };
 
 #endif

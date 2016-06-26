@@ -16,7 +16,7 @@ int LoopIterationTable::fill(sqlite3_stmt *sqlstmt) {
     LOE_ID loopExecution = static_cast<LOE_ID>(sqlite3_column_int(sqlstmt, 1));
     LOI_ID loopIteration = static_cast<LOI_ID>(sqlite3_column_int(sqlstmt, 2));
 
-    loopIterationT_.insert(id, loopIteration_t(id, loopExecution, loopIteration));
+    insert(id, loopIteration_t(id, loopExecution, loopIteration));
 
     return 0;
 }
