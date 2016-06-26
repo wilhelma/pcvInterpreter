@@ -23,7 +23,6 @@ public:
 	~DBTable();
 
 	int get(const IdT& id, T* entry);
-	int insert(const IdT& id, const T& entry);
 	virtual int fill(sqlite3_stmt *sqlstmt) = 0;
 	
 	iterator find(const IdT& id);
@@ -37,10 +36,14 @@ public:
 
 private:								  	
 	Map map_;
+
 	
 	// prevent generated functions
 	DBTable(const DBTable&);
 	DBTable& operator=(const DBTable&);		 
+
+protected:
+	int insert(const IdT& id, const T& entry);
 };
 
 #include "DBTable-inl.h"
