@@ -5,7 +5,6 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST
-	LoopIterationTable.cpp
 	DBInterpreter.cpp
 	EventService.cpp
 	Interpreter.cpp
@@ -20,17 +19,17 @@ set(SRC_LIST ${SRC_LIST}
 	tools/RaceDetectionTool.cpp)
 
 set(SRC_LIST ${SRC_LIST}
-	AccessTable.cpp
-	CallTable.cpp
-	FileTable.cpp
-	FunctionTable.cpp
-	InstructionTable.cpp
-	LoopExecutionTable.cpp
-	LoopIterationTable.cpp
-	LoopTable.cpp
-	ReferenceTable.cpp
-	SegmentTable.cpp
-	ThreadTable.cpp)
+	tables/AccessTable.cpp
+	tables/CallTable.cpp
+	tables/FileTable.cpp
+	tables/FunctionTable.cpp
+	tables/InstructionTable.cpp
+	tables/LoopExecutionTable.cpp
+	tables/LoopIterationTable.cpp
+	tables/LoopTable.cpp
+	tables/ReferenceTable.cpp
+	tables/SegmentTable.cpp
+	tables/ThreadTable.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
