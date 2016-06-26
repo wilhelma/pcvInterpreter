@@ -9,6 +9,7 @@
 #define DBTABLE_H_
 
 #include <map>
+#include <sqlite3.h>
 
 template<typename IdT, typename T>
 class DBTable
@@ -21,8 +22,9 @@ public:
 	DBTable();
 	~DBTable();
 
-	int get(const IdT& id, T** entry);
+	int get(const IdT& id, T* entry);
 	int insert(const IdT& id, const T& entry);
+	virtual int fill(sqlite3_stmt *sqlstmt) = 0;
 	
 	iterator find(const IdT& id);
 	const_iterator find(const IdT& id) const;

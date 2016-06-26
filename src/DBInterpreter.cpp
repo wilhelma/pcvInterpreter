@@ -65,7 +65,7 @@ int DBInterpreter::process() {
     }
 
     // process database entries
-    for (auto instruction : instructionT_)
+    for (auto instruction : instructionTable)
         processInstruction(instruction.second);
 
     closeDB(&db);
@@ -74,10 +74,10 @@ int DBInterpreter::process() {
 
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = segmentT_.find(ins.segment_id);
-	if (search == segmentT_.end()) {
+	auto search = segmentTable.find(ins.segment_id);
+	if (search == segmentTable.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
-			<< " not found in segmentT_ table";
+			<< " not found in segmentTable";
 		return static_cast<CAL_ID>(IN_NO_ENTRY);
 	}
 	return search->second.call_id;
@@ -87,7 +87,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// look for the call id of the instruction
 	CAL_ID call_id = static_cast<CAL_ID>(0);
 	bool found = false;
-	for (auto& it : callT_) {
+	for (auto& it : callTable) {
 		// if there's a call whose instruction id is the same as
 		// ins.instruction_id, get its id
 		if (it.second.instruction_id == ins.instruction_id) {
@@ -108,8 +108,8 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 }
 
 int DBInterpreter::processReturn(const instruction_t& ins) {
-	auto search = segmentT_.find(ins.segment_id);
-	if (search == segmentT_.end()) {
+	auto search = segmentTable.find(ins.segment_id);
+	if (search == segmentTable.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
 		return IN_NO_ENTRY;
 	}
@@ -135,12 +135,12 @@ int DBInterpreter::processReturn(const instruction_t& ins) {
 
 int DBInterpreter::processInstruction(const instruction_t& ins) {
     processAccess_t accessFunc = nullptr;
-    segment_t* segment         = nullptr;
-    call_t* call               = nullptr;
+    const segment_t* segment         = nullptr;
+    const call_t* call               = nullptr;
 
-	// search for `ins.segment_id` in the `segmentT_` table and put
+	// search for `ins.segment_id` in the `segmentTable` table and put
 	// its pointer into `segment`
-	if (segmentT_.get(ins.segment_id, &segment) == IN_OK) {  
+	if (segmentTable.get(ins.segment_id, segment) == IN_OK) {  
 		// if the segment is found, check the instruction type
 		switch (ins.instruction_type) {
 			case InstructionType::CALL:
@@ -149,30 +149,30 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				processReturn(ins);
 				break;
 			case InstructionType::ACCESS:
-				if (callT_.get(segment->call_id, &call) == IN_OK)
+				if (callTable.get(segment->call_id, call) == IN_OK)
 					accessFunc = &DBInterpreter::processMemAccess;
 				break;
 			case InstructionType::ALLOC:
-				if ( callT_.get(segment->call_id, &call) == IN_OK)
+				if (callTable.get(segment->call_id, call) == IN_OK)
 					accessFunc = &DBInterpreter::processAcqAccess;
 				break;
 			case InstructionType::FREE:
-				if ( callT_.get(segment->call_id, &call) == IN_OK)
+				if (callTable.get(segment->call_id, call) == IN_OK)
 					accessFunc = &DBInterpreter::processRelAccess;
 				break;
 			case InstructionType::FORK:
-				for (auto it : threadT_) {
-					thread_t& thread = it.second;
+				for (auto it : threadTable) {
+					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.create_instruction_id)
-						if (callT_.get(segment->call_id, &call) == IN_OK)
+						if (callTable.get(segment->call_id, call) == IN_OK)
 							processFork(ins, *segment, *call, thread);
 				}
 				break;
 			case InstructionType::JOIN:
-				for (auto it : threadT_) {
-					thread_t& thread = it.second;
+				for (auto it : threadTable) {
+					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.join_instruction_id)
-						if (callT_.get(segment->call_id, &call) == IN_OK)
+						if (callTable.get(segment->call_id, call) == IN_OK)
 							processJoin(ins, *segment, *call, thread);
 				}
 				break;
@@ -182,14 +182,14 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 	}            
 
 	if (accessFunc != nullptr) {
-		auto search = _insAccessMap.find(ins.instruction_id);
-		accessVector_t::iterator it;
-		for (it = search->second.begin(); it != search->second.end(); it++) {
+		auto search = accessTable.getInsAccessMap().find(ins.instruction_id);
+		for (auto it = search->second.begin(); it != search->second.end(); ++it) {
 
-			auto searchAccess = accessT_.find(*it);
-			if (searchAccess != accessT_.end()) {
+			auto searchAccess = accessTable.find(*it);
+			if (searchAccess != accessTable.end()) {
 
-				processAccessGeneric((ACC_ID) search->first,
+				// possible BUG (conversion INS_ID -> ACC_ID)
+				processAccessGeneric(static_cast<ACC_ID>(search->first),
 						searchAccess->second,
 						ins,
 						*segment,
@@ -209,8 +209,8 @@ int DBInterpreter::processSegment(SEG_ID segmentId,
                                   const segment_t& seg,
                                   const instruction_t& ins) {
 
-    auto search = callT_.find(seg.call_id);
-    if (search != callT_.end()) {
+    auto search = callTable.find(seg.call_id);
+    if (search != callTable.end()) {
         if (!processCall(seg.call_id, search->second, seg, ins))
             return 1;
     } else {
@@ -233,10 +233,10 @@ int DBInterpreter::processCall(CAL_ID callId,
                                const instruction_t& ins) {
 
 	// fetch called function 
-	auto search = functionT_.find(call.function_id);
+	auto search = functionTable.find(call.function_id);
 
 	// check that the function exists
-	if (search == functionT_.end()) {
+	if (search == functionTable.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
 		return IN_NO_ENTRY;
 	}
@@ -246,8 +246,8 @@ int DBInterpreter::processCall(CAL_ID callId,
 		case FunctionType::METHOD:
 			{
 				// serch for the file where the call has happened from
-				auto searchFile = fileT_.find(search->second.file_id);
-				if (searchFile == fileT_.end()) {
+				auto searchFile = fileTable.find(search->second.file_id);
+				if (searchFile == fileTable.end()) {
 					BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
 					return 1;
 				}
@@ -280,10 +280,10 @@ int DBInterpreter::processAccessGeneric(ACC_ID accessId,
                                         processAccess_t func) {
 
 //  std::string refId = std::string(access.reference_id);
-//  auto search = referenceT_.find(_refNoIdMap[refId]);
+//  auto search = referenceTable.find(_refNoIdMap[refId]);
     REF_ID refId = access.reference_id;
-    auto search = referenceT_.find(refId);
-    if ( search != referenceT_.end() ) {
+    auto search = referenceTable.find(refId);
+    if ( search != referenceTable.end() ) {
 
         (this->* func)(accessId, access, instruction, segment,
                        call, search->second);
@@ -400,57 +400,44 @@ int DBInterpreter::fillStructures(sqlite3 **db) {
 
     // Read from all the tables in the database
     if ((rc = fillGeneric("SELECT * from Access;",
-                          db, &DBInterpreter::fillAccess)) != 0) return rc;
+                          db, &accessTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Call;",
-                          db, &DBInterpreter::fillCall)) != 0) return rc;
+                          db, &callTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from File;",
-                          db, &DBInterpreter::fillFile)) != 0) return rc;
+                          db, &fileTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Function;",
-                          db, &DBInterpreter::fillFunction)) != 0) return rc;
+                          db, &functionTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Instruction;",
-                          db, &DBInterpreter::fillInstruction)) != 0) return rc;
+                          db, &instructionTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Loop;",
-                          db, &DBInterpreter::fillLoop)) != 0) return rc;
+                          db, &loopTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from LoopExecution;",
-                          db, &DBInterpreter::fillLoopExecution)) != 0) return rc;
+                          db, &loopExecutionTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from LoopIteration;",
-                          db, loopIterationTable)) != 0) return rc;
+                          db, &loopIterationTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Reference;",
-                          db, &DBInterpreter::fillReference)) != 0) return rc;
+                          db, &referenceTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Segment;",
-                          db, &DBInterpreter::fillSegment)) != 0) return rc;
+                          db, &segmentTable)) != 0) return rc;
     if ((rc = fillGeneric("SELECT * from Thread;",
-                          db, &DBInterpreter::fillThread)) != 0) return rc;
+                          db, &threadTable)) != 0) return rc;
 
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << instructionT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << instructionT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << instructionT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentT_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadT_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << loopTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << loopExecutionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << loopIterationTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
     return 0;
 }
 
-/**
- * Executes the statement `sql` on the database `db` and processes the output with `func`. 
- *
- * @param sql String cointaining the SQL statement (e.g. "SELECT * from THREAD_TABLE;")
- * @param db The database object
- * @param func Pointer to a `DBInterpreter::` method used to process the statement (e.g. `fillThread()`)
- *
- * @return 2 in case of error, 0 in case of success.
- */
-int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
-    /**
-     * __About Statements__ Think of each SQL statement as a separate computer program.
-     * The original SQL text is source code. A prepared statement object is the compiled
-     * object code. All SQL must be converted into a prepared statement before it can be run.
-     */
+template<typename IdT, typename T>
+int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table) {
     sqlite3_stmt *sqlstmt = 0;
 
    /* Execute SQL statement */
@@ -465,7 +452,7 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
        switch(sqlite3_step(sqlstmt)) {
        case SQLITE_ROW:
            // process the statement with the function passed as argument
-           (this->* func)(sqlstmt);
+           table->fill(sqlstmt);
            break;
        case SQLITE_DONE:
            reading = false;
@@ -476,216 +463,5 @@ int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func) {
        }
    }
 
-   return 0;
-}
-
-int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, LoopIterationTable& loiTable) {
-	sqlite3_stmt *sqlstmt = 0;
-
-	/* Execute SQL statement */
-	if (sqlite3_prepare_v2(*db, sql, strlen(sql), &sqlstmt, NULL) != SQLITE_OK) {
-		BOOST_LOG_TRIVIAL(error) << "Error preparing db: " << sqlite3_errmsg(*db);
-		return 1;
-	}
-
-	// cycles through the entries till the database is over
-	bool reading = true;
-	while (reading) {
-		switch(sqlite3_step(sqlstmt)) {
-			case SQLITE_ROW:
-				// process the statement with the function passed as argument
-				loiTable.fill(sqlstmt);
-				break;
-			case SQLITE_DONE:
-				reading = false;
-				break;
-			default:
-				BOOST_LOG_TRIVIAL(trace) << "Iterating db failed!";
-				return 2;
-		}
-	}
-
-	return 0;
-}
-
-int DBInterpreter::fillAccess(sqlite3_stmt *sqlstmt) {
-    ACC_ID id                = (ACC_ID)sqlite3_column_int(sqlstmt, 0);
-    INS_ID instruction_id    = (INS_ID)sqlite3_column_int(sqlstmt, 1);
-    POS position             = (POS)sqlite3_column_int(sqlstmt, 2);
-    REF_ID reference_id      = (REF_ID)sqlite3_column_int(sqlstmt, 3);
-    AccessType access_type   = (AccessType)sqlite3_column_int(sqlstmt, 4);
-    AccessState memory_state = (AccessState)sqlite3_column_int(sqlstmt, 5);
-
-    access_t *tmp = new access_t(id,
-                                 instruction_id,
-                                 position,
-                                 reference_id,
-                                 access_type,
-                                 memory_state); 
-
-    accessT_.insert(id, *tmp);         
-    _insAccessMap[instruction_id].push_back(id); // create 1:n associations 
-    return 0;
-}
-
-int DBInterpreter::fillCall(sqlite3_stmt *sqlstmt) {
-    CAL_ID id             = (CAL_ID)sqlite3_column_int(sqlstmt, 0);
-    TRD_ID thread_id      = (TRD_ID)sqlite3_column_int(sqlstmt, 1);
-    FUN_ID function_id    = (FUN_ID)sqlite3_column_int(sqlstmt, 2);
-    INS_ID instruction_id = (INS_ID)sqlite3_column_int(sqlstmt, 3);
-    TIME start_time       = (TIME)sqlite3_column_int(sqlstmt, 4);
-    TIME end_time         = (TIME)sqlite3_column_int(sqlstmt, 5);
-
-    call_t *tmp = new call_t(id,
-                             thread_id,
-                             function_id,
-                             instruction_id,
-                             start_time,
-                             end_time);
-
-    callT_.insert(id, *tmp);       
-    return 0;
-}
-
-int DBInterpreter::fillFile(sqlite3_stmt *sqlstmt) {
-   FIL_ID id        = (FIL_ID)sqlite3_column_int(sqlstmt, 0);
-   FIL_PT file_path((const char*)sqlite3_column_text(sqlstmt, 1));
-
-   file_t *tmp = new file_t(id,
-                            file_path);
-
-   fileT_.insert(id, *tmp);    
-   return 0;
-}
-
-int DBInterpreter::fillFunction(sqlite3_stmt *sqlstmt) {
-    FUN_ID id          = (FUN_ID)sqlite3_column_int(sqlstmt, 0);
-    FUN_SG signature((const char*)sqlite3_column_text(sqlstmt, 2));
-    FIL_ID file_id     = (FIL_ID)sqlite3_column_int(sqlstmt, 3);
-    LIN_NO line_number = (LIN_NO)sqlite3_column_int(sqlstmt, 4);
-    FunctionType type  = (FunctionType)sqlite3_column_int(sqlstmt, 6);
-
-   function_t *tmp = new function_t(id,
-                                    signature,
-                                    type,
-                                    file_id,
-                                    line_number);
-
-   functionT_.insert(id, *tmp);
-   return 0;
-}
-
-int DBInterpreter::fillInstruction(sqlite3_stmt *sqlstmt) {
-   INS_ID id                        = (INS_ID)sqlite3_column_int(sqlstmt, 0);
-   SEG_ID segment_id                = (SEG_ID)sqlite3_column_int(sqlstmt, 1);
-   InstructionType instruction_type = (InstructionType)sqlite3_column_int(sqlstmt, 2);
-   LIN_NO line_number               = (LIN_NO)sqlite3_column_int(sqlstmt, 3);
-
-   instruction_t *tmp = new instruction_t(id,
-                                          segment_id,
-                                          instruction_type,
-                                          line_number);
-
-   instructionT_.insert(id, *tmp);
-   return 0;
-}
-
-int DBInterpreter::fillLoop(sqlite3_stmt *sqlstmt) {
-   LOP_ID id         = (LOP_ID)sqlite3_column_int(sqlstmt, 0);
-   LIN_NO lineNumber = (LIN_NO)sqlite3_column_int(sqlstmt, 1);
-
-   loop_t *tmp = new loop_t(id,
-                            lineNumber);
-
-   loopT_.insert(id, *tmp);
-   return 0;
-}
-
-// TODO
-/// @todo
-int DBInterpreter::fillLoopExecution(sqlite3_stmt *sqlstmt) {
-    LOE_ID id              = (LOE_ID)sqlite3_column_int(sqlstmt, 0);
-    LOE_ID loopID          = (LOE_ID)sqlite3_column_int(sqlstmt, 1);
-    int parentIteration = sqlite3_column_int(sqlstmt, 2);
-    int loopDuration    = sqlite3_column_int(sqlstmt, 3);
-
-    loopExecution_t *tmp = new loopExecution_t(id,
-                                               loopID,
-                                               parentIteration,
-                                               loopDuration);
-
-    loopExecutionT_.insert(id, *tmp);
-    return 0;
-}
-
-//TODO
-/// @todo
-//int DBInterpreter::fillLoopIteration(sqlite3_stmt *sqlstmt) {
-//    LOI_ID id            = (LOI_ID)sqlite3_column_int(sqlstmt, 0);
-//    LOE_ID loopExecution = (LOE_ID)sqlite3_column_int(sqlstmt, 1);
-//    LOI_ID loopIteration = (LOI_ID)sqlite3_column_int(sqlstmt, 2);
-//
-//    loopIteration_t *tmp = new loopIteration_t(id,
-//                                               loopExecution,
-//                                               loopIteration);
-//
-//    loopIterationT_.insert(id, *tmp);
-//    return 0;
-//}
-
-int DBInterpreter::fillReference(sqlite3_stmt *sqlstmt) {
-    REF_ID id                 = (REF_ID)sqlite3_column_int(sqlstmt, 0);
-    REF_SIZE size             = (REF_SIZE)sqlite3_column_int(sqlstmt, 1);
-    ReferenceType memory_type = (ReferenceType)sqlite3_column_int(sqlstmt, 2);
-    INS_ID allocinstr         = (INS_ID)sqlite3_column_int(sqlstmt, 4);
-    REF_NAME name((const char*)sqlite3_column_text(sqlstmt, 3));
-
-    reference_t *tmp = new reference_t(id,
-            size,
-            memory_type,
-            name,
-            allocinstr);
-
-    referenceT_.insert(id, *tmp);
-    return 0;
-}
-
-int DBInterpreter::fillSegment(sqlite3_stmt *sqlstmt) {
-   SEG_ID id                = (SEG_ID)sqlite3_column_int(sqlstmt, 0);
-   CAL_ID call_id           = (CAL_ID)sqlite3_column_int(sqlstmt, 1);
-   SegmentType segment_type = (SegmentType)sqlite3_column_int(sqlstmt, 2);
-   LOI_ID loop_pointer      = (LOI_ID)sqlite3_column_int(sqlstmt, 3);      // XXX check type
-
-   segment_t *tmp = new segment_t(id,
-                                  call_id,
-                                  segment_type,
-                                  loop_pointer);
-
-   segmentT_.insert(id, *tmp);
-   return 0;
-}
-
-int DBInterpreter::fillThread(sqlite3_stmt *sqlstmt) {
-   TRD_ID id               = (TRD_ID)sqlite3_column_int(sqlstmt, 0);
-   TIME_STRING start_time  = TIME_STRING(reinterpret_cast<const char*>(
-         sqlite3_column_text(sqlstmt, 1)));
-   TIME_STRING end_time		 = TIME_STRING(reinterpret_cast<const char*>(
-         sqlite3_column_text(sqlstmt, 2)));
-   NUM_CYCLES num_cycles	 = (NUM_CYCLES)sqlite3_column_int(sqlstmt, 3);
-   INS_ID create_instr_id  = (INS_ID)sqlite3_column_int(sqlstmt, 4);
-   INS_ID join_instr_id    = (INS_ID)sqlite3_column_int(sqlstmt, 5);
-   TRD_ID parent_thread_id = (TRD_ID)sqlite3_column_int(sqlstmt, 6);
-   PID process_id          = (PID)sqlite3_column_int(sqlstmt, 7);
-
-   thread_t *tmp = new thread_t(id,
-                                start_time,
-                                end_time,
-                                num_cycles,
-                                create_instr_id,
-                                join_instr_id,
-                                parent_thread_id,
-                                process_id);
-
-   threadT_.insert(id, *tmp);
    return 0;
 }

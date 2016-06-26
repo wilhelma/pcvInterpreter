@@ -1,24 +1,24 @@
 /**
  *
- *    @file  LoopIterationTable.h
- *   @brief 
+ *    @file  CallTable.h
+ *   @brief  
  *
- *    @date  06/23/16
+ *    @date  06/26/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
  *           <p.digiglio91@gmail.com>
  *
  */
 
-#ifndef  LOOP_ITERATION_TABLE_H_
-#define  LOOP_ITERATION_TABLE_H_
+#ifndef  CALL_TABLE_H_
+#define  CALL_TABLE_H_
 
 #include <sqlite3.h>
 
 #include "DBTable.h"
-#include "LoopIteration.h"
+#include "Call.h"
 #include "Types.h"
 
-class LoopIterationTable: public DBTable<LOI_ID, const loopIteration_t> {
+class CallTable: public DBTable<CAL_ID, const call_t> {
 	public:
 		virtual int fill(sqlite3_stmt *sqlstmt) override final;
 };

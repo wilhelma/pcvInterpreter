@@ -19,5 +19,18 @@ set(SRC_LIST ${SRC_LIST}
 	tools/LockSetChecker.cpp
 	tools/RaceDetectionTool.cpp)
 
+set(SRC_LIST ${SRC_LIST}
+	AccessTable.cpp
+	CallTable.cpp
+	FileTable.cpp
+	FunctionTable.cpp
+	InstructionTable.cpp
+	LoopExecutionTable.cpp
+	LoopIterationTable.cpp
+	LoopTable.cpp
+	ReferenceTable.cpp
+	SegmentTable.cpp
+	ThreadTable.cpp)
+
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
