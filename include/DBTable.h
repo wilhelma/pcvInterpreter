@@ -22,7 +22,7 @@ public:
 	~DBTable();
 
 	int get(const IdT& id, T** entry);
-	int fill(const IdT& id, const T& entry);
+	int insert(const IdT& id, const T& entry);
 	
 	iterator find(const IdT& id);
 	const_iterator find(const IdT& id) const;

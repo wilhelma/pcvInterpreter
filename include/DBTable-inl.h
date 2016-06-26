@@ -9,9 +9,7 @@ template<typename IdT, typename T>
 DBTable<IdT, T>::~DBTable() { }
 
 template<typename IdT, typename T>
-int DBTable<IdT, T>::fill(const IdT& id, const T& entry) {
-
-	//map_[id] = entry;
+int DBTable<IdT, T>::insert(const IdT& id, const T& entry) {
 	if ( map_.find( id ) != map_.end() )
 		return IN_ENTRY_EXISTS;
 
