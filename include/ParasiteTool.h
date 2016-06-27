@@ -46,9 +46,6 @@ class ParasiteTool : public Tool {
 	// contains both function stack and thread stack 
 	std::unique_ptr<ParasiteStack> main_stack;
 
-	// keeps track of the index for each function
-	std::map<unsigned int, int> lock_hashtable;
-
 	// contains profile information at end of tool use 
 	std::unique_ptr<parasite_profile_t> parasite_profile;
 
