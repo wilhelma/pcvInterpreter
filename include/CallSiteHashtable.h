@@ -1,10 +1,13 @@
-/*
- * CallSiteHashtable.h
+/**
  *
- * Created on: June 16, 2016
- *      Author: knapp
+ *    @file  CallSiteHashtable.h
+ *   @brief  Declarations for the class `CallSiteHashtable`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
-
 
 #ifndef CALL_SITE_HASHTABLE_H_
 #define CALL_SITE_HASHTABLE_H_

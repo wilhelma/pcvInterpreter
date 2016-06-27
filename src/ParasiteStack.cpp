@@ -1,3 +1,15 @@
+/**
+ *
+ *    @file  ParasiteStack.cpp
+ *   @brief  Implementation file for the class `ParasiteStack`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
+ */
+
+
 #include "ParasiteStack.h"
 
 ParasiteStack::~ParasiteStack() {}

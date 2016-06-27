@@ -1,8 +1,12 @@
-/*
- * CallSiteProfile.h
+/**
  *
- *  Created on: June 16, 2016
- *      Author: knapp
+ *    @file  CallSiteProfile.h
+ *   @brief  Declarations for the CallSiteProfile class
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
 
 #ifndef CALL_SITE_PROFILE_H_

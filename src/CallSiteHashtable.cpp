@@ -1,6 +1,24 @@
+/**
+ *
+ *    @file  CallSiteHashtable.cpp
+ *   @brief  Implementation file for the class `CallSiteHashtable`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
+ */
+
 #include <utility>
 #include "CallSiteHashtable.h"
 
+/**
+ * @brief Default Constructor for `CallSiteHashtable`
+ * 
+ * 
+ *
+ *
+ */
 CallSiteHashtable::~CallSiteHashtable() {}
 
 CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable) {

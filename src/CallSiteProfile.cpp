@@ -1,5 +1,15 @@
-#include "CallSiteProfile.h"
+/**
+ *
+ *    @file  CallSiteProfile.cpp
+ *   @brief  Implementation file for the class `CallSiteProfile`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
+ */
 
+#include "CallSiteProfile.h"
 
 CallSiteProfile::~CallSiteProfile() {}
 

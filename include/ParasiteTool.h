@@ -1,8 +1,12 @@
-/*
- * ParasiteTool.h
+/**
  *
- *  Created on: June 17, 2016
- *      Author: knapp
+ *    @file  ParasiteTool.h
+ *   @brief  Declarations for the class `ParasiteTool`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
 
 #ifndef PARASITE_TOOL_H_
@@ -51,6 +55,9 @@ class ParasiteTool : public Tool {
 
 	// contains profile information for each call site at end of tool use;
 	std::unique_ptr<call_site_end_hashtable_t> end_call_site_profile_hashtable;
+
+	// maps locks to the index in the stack of their current funciton 
+	std::unordered_map<unsigned int, int> lock_hashtable;
 
 	TIME last_strand_start_time;
 	int total_locks_running;

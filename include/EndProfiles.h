@@ -1,8 +1,12 @@
-/*
- * EndProfiles.h
+/**
  *
- *  Created on: June 16, 2016
- *      Author: knapp
+ *    @file  EndProfiles.h
+ *   @brief  Declarations for the structs parasite_profile_t and call_site_end_profile_t
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
 
  

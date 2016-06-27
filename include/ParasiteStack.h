@@ -1,8 +1,13 @@
-/*
- * ParasiteStack.h
+/**
  *
- *  Created on: June 16, 2016
- *      Author: knapp
+ *    @file  ParasiteStack.h
+ *   @brief  Declarations for the function and thread stack frame structs, and 
+ 			 the ParasiteStack class
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
 
 #ifndef PARASITESTACK_H_

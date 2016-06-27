@@ -1,16 +1,19 @@
-/* ParasiteTool.cpp
+/**
  *
- *  Created on: June 17, 2016
- *      Author: knapp
+ *    @file  ParasiteTool.cpp
+ *   @brief  Implementation file for the class `ParasiteTool`
+ *
+ *    @date  06/17/16
+ *  @author  Nathaniel Knapp (github.com/deknapp),
+ *           <nathaniel.knapp@gmail.com>
+ *
  */
 
 #include <utility>
 #include "ParasiteTool.h"
 
-void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t> 
-                                                              collected_profile, 
-                               std::shared_ptr<call_site_end_profile_t> 
-                                                                  end_profile) {
+void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
+                               std::shared_ptr<call_site_end_profile_t> end_profile) {
   // work excluding recurisve calls
   end_profile->work_work = collected_profile->work;
   end_profile->span_work = collected_profile->span;
@@ -32,10 +35,8 @@ void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>
   end_profile->local_count_work = collected_profile->top_count;
 }
 
-void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> 
-                                                              collected_profile, 
-                               std::shared_ptr<call_site_end_profile_t> 
-                                                              end_profile) {
+void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_profile, 
+                               std::shared_ptr<call_site_end_profile_t> end_profile) {
   // span data excluding recursive calls
   end_profile->work_span = collected_profile->work;
   end_profile->span_span = collected_profile->span;
