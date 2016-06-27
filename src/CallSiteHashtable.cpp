@@ -3,13 +3,12 @@
 
 CallSiteHashtable::~CallSiteHashtable() {}
 
-CallSiteHashtable::CallSiteHashtable(
-                            std::shared_ptr<call_site_hashtable_t> hshtable) {
+CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable) {
 	hashtable = hshtable;
 }
 
-void CallSiteHashtable::add_in_hashtable(
-                const std::shared_ptr<call_site_hashtable_t> hashtable_to_add) {
+void CallSiteHashtable::add_in_hashtable( const std::shared_ptr<call_site_hashtable_t> hashtable_to_add) {
+
 	for (auto const &it : *hashtable_to_add) {
 		CALLSITE key = it.first;
 
@@ -28,9 +27,9 @@ void CallSiteHashtable::add_in_hashtable(
 
 // add given call site profile data to the hashtable 
 void CallSiteHashtable::add_data_to_hashtable(bool is_top_function,
-                         CALLSITE call_site,
-                         double work, double span,
-                         double local_work, double local_span) {
+                         					  CALLSITE call_site,
+                         					  double work, double span,
+                         					  double local_work, double local_span) {
 	if (hashtable->count(call_site)) {
 		CallSiteProfile profile(hashtable->at(call_site));
 		profile.prof->local_count += 1;
@@ -59,7 +58,7 @@ void CallSiteHashtable::add_data_to_hashtable(bool is_top_function,
 
 // add given call site profile data (only for local variables) to the hashtable 
 void CallSiteHashtable::add_local_data_to_hashtable(CALLSITE call_site,
-                            		    double local_work, double local_span) {
+                            		    			double local_work, double local_span) {
 	if (hashtable->count(call_site)) {
 		CallSiteProfile profile(hashtable->at(call_site));
 		profile.prof->local_count += 1;

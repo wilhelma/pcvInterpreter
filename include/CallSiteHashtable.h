@@ -1,11 +1,8 @@
 /*
- * parasite.h
+ * CallSiteHashtable.h
  *
  * Created on: June 16, 2016
  *      Author: knapp
- * 
- * Includes struct declarations for parasite profile, call site profile, call site end profile, and hashtables 
- * Includes method declarations for hasthable operations
  */
 
 
@@ -15,17 +12,30 @@
 #include <stdbool.h>
 #include <iostream>
 #include <limits>
-#include <map>
+#include <functional>
+#include <unordered_map>
+#include <string>
 
 
 #include "Types.h"
 #include "CallSiteProfile.h"
 #include "EndProfiles.h"
 
-typedef std::map<CALLSITE, std::shared_ptr<call_site_profile_t>> 
-														  call_site_hashtable_t;
-typedef std::map<CALLSITE, std::shared_ptr<call_site_end_profile_t> > 
-													  call_site_end_hashtable_t;
+struct CallSiteHash {
+	std::size_t operator()(const CALLSITE& k) const {
+		std::hash<int> int_hash;
+		return int_hash(k);
+	}
+};
+ 
+struct CallSiteEqual {
+	bool operator()(const CALLSITE& lhs, const CALLSITE& rhs) const {
+		return lhs == rhs;
+	}
+};
+
+typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_profile_t>, CallSiteHash, CallSiteEqual> call_site_hashtable_t;
+typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_end_profile_t>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
 
 class CallSiteHashtable {
  public:

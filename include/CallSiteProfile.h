@@ -1,10 +1,18 @@
+/*
+ * CallSiteProfile.h
+ *
+ *  Created on: June 16, 2016
+ *      Author: knapp
+ */
+
 #ifndef CALL_SITE_PROFILE_H_
 #define CALL_SITE_PROFILE_H_
 
-#include <map>
+#include <unordered_map>
 #include "Types.h"
 
 struct call_site_profile_t {
+
     // call site ID 
     CALLSITE call_site;
 
@@ -49,6 +57,7 @@ struct call_site_profile_t {
 };
 
 class CallSiteProfile {
+    
  public:
     explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
     ~CallSiteProfile();
@@ -60,6 +69,7 @@ class CallSiteProfile {
                                                     double work, double span,
                                          double local_work, double local_span);
 
+    // call site profile data that methods operate on
     std::shared_ptr<call_site_profile_t> prof;
 
  private:
