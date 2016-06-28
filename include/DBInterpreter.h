@@ -65,8 +65,8 @@ public:
 
 	~DBInterpreter() {};
 
-	EventService* getEventService() override { return _eventService; };
-	int process() override;
+	virtual int process() override final;
+	virtual EventService* getEventService() override final { return _eventService; };
 
 private:
 
