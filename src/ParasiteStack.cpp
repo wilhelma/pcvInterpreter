@@ -9,7 +9,6 @@
  *
  */
 
-
 #include "ParasiteStack.h"
 
 ParasiteStack::~ParasiteStack() {}
@@ -33,15 +32,12 @@ void ParasiteStack::init_thread_frame(int thread_index,
 	thread_stack.at(thread_index)->longest_child_lock_span = 0;
 }
 
-
-// push a new thread frame onto the thread stack 
 void ParasiteStack::thread_stack_push() {
 	std::shared_ptr<thread_frame_t> new_thread_frame(new thread_frame_t);
 	thread_stack.push_back(new_thread_frame);
 	current_thread_index += 1;
 }
 
-// push a new function frame onto the function stack 
 void ParasiteStack::function_stack_push() {
 	std::shared_ptr<function_frame_t> new_function_frame(new function_frame_t);
 	function_stack.push_back(new_function_frame);

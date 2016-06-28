@@ -12,6 +12,13 @@
 #include <utility>
 #include "ParasiteTool.h"
 
+/**
+*    @fn getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
+                                   std::shared_ptr<call_site_end_profile_t> end_profile)
+*    @brief Converts work information in collected_profile to more detailed work 
+            information contained in end profile. 
+*/
+            
 void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
                                std::shared_ptr<call_site_end_profile_t> end_profile) {
   // work excluding recurisve calls
@@ -35,6 +42,12 @@ void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_p
   end_profile->local_count_work = collected_profile->top_count;
 }
 
+/**
+*    @fn getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
+                                   std::shared_ptr<call_site_end_profile_t> end_profile)
+*    @brief Converts span information in collected_profile to more detailed 
+            span information contained in end_profile. 
+*/
 void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_profile, 
                                std::shared_ptr<call_site_end_profile_t> end_profile) {
   // span data excluding recursive calls
@@ -61,9 +74,6 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
 
 ParasiteTool::ParasiteTool() {}
 
-
-// converts the information in the thread and function stacks 
-// to the parasite profile information
 void ParasiteTool::getEndProfile() {
   std::shared_ptr<thread_frame_t> bottom_thread_frame = 
                                   main_stack->thread_stack.back();
@@ -125,22 +135,17 @@ void ParasiteTool::getEndProfile() {
   }
 }
 
-// calculates the profile information, then prints out the profile 
 void ParasiteTool::printProfile() {
+
   // first, calculate all the end profiles before outputting them 
   this->getEndProfile();
-  
-  // TODO(knapp):
-  // 1. decide which format to use for printing overall parasite profile
-  // 2. decide which format to use for printing each call site's profile
+
 }
 
 ParasiteTool::~ParasiteTool() {
   printProfile();
 }
 
-
-// actions for creating a thread
 void ParasiteTool::create(const Event* e) {
   NewThreadEvent* newThreadEvnt = (NewThreadEvent*) e;
 	std::shared_ptr<NewThreadEvent> newThreadEvent(newThreadEvnt);
@@ -204,7 +209,6 @@ void ParasiteTool::join(const Event* e) {
   bottom_thread_frame->local_continuation = 0;
 }
 
-// actions for calling a function
 void ParasiteTool::call(const Event* e) {
   CallEvent* callEvnt = (CallEvent*) e;
 	std::shared_ptr<CallEvent> callEvent(callEvnt);
@@ -224,7 +228,6 @@ void ParasiteTool::call(const Event* e) {
   new_function_frame->call_site = callsiteID;
 }
 
-// actions for returning from a function
 void ParasiteTool::returnOfCalled(const Event* e) {
   ReturnEvent* returnEvnt = (ReturnEvent*) e;
   std::shared_ptr<ReturnEvent> returnEvent(returnEvnt);
@@ -382,7 +385,6 @@ void ParasiteTool::threadEnd(const Event* e) {
   main_stack->current_thread_index -= 1;
   }
 
-// lock acquire event 
 void ParasiteTool::acquire(const Event* e) {
   // AcquireEvent* acquireEvnt = reinterpret_cast<AcquireEvent*>(e);
 	// std::shared_ptr<AcquireEvent> acquireEvent(e);
@@ -406,7 +408,6 @@ void ParasiteTool::acquire(const Event* e) {
   total_locks_running += 1;
 }
 
-// lock release event
 void ParasiteTool::release(const Event* e) {
   // ReleaseEvent* releaseEvnt = reinterpret_cast<ReleaseEvent*>(e);
 	// std::shared_ptr<ReleaseEvent> releaseEvent(e);
@@ -434,7 +435,6 @@ void ParasiteTool::release(const Event* e) {
   total_locks_running -= 1;
 }
 
-// lock access event
 void ParasiteTool::access(const Event* e) {
   printf("ERROR: Parasite Tool does not implement access event");
   return;
