@@ -24,7 +24,6 @@ public:
 	DBTable() {};
 	virtual ~DBTable() {};
 
-	const int get(const IdT& id, T* entry) const;
 	virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) = 0;
 	
 	iterator find(const IdT& id)
@@ -66,7 +65,5 @@ protected:
 	std::pair<iterator, bool> insert(const IdT& id, const T& entry)
 	{ return map_.insert(typename std::map<IdT, T>::value_type(id, entry)); };
 };
-
-#include "DBTable-inl.h"
 
 #endif /* DBTABLE_H_ */
