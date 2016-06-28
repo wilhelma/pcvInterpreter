@@ -107,7 +107,7 @@ private:
 
 	int loadDB(const char* path, sqlite3 **db);
 	int closeDB(sqlite3 **db);
-	int fillStructures(sqlite3 **db);
+	int importDataBase(sqlite3 **db);
 
 	template<typename IdT, typename T>
 	int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);

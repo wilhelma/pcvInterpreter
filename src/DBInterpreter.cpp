@@ -57,7 +57,7 @@ int DBInterpreter::process() {
     }
 
     // fill the internal maps with database entries
-    int rc = fillStructures(&db);
+    int rc = importDataBase(&db);
     if ( rc != IN_OK) {
         BOOST_LOG_TRIVIAL(error) << "Can't fill internal structures."
                                  << " Error code: " << rc;
@@ -391,14 +391,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     return 0;
 }
 
-/**
- * Fills the `db` database.
- * 
- * For each type of SQL statement, a different funcion is called as
- * `fillGeneric()` argument to fill `db` (e.g. `fillAccess()` for the `Access` table).
- *
- */
-int DBInterpreter::fillStructures(sqlite3 **db) {
+int DBInterpreter::importDataBase(sqlite3 **db) {
 
     int rc;
 
