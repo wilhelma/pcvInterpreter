@@ -13,14 +13,11 @@
 
 CallSiteProfile::~CallSiteProfile() {}
 
-CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_profile_t> 
-                                                                init_profile) {
+CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_profile_t> init_profile) {
   prof = init_profile;
 }
 
-// add entries in profile_to_add to entries in profile
-void CallSiteProfile::add_in_callsite_profile_entries(
-                    const std::shared_ptr<call_site_profile_t> profile_to_add) {
+void CallSiteProfile::add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add) {
   prof->local_work += profile_to_add->local_work;
   prof->local_span += profile_to_add->local_span;
   prof->local_count += profile_to_add->local_count;
@@ -33,9 +30,9 @@ void CallSiteProfile::add_in_callsite_profile_entries(
 }
 
 void CallSiteProfile::init_callsite_profile(CALLSITE call_site,
-						                         bool is_top_function,
-                                     double work, double span,
-                                     double local_work, double local_span) {
+        						                         bool is_top_function,
+                                             double work, double span,
+                                             double local_work, double local_span) {
     prof->call_site = call_site;
     prof->local_count = 0;
     prof->local_work = local_work;

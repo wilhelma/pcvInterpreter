@@ -12,13 +12,6 @@
 #include <utility>
 #include "CallSiteHashtable.h"
 
-/**
- * @brief Default Constructor for `CallSiteHashtable`
- * 
- * 
- *
- *
- */
 CallSiteHashtable::~CallSiteHashtable() {}
 
 CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable) {
@@ -43,7 +36,6 @@ void CallSiteHashtable::add_in_hashtable( const std::shared_ptr<call_site_hashta
 	}
 }
 
-// add given call site profile data to the hashtable 
 void CallSiteHashtable::add_data_to_hashtable(bool is_top_function,
                          					  CALLSITE call_site,
                          					  double work, double span,
@@ -74,7 +66,6 @@ void CallSiteHashtable::add_data_to_hashtable(bool is_top_function,
 	}
 }
 
-// add given call site profile data (only for local variables) to the hashtable 
 void CallSiteHashtable::add_local_data_to_hashtable(CALLSITE call_site,
                             		    			double local_work, double local_span) {
 	if (hashtable->count(call_site)) {

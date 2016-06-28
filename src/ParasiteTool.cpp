@@ -15,61 +15,62 @@
 /**
 *    @fn getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
                                    std::shared_ptr<call_site_end_profile_t> end_profile)
-*    @brief Converts work information in collected_profile to more detailed work 
+*    @brief Converts work and span information in collected_profile to more detailed work 
             information contained in end profile. 
 */
             
 void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
                                std::shared_ptr<call_site_end_profile_t> end_profile) {
   // work excluding recurisve calls
-  end_profile->work_work = collected_profile->work;
-  end_profile->span_work = collected_profile->span;
-  end_profile->parallelism_work = end_profile->work_work/end_profile->span_work;
-  end_profile->count_work = collected_profile->count;
+  end_profile->work = collected_profile->work;
+  end_profile->span = collected_profile->span;
+  end_profile->parallelism = end_profile->work/end_profile->span;
+  end_profile->count = collected_profile->count;
 
   // work data from top calls of call site
-  end_profile->top_work_work = collected_profile->top_work;
-  end_profile->top_span_work = collected_profile->top_span;
-  end_profile->top_parallelism_work = end_profile->top_work_work/
-                                      end_profile->top_span_work;
-  end_profile->top_count_work = collected_profile->top_count;
+  end_profile->top_work = collected_profile->top_work;
+  end_profile->top_span = collected_profile->top_span;
+  end_profile->top_parallelism = end_profile->top_work/
+                                      end_profile->top_span;
+  end_profile->top_count = collected_profile->top_count;
 
   // local(TODO: explain what local means) work call site data
-  end_profile->local_work_work = collected_profile->local_work;
-  end_profile->local_span_work = collected_profile->local_span;
-  end_profile->local_parallelism_work = end_profile->top_work_work/
-                                        end_profile->top_span_work;
-  end_profile->local_count_work = collected_profile->top_count;
+  end_profile->local_work = collected_profile->local_work;
+  end_profile->local_span = collected_profile->local_span;
+  end_profile->local_parallelism = end_profile->top_work/
+                                        end_profile->top_span;
+  end_profile->local_count = collected_profile->top_count;
 }
 
 /**
 *    @fn getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
                                    std::shared_ptr<call_site_end_profile_t> end_profile)
-*    @brief Converts span information in collected_profile to more detailed 
-            span information contained in end_profile. 
+*    @brief Converts on_span information in collected_profile to more detailed 
+            on_span information contained in end_profile. The on_span information is work 
+            and span data from invocations on the critical path. 
 */
 void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_profile, 
                                std::shared_ptr<call_site_end_profile_t> end_profile) {
   // span data excluding recursive calls
-  end_profile->work_span = collected_profile->work;
-  end_profile->span_span = collected_profile->span;
-  end_profile->parallelism_span = end_profile->work_span/ 
-                                  end_profile->span_span;
-  end_profile->count_span = collected_profile->count;
+  end_profile->work_on_span = collected_profile->work;
+  end_profile->span_on_span = collected_profile->span;
+  end_profile->parallelism_on_span = end_profile->work_on_span/ 
+                                  end_profile->span_on_span;
+  end_profile->count_on_span = collected_profile->count;
 
   // data from top calls of call site
-  end_profile->top_work_span = collected_profile->top_work;
-  end_profile->top_span_span = collected_profile->top_span;
-  end_profile->top_parallelism_span = end_profile->top_work_span
-                                    / end_profile->top_span_span;
-  end_profile->top_count_span = collected_profile->top_count;
+  end_profile->top_work_on_span = collected_profile->top_work;
+  end_profile->top_span_on_span = collected_profile->top_span;
+  end_profile->top_parallelism_on_span = end_profile->top_work_on_span
+                                    / end_profile->top_span_on_span;
+  end_profile->top_count_on_span = collected_profile->top_count;
 
   // local(?) span call site data
-  end_profile->local_work_span = collected_profile->local_work;
-  end_profile->local_span_span = collected_profile->local_span;
-  end_profile->local_parallelism_span = end_profile->local_work_span / 
-                                        end_profile->local_span_span;
-  end_profile->local_count_span  = collected_profile->local_count;
+  end_profile->local_work_on_span = collected_profile->local_work;
+  end_profile->local_span_on_span = collected_profile->local_span;
+  end_profile->local_parallelism_on_span = end_profile->local_work_on_span / 
+                                        end_profile->local_span_on_span;
+  end_profile->local_count_on_span  = collected_profile->local_count;
 }
 
 ParasiteTool::ParasiteTool() {}
@@ -90,7 +91,7 @@ void ParasiteTool::getEndProfile() {
 
   bottom_prefix_table.add_in_hashtable(bottom_thread_frame->continuation_table);
 
-  std::shared_ptr<call_site_hashtable_t> final_span_table =
+  std::shared_ptr<call_site_hashtable_t> final_on_span_table =
                                              bottom_thread_frame->prefix_table;
 
   // Calculate work for entire program
@@ -101,13 +102,13 @@ void ParasiteTool::getEndProfile() {
   parasite_profile->parallelism = parasite_profile->work 
                                 / parasite_profile->span;
 
-  std::shared_ptr<call_site_hashtable_t> final_work_table = 
+  std::shared_ptr<call_site_hashtable_t> final_table = 
                                          main_stack->work_table;
 
   // parse the final work table in the main stack data structure 
   // iterate through all entries in the hashtable containing collected
   // work profiles of call sites. 
-  for (auto const &it : *final_work_table) {
+  for (auto const &it : *final_table) {
     std::shared_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
     std::shared_ptr<call_site_end_profile_t> current_call_site_end_profile
@@ -123,7 +124,7 @@ void ParasiteTool::getEndProfile() {
   // parse the final span table in the main stack data structure 
   // iterate through all entries in the hashtable containing 
   // collected span profiles of call sites. 
-  for (auto const &it : *final_span_table) {
+  for (auto const &it : *final_on_span_table) {
     std::shared_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
     std::shared_ptr<call_site_end_profile_t> current_call_site_end_profile = 
