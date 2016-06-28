@@ -75,7 +75,7 @@ int DBInterpreter::process() {
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	auto search = segmentTable.find(ins.segment_id);
-	if (search == segmentTable.end()) {
+	if (search == segmentTable.cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
 			<< " not found in segmentTable";
 		return static_cast<CAL_ID>(IN_NO_ENTRY);
@@ -85,9 +85,9 @@ const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 
 const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// look for the call id of the instruction
-	CAL_ID call_id = static_cast<CAL_ID>(0);
+	CAL_ID call_id(0);
 	bool found = false;
-	for (auto& it : callTable) {
+	for (const auto& it : callTable) {
 		// if there's a call whose instruction id is the same as
 		// ins.instruction_id, get its id
 		if (it.second.instruction_id == ins.instruction_id) {

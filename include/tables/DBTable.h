@@ -19,31 +19,50 @@ public:
 	typedef typename Map::iterator iterator;
 	typedef typename Map::const_iterator const_iterator;
 
-	DBTable();
-	~DBTable();
+	DBTable() {};
+	virtual ~DBTable() {};
 
-	int get(const IdT& id, T* entry);
+	const int get(const IdT& id, T* entry) const;
 	virtual int fill(sqlite3_stmt *sqlstmt) = 0;
 	
-	iterator find(const IdT& id);
-	const_iterator find(const IdT& id) const;
-	unsigned size() const;
+	iterator find(const IdT& id)
+	{ return map_.find(id); };
+	
+	const_iterator find(const IdT& id) const
+	{ return map_.find(id); };
+	
+	const std::size_t size() const noexcept
+	{ return map_.size(); };
 
-	iterator		begin();
-	const_iterator	begin() const;
-	iterator		end();
-	const_iterator	end() const;
+	// iterators
+	iterator begin() noexcept
+	{ return map_.begin(); };
+
+	iterator end() noexcept
+	{ return map_.end(); };
+
+	const_iterator begin() const noexcept
+	{ return map_.begin(); };
+
+	const_iterator end() const noexcept
+	{ return map_.end(); };
+
+	const_iterator cbegin() const noexcept
+	{ return map_.cbegin(); };
+	
+	const_iterator cend() const noexcept
+	{ return map_.cend(); };
 
 private:								  	
 	Map map_;
 
-	
 	// prevent generated functions
 	DBTable(const DBTable&);
 	DBTable& operator=(const DBTable&);		 
 
 protected:
-	int insert(const IdT& id, const T& entry);
+	std::pair<iterator, bool> insert(const IdT& id, const T& entry)
+	{ return map_.insert(typename std::map<IdT, T>::value_type(id, entry)); };
 };
 
 #include "DBTable-inl.h"
