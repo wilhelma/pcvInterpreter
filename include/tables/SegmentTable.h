@@ -18,7 +18,7 @@
 
 class SegmentTable: public DBTable<SEG_ID, const segment_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 };
 
 #endif

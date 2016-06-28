@@ -11,12 +11,10 @@
 
 #include "LoopTable.h"
 
-int LoopTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<LoopTable::iterator, bool> LoopTable::fill(sqlite3_stmt *sqlstmt) {
    LOP_ID id   = static_cast<LOP_ID>(sqlite3_column_int(sqlstmt, 0));
    LIN_NO line = static_cast<LIN_NO>(sqlite3_column_int(sqlstmt, 1));
 
    loop_t *tmp = new loop_t(id, line);
-   insert(id, *tmp);
-
-   return 0;
+   return insert(id, *tmp);
 }

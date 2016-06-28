@@ -11,7 +11,7 @@
 
 #include "CallTable.h"
 
-int CallTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<CallTable::iterator, bool> CallTable::fill(sqlite3_stmt *sqlstmt) {
     CAL_ID id             = static_cast<CAL_ID>(sqlite3_column_int(sqlstmt, 0));
     TRD_ID thread_id      = static_cast<TRD_ID>(sqlite3_column_int(sqlstmt, 1));
     FUN_ID function_id    = static_cast<FUN_ID>(sqlite3_column_int(sqlstmt, 2));
@@ -21,6 +21,5 @@ int CallTable::fill(sqlite3_stmt *sqlstmt) {
 
     call_t *tmp = new call_t(id, thread_id, function_id, instruction_id, start_time, end_time);
 
-    insert(id, *tmp);       
-    return 0;
+    return insert(id, *tmp);       
 }

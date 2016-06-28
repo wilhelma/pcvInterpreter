@@ -11,14 +11,12 @@
 
 #include "SegmentTable.h"
 
-int SegmentTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<SegmentTable::iterator, bool> SegmentTable::fill(sqlite3_stmt *sqlstmt) {
 	SEG_ID id           = static_cast<SEG_ID>(sqlite3_column_int(sqlstmt, 0));
 	CAL_ID call         = static_cast<CAL_ID>(sqlite3_column_int(sqlstmt, 1));
 	SegmentType type    = static_cast<SegmentType>(sqlite3_column_int(sqlstmt, 2));
 	LOI_ID loop_pointer = static_cast<LOI_ID>(sqlite3_column_int(sqlstmt, 3));
 
 	segment_t *tmp = new segment_t(id, call, type, loop_pointer);
-	insert(id, *tmp);
-
-	return 0;
+	return insert(id, *tmp);
 }

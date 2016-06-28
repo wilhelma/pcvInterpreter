@@ -9,6 +9,8 @@
 #define DBTABLE_H_
 
 #include <map>
+#include <utility>
+
 #include <sqlite3.h>
 
 template<typename IdT, typename T>
@@ -23,7 +25,7 @@ public:
 	virtual ~DBTable() {};
 
 	const int get(const IdT& id, T* entry) const;
-	virtual int fill(sqlite3_stmt *sqlstmt) = 0;
+	virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) = 0;
 	
 	iterator find(const IdT& id)
 	{ return map_.find(id); };

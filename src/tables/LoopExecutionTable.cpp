@@ -11,15 +11,13 @@
 
 #include "LoopExecutionTable.h"
 
-int LoopExecutionTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<LoopExecutionTable::iterator, bool> LoopExecutionTable::fill(sqlite3_stmt *sqlstmt) {
     LOE_ID id    = static_cast<LOE_ID>(sqlite3_column_int(sqlstmt, 0));
     LOE_ID loop  = static_cast<LOE_ID>(sqlite3_column_int(sqlstmt, 1));
     int parent   = sqlite3_column_int(sqlstmt, 2);
     int duration = sqlite3_column_int(sqlstmt, 3);
 
     loopExecution_t *tmp = new loopExecution_t(id, loop, parent, duration);
-    insert(id, *tmp);
-
-    return 0;
+    return insert(id, *tmp);
 }
 

@@ -11,7 +11,7 @@
 
 #include "ThreadTable.h"
 
-int ThreadTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<ThreadTable::iterator, bool> ThreadTable::fill(sqlite3_stmt *sqlstmt) {
 	TRD_ID id               = static_cast<TRD_ID>(sqlite3_column_int(sqlstmt, 0));
 	TIME_STRING start_time(reinterpret_cast<const char*>(sqlite3_column_text(sqlstmt, 1)));
 	TIME_STRING end_time(reinterpret_cast<const char*>(sqlite3_column_text(sqlstmt, 2)));
@@ -30,6 +30,5 @@ int ThreadTable::fill(sqlite3_stmt *sqlstmt) {
 			parent_thread_id,
 			process_id);
 
-	insert(id, *tmp);
-	return 0;
+	return insert(id, *tmp);
 }

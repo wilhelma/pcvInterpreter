@@ -20,7 +20,7 @@
 
 class CallTable: public DBTable<CAL_ID, const call_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 };
 
 #endif

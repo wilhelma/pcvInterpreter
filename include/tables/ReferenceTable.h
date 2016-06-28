@@ -20,7 +20,7 @@
 
 class ReferenceTable: public DBTable<REF_ID, const reference_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 };
 
 #endif

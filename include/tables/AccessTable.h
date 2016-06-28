@@ -21,7 +21,7 @@
 
 class AccessTable: public DBTable<ACC_ID, const access_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<AccessTable::iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 
 		typedef std::vector<ACC_ID> accessVector_t;
 		typedef std::map<INS_ID, accessVector_t> insAccessMap_t;

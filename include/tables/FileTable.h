@@ -20,7 +20,7 @@
 
 class FileTable: public DBTable<FIL_ID, const file_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 };
 
 #endif

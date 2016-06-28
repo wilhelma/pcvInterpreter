@@ -11,12 +11,10 @@
 
 #include "FileTable.h"
 
-int FileTable::fill(sqlite3_stmt *sqlstmt) {
+const std::pair<FileTable::iterator, bool> FileTable::fill(sqlite3_stmt *sqlstmt) {
 	FIL_ID id        = static_cast<FIL_ID>(sqlite3_column_int(sqlstmt, 0));
 	FIL_PT file_path(reinterpret_cast<const char*>(sqlite3_column_text(sqlstmt, 1)));
 
 	file_t *tmp = new file_t(id, file_path);
-	insert(id, *tmp);    
-
-	return 0;
+	return insert(id, *tmp);    
 }

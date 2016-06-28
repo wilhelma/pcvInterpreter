@@ -20,7 +20,7 @@
 
 class LoopTable: public DBTable<LOP_ID, loop_t> {
 	public:
-		virtual int fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
 };
 
 #endif
