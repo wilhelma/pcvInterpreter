@@ -14,13 +14,14 @@ class ShadowVar;
 
 enum class Events: unsigned char {
     NEWTHREAD = 0x1,  // 00000001
-    JOIN      = 0x2,  // 00000010
-    ACQUIRE   = 0x4,  // 00000100
-    RELEASE   = 0x8,  // 00001000
-    ACCESS    = 0x10, // 00010000
-    CALL      = 0x20, // 00100000
-	RETURN    = 0x40, // 01000000
-    ALL       = 0xFF  // 11111111
+    THREADEND = 0x2,  // 00000010
+    JOIN      = 0x4,  // 00000100
+    ACQUIRE   = 0x8,  // 00001000
+    RELEASE   = 0x10, // 00010000
+    ACCESS    = 0x20, // 00100000
+	CALL      = 0x40, // 01000000
+    RETURN    = 0x80, // 10000000
+    ALL       = 0xFF  // 11111111 
 };
 
 constexpr inline
