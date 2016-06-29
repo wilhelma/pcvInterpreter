@@ -14,7 +14,7 @@ Interpreter::Interpreter(LockMgr* lockMgr, ThreadMgr* threadMgr, const char* log
 	initLogger();
 }
 
-void Interpreter::initLogger() {
+void Interpreter::initLogger() const {
 
 	logging::add_file_log(
 		logging::keywords::file_name = logFile_,

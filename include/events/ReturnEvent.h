@@ -27,7 +27,6 @@ typedef struct ReturnInfo {
 
 class ReturnEvent : public Event {
 	public:
-<<<<<<< 90d304cc9d200cb126445e5dbe4ddb6f6e7f3ba9
 		ReturnEvent(const ShadowThread *thread,
 				    const ReturnInfo *info) :
 			Event(thread), _info(info) {}
@@ -36,9 +35,6 @@ class ReturnEvent : public Event {
 		const ReturnInfo* const getReturnInfo() const { return _info; };
 	private:
 		const ReturnInfo* const _info;
-=======
-		Events getEventType() const override { return Events::RETURN; }
->>>>>>> create separate files for different events
 };
 
 #endif

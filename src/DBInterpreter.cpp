@@ -24,8 +24,7 @@
 #include "ThreadMgr.h"
 #include "DBTable.h"
 
-int DBInterpreter::loadDB(const char* path, sqlite3 **db) {
-
+int DBInterpreter::loadDB(const char* path, sqlite3 **db) const {
     if (sqlite3_open_v2(path, db,
             SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL) != SQLITE_OK) {
         BOOST_LOG_TRIVIAL(fatal) << "Can't open " << path << " - error: "
@@ -38,7 +37,49 @@ int DBInterpreter::loadDB(const char* path, sqlite3 **db) {
     }
 }
 
-int DBInterpreter::closeDB(sqlite3 **db) {
+int DBInterpreter::importDB(sqlite3 **db) {
+
+    int rc;
+
+    // Read from all the tables in the database
+    if ((rc = fillGeneric("SELECT * from Access;",
+                          db, &accessTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Call;",
+                          db, &callTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from File;",
+                          db, &fileTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Function;",
+                          db, &functionTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Instruction;",
+                          db, &instructionTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Loop;",
+                          db, &loopTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from LoopExecution;",
+                          db, &loopExecutionTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from LoopIteration;",
+                          db, &loopIterationTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Reference;",
+                          db, &referenceTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Segment;",
+                          db, &segmentTable)) != 0) return rc;
+    if ((rc = fillGeneric("SELECT * from Thread;",
+                          db, &threadTable)) != 0) return rc;
+
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << loopTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << loopExecutionTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << loopIterationTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
+    return 0;
+}
+
+int DBInterpreter::closeDB(sqlite3 **db) const {
 
     if ( sqlite3_close(*db) != SQLITE_OK)
         BOOST_LOG_TRIVIAL(fatal) <<  "Can't close database - error: "  
@@ -47,6 +88,7 @@ int DBInterpreter::closeDB(sqlite3 **db) {
     return IN_OK;
 }
 
+/// The main process routine. Loops over instructions.
 int DBInterpreter::process() {
 
     sqlite3 *db;
@@ -57,7 +99,7 @@ int DBInterpreter::process() {
     }
 
     // fill the internal maps with database entries
-    int rc = importDataBase(&db);
+    int rc = importDB(&db);
     if ( rc != IN_OK) {
         BOOST_LOG_TRIVIAL(error) << "Can't fill internal structures."
                                  << " Error code: " << rc;
@@ -65,7 +107,7 @@ int DBInterpreter::process() {
     }
 
     // process database entries
-    for (auto instruction : instructionTable)
+    for (const auto& instruction : instructionTable)
         processInstruction(instruction.second);
 
     closeDB(&db);
@@ -121,7 +163,7 @@ int DBInterpreter::processReturn(const instruction_t& ins) {
 
 			// in this case, the call didn't happen in the
 			// parent ID scope, so the "parent" call has returned
-			auto parent_call = callT_.find(parent_call_id);
+			auto parent_call = callTable.find(parent_call_id);
 			ReturnInfo info(parent_call_id, parent_call->second.end_time);
 			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
 			ReturnEvent event(thread, &info);
@@ -388,48 +430,6 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     JoinEvent event( pT, &info );
     _eventService->publish( &event );
 
-    return 0;
-}
-
-int DBInterpreter::importDataBase(sqlite3 **db) {
-
-    int rc;
-
-    // Read from all the tables in the database
-    if ((rc = fillGeneric("SELECT * from Access;",
-                          db, &accessTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Call;",
-                          db, &callTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from File;",
-                          db, &fileTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Function;",
-                          db, &functionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Instruction;",
-                          db, &instructionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Loop;",
-                          db, &loopTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopExecution;",
-                          db, &loopExecutionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopIteration;",
-                          db, &loopIterationTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Reference;",
-                          db, &referenceTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Segment;",
-                          db, &segmentTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Thread;",
-                          db, &threadTable)) != 0) return rc;
-
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << loopTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << loopExecutionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << loopIterationTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
     return 0;
 }
 
