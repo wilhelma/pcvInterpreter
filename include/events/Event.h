@@ -31,6 +31,13 @@ Events operator| (Events A, Events B) noexcept {
         static_cast<std::underlying_type<Events>::type>(B)   );
 }
 
+constexpr inline
+Events operator& (Events A, Events B) noexcept {
+    return static_cast<Events>(
+        static_cast<std::underlying_type<Events>::type>(A) &
+        static_cast<std::underlying_type<Events>::type>(B)   );
+}
+
 template <typename T>
 constexpr inline
 bool operator== (Events A, T b ) noexcept {
