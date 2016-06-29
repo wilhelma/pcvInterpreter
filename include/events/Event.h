@@ -58,14 +58,15 @@ const TIME timeStringToTime(const TIME_STRING& t) {
 /// Abstract Event
 class Event {
 public:
-	Event(const ShadowThread *thread) : _thread(thread) {}
+	Event(const ShadowThread *thread) :
+		_thread(thread) {};
 	virtual ~Event() {};
 
-	const ShadowThread* getThread() const { return _thread; }
+	const ShadowThread* const getThread() const { return _thread; };
 	virtual Events getEventType() const = 0;
 
 private:
-	const ShadowThread *_thread;
+	const ShadowThread* const _thread;
 };
 
 #endif /* EVENT_H_ */

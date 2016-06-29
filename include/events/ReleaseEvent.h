@@ -23,14 +23,14 @@ struct ReleaseInfo {
 class ReleaseEvent : public Event {
 public:
 	ReleaseEvent(const ShadowThread *thread,
-				 const struct ReleaseInfo *info) :
-					 Event(thread), _info(info) {}
+			     const ReleaseInfo *info) :
+		Event(thread), _info(info) {};
 
-	Events getEventType() const override { return Events::RELEASE; }
-	const ReleaseInfo* getReleaseInfo() const { return _info; };
+	virtual Events getEventType() const override final { return Events::RELEASE; }; 
+	const ReleaseInfo* const getReleaseInfo() const { return _info; };
 
 private:
-	const struct ReleaseInfo *_info;
+	const ReleaseInfo* const _info;
 
 	// prevent generated functions
 	ReleaseEvent(const ReleaseEvent&);

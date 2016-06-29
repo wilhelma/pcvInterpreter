@@ -23,13 +23,14 @@ struct AcquireInfo {
 class AcquireEvent : public Event {
 public:
 	AcquireEvent(const ShadowThread *thread,
-				 const struct AcquireInfo *info) :
-					 Event(thread), _info(info) {}
-	Events getEventType() const override { return Events::ACQUIRE; }
-	const AcquireInfo* getAcquireInfo() const { return _info; };
+				 const AcquireInfo *info) :
+					 Event(thread), _info(info) {};
+
+	virtual Events getEventType() const override final { return Events::ACQUIRE; };
+	const AcquireInfo* const getAcquireInfo() const { return _info; };
 
 private:
-	const struct AcquireInfo *_info;
+	const AcquireInfo* const _info;
 
 	// prevent generated functions
 	AcquireEvent(const AcquireEvent&);

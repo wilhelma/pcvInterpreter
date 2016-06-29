@@ -32,13 +32,13 @@ struct NewThreadInfo {
 class NewThreadEvent : public Event {
 public:
 	NewThreadEvent(const ShadowThread *thread,
-				   const struct NewThreadInfo *info) :
+				   const NewThreadInfo *info) :
 					   Event(thread), _info(info) {}
-	Events getEventType() const override { return Events::NEWTHREAD; }
-	const NewThreadInfo* getNewThreadInfo() const {return _info; };
+	virtual Events getEventType() const override final { return Events::NEWTHREAD; }
+	const NewThreadInfo* const getNewThreadInfo() const { return _info; };
 
 private:
-	const NewThreadInfo *_info;
+	const NewThreadInfo* const _info;
 
 	// prevent generated functions
     NewThreadEvent(const NewThreadEvent&);

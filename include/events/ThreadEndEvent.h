@@ -24,7 +24,7 @@ public:
 			       const ThreadEndInfo *info)
 		: Event(thread), _info(info) {};
 	virtual Events getEventType() const override final { return Events::THREADEND; };
-	const ThreadEndInfo* getThreadEndInfo() const { return _info; };
+	const ThreadEndInfo* const getThreadEndInfo() const { return _info; };
 
 private:
 	const ThreadEndInfo* const _info;

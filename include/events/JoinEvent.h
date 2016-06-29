@@ -25,13 +25,14 @@ struct JoinInfo {
 class JoinEvent : public Event {
 public:
 	JoinEvent(const ShadowThread *thread,
-			  const struct JoinInfo *info) :
-			  Event(thread), _info(info) {}
-	Events getEventType() const override { return Events::JOIN; }
-	const JoinInfo* getJoinInfo() const { return _info; };
+			  const JoinInfo *info) :
+			  Event(thread), _info(info) {};
+
+	virtual Events getEventType() const override final { return Events::JOIN; };
+	const JoinInfo* const getJoinInfo() const { return _info; };
 
 private:
-	const JoinInfo *_info;
+	const JoinInfo* const _info;
 
 	// prevent generated functions
 	JoinEvent(const JoinEvent&);

@@ -19,25 +19,25 @@
 #include "Types.h"
 
 struct AccessInfo {
-	AccessInfo( AccessType Type, ShadowVar *Var, INS_ID instructionID)
-		: type(Type), instructionID(instructionID), var(Var) {}
-
 	AccessType type;
 	INS_ID instructionID;
 	ShadowVar *var;
+
+	AccessInfo(AccessType Type, ShadowVar *Var, INS_ID instructionID)
+		: type(Type), instructionID(instructionID), var(Var) {}
 };
 
 class AccessEvent : public Event {
 public:
 	AccessEvent(const ShadowThread *thread,
-				const struct AccessInfo *info) :
-					 Event(thread), _info(info) {}
+				const AccessInfo *info) :
+					 Event(thread), _info(info) {};
 
-	Events getEventType() const override { return Events::ACCESS; }
-	const AccessInfo *getAccessInfo() const { return _info; };
+	virtual Events getEventType() const override final { return Events::ACCESS; };
+	const AccessInfo* const getAccessInfo() const { return _info; };
 
 private:
-	const struct AccessInfo *_info;
+	const AccessInfo* const _info;
 
 	// prevent generated functions
 	AccessEvent(const AccessEvent&);

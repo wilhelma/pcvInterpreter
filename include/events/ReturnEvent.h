@@ -31,10 +31,10 @@ class ReturnEvent : public Event {
 				    const ReturnInfo *info) :
 			Event(thread), _info(info) {}
 
-		Events getEventType() const override { return Events::RETURN; }
-		const ReturnInfo* getReturnInfo() const { return _info; };
+		virtual Events getEventType() const override final { return Events::RETURN; }
+		const ReturnInfo* const getReturnInfo() const { return _info; };
 	private:
-		const ReturnInfo *_info;
+		const ReturnInfo* const _info;
 };
 
 #endif
