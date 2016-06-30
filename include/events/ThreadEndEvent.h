@@ -9,13 +9,18 @@
  *
  */
 
-#ifndef  thread_end_event_H_
-#define  thread_end_event_H_
+#ifndef  THREAD_END_EVENT_H_
+#define  THREAD_END_EVENT_H_
 
 #include "Event.h"
 #include "Types.h"
 
 struct ThreadEndInfo {
+	TIME endTime;
+	TRD_ID id;
+	ThreadEndInfo(TIME endTime,
+				  TRD_ID id) noexcept
+		: endTime(endTime), id(id) {}
 };
 
 class ThreadEndEvent : public Event {
