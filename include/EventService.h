@@ -19,6 +19,7 @@
 #include "NewThreadEvent.h"
 #include "ReleaseEvent.h"
 #include "ReturnEvent.h"
+#include "ThreadEndEvent.h"
 
 #include "Tool.h"
 #include "Filter.h"
@@ -30,6 +31,7 @@ class EventService {
 public:
 	EventService() {}
 	bool publish(NewThreadEvent *event);
+	bool publish(ThreadEndEvent *event);
 	bool publish(JoinEvent *event);
 	bool publish(AcquireEvent *event);
 	bool publish(ReleaseEvent *event);
