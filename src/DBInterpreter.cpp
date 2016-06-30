@@ -384,6 +384,8 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 
+	_eventService->publish(new ThreadEndEvent(cT, new ThreadEndInfo(call.end_time, thread.id)));
+
     return 0;
 }
 

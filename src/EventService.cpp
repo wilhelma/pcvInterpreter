@@ -22,6 +22,17 @@ bool EventService::publish(NewThreadEvent *event) {
 	return true;
 }
 
+bool EventService::publish(ThreadEndEvent *event) {
+	_observers_t::iterator it;
+	for (it = _observers.begin(); it != _observers.end(); ++it) {
+    if ( (it->second.events | Events::THREADEND) != 0 ) {
+			it->first->create(event);
+		}
+	}
+
+	return true;
+}
+
 bool EventService::publish(JoinEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {

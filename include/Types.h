@@ -68,5 +68,4 @@ BOOST_STRONG_TYPEDEF( unsigned, PID )
 typedef std::string TIME_STRING;
 BOOST_STRONG_TYPEDEF( unsigned, NUM_CYCLES )
 
-
 #endif /* TYPES_H_ */

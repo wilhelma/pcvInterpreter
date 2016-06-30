@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef RACEDETECTIONTOOL_H_
-#define RACEDETECTIONTOOL_H_
+#ifndef LOCKSETCHECKER_H_
+#define LOCKSETCHECKER_H_
 
 #include "Tool.h"
 
@@ -18,24 +18,27 @@
 #include <memory>
 #include "Interpreter.h"
 #include "Event.h"
+#include "AccessEvent.h"
+#include "AcquireEvent.h"
+#include "NewThreadEvent.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ShadowLock.h"
-#include "DataModel.h"
+
 #include "Types.h"
 
 #define THREADS 100
 
-class RaceDetectionTool : public Tool {
+class LockSetChecker : public Tool {
 public:
-	RaceDetectionTool(const char* outFile);
+	LockSetChecker(const char* outFile);
 	void create(const Event* e) override;
 	void join(const Event* e) override;
 	void acquire(const Event* e) override;
 	void release(const Event* e) override;
 	void access(const Event* e) override;
 	void call(const Event* e) override;
-	~RaceDetectionTool();
+	~LockSetChecker();
 
 	typedef enum { WRITE_READ = 1,		// read after write (RAW)
 				   READ_WRITE = 2,		// write after read (WAR)
@@ -59,36 +62,12 @@ private:
 	inline bool lsIsEmptySet(const LockSet_& lhs, const LockSet_& rhs) const;
 	inline void lsIntersect(LockSet_& lhs, const LockSet_& rhs) const;
 
-	// Vector Clock -----------------------------------------------------------
-	typedef unsigned Clock_;
-	typedef std::array<Clock_, THREADS> VectorClock_;
-	typedef std::map<TRD_ID, VectorClock_> ThreadVC_;
-	typedef struct Epoch_ {
-		TRD_ID threadId;
-		Clock_ clock;
-		Epoch_(TRD_ID threadId, Clock_ clock) 
-			: threadId(threadId), clock(clock) {}
-		void set(TRD_ID tId, Clock_ clck) {
-			threadId = tId;
-			clock = clck;
-		}
-		bool operator ==(const struct Epoch_ &e2) const {
-			return ( threadId == e2.threadId && clock == e2.clock );
-		}
-	} Epoch_;
-
-	ThreadVC_ threadVC_;
-
-	inline void vcMerge(VectorClock_& lhs, const VectorClock_& rhs) const;
-	inline bool vcLEQ(const Epoch_& epoch, const VectorClock_& vc) const;
-
 	
 	typedef struct VarSet_ {
-		Epoch_ epoch;
 		LockSet_ lockset;
 		INS_ID instruction;
 
-		VarSet_() : epoch((TRD_ID)0,(Clock_)0), instruction(0) {}
+		VarSet_() : instruction(0) {}
 	} VarSet_;
 
 	typedef std::map<TRD_ID, VarSet_> ThreadVarSet_;
@@ -121,10 +100,10 @@ private:
 	void dumpRaceEntries(const char *fileName) const;
 
 	// prevent generated functions --------------------------------------------
-	RaceDetectionTool(const RaceDetectionTool&);
-	RaceDetectionTool& operator=(const RaceDetectionTool&);
+	LockSetChecker(const LockSetChecker&);
+	LockSetChecker& operator=(const LockSetChecker&);
 };
 
 
 
-#endif /* RACEDETECTIONTOOL_H_ */
+#endif /* LOCKSETCHECKER_H_ */

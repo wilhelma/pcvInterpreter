@@ -261,6 +261,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
                                                     continuation_table);
 
   if (is_top_returning_function) {
+
     work_table.add_data_to_hashtable(is_top_returning_function,
                               returning_call_site, 
                               running_work, running_span,
@@ -272,12 +273,9 @@ void ParasiteTool::returnOfCalled(const Event* e) {
                               running_work, running_span,
                               local_work, local_work);
   } else {
-    work_table.add_local_data_to_hashtable(returning_call_site, 
-                              local_work, local_work);
 
-    bottom_thread_continuation_table.add_local_data_to_hashtable(
-      returning_call_site, 
-                              local_work, local_work);
+    work_table.add_local_data_to_hashtable(returning_call_site, local_work, local_work);
+    bottom_thread_continuation_table.add_local_data_to_hashtable(returning_call_site, local_work, local_work);
   }
 
   // pop_back() destroys the returned funciton frame, so popping function 
@@ -287,12 +285,12 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 }
 
 void ParasiteTool::threadEnd(const Event* e) {
-  //ThreadEndEvent* threadEndEvnt = reinterpret_cast<ThreadEndEvent*> (e);
-  // std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEvnt);
-  // const std::shared_ptr<ThreadEndInfo> _info(threadEndEvent->
-  //                                            getThreadEndInfo());
-  // TIME threadEndTime = _info->threadEndTime;
-  TIME threadEndTime = (TIME) 0;
+
+  ThreadEndEvent* threadEndEvnt = (ThreadEndEvent*) e;
+  std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEvnt);
+  const std::shared_ptr<ThreadEndInfo> _info(threadEndEvent->getThreadEndInfo());
+  TIME threadEndTime = _info->threadEndTime;
+
   double strand_length = threadEndTime - last_strand_start_time;
   std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->
                                                       thread_stack.back());
@@ -349,13 +347,10 @@ void ParasiteTool::threadEnd(const Event* e) {
                               ending_thread_frame->local_span);
   }
 
-  if (new_bottom_function_frame->running_span 
-      + ending_thread_frame->local_continuation
-                                   > ending_thread_frame->longest_child_span) {
-      parent_thread_frame->prefix_span += new_bottom_function_frame->
-                                          running_span;
-      parent_thread_frame->local_span += parent_thread_frame->
-                                        local_continuation;
+  if (new_bottom_function_frame->running_span + ending_thread_frame->local_continuation  > ending_thread_frame->longest_child_span) {
+
+      parent_thread_frame->prefix_span += new_bottom_function_frame->running_span;
+      parent_thread_frame->local_span += parent_thread_frame->local_continuation;
 
       CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
       prefix_table.add_in_hashtable(parent_thread_frame->continuation_table);
@@ -366,10 +361,8 @@ void ParasiteTool::threadEnd(const Event* e) {
                                                 prefix_span;
       parent_thread_frame->longest_child_table->clear();
 
-      std::shared_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame
-                                                        ->longest_child_table);
-      parent_thread_frame->longest_child_table = 
-                                              ending_thread_frame->prefix_table;
+      std::shared_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame->longest_child_table);
+      parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
       ending_thread_frame->prefix_table = temp_hashtable;
 
       ending_thread_frame->longest_child_table->clear();
@@ -384,7 +377,7 @@ void ParasiteTool::threadEnd(const Event* e) {
   // because the pop operation destroys the frame
   main_stack->thread_stack.pop_back();
   main_stack->current_thread_index -= 1;
-  }
+}
 
 void ParasiteTool::acquire(const Event* e) {
   // AcquireEvent* acquireEvnt = reinterpret_cast<AcquireEvent*>(e);

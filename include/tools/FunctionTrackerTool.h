@@ -14,7 +14,10 @@
 #define  FUNCTIONTRACKERTOOL_H_
 
 #include "Tool.h"
+
 #include "Event.h"
+#include "CallEvent.h"
+#include "NewThreadEvent.h"
 
 #include <iostream>
 #include <fstream>

@@ -18,17 +18,16 @@ class ShadowThread {
 public:
 	typedef TRD_ID ThreadId;
 
-	ShadowThread(ThreadId threadId);
+	ShadowThread(ThreadId threadId)
+		: threadId(threadId)
+	{};
+
 	const ThreadId threadId;
 
 	CALLSITE currentCallSiteID;
 	FUN_SG currentFunctionSignature; 
 
-	bool operator < (const ShadowThread& other) const;
-
-	//template<typename Key, typename Value> static Decoration<Key, Value> makeDec(const Value& init) {
-	//	return Decoration<Key, Value>(init);	
-	// }
+	bool operator < (const ShadowThread& other) const { return threadId < other.threadId; };
 
 private:
 

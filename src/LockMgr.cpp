@@ -2,7 +2,7 @@
 
 ShadowLock::LockId LockMgr::currentLockId_ = 0;
 
-ShadowLock* LockMgr::getLock(RefNo refNo) {
+ShadowLock* LockMgr::getLock(REF_ID refNo) {
 	
 	ShadowLock* lock = nullptr;
 	/*auto search = memLockMap_.find(address);
@@ -23,7 +23,7 @@ ShadowLock* LockMgr::getLock(RefNo refNo) {
 	return lock;
 }
 
-void LockMgr::lockDestroyed(RefNo refNo) {
+void LockMgr::lockDestroyed(REF_ID refNo) {
 	
 	auto search = memLockMap_.find(refNo);
 	if (search != memLockMap_.end())
