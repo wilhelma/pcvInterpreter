@@ -23,9 +23,8 @@ bool EventService::publish(const NewThreadEvent *event) {
 bool EventService::publish(const ThreadEndEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-    if ( (it->second.events | Events::THREADEND) != 0 ) {
+    if ((it->second.events & Events::THREADEND) != 0)
 			it->first->create(event);
-		}
 	}
 
 	return true;
@@ -61,9 +60,8 @@ bool EventService::publish(const ReleaseEvent *event) {
 bool EventService::publish(const ReturnEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
-    if ( (it->second.events | Events::RETURN) != 0 ) {
+    if ((it->second.events & Events::RETURN) != 0)
 			it->first->release(event);
-		}
 	}
 
 	return true;
