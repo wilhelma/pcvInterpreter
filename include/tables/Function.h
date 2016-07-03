@@ -12,6 +12,8 @@
 #ifndef  FUNCTION_H_
 #define  FUNCTION_H_
 
+#include <iostream>
+
 #include "Types.h"
 
 /*! @brief The type of the function */

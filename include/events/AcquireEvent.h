@@ -24,7 +24,7 @@ class AcquireEvent : public Event {
 public:
 	AcquireEvent(const ShadowThread *thread,
 				 const AcquireInfo *info) :
-					 Event(thread), _info(info) {};
+		Event(thread), _info(info) {};
 
 	virtual Events getEventType() const override final { return Events::ACQUIRE; };
 	const AcquireInfo* const getAcquireInfo() const { return _info; };

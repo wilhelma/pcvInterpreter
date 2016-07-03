@@ -31,7 +31,7 @@ class AccessEvent : public Event {
 public:
 	AccessEvent(const ShadowThread *thread,
 				const AccessInfo *info) :
-					 Event(thread), _info(info) {};
+		Event(thread), _info(info) {};
 
 	virtual Events getEventType() const override final { return Events::ACCESS; };
 	const AccessInfo* const getAccessInfo() const { return _info; };

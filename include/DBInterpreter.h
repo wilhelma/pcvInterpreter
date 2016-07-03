@@ -32,6 +32,18 @@
 #include "Thread.h"
 #include "DBTable.h"
 
+#include "AccessTable.h"
+#include "CallTable.h"
+#include "FileTable.h"
+#include "FunctionTable.h"
+#include "InstructionTable.h"
+#include "LoopTable.h"
+#include "LoopExecutionTable.h"
+#include "LoopIterationTable.h"
+#include "ReferenceTable.h"
+#include "SegmentTable.h"
+#include "ThreadTable.h"
+
 #include "Types.h"
 
 class LockMgr;
@@ -51,10 +63,10 @@ public:
 		  _logFile(logFile), _eventService(service)
 	{};
 
-	~DBInterpreter() {};
+	virtual ~DBInterpreter() override final {};
 
-	EventService* getEventService() override { return _eventService; };
-	int process() override;
+	virtual int process() override final;
+	virtual EventService* getEventService() override final { return _eventService; };
 
 private:
 
@@ -67,28 +79,23 @@ private:
 												  const call_t& call,
 												  const reference_t& reference);
 
-	typedef std::vector<ACC_ID> accessVector_t;
-	typedef std::map<INS_ID, accessVector_t> insAccessMap_t;
-//	typedef std::map<REF_NO, REF_ID> refNoIdMap_t;
 	typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
 	// members-----------------------------------------------------------------
-	DBTable<ACC_ID, access_t> accessT_;
-	DBTable<CAL_ID, call_t> callT_;
-	DBTable<FIL_ID, file_t> fileT_;
-	DBTable<FUN_ID, function_t> functionT_;
-	DBTable<INS_ID, instruction_t> instructionT_;
-	DBTable<LOP_ID, loop_t> loopT_;
-	DBTable<LOE_ID, loopExecution_t> loopExecutionT_;
-	DBTable<REF_ID, reference_t> referenceT_;
-	DBTable<LOI_ID, loopIteration_t> loopIterationT_;
-	DBTable<SEG_ID, segment_t> segmentT_; 
-	DBTable<TRD_ID, thread_t> threadT_;
+	AccessTable        accessTable;
+	CallTable          callTable;
+	FileTable          fileTable;
+	FunctionTable      functionTable;
+	InstructionTable   instructionTable;
+	LoopTable          loopTable;
+	LoopExecutionTable loopExecutionTable;
+	LoopIterationTable loopIterationTable;
+	ReferenceTable     referenceTable;
+	SegmentTable       segmentTable; 
+	ThreadTable        threadTable;
 
 	CallStack callStack_;
   
-	insAccessMap_t _insAccessMap;
-//	refNoIdMap_t _refNoIdMap;
 	const char* _dbPath;
 	const char* _logFile;
 	EventService *_eventService;
@@ -98,21 +105,12 @@ private:
 	static InstructionType transformInstrType(const instruction_t& ins);
 	static ReferenceType getVarType(ReferenceType memType);
 
-	int loadDB(const char* path, sqlite3 **db);
-	int closeDB(sqlite3 **db);
-	int fillStructures(sqlite3 **db);
-	int fillGeneric(const char *sql, sqlite3 **db, fillFunc_t func);
-	int fillAccess(sqlite3_stmt *stmt);
-	int fillCall(sqlite3_stmt *stmt);
-	int fillFile(sqlite3_stmt *stmt);
-	int fillFunction(sqlite3_stmt *stmt);
-	int fillInstruction(sqlite3_stmt *stmt);
-	int fillLoop(sqlite3_stmt *stmt);
-	int fillLoopExecution(sqlite3_stmt *stmt);
-	int fillLoopIteration(sqlite3_stmt *stmt);
-	int fillReference(sqlite3_stmt *stmt);
-	int fillSegment(sqlite3_stmt *stmt);
-	int fillThread(sqlite3_stmt *stmt);
+	int loadDB(const char* path, sqlite3 **db) const;
+	int importDB(sqlite3 **db);
+	int closeDB(sqlite3 **db) const;
+
+	template<typename IdT, typename T>
+	int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
 
 	int processReturn(const instruction_t& ins);
 

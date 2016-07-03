@@ -26,20 +26,20 @@ class ThreadMgr;
  * Interpreter (abstract)
  *****************************************************************************/
 class Interpreter {
-public:
-	Interpreter(LockMgr* lockMgr, ThreadMgr* threadMgr, const char* logFile); 
-	virtual int process() = 0;
-	void initLogger();
+	public:
+		Interpreter(LockMgr* lockMgr, ThreadMgr* threadMgr, const char* logFile); 
+		virtual int process() = 0;
+		void initLogger() const;
 
-  virtual ~Interpreter() {}
-	virtual EventService* getEventService() = 0;
+		virtual ~Interpreter() {}
+		virtual EventService* getEventService() = 0;
 
-protected:
-	LockMgr* lockMgr_;
-	ThreadMgr* threadMgr_;
+	protected:
+		LockMgr* lockMgr_;
+		ThreadMgr* threadMgr_;
 
-private:
-	const char* logFile_;
+	private:
+		const char* logFile_;
 };
 
 

@@ -26,7 +26,7 @@ class JoinEvent : public Event {
 public:
 	JoinEvent(const ShadowThread *thread,
 			  const JoinInfo *info) :
-			  Event(thread), _info(info) {};
+		Event(thread), _info(info) {};
 
 	virtual Events getEventType() const override final { return Events::JOIN; };
 	const JoinInfo* const getJoinInfo() const { return _info; };
