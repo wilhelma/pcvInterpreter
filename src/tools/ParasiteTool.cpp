@@ -148,6 +148,9 @@ ParasiteTool::~ParasiteTool() {
 }
 
 void ParasiteTool::create(const Event* e) {
+
+  printf("starting new thread Event \n");
+
   NewThreadEvent* newThreadEvnt = (NewThreadEvent*) e;
 	std::shared_ptr<NewThreadEvent> newThreadEvent(newThreadEvnt);
   const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
@@ -167,9 +170,14 @@ void ParasiteTool::create(const Event* e) {
   main_stack->init_thread_frame(main_stack->current_thread_index + 1, 
                                 main_stack->current_function_index + 1);
   main_stack->current_thread_index += 1;
+
+  printf("ending new thread Event \n");
 }
 
 void ParasiteTool::join(const Event* e) {
+
+  printf("starting join Event");
+
   JoinEvent* joinEvnt = (JoinEvent*) e;
 	std::shared_ptr<JoinEvent> joinEvent(joinEvnt);
   const JoinInfo* _info(joinEvent->getJoinInfo());
@@ -208,9 +216,14 @@ void ParasiteTool::join(const Event* e) {
   bottom_thread_frame->longest_child_lock_span = 0;
   bottom_function_frame->running_span = 0;
   bottom_thread_frame->local_continuation = 0;
+
+  printf("ending join Event \n");
 }
 
 void ParasiteTool::call(const Event* e) {
+
+  printf("starting call Event \n");
+
   CallEvent* callEvnt = (CallEvent*) e;
 	std::shared_ptr<CallEvent> callEvent(callEvnt);
 	const CallInfo* _info(callEvent->getCallInfo());
@@ -227,9 +240,14 @@ void ParasiteTool::call(const Event* e) {
   main_stack->current_function_index += 1;
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
+
+  printf("ending call Event \n");
 }
 
 void ParasiteTool::returnOfCalled(const Event* e) {
+
+  printf("starting return Event \n");
+
   ReturnEvent* returnEvnt = (ReturnEvent*) e;
   std::shared_ptr<ReturnEvent> returnEvent(returnEvnt);
   const ReturnInfo* _info(returnEvent->getReturnInfo());
@@ -283,9 +301,13 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   // should be the last step here
   main_stack->function_stack.pop_back();
   main_stack->current_function_index -= 1;
+
+   printf("ending return Event \n");
 }
 
 void ParasiteTool::threadEnd(const Event* e) {
+
+  printf("starting thread end Event \n");
 
   ThreadEndEvent* threadEndEvnt = (ThreadEndEvent*) e;
   std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEndEvnt);
@@ -378,6 +400,8 @@ void ParasiteTool::threadEnd(const Event* e) {
   // because the pop operation destroys the frame
   main_stack->thread_stack.pop_back();
   main_stack->current_thread_index -= 1;
+
+  printf("ending thread end Event \n");
 }
 
 void ParasiteTool::acquire(const Event* e) {

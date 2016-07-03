@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
 
-	ParasiteTool *parasiteTool = new ParasiteTool();
+	// ParasiteTool *parasiteTool = new ParasiteTool();
 
 	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 
@@ -57,18 +57,23 @@ int main(int argc, char* argv[]) {
     //                    Events::ACQUIRE | Events::RELEASE |
     //                    Events::JOIN );
 
+
+    printf("after registering function Tool");
+	
 	// Start interpretation
 	runner->interpret();
 
+	printf("after interpret()");
+
 	// unregister
 	runner->removeTool(functionTool);
-	runner->removeTool(parasiteTool);
+	// runner->removeTool(parasiteTool);
 
 	delete interpreter;
 	delete service;
 	delete runner;
 	delete functionTool;
-	delete parasiteTool;
+	// delete parasiteTool;
 
 	return 0;
 }

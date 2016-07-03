@@ -107,9 +107,13 @@ int DBInterpreter::process() {
         return IN_ABORT;
     }
 
+    printf("after filling internal maps \n");
+
     // process database entries
     for (const auto& instruction : instructionTable)
         processInstruction(instruction.second);
+
+    printf("after processing database entries");
 
     closeDB(&db);
     return 0;

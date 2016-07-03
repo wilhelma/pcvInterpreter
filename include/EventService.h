@@ -45,7 +45,7 @@ private:
 	// structures
 	struct _observers {
 		const Filter* filter;
-		enum Events events;
+		Events events;
 	};
 
 	// types
