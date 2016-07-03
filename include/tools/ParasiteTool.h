@@ -19,11 +19,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include "AccessEvent.h"
+#include "CallEvent.h"
 #include "CallSiteProfile.h"
-#include "DataModel.h"
-#include "DBDataModel.h"
 #include "EndProfiles.h"
 #include "Event.h"
+#include "JoinEvent.h"
+#include "NewThreadEvent.h"
+#include "ReturnEvent.h"
+#include "ThreadEndEvent.h"
+
 #include "Interpreter.h"
 #include "ParasiteStack.h"
 #include "ShadowLock.h"
@@ -103,6 +108,13 @@ class ParasiteTool : public Tool {
 				containing no parallel control.
 	*/
 	TIME last_strand_start_time;
+
+
+	/**
+	*    @var last_function_runtime
+	*    @brief Duration of the last function that was called. 
+	*/
+	TIME last_function_runtime;
 
 	/**
 	*    @var total_locks_running

@@ -218,7 +218,7 @@ void ParasiteTool::call(const Event* e) {
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	TRD_ID calledThreadID = callEvent->getThread()->threadId;
 	CALLSITE callsiteID = _info->siteId;
-	TIME callTime = _info->startTime;
+  last_function_runtime = _info->runtime;
 
   main_stack->function_stack_push();
   std::shared_ptr<function_frame_t> new_function_frame = 
@@ -235,7 +235,8 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   const ReturnInfo* _info(returnEvent->getReturnInfo());
 
   TIME returnTime = _info->endTime;
-  double local_work = returnTime - last_strand_start_time;
+  double local_work = last_function_runtime;
+  // double local_work = returnTime - last_strand_start_time;
   last_strand_start_time = returnTime;
 
   std::shared_ptr<function_frame_t> returned_function_frame(main_stack->
@@ -287,9 +288,9 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 void ParasiteTool::threadEnd(const Event* e) {
 
   ThreadEndEvent* threadEndEvnt = (ThreadEndEvent*) e;
-  std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEvnt);
-  const std::shared_ptr<ThreadEndInfo> _info(threadEndEvent->getThreadEndInfo());
-  TIME threadEndTime = _info->threadEndTime;
+  std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEndEvnt);
+  const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
+  TIME threadEndTime = _info->endTime;
 
   double strand_length = threadEndTime - last_strand_start_time;
   std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->
