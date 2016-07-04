@@ -13,6 +13,7 @@
 #define CALL_SITE_PROFILE_H_
 
 #include <unordered_map>
+#include <memory>
 #include "Types.h"
 
 /**
