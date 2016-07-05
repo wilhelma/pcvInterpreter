@@ -19,8 +19,9 @@
 #include <unordered_map>
 #include <string>
 
-#include "Types.h"
 #include "CallSiteProfile.h"
+#include "EndProfiles.h"
+#include "Types.h"
 
 /**
 *    @struct CallSiteHash

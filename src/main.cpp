@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
 	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 
-	ParasiteTool *ParasiteTool = new ParasiteTool();
+	ParasiteTool *parasiteTool = new ParasiteTool();
 
 	// register functionTool, no filters, only CALL events
   	runner->registerTool(functionTool, NULL,
