@@ -183,26 +183,31 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 	if (search_segment != segmentTable.end()) {  
 		switch (ins.instruction_type) {
 			case InstructionType::CALL:
+        printf("CALL instruction \n");
 				// XXX this doesn't change `accessFunc`
 				processSegment(ins.segment_id, search_segment->second, ins);
 				processReturn(ins);
 				break;
 			case InstructionType::ACCESS:
+        printf("ACCESS instruction \n");
 				search_call = callTable.find(search_segment->second.call_id);
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processMemAccess;
 				break;
 			case InstructionType::ALLOC:
+        printf("ALLOC instruction \n");
 				search_call = callTable.find(search_segment->second.call_id);
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processAcqAccess;
 				break;
 			case InstructionType::FREE:
+        printf("FREE instruction \n");
 				search_call = callTable.find(search_segment->second.call_id);
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processRelAccess;
 				break;
 			case InstructionType::FORK:
+        printf("FORK instruction \n");
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.create_instruction_id) {
@@ -213,6 +218,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				}
 				break;
 			case InstructionType::JOIN:
+        printf("JOIN instruction \n");
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.join_instruction_id) {
@@ -229,9 +235,15 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 
 	if (accessFunc != nullptr) {
 		// loop over all memory accesses of the instruction
+
+
 		for (const auto& it : accessTable.getInsAccessMap().find(ins.instruction_id)->second) {
 
+      // typedef std::map<INS_ID, accessVector_t> insAccessMap_t;
+      // typedef std::vector<ACC_ID> accessVector_t;
+
 			auto searchAccess = accessTable.find(it);
+
 			if (searchAccess != accessTable.end()) {
 
 				// possible BUG (conversion INS_ID -> ACC_ID)

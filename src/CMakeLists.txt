@@ -5,17 +5,21 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST
+	CallSiteHashtable.cpp
+	CallSiteProfile.cpp
 	DBInterpreter.cpp
 	EventService.cpp
 	Interpreter.cpp
 	LockMgr.cpp
 	main.cpp
+	ParasiteStack.cpp
 	SAAPRunner.cpp
 	ThreadMgr.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tools/FunctionTrackerTool.cpp
 	tools/LockSetChecker.cpp
+	tools/ParasiteTool.cpp
 	tools/RaceDetectionTool.cpp)
 
 set(SRC_LIST ${SRC_LIST}

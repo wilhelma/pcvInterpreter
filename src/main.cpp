@@ -12,6 +12,7 @@
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
+#include "ParasiteTool.h"
 #include "LockMgr.h"
 #include "ThreadMgr.h"
 
@@ -40,8 +41,11 @@ int main(int argc, char* argv[]) {
 	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
 	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
+
+	ParasiteTool *ParasiteTool = new ParasiteTool();
+
 	// register functionTool, no filters, only CALL events
-  runner->registerTool(functionTool, NULL,
+  	runner->registerTool(functionTool, NULL,
                        Events::CALL | Events::NEWTHREAD );
 
 	// Start interpretation
