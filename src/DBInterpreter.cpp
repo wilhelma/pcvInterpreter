@@ -82,7 +82,7 @@ int DBInterpreter::importDB(sqlite3 **db) {
 int DBInterpreter::closeDB(sqlite3 **db) const {
 
     if ( sqlite3_close(*db) != SQLITE_OK)
-        BOOST_LOG_TRIVIAL(fatal) <<  "Can't close database - error: "  
+        BOOST_LOG_TRIVIAL(fatal) <<  "Can't close database - error: "
                                  <<  sqlite3_errmsg(*db);
 
     return IN_OK;
@@ -139,13 +139,13 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 		}
 	}
 
-	// if the iterator reached the end, no entry has been found in callT_ 
+	// if the iterator reached the end, no entry has been found in callT_
 	if (!found) {
 		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
 			<< ins.instruction_id;
 		return static_cast<CAL_ID>(IN_NO_ENTRY);
 	}
-	
+
 	return call_id;
 }
 
@@ -180,7 +180,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 
 	SegmentTable::const_iterator search_segment = segmentTable.find(ins.segment_id);
 	CallTable::const_iterator search_call = callTable.cend(); // dumb value
-	if (search_segment != segmentTable.end()) {  
+	if (search_segment != segmentTable.end()) {
 		switch (ins.instruction_type) {
 			case InstructionType::CALL:
 				// XXX this doesn't change `accessFunc`
@@ -224,28 +224,32 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				break;
 			default:
 				return IN_NO_ENTRY;
-		}   
-	}            
+		}
+	}
 
 	if (accessFunc != nullptr) {
 		// loop over all memory accesses of the instruction
-		for (const auto& it : accessTable.getInsAccessMap().find(ins.instruction_id)->second) {
+    const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
+    const auto& avIt = insAccessMap.find(ins.instruction_id);
+    if (avIt != insAccessMap.end()) {
+      for (const auto& it : avIt->second) {
 
-			auto searchAccess = accessTable.find(it);
-			if (searchAccess != accessTable.end()) {
+        auto searchAccess = accessTable.find(it);
+        if (searchAccess != accessTable.end()) {
 
-				// possible BUG (conversion INS_ID -> ACC_ID)
-				processAccessGeneric(searchAccess->first,
-						searchAccess->second,
-						ins,
-						search_segment->second,
-						search_call->second,
-						accessFunc);
-			} else {
-				BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
-				return IN_NO_ENTRY;
-			}
-		}
+          // possible BUG (conversion INS_ID -> ACC_ID)
+          processAccessGeneric(searchAccess->first,
+              searchAccess->second,
+              ins,
+              search_segment->second,
+              search_call->second,
+              accessFunc);
+        } else {
+          BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
+          return IN_NO_ENTRY;
+        }
+      }
+    }
 	}
 
 	return IN_OK;
@@ -278,7 +282,7 @@ int DBInterpreter::processCall(CAL_ID callId,
                                const segment_t& seg,
                                const instruction_t& ins) {
 
-	// fetch called function 
+	// fetch called function
 	auto search = functionTable.find(call.function_id);
 
 	// check that the function exists
@@ -343,7 +347,7 @@ int DBInterpreter::processAccessGeneric(ACC_ID accessId,
     return IN_OK;
 }
 
-int DBInterpreter::processMemAccess(ACC_ID accessId, 
+int DBInterpreter::processMemAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
@@ -372,32 +376,32 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
     return 0;
 }
 
-int DBInterpreter::processAcqAccess(ACC_ID accessId, 
+int DBInterpreter::processAcqAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
                                     const call_t& call,
                                     const reference_t& reference) {
-    
+
     ShadowThread* thread = threadMgr_->getThread(call.thread_id);
     ShadowLock *lock = lockMgr_->getLock(reference.id);
-    AcquireInfo info(lock);                   
+    AcquireInfo info(lock);
     AcquireEvent event( thread, &info );
     _eventService->publish( &event );
 
     return 0;
 }
 
-int DBInterpreter::processRelAccess(ACC_ID accessId, 
+int DBInterpreter::processRelAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
                                     const call_t& call,
                                     const reference_t& reference) {
-        
+
     ShadowThread* thread = threadMgr_->getThread(call.thread_id);
     ShadowLock *lock = lockMgr_->getLock(reference.id);
-    ReleaseInfo info(lock);                   
+    ReleaseInfo info(lock);
     ReleaseEvent event( thread, &info );
     _eventService->publish( &event );
 
@@ -423,7 +427,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
-                                       
+
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     JoinInfo info(cT, pT);
