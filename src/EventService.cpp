@@ -11,96 +11,74 @@
 #include "Tool.h"
 #include "Event.h"
 
-bool EventService::publish(const NewThreadEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::NEWTHREAD) != 0) 
-			it->first->create(event);
+bool EventService::publish(const NewThreadEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::NEWTHREAD) != 0) 
+			it.first->create(event);
 
 	return true;
 }
 
-bool EventService::publish(const ThreadEndEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it) {
-    if ((it->second.events & Events::THREADEND) != 0)
-			it->first->create(event);
-	}
+bool EventService::publish(const ThreadEndEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::THREADEND) != 0)
+			it.first->create(event);
 
 	return true;
 }
 
-bool EventService::publish(const JoinEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::JOIN) != 0)
-			it->first->create(event);
+bool EventService::publish(const JoinEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::JOIN) != 0)
+			it.first->create(event);
 
 	return true;
 }
 
-bool EventService::publish(const AcquireEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::ACQUIRE) != 0)
-			it->first->acquire(event);
+bool EventService::publish(const AcquireEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::ACQUIRE) != 0)
+			it.first->acquire(event);
 
 	return true;
 }
 
-bool EventService::publish(const ReleaseEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::RELEASE) != 0)
-			it->first->release(event);
+bool EventService::publish(const ReleaseEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::RELEASE) != 0)
+			it.first->release(event);
 
 	return true;
 }
 
-bool EventService::publish(const ReturnEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it) {
-    if ((it->second.events & Events::RETURN) != 0)
-			it->first->release(event);
-	}
+bool EventService::publish(const ReturnEvent *event) const {
+	for (const auto& it : _observers)
+    if ((it.second.events & Events::RETURN) != 0)
+			it.first->release(event);
 
 	return true;
 }
 
-bool EventService::publish(const AccessEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::ACCESS) != 0)
-			it->first->access(event);
+bool EventService::publish(const AccessEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::ACCESS) != 0)
+			it.first->access(event);
 
 	return true;
 }
 
-bool EventService::publish(const CallEvent *event) {
-	_observers_t::iterator it;
-	for (it = _observers.begin(); it != _observers.end(); ++it)
-		if ((it->second.events & Events::CALL) != 0)
-			it->first->call(event);
+bool EventService::publish(const CallEvent *event) const {
+	for (const auto& it : _observers)
+		if ((it.second.events & Events::CALL) != 0)
+			it.first->call(event);
 
 	return true;
 }
 
-bool EventService::subscribe(Tool* tool,
-		const Filter* filter,
-		enum Events events) {
-
-	if (_observers.find(tool) != _observers.end())
-		return false;
-
-	struct _observers obj;
-	obj.filter = filter;
-	obj.events = events;
-	_observers[tool] = obj;
-
-	return true;
+bool EventService::subscribe(Tool* tool, const Filter* const filter, Events events) {
+	return _observers.insert(_observers_t::value_type(tool, _observer(filter, events))).second;
 }
 
 bool EventService::unsubscribe(Tool* tool) {
-
 	return (_observers.erase(tool) > 0);
 }
