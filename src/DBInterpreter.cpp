@@ -211,7 +211,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.create_instruction_id) {
-						auto search_call = callTable.find(search_segment->second.call_id);
+						search_call = callTable.find(search_segment->second.call_id);
 						if (search_call != callTable.cend())
 							processFork(ins, search_segment->second, search_call->second, thread);
 					}
@@ -222,7 +222,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
 					if (ins.instruction_id == thread.join_instruction_id) {
-						auto search_call = callTable.find(search_segment->second.call_id);
+						search_call = callTable.find(search_segment->second.call_id);
 						if (search_call != callTable.cend())
 							processJoin(ins, search_segment->second, search_call->second, thread);
 					}
@@ -424,7 +424,9 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 
-	_eventService->publish(new ThreadEndEvent(cT, new ThreadEndInfo(call.end_time, thread.id)));
+	ThreadEndInfo  end_info(call.end_time, thread.id);
+	ThreadEndEvent end_event(cT, &end_info);
+	_eventService->publish(&end_event);
 
     return 0;
 }

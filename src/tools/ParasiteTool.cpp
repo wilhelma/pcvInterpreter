@@ -164,7 +164,7 @@ void ParasiteTool::create(const Event* e) {
 
   NewThreadEvent* newThreadEvent = (NewThreadEvent*) e;
   const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
-  const ShadowThread::ThreadId newThreadID = _info->childThread->threadId;
+  const TRD_ID newThreadID(_info->childThread->threadId);
   TIME create_time = _info->startTime;
   double strand_length = create_time - last_strand_start_time;
 

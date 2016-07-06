@@ -24,7 +24,7 @@ bool EventService::publish(const ThreadEndEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
     if ((it->second.events & Events::THREADEND) != 0)
-			it->first->create(event);
+			it->first->threadEnd(event);
 	}
 
 	return true;
@@ -34,7 +34,7 @@ bool EventService::publish(const JoinEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it)
 		if ((it->second.events & Events::JOIN) != 0)
-			it->first->create(event);
+			it->first->join(event);
 
 	return true;
 }
@@ -61,7 +61,7 @@ bool EventService::publish(const ReturnEvent *event) {
 	_observers_t::iterator it;
 	for (it = _observers.begin(); it != _observers.end(); ++it) {
     if ((it->second.events & Events::RETURN) != 0)
-			it->first->release(event);
+			it->first->returnOfCalled(event);
 	}
 
 	return true;

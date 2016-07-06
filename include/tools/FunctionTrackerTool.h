@@ -47,6 +47,8 @@ class FunctionTrackerTool: public Tool {
 		// no longer accessible from outside
 		// XXX final => no class should inherit from this!
 		void create(const Event* e) final override;
+		void threadEnd(const Event* e) final override {};
+		void returnOfCalled(const Event* e) final override {};
 		void join(const Event* e) final override;
 		void acquire(const Event* e) final override;
 		void release(const Event* e) final override;
