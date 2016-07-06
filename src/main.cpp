@@ -16,7 +16,6 @@
 #include "LockMgr.h"
 #include "ThreadMgr.h"
 
-
 int main(int argc, char* argv[]) {
 
 	// check arguments
@@ -44,7 +43,14 @@ int main(int argc, char* argv[]) {
 
 	ParasiteTool *parasiteTool = new ParasiteTool();
 
-	// register functionTool, no filters, only CALL events
+	// register functionTool, no filters, all events except ACCESS
+	runner->registerTool(parasiteTool, NULL,
+						 Events::CALL | Events::NEWTHREAD | 
+						 Events::THREADEND | Events::JOIN | 
+						 Events::ACQUIRE | Events::RELEASE | 
+						 Events::RETURN );
+
+	// register functionTool, no filters, only CALL and NEWTHREAD events
   	runner->registerTool(functionTool, NULL,
                        Events::CALL | Events::NEWTHREAD );
 
@@ -53,6 +59,7 @@ int main(int argc, char* argv[]) {
 
 	// unregister
 	runner->removeTool(functionTool);
+	runner->removeTool(parasiteTool);
 
 	delete interpreter;
 	delete service;
