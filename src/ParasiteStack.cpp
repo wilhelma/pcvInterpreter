@@ -11,7 +11,26 @@
 
 #include "ParasiteStack.h"
 
-ParasiteStack::~ParasiteStack() {}
+ParasiteStack::ParasiteStack() {
+	// create empty function stack vector
+	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
+
+	// create empty thread stack vector
+	std::vector< std::shared_ptr<thread_frame_t> > thrd_stack;
+
+	// create empty call site hashtable
+	std::shared_ptr<call_site_hashtable_t> wrk_table;
+
+	function_stack = fxn_stack;
+	thread_stack = thrd_stack;
+	work_table = wrk_table;
+	current_function_index = 0;
+	current_thread_index = 0;
+}
+
+ParasiteStack::~ParasiteStack() {
+
+}
 
 void ParasiteStack::init_function_frame(int function_index) {
 	function_stack.at(function_index)->local_work = 0;
@@ -33,8 +52,7 @@ void ParasiteStack::init_thread_frame(int thread_index,
 }
 
 void ParasiteStack::thread_stack_push() {
-	std::shared_ptr<thread_frame_t> new_thread_frame(new thread_frame_t);
-	thread_stack.push_back(new_thread_frame);
+	thread_stack.push_back(std::shared_ptr<thread_frame_t> (new thread_frame_t));
 	current_thread_index += 1;
 }
 

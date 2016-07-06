@@ -73,7 +73,18 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
   end_profile->local_count_on_span  = collected_profile->local_count;
 }
 
-ParasiteTool::ParasiteTool() {}
+ParasiteTool::ParasiteTool() {
+  main_stack = std::unique_ptr<ParasiteStack>(new ParasiteStack);
+  parasite_profile = std::unique_ptr<parasite_profile_t>(new parasite_profile_t);
+  end_call_site_profile_hashtable = std::unique_ptr<call_site_end_hashtable_t>(new call_site_end_hashtable_t);
+
+  std::unordered_map<unsigned int, int> lck_hashtable;
+  lock_hashtable = lck_hashtable;
+
+  last_strand_start_time = (TIME) 0.0;
+  last_function_runtime = (TIME) 0.0;
+  total_locks_running = 0;
+}
 
 void ParasiteTool::getEndProfile() {
   std::shared_ptr<thread_frame_t> bottom_thread_frame = 
@@ -156,15 +167,12 @@ void ParasiteTool::create(const Event* e) {
   const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
   TRD_ID newThreadID = _info->childThread->threadId;
   TIME create_time = _info->startTime;
-
   double strand_length = create_time - last_strand_start_time;
-  std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->
-                                                      thread_stack.back());
-  bottom_thread_frame->local_continuation += strand_length;
-  main_stack->thread_stack_push();
-  std::shared_ptr<thread_frame_t> new_thread_frame = 
-                  main_stack->thread_stack.at(main_stack->current_thread_index);
 
+  main_stack->thread_stack_push();
+  std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
+  bottom_thread_frame->local_continuation += strand_length;
+  std::shared_ptr<thread_frame_t> new_thread_frame = main_stack->thread_stack.at(main_stack->current_thread_index);
   new_thread_frame->thread = newThreadID;
 
   main_stack->init_thread_frame(main_stack->current_thread_index + 1, 

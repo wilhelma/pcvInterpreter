@@ -163,6 +163,7 @@ struct thread_frame_t {
 
 class ParasiteStack {
 	public:
+		
 		ParasiteStack();
 		~ParasiteStack();
 
