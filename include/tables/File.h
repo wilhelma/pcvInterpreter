@@ -14,14 +14,14 @@
 
 #include "Types.h"
 
-typedef struct file_t {
+struct file_t {
     FIL_ID sql_id;
     FIL_PT file_path;
     FIL_PT file_name; // retrieved from file_path
 
     explicit
     file_t(FIL_ID sqlID,
-           FIL_PT filePath)
+           FIL_PT filePath) noexcept
         : sql_id(sqlID), file_path(filePath)
     {
         retrieveFileName( filePath );
@@ -43,6 +43,6 @@ typedef struct file_t {
         this->file_name = filePath.substr( pos );
         return 0;
     }
-} file_t;
+};
 
 #endif

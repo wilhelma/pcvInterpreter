@@ -8,25 +8,22 @@
 #ifndef EVENTSERVICE_H_
 #define EVENTSERVICE_H_
 
-#include <map>
-
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/Filter.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ThreadEndEvent.h"
+#include "fwd/Tool.h"
 
 #include "Event.h"
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "CallEvent.h"
-#include "JoinEvent.h"
-#include "NewThreadEvent.h"
-#include "ReleaseEvent.h"
-#include "ReturnEvent.h"
-#include "ThreadEndEvent.h"
 
-#include "Tool.h"
-#include "Filter.h"
+#include <map>
 
-/******************************************************************************
- * EventService (Observable)
- *****************************************************************************/
+/// \class EventService (observable)
 class EventService {
 public:
 	EventService() {}

@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOWLOCK_H_
-#define SHADOWLOCK_H_
+#ifndef SHADOW_LOCK_H_
+#define SHADOW_LOCK_H_
 
 #include "Types.h"
 

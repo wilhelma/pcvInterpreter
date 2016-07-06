@@ -8,30 +8,25 @@
 #ifndef DBINTERPRETER_H_
 #define DBINTERPRETER_H_
 
-#include <sqlite3.h>
-#include <map>
-#include <vector>
-#include <string.h>
+// Tables
+#include "fwd/Access.h"
+#include "fwd/Call.h"
+#include "fwd/File.h"
+#include "fwd/Function.h"
+#include "fwd/Instruction.h"
+#include "fwd/Loop.h"
+#include "fwd/LoopExecution.h"
+#include "fwd/LoopIteration.h"
+#include "fwd/Reference.h"
+#include "fwd/Segment.h"
+#include "fwd/Thread.h"
 
+#include "fwd/EventService.h"
+
+#include "DBTable.h"
 #include "CallStack.h"
 #include "Interpreter.h"
-#include "EventService.h"
-#include "ShadowThread.h"
 #include "ShadowVar.h"
-
-#include "Access.h"
-#include "Call.h"
-#include "File.h"
-#include "Function.h"
-#include "Instruction.h"
-#include "Loop.h"
-#include "LoopExecution.h"
-#include "LoopIteration.h"
-#include "Reference.h"
-#include "Segment.h"
-#include "Thread.h"
-#include "DBTable.h"
-
 #include "AccessTable.h"
 #include "CallTable.h"
 #include "FileTable.h"
@@ -43,6 +38,11 @@
 #include "ReferenceTable.h"
 #include "SegmentTable.h"
 #include "ThreadTable.h"
+
+#include <sqlite3.h>
+#include <map>
+#include <vector>
+#include <string.h>
 
 #include "Types.h"
 

@@ -16,11 +16,13 @@
 #include <map>
 #include <vector>
 #include <memory>
-#include "Interpreter.h"
-#include "Event.h"
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "NewThreadEvent.h"
+//#include "Interpreter.h"
+//#include "Event.h"
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/NewThreadEvent.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ShadowLock.h"
@@ -32,10 +34,12 @@
 class LockSetChecker : public Tool {
 public:
 	LockSetChecker(const char* outFile);
-	void NewThread(const Event* e) override;
-	void Acquire(const Event* e) override;
-	void Release(const Event* e) override;
-	void Access(const Event* e) override;
+
+	void Access(const AccessEvent* event) override final;
+	void Acquire(const AcquireEvent* event) override final;
+	void NewThread(const NewThreadEvent* event) override final;
+	void Release(const ReleaseEvent* event) override final;
+
 	~LockSetChecker();
 
 	typedef enum { WRITE_READ = 1,		// read after write (RAW)
@@ -47,10 +51,10 @@ public:
 	
 private:
 
-	virtual void Join(const Event* e) override final {};
-	virtual void Call(const Event* e) override final {};
-	virtual void Return(const Event* e) override final {};
-	virtual void ThreadEnd(const Event* e) override final {};
+	virtual void Join(const JoinEvent* event) override final {};
+	virtual void Call(const CallEvent* event) override final {};
+	virtual void Return(const ReturnEvent* event) override final {};
+	virtual void ThreadEnd(const ThreadEndEvent* event) override final {};
 
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {

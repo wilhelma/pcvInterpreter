@@ -10,36 +10,35 @@
 
 #include "Tool.h"
 
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+
+#include "fwd/ShadowThread.h"
+#include "fwd/ShadowVar.h"
+
+#include "ShadowLock.h"
+#include "Types.h"
+
 #include <iostream>
-#include <array>
 #include <set>
 #include <map>
 #include <vector>
 #include <memory>
-#include "Interpreter.h"
-
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "JoinEvent.h"
-#include "NewThreadEvent.h"
-#include "Event.h"
-
-#include "ShadowThread.h"
-#include "ShadowVar.h"
-#include "ShadowLock.h"
-#include "Types.h"
 
 #define THREADS 100
 
 class RaceDetectionTool : public Tool {
 public:
 	RaceDetectionTool(const char* outFile);
-	void NewThread(const Event* e) override;
-	void Join(const Event* e) override;
-	void Acquire(const Event* e) override;
-	void Release(const Event* e) override;
-	void Access(const Event* e) override;
 	~RaceDetectionTool();
+
+	virtual void NewThread(const NewThreadEvent* e) override final;
+	virtual void Join(const JoinEvent* e) override final;
+	virtual void Acquire(const AcquireEvent* e) override final;
+	virtual void Release(const ReleaseEvent* e) override final;
+	virtual void Access(const AccessEvent* e) override final;
 
 	typedef enum { WRITE_READ = 1,		// read after write (RAW)
 				   READ_WRITE = 2,		// write after read (WAR)
@@ -49,9 +48,9 @@ public:
 //	static Decoration<ShadowThread, Set> locksheld;
 	
 private:
-	virtual void Call(const Event* e) override final {};
-	virtual void ThreadEnd(const Event* e) override final {};
-	virtual void Return(const Event* e) override final {};
+	virtual void Call(const CallEvent* e) override final {};
+	virtual void ThreadEnd(const ThreadEndEvent* e) override final {};
+	virtual void Return(const ReturnEvent* e) override final {};
 
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {

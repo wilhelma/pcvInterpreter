@@ -5,11 +5,11 @@
  *      Author: wilhelma
  */
 
-#include <iostream>
 #include "EventService.h"
-#include "Filter.h"
 #include "Tool.h"
 #include "Event.h"
+
+#include <iostream>
 
 bool EventService::publish(const NewThreadEvent *event) const {
 	for (const auto& it : _observers)

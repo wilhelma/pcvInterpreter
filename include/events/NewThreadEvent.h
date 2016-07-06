@@ -12,22 +12,10 @@
 #ifndef  NEW_THREAD_EVENT_H_
 #define  NEW_THREAD_EVENT_H_
 
-#include "Event.h"
-#include "ShadowThread.h"
-#include "Types.h"
+#include "fwd/NewThreadInfo.h"
+#include "fwd/ShadowThread.h"
 
-struct NewThreadInfo {
-  ShadowThread* childThread;
-  ShadowThread* parentThread;
-  NUM_CYCLES runtime;
-  TIME startTime;
-  NewThreadInfo(ShadowThread* childThread,
-                ShadowThread* parentThread,
-                NUM_CYCLES runtime,
-                TIME_STRING startTimeString)
-    : childThread(childThread), parentThread(parentThread),
-	  runtime(runtime), startTime(timeStringToTime(startTimeString)) {}
-};
+#include "Event.h"
 
 class NewThreadEvent : public Event {
 public:

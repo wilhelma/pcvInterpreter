@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOWTHREAD_H_
-#define SHADOWTHREAD_H_
+#ifndef SHADOW_THREAD_H_
+#define SHADOW_THREAD_H_
 
 #include "Event.h"
 #include "Types.h"
@@ -36,4 +36,4 @@ private:
 	ShadowThread& operator=(const ShadowThread&);
 };
 
-#endif /* SHADOWTHREAD_H_ */
+#endif
