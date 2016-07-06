@@ -16,6 +16,7 @@
  *****************************************************************************/
 class ShadowThread {
 public:
+	
 	typedef TRD_ID ThreadId;
 
 	ShadowThread(ThreadId threadId)

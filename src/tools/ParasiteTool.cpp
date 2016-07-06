@@ -162,22 +162,21 @@ void ParasiteTool::create(const Event* e) {
 
   printf("starting new thread Event \n");
 
-  NewThreadEvent* newThreadEvnt = (NewThreadEvent*) e;
-	std::shared_ptr<NewThreadEvent> newThreadEvent(newThreadEvnt);
+  NewThreadEvent* newThreadEvent = (NewThreadEvent*) e;
   const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
-  TRD_ID newThreadID = _info->childThread->threadId;
+  const ShadowThread::ThreadId newThreadID = _info->childThread->threadId;
   TIME create_time = _info->startTime;
   double strand_length = create_time - last_strand_start_time;
 
   main_stack->thread_stack_push();
   std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
   bottom_thread_frame->local_continuation += strand_length;
+  printf("current thread index is %d \n", main_stack->current_thread_index);
   std::shared_ptr<thread_frame_t> new_thread_frame = main_stack->thread_stack.at(main_stack->current_thread_index);
   new_thread_frame->thread = newThreadID;
 
-  main_stack->init_thread_frame(main_stack->current_thread_index + 1, 
+  main_stack->init_thread_frame(main_stack->current_thread_index, 
                                 main_stack->current_function_index + 1);
-  main_stack->current_thread_index += 1;
 
   printf("ending new thread Event \n");
 }
@@ -185,23 +184,17 @@ void ParasiteTool::create(const Event* e) {
 void ParasiteTool::join(const Event* e) {
 
   printf("starting join Event");
-
-  JoinEvent* joinEvnt = (JoinEvent*) e;
-	std::shared_ptr<JoinEvent> joinEvent(joinEvnt);
+  JoinEvent* joinEvent = (JoinEvent*) e;
   const JoinInfo* _info(joinEvent->getJoinInfo());
 
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
 
-  std::shared_ptr<function_frame_t> bottom_function_frame(main_stack->
-                                                        function_stack.back());
-  std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->
-                                                      thread_stack.back());
-  bottom_function_frame->running_span += bottom_thread_frame->
-                                         local_continuation;
+  std::shared_ptr<function_frame_t> bottom_function_frame(main_stack->function_stack.back());
+  std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
+  bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
 
-  if (bottom_thread_frame->longest_child_span > bottom_function_frame->
-                                                running_span) {
+  if (bottom_thread_frame->longest_child_span > bottom_function_frame-> running_span) {
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
     bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
     bottom_thread_frame->prefix_span -= bottom_thread_frame->
@@ -231,9 +224,7 @@ void ParasiteTool::join(const Event* e) {
 void ParasiteTool::call(const Event* e) {
 
   printf("starting call Event \n");
-
-  CallEvent* callEvnt = (CallEvent*) e;
-	std::shared_ptr<CallEvent> callEvent(callEvnt);
+  CallEvent* callEvent = (CallEvent*) e;
 	const CallInfo* _info(callEvent->getCallInfo());
 
 	FUN_SG calledFunctionSignature = _info->fnSignature;
@@ -256,8 +247,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
 
   printf("starting return Event \n");
 
-  ReturnEvent* returnEvnt = (ReturnEvent*) e;
-  std::shared_ptr<ReturnEvent> returnEvent(returnEvnt);
+  ReturnEvent* returnEvent = (ReturnEvent*) e;
   const ReturnInfo* _info(returnEvent->getReturnInfo());
 
   TIME returnTime = _info->endTime;
@@ -317,8 +307,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   printf("starting thread end Event \n");
 
-  ThreadEndEvent* threadEndEvnt = (ThreadEndEvent*) e;
-  std::shared_ptr<ThreadEndEvent> threadEndEvent(threadEndEvnt);
+  ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
   const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
@@ -436,6 +425,7 @@ void ParasiteTool::acquire(const Event* e) {
 }
 
 void ParasiteTool::release(const Event* e) {
+
   // ReleaseEvent* releaseEvnt = reinterpret_cast<ReleaseEvent*>(e);
 	// std::shared_ptr<ReleaseEvent> releaseEvent(e);
 	// const std::shared_ptr<ReleaseInfo> _info(releaseEvent->getReleaseInfo());
@@ -453,8 +443,7 @@ void ParasiteTool::release(const Event* e) {
   unsigned int lockId = (unsigned int) 0;
 
   int unlocked_function_index = lock_hashtable.at(lockId);
-  std::shared_ptr<function_frame_t> unlocked_function_frame(
-                        main_stack->function_stack.at(unlocked_function_index));
+  std::shared_ptr<function_frame_t> unlocked_function_frame(main_stack->function_stack.at(unlocked_function_index));
 
   if (total_locks_running == 1)
     unlocked_function_frame->local_lock_span += lock_span;

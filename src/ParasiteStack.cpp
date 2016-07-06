@@ -24,8 +24,8 @@ ParasiteStack::ParasiteStack() {
 	function_stack = fxn_stack;
 	thread_stack = thrd_stack;
 	work_table = wrk_table;
-	current_function_index = 0;
-	current_thread_index = 0;
+	current_function_index = -1;
+	current_thread_index = -1;
 }
 
 ParasiteStack::~ParasiteStack() {

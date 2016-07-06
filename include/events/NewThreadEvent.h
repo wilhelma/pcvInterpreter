@@ -42,7 +42,7 @@ private:
 	const NewThreadInfo* const _info;
 
 	// prevent generated functions
-    NewThreadEvent(const NewThreadEvent&);
+  NewThreadEvent(const NewThreadEvent&);
 	NewThreadEvent& operator=(const NewThreadEvent&);
 };
 
