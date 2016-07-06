@@ -27,7 +27,7 @@ LockSetChecker::~LockSetChecker() {
 	dumpRaceEntries(outFile_);
 }
 
-void LockSetChecker::create(const Event* e) {
+void LockSetChecker::NewThread(const Event* e) {
 
    	ShadowThread* childThread = 
 		dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->childThread;
@@ -36,24 +36,20 @@ void LockSetChecker::create(const Event* e) {
 	lockSet_[childThread] =  lockSet_[e->getThread()];
 }
 
-void LockSetChecker::join(const Event* e) {
-
-}
-
-void LockSetChecker::acquire(const Event* e) {
+void LockSetChecker::Acquire(const Event* e) {
 
 	// LockSet_t = LockSet_t + {lock}	
 	lockSet_[e->getThread()].insert(((AcquireEvent*)e)->getAcquireInfo()->lock);
 }
 
-void LockSetChecker::release(const Event* e) {
+void LockSetChecker::Release(const Event* e) {
 
 	// LockSet_t = LockSet_t - {lock}
 	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
 	lockSet_[e->getThread()].erase(lock); 
 }
 
-void LockSetChecker::access(const Event* e) {
+void LockSetChecker::Access(const Event* e) {
 
 	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
 	const REF_ID ref = event->getAccessInfo()->var->id;
@@ -143,8 +139,6 @@ void LockSetChecker::dumpRaceEntries(const char* fileName) const {
     file << buffer.GetString();
     file.close();
 }
-
-void LockSetChecker::call(const Event* e) { }
 
 bool LockSetChecker::lsIsEmptySet(const LockSet_& lhs,
 									 const LockSet_& rhs) const {

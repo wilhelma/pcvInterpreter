@@ -29,7 +29,7 @@ RaceDetectionTool::~RaceDetectionTool() {
 	dumpRaceEntries(outFile_);
 }
 
-void RaceDetectionTool::create(const Event* e) {
+void RaceDetectionTool::NewThread(const Event* e) {
 
    	ShadowThread* childThread = 
 		dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->childThread;
@@ -50,7 +50,7 @@ void RaceDetectionTool::create(const Event* e) {
 	threadVC_[e->getThread()->threadId][e->getThread()->threadId]++;
 }
 
-void RaceDetectionTool::join(const Event* e) {
+void RaceDetectionTool::Join(const Event* e) {
 
 	// VC_t = VC_t # VC_u
 	vcMerge( threadVC_[e->getThread()->threadId],
@@ -61,13 +61,13 @@ void RaceDetectionTool::join(const Event* e) {
 	threadVC_[id][id]++;
 }
 
-void RaceDetectionTool::acquire(const Event* e) {
+void RaceDetectionTool::Acquire(const Event* e) {
 
 	// LockSet_t = LockSet_t + {lock}	
 	lockSet_[e->getThread()].insert(((AcquireEvent*)e)->getAcquireInfo()->lock);
 }
 
-void RaceDetectionTool::release(const Event* e) {
+void RaceDetectionTool::Release(const Event* e) {
 
 	// LockSet_t = LockSet_t - {lock}
 	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
@@ -77,7 +77,7 @@ void RaceDetectionTool::release(const Event* e) {
 	threadVC_[e->getThread()->threadId][e->getThread()->threadId]++;
 }
 
-void RaceDetectionTool::access(const Event* e) {
+void RaceDetectionTool::Access(const Event* e) {
 
 	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
 	const REF_ID ref = event->getAccessInfo()->var->id;
@@ -256,7 +256,6 @@ void RaceDetectionTool::dumpRaceEntries(const char* fileName) const {
     file.close();
 }
 
-void RaceDetectionTool::call(const Event* e) { }
 
 void RaceDetectionTool::vcMerge(VectorClock_& lhs,
 								const VectorClock_& rhs) const {

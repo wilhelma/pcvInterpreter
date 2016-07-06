@@ -46,7 +46,7 @@ FunctionTrackerTool::~FunctionTrackerTool() {
 	_outFile.close();
 } 
 
-void FunctionTrackerTool::create( const Event* e ) {
+void FunctionTrackerTool::NewThread( const Event* e ) {
   const NewThreadEvent* event = static_cast<const NewThreadEvent*>(e);
   const NewThreadInfo* info = event->getNewThreadInfo();
 
@@ -55,19 +55,7 @@ void FunctionTrackerTool::create( const Event* e ) {
             << " runtime: " << info->runtime << std::endl;
 }
 
-void FunctionTrackerTool::join( const Event* e ) {
-}
-
-void FunctionTrackerTool::acquire( const Event* e ) {
-}
-
-void FunctionTrackerTool::release( const Event* e ) {
-}
-
-void FunctionTrackerTool::access( const Event* e ) {
-}
-
-void FunctionTrackerTool::call( const Event* e ) {
+void FunctionTrackerTool::Call( const Event* e ) {
     // cast event into its specific type
 	const CallEvent *event = static_cast<const CallEvent*>(e);
 

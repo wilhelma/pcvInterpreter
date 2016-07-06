@@ -34,12 +34,11 @@
 class RaceDetectionTool : public Tool {
 public:
 	RaceDetectionTool(const char* outFile);
-	void create(const Event* e) override;
-	void join(const Event* e) override;
-	void acquire(const Event* e) override;
-	void release(const Event* e) override;
-	void access(const Event* e) override;
-	void call(const Event* e) override;
+	void NewThread(const Event* e) override;
+	void Join(const Event* e) override;
+	void Acquire(const Event* e) override;
+	void Release(const Event* e) override;
+	void Access(const Event* e) override;
 	~RaceDetectionTool();
 
 	typedef enum { WRITE_READ = 1,		// read after write (RAW)
@@ -50,6 +49,10 @@ public:
 //	static Decoration<ShadowThread, Set> locksheld;
 	
 private:
+	virtual void Call(const Event* e) override final {};
+	virtual void ThreadEnd(const Event* e) override final {};
+	virtual void Return(const Event* e) override final {};
+
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {
 		bool operator()(const ShadowLock* lhs, const ShadowLock* rhs) const {

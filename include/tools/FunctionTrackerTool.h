@@ -29,7 +29,8 @@ class FunctionTrackerTool: public Tool {
 		FunctionTrackerTool (std::string outFileName = "functionGraph.dot", std::string graphName = "graph");
 		~FunctionTrackerTool();
 
-		void call(const Event* e) final override;
+		virtual void Call(const Event* e) final override;
+		virtual void NewThread(const Event* e) final override;
 
 		// get the number of recorded calls
 		unsigned int getCalls() const { return calls; };
@@ -45,12 +46,12 @@ class FunctionTrackerTool: public Tool {
 		unsigned int calls = 0;      ///< @brief Number of recorded calls
 
 		// no longer accessible from outside
-		// XXX final => no class should inherit from this!
-		void create(const Event* e) final override;
-		void join(const Event* e) final override;
-		void acquire(const Event* e) final override;
-		void release(const Event* e) final override;
-		void access(const Event* e) final override;
+		virtual void Access(const Event* e) final override {};
+		virtual void Acquire(const Event* e) final override {};
+		virtual void Join(const Event* e) final override {};
+		virtual void Release(const Event* e) final override {};
+		virtual void Return(const Event* e) final override {};
+		virtual void ThreadEnd(const Event* e) final override {};
 };
 
 #endif /* FUNCTIONTRACKERTOOL_H_ */
