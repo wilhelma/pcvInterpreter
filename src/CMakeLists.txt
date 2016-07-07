@@ -1,7 +1,7 @@
-set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
-						${SAAPFramework_SOURCE_DIR}/include/events
-						${SAAPFramework_SOURCE_DIR}/include/tables
-						${SAAPFramework_SOURCE_DIR}/include/tools)
+set(INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include
+						${pcv_SOURCE_DIR}/include/events
+						${pcv_SOURCE_DIR}/include/tables
+						${pcv_SOURCE_DIR}/include/tools)
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST ${SRC_LIST}
