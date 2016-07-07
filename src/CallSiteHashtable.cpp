@@ -28,8 +28,7 @@ void CallSiteHashtable::add_in_hashtable( const std::shared_ptr<call_site_hashta
 		// if call site profile being added exists in both hashtables, combine them
 		if (hashtable->count(key)) {
 			CallSiteProfile existingProfile(hashtable->at(key));
-		    existingProfile.
-                    add_in_callsite_profile_entries(hashtable_to_add->at(key));
+		    existingProfile.add_in_callsite_profile_entries(hashtable_to_add->at(key));
 		} else  {
 			std::pair<CALLSITE, std::shared_ptr<call_site_profile_t> > 
                                        newPair(key, hashtable_to_add->at(key));
@@ -58,6 +57,7 @@ void CallSiteHashtable::add_data_to_hashtable(bool is_top_function,
   			profile.prof->top_span += span;
   		}
 	} else {
+
 		std::shared_ptr<call_site_profile_t> new_ptr(new call_site_profile_t());
 		CallSiteProfile new_profile(new_ptr);
 		new_profile.init_callsite_profile(call_site, is_top_function, 

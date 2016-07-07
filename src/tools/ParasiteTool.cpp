@@ -31,15 +31,13 @@ void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_p
   // work data from top calls of call site
   end_profile->top_work = collected_profile->top_work;
   end_profile->top_span = collected_profile->top_span;
-  end_profile->top_parallelism = end_profile->top_work/
-                                      end_profile->top_span;
+  end_profile->top_parallelism = end_profile->top_work/end_profile->top_span;
   end_profile->top_count = collected_profile->top_count;
 
   // local(TODO: explain what local means) work call site data
   end_profile->local_work = collected_profile->local_work;
   end_profile->local_span = collected_profile->local_span;
-  end_profile->local_parallelism = end_profile->top_work/
-                                        end_profile->top_span;
+  end_profile->local_parallelism = end_profile->top_work/end_profile->top_span;
   end_profile->local_count = collected_profile->top_count;
 }
 
@@ -90,21 +88,23 @@ ParasiteTool::ParasiteTool() {
 
 void ParasiteTool::getEndProfile() {
 
-  std::shared_ptr<thread_frame_t> bottom_thread_frame =  main_stack->thread_stack.back();
+  std::shared_ptr<thread_frame_t> bottom_thread_frame = main_stack->thread_stack.back();
   std::shared_ptr<function_frame_t> bottom_function_frame = main_stack->function_stack.at(main_stack->current_function_index);
 
+  printf("at end, current function index is %d \n", main_stack->current_function_index);
+  printf("at end, current thread index is %d \n", main_stack->current_thread_index);
+
   // Calculate span for entire program 
-  parasite_profile->span = bottom_function_frame->running_span +
-                bottom_thread_frame->prefix_span +
-                bottom_thread_frame->local_span +
-                bottom_thread_frame->local_continuation;
+  parasite_profile->span =  bottom_function_frame->running_span +
+                            bottom_thread_frame->prefix_span +
+                            bottom_thread_frame->local_span +
+                            bottom_thread_frame->local_continuation;
 
   CallSiteHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
 
   bottom_prefix_table.add_in_hashtable(bottom_thread_frame->continuation_table);
 
-  std::shared_ptr<call_site_hashtable_t> final_on_span_table =
-                                             bottom_thread_frame->prefix_table;
+  std::shared_ptr<call_site_hashtable_t> final_on_span_table = bottom_thread_frame->prefix_table;
 
   // Calculate work for entire program
   parasite_profile->work = bottom_function_frame->running_work +
@@ -123,14 +123,15 @@ void ParasiteTool::getEndProfile() {
   for (auto const &it : *final_table) {
     std::shared_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
-    std::shared_ptr<call_site_end_profile_t> current_call_site_end_profile
-                                            (new call_site_end_profile_t());
+    std::shared_ptr<call_site_end_profile_t> current_call_site_end_profile(new call_site_end_profile_t());
     getEndCallSiteWorkProfile(current_call_site_profile, 
                               current_call_site_end_profile);
 
     // add work information into the final profile for each call site 
-    end_call_site_profile_hashtable->at(current_call_site_ID) = 
-                                        current_call_site_end_profile;
+
+    std::pair<CALLSITE, std::shared_ptr<call_site_end_profile_t> > 
+                                    newPair(current_call_site_ID, current_call_site_end_profile);
+    end_call_site_profile_hashtable->insert(newPair);
   }
 
   // parse the final span table in the main stack data structure 
@@ -152,6 +153,11 @@ void ParasiteTool::printProfile() {
 
   // first, calculate all the end profiles before outputting them 
   this->getEndProfile();
+
+  printf("PARALLELISM IS %f \n", parasite_profile->parallelism);
+  printf("WORK IS %f \n", parasite_profile->work);
+  printf("SPAN IS %f \n", parasite_profile->span);
+  printf("LOCK SPAN IS %f \n", parasite_profile->lock_span);
 
 }
 
@@ -273,8 +279,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   returned_function_frame->local_work = local_work;
   double running_work = returned_function_frame->running_work + local_work;
   double running_span = returned_function_frame->running_span + local_work;
-  bool is_top_returning_function = returned_function_frame->
-                                   is_top_call_site_function;
+  bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
 
   std::shared_ptr<function_frame_t> new_bottom_function_frame = main_stack->function_stack.at(main_stack->current_function_index - 1);
   new_bottom_function_frame->running_work += running_work;
