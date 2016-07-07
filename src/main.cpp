@@ -11,6 +11,7 @@
 #include "DBInterpreter.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
+#include "DebugTool.h"
 #include "FunctionTrackerTool.h"
 #include "ParasiteTool.h"
 #include "LockMgr.h"
@@ -43,6 +44,8 @@ int main(int argc, char* argv[]) {
 
 	ParasiteTool *parasiteTool = new ParasiteTool();
 
+	DebugTool *debugTool = new DebugTool();
+
 	// register functionTool, no filters, all events except ACCESS
 	runner->registerTool(parasiteTool, NULL,
 						 Events::CALL | Events::NEWTHREAD | 
@@ -50,9 +53,15 @@ int main(int argc, char* argv[]) {
 						 Events::ACQUIRE | Events::RELEASE | 
 						 Events::RETURN );
 
+	runner->registerTool(debugTool, NULL,
+						 Events::CALL | Events::NEWTHREAD | 
+						 Events::THREADEND | Events::JOIN | 
+						 Events::ACQUIRE | Events::RELEASE | 
+						 Events::RETURN | Events::ACCESS );
+
 	// register functionTool, no filters, only CALL and NEWTHREAD events
   	runner->registerTool(functionTool, NULL,
-                       Events::CALL | Events::NEWTHREAD );
+                       	Events::CALL | Events::NEWTHREAD );
 
 	// Start interpretation
 	runner->interpret();

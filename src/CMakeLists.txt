@@ -4,7 +4,7 @@ set(INCLUDE_DIRECTORIES ${SAAPFramework_SOURCE_DIR}/include
 						${SAAPFramework_SOURCE_DIR}/include/tools)
 include_directories(${INCLUDE_DIRECTORIES})
 
-set(SRC_LIST
+set(SRC_LIST ${SRC_LIST}
 	CallSiteHashtable.cpp
 	CallSiteProfile.cpp
 	DBInterpreter.cpp
@@ -17,6 +17,7 @@ set(SRC_LIST
 	ThreadMgr.cpp)
 
 set(SRC_LIST ${SRC_LIST}
+	tools/DebugTool.cpp
 	tools/FunctionTrackerTool.cpp
 	tools/LockSetChecker.cpp
 	tools/ParasiteTool.cpp
