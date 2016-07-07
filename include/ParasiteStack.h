@@ -147,7 +147,6 @@ struct thread_frame_t {
 	*/
 	std::shared_ptr<call_site_hashtable_t> prefix_table;
 
-
 	/**
 	*    @var longest_child_lock_span
 	*    @brief Longest child data for each call site in this thread. 
@@ -159,6 +158,13 @@ struct thread_frame_t {
 	*    @brief Continuation data for each call site in this thread.
 	*/
 	std::shared_ptr<call_site_hashtable_t> continuation_table;
+
+	thread_frame_t() {
+
+		prefix_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
+		longest_child_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
+		continuation_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
+	}
 };
 
 class ParasiteStack {

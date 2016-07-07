@@ -12,6 +12,7 @@
 #include <utility>
 #include "ParasiteTool.h"
 
+
 /**
 *    @fn getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t>  collected_profile, 
                                    std::shared_ptr<call_site_end_profile_t> end_profile)
@@ -177,6 +178,19 @@ void ParasiteTool::create(const Event* e) {
   main_stack->init_thread_frame(main_stack->current_thread_index, 
                                 main_stack->current_function_index + 1);
 
+  // get information about the thread's head function
+  FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
+  CALLSITE callsiteID = _info->childThread->currentCallSiteID;
+  last_strand_start_time = _info->startTime;
+
+  // push the thread's function onto the stack
+  main_stack->function_stack_push();
+  std::shared_ptr<function_frame_t> new_function_frame = main_stack->function_stack.at(main_stack->current_function_index);
+  main_stack->init_function_frame(main_stack->current_function_index);
+  new_function_frame->function_signature = calledFunctionSignature;
+  new_function_frame->call_site = callsiteID;
+  new_function_frame->is_top_call_site_function = true;
+
   printf("ending new thread Event \n");
 }
 
@@ -236,6 +250,7 @@ void ParasiteTool::call(const Event* e) {
   main_stack->init_function_frame(main_stack->current_function_index);
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
+  new_function_frame->is_top_call_site_function = false;
 
   printf("ending call Event \n");
 }
@@ -393,6 +408,7 @@ void ParasiteTool::threadEnd(const Event* e) {
   // pop the thread off the stack last, 
   // because the pop operation destroys the frame
   main_stack->thread_stack_pop();
+  main_stack->function_stack_pop();
 
   printf("ending non-main thread end Event \n");
 }

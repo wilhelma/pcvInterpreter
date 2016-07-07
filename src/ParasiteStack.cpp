@@ -62,7 +62,7 @@ ParasiteStack::ParasiteStack() {
 	std::vector< std::shared_ptr<thread_frame_t> > thrd_stack;
 
 	// create empty call site hashtable
-	std::shared_ptr<call_site_hashtable_t> wrk_table;
+	std::shared_ptr<call_site_hashtable_t> wrk_table(new call_site_hashtable_t);
 
 	function_stack = fxn_stack;
 	thread_stack = thrd_stack;

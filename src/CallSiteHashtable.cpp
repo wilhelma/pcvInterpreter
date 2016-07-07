@@ -9,8 +9,10 @@
  *
  */
 
+#include <cassert>
 #include <utility>
 #include "CallSiteHashtable.h"
+
 
 CallSiteHashtable::~CallSiteHashtable() {}
 

@@ -68,7 +68,6 @@ class CallSiteHashtable {
 	explicit CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable);
 	~CallSiteHashtable();
 
-
 	/**
 	*    @fn call_site_end_hashtable_t
 	*    @brief Adds in added_hashtable into the class's hashtable.

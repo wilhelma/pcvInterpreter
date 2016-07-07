@@ -8,10 +8,10 @@ Makefile
 cmake_install.cmake
 
 # Igonre compiled binary
-SAAPFramework
+pcv
 
 # Log file from framework
-SAAP.log
+pcv.log
 *.json
 
 # Ignore databases
