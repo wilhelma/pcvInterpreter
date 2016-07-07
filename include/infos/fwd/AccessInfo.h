@@ -12,6 +12,6 @@
 #ifndef  FWD_ACCESS_INFO_H_
 #define  FWD_ACCESS_INFO_H_
 
-//struct AccessInfo;
+struct AccessInfo;
 
 #endif

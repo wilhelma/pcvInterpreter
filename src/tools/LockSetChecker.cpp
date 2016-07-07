@@ -5,16 +5,19 @@
  *      Author: wilhelma
  */
 
+#include "LockSetChecker.h"
+
+#include "fwd/ShadowLock.h"
+
 #include "AccessEvent.h"
+#include "AccessInfo.h"
 #include "AcquireEvent.h"
 #include "AcquireInfo.h"
-#include "Event.h"
-#include "LockSetChecker.h"
 #include "NewThreadEvent.h"
 #include "NewThreadInfo.h"
 #include "ReleaseEvent.h"
 #include "ReleaseInfo.h"
-#include "ShadowLock.h"
+
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 

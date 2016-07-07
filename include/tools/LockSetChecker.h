@@ -5,29 +5,28 @@
  *      Author: wilhelma
  */
 
-#ifndef LOCKSETCHECKER_H_
-#define LOCKSETCHECKER_H_
+#ifndef LOCK_SET_CHECKER_H_
+#define LOCK_SET_CHECKER_H_
 
 #include "Tool.h"
 
-#include <iostream>
-#include <array>
-#include <set>
-#include <map>
-#include <vector>
-#include <memory>
-//#include "Interpreter.h"
-//#include "Event.h"
 #include "fwd/AccessEvent.h"
 #include "fwd/AcquireEvent.h"
 #include "fwd/ReturnEvent.h"
 #include "fwd/ReleaseEvent.h"
 #include "fwd/NewThreadEvent.h"
-#include "ShadowThread.h"
-#include "ShadowVar.h"
+
+#include "fwd/ShadowThread.h"
+#include "fwd/ShadowVar.h"
+
 #include "ShadowLock.h"
 
 #include "Types.h"
+
+#include <set>
+#include <map>
+#include <vector>
+#include <memory>
 
 #define THREADS 100
 
