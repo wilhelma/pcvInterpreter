@@ -74,6 +74,7 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
 }
 
 ParasiteTool::ParasiteTool() {
+
   main_stack = std::unique_ptr<ParasiteStack>(new ParasiteStack);
   parasite_profile = std::unique_ptr<parasite_profile_t>(new parasite_profile_t);
   end_call_site_profile_hashtable = std::unique_ptr<call_site_end_hashtable_t>(new call_site_end_hashtable_t);
@@ -87,10 +88,9 @@ ParasiteTool::ParasiteTool() {
 }
 
 void ParasiteTool::getEndProfile() {
-  std::shared_ptr<thread_frame_t> bottom_thread_frame = 
-                                  main_stack->thread_stack.back();
-  std::shared_ptr<function_frame_t> bottom_function_frame = 
-                                    main_stack->function_stack.back();
+
+  std::shared_ptr<thread_frame_t> bottom_thread_frame =  main_stack->thread_stack.back();
+  std::shared_ptr<function_frame_t> bottom_function_frame = main_stack->function_stack.at(main_stack->current_function_index);
 
   // Calculate span for entire program 
   parasite_profile->span = bottom_function_frame->running_span +
@@ -171,7 +171,6 @@ void ParasiteTool::create(const Event* e) {
   main_stack->thread_stack_push();
   std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
   bottom_thread_frame->local_continuation += strand_length;
-  printf("current thread index is %d \n", main_stack->current_thread_index);
   std::shared_ptr<thread_frame_t> new_thread_frame = main_stack->thread_stack.at(main_stack->current_thread_index);
   new_thread_frame->thread = newThreadID;
 
@@ -190,7 +189,7 @@ void ParasiteTool::join(const Event* e) {
 	TRD_ID childThreadId = _info->childThread->threadId;
 	TRD_ID parentThreadId = _info->parentThread->threadId;
 
-  std::shared_ptr<function_frame_t> bottom_function_frame(main_stack->function_stack.back());
+  std::shared_ptr<function_frame_t> bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
   std::shared_ptr<thread_frame_t> bottom_thread_frame(main_stack->thread_stack.back());
   bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
 
@@ -233,10 +232,8 @@ void ParasiteTool::call(const Event* e) {
   last_function_runtime = _info->runtime;
 
   main_stack->function_stack_push();
-  std::shared_ptr<function_frame_t> new_function_frame = 
-              main_stack->function_stack.at(main_stack->current_function_index);
+  std::shared_ptr<function_frame_t> new_function_frame = main_stack->function_stack.at(main_stack->current_function_index);
   main_stack->init_function_frame(main_stack->current_function_index);
-  main_stack->current_function_index += 1;
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
 
@@ -255,8 +252,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   // double local_work = returnTime - last_strand_start_time;
   last_strand_start_time = returnTime;
 
-  std::shared_ptr<function_frame_t> returned_function_frame(main_stack->
-                                                         function_stack.back());
+  std::shared_ptr<function_frame_t> returned_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
   CALLSITE returning_call_site = returned_function_frame->call_site;
   
   returned_function_frame->local_work = local_work;
@@ -265,8 +261,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   bool is_top_returning_function = returned_function_frame->
                                    is_top_call_site_function;
 
-  std::shared_ptr<function_frame_t> new_bottom_function_frame = 
-            main_stack->function_stack[main_stack->current_function_index - 1];
+  std::shared_ptr<function_frame_t> new_bottom_function_frame = main_stack->function_stack.at(main_stack->current_function_index - 1);
   new_bottom_function_frame->running_work += running_work;
   new_bottom_function_frame->running_span += running_span;
   new_bottom_function_frame->running_lock_span += returned_function_frame->
@@ -295,12 +290,8 @@ void ParasiteTool::returnOfCalled(const Event* e) {
     bottom_thread_continuation_table.add_local_data_to_hashtable(returning_call_site, local_work, local_work);
   }
 
-  // pop_back() destroys the returned funciton frame, so popping function 
-  // should be the last step here
-  main_stack->function_stack.pop_back();
-  main_stack->current_function_index -= 1;
-
-   printf("ending return Event \n");
+  main_stack->function_stack_pop();
+  printf("ending return Event \n");
 }
 
 void ParasiteTool::threadEnd(const Event* e) {
@@ -311,43 +302,43 @@ void ParasiteTool::threadEnd(const Event* e) {
   const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
+  if (main_stack->current_thread_index == 0) {
+
+    printf("ENDING MAIN THREAD \n");
+    return;
+  }
+
   double strand_length = threadEndTime - last_strand_start_time;
-  std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->
-                                                      thread_stack.back());
-  std::shared_ptr<thread_frame_t> 
-       parent_thread_frame(main_stack->thread_stack.
-                                      at(main_stack->current_thread_index - 1));
+  std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->thread_stack.back());
+  std::shared_ptr<thread_frame_t> parent_thread_frame(main_stack->thread_stack.
+                                                      at(main_stack->current_thread_index - 1));
 
   ending_thread_frame->local_continuation += strand_length;
-  std::shared_ptr<function_frame_t> old_bottom_function_frame(
-                                            main_stack->function_stack.back());
-  std::shared_ptr<function_frame_t> 
-             new_bottom_function_frame(main_stack->function_stack
-                                      [main_stack->current_function_index - 1]);
+  std::shared_ptr<function_frame_t> old_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
+
+  std::shared_ptr<function_frame_t> new_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index - 1));
 
   ending_thread_frame->prefix_span += old_bottom_function_frame->running_span;
   ending_thread_frame->local_span += ending_thread_frame->local_continuation;
-  old_bottom_function_frame->running_work += old_bottom_function_frame->
-                                             local_work;
+  old_bottom_function_frame->running_work += old_bottom_function_frame->local_work;
   ending_thread_frame->prefix_span += ending_thread_frame->local_span;
 
-  // CHECK if operations on function frame are necessary for threadEvent
-  new_bottom_function_frame->running_work += old_bottom_function_frame->
-                                             running_work;
-  bool is_top_call_site_function = old_bottom_function_frame->
-                                   is_top_call_site_function;
+  new_bottom_function_frame->running_work += old_bottom_function_frame->running_work;
+
+  bool is_top_call_site_function = old_bottom_function_frame->is_top_call_site_function;
 
   CallSiteHashtable work_table(main_stack->work_table);
-  CallSiteHashtable bottom_thread_prefix_table(main_stack->thread_stack.back()
-                                                          ->prefix_table);
+  CallSiteHashtable bottom_thread_prefix_table(main_stack->thread_stack.back()->prefix_table);
+
   if (is_top_call_site_function) {
+
     work_table.add_data_to_hashtable(old_bottom_function_frame->
-                                     is_top_call_site_function,
-                              old_bottom_function_frame->call_site, 
-                              old_bottom_function_frame->running_work, 
-                              ending_thread_frame->prefix_span,
-                              old_bottom_function_frame->local_work, 
-                              ending_thread_frame->local_span);
+                                      is_top_call_site_function,
+                                      old_bottom_function_frame->call_site, 
+                                      old_bottom_function_frame->running_work, 
+                                      ending_thread_frame->prefix_span,
+                                      old_bottom_function_frame->local_work, 
+                                      ending_thread_frame->local_span);
 
     bottom_thread_prefix_table.add_data_to_hashtable(
                           old_bottom_function_frame->is_top_call_site_function,
@@ -357,6 +348,8 @@ void ParasiteTool::threadEnd(const Event* e) {
                           old_bottom_function_frame->local_work, 
                           ending_thread_frame->local_span);
   } else {
+
+
     work_table.add_local_data_to_hashtable(old_bottom_function_frame->call_site, 
                               old_bottom_function_frame->local_work, 
                               ending_thread_frame->local_span);
@@ -367,27 +360,31 @@ void ParasiteTool::threadEnd(const Event* e) {
                               ending_thread_frame->local_span);
   }
 
-  if (new_bottom_function_frame->running_span + ending_thread_frame->local_continuation  > ending_thread_frame->longest_child_span) {
+  if (new_bottom_function_frame->running_span + ending_thread_frame->local_continuation  
+                                              > ending_thread_frame->longest_child_span) {
 
-      parent_thread_frame->prefix_span += new_bottom_function_frame->running_span;
-      parent_thread_frame->local_span += parent_thread_frame->local_continuation;
+    parent_thread_frame->prefix_span += new_bottom_function_frame->running_span;
+    parent_thread_frame->local_span += parent_thread_frame->local_continuation;
 
-      CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
-      prefix_table.add_in_hashtable(parent_thread_frame->continuation_table);
+    CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
+    prefix_table.add_in_hashtable(parent_thread_frame->continuation_table);
 
-      // Save old bottom thread frame tables in 
-      // parent frame's longest child variable.
-      parent_thread_frame->longest_child_span = ending_thread_frame->
-                                                prefix_span;
-      parent_thread_frame->longest_child_table->clear();
+    // Save old bottom thread frame tables in 
+    // parent frame's longest child variable.
+    parent_thread_frame->longest_child_span = ending_thread_frame->
+                                              prefix_span;
+    parent_thread_frame->longest_child_table->clear();
 
-      std::shared_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame->longest_child_table);
-      parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
-      ending_thread_frame->prefix_table = temp_hashtable;
+    std::shared_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame->longest_child_table);
+    parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
+    ending_thread_frame->prefix_table = temp_hashtable;
 
-      ending_thread_frame->longest_child_table->clear();
-      ending_thread_frame->continuation_table->clear();
-  } else {
+    ending_thread_frame->longest_child_table->clear();
+    ending_thread_frame->continuation_table->clear();
+  }
+
+  else {
+
       ending_thread_frame->prefix_table->clear();
       ending_thread_frame->longest_child_table->clear();
       ending_thread_frame->continuation_table->clear();
@@ -395,10 +392,9 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   // pop the thread off the stack last, 
   // because the pop operation destroys the frame
-  main_stack->thread_stack.pop_back();
-  main_stack->current_thread_index -= 1;
+  main_stack->thread_stack_pop();
 
-  printf("ending thread end Event \n");
+  printf("ending non-main thread end Event \n");
 }
 
 void ParasiteTool::acquire(const Event* e) {
@@ -416,8 +412,7 @@ void ParasiteTool::acquire(const Event* e) {
   if (lock_hashtable.count(lockId)) {
     lock_hashtable.at(lockId) = main_stack->current_function_index;
   } else {
-    std::pair<unsigned int, int> newPair(lockId, 
-                                         main_stack->current_function_index);
+    std::pair<unsigned int, int> newPair(lockId, main_stack->current_function_index);
     lock_hashtable.insert(newPair);
   }
 

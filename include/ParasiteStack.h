@@ -194,6 +194,21 @@ class ParasiteStack {
 					vector.
 		*/
 		void thread_stack_push();
+
+
+		/**
+		*    @fn function_stack_pop()
+		*    @brief "Pops" a function_frame_t off the function stack 
+					vector - keeps frame on stack, but decrements index
+		*/
+		void function_stack_pop();
+
+		/**
+		*    @fn thread_stack_pop()
+		*    @brief Pops a thread_frame_t off of the thread stack 
+					vector.
+		*/
+		void thread_stack_pop();
 		
 		/**
 		*    @var function_stack

@@ -40,7 +40,7 @@
  /**
  *
  *    @class  ParasiteTool.h
- *    @brief  Updates work and span variables with Events occur, to produce
+ *    @brief  Updates work and span variables when Events occur, to produce
  			  a scalability profile for the entire program as well as 
  			  each call site. 
  */
@@ -100,6 +100,7 @@ class ParasiteTool : public Tool {
 				function stack. 
 	*/
 	std::unordered_map<unsigned int, int> lock_hashtable;
+
 
 	/**
 	*    @var last_strand_start_time
