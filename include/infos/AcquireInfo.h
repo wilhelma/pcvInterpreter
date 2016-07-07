@@ -15,8 +15,10 @@
 #include "fwd/ShadowLock.h"
 
 struct AcquireInfo {
-       ShadowLock *lock;
-       AcquireInfo(ShadowLock *lock) : lock(lock) {}
+	ShadowLock *lock;
+
+	explicit AcquireInfo(ShadowLock *lock) noexcept
+		: lock(lock) {}
 };
 
 #endif

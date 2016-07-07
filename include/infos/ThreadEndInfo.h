@@ -18,8 +18,7 @@ struct ThreadEndInfo {
 	TIME endTime;
 	TRD_ID id;
 
-	explicit
-	ThreadEndInfo(TIME endTime, TRD_ID id) noexcept
+	explicit ThreadEndInfo(const TIME& endTime, const TRD_ID& id) noexcept
 		: endTime(endTime), id(id) {}
 };
 

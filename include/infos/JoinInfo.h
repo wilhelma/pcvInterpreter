@@ -15,10 +15,11 @@
 #include "fwd/ShadowThread.h"
 
 struct JoinInfo {
-  ShadowThread* childThread;
-  ShadowThread* parentThread;
-  JoinInfo(ShadowThread* childThread, ShadowThread* parentThread)
-    : childThread(childThread), parentThread(parentThread) {}
+	const ShadowThread* childThread;
+	const ShadowThread* parentThread;
+
+	explicit JoinInfo(const ShadowThread* childThread, const ShadowThread* parentThread) noexcept
+		: childThread(childThread), parentThread(parentThread) {}
 };
 
 #endif

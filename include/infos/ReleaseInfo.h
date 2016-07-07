@@ -16,7 +16,8 @@
 
 struct ReleaseInfo {
 	ShadowLock *lock;
-	ReleaseInfo(ShadowLock* lock) : lock(lock) {}
+	explicit ReleaseInfo(ShadowLock* lock) noexcept
+		: lock(lock) {}
 };
 
 #endif

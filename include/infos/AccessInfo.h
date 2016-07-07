@@ -23,7 +23,7 @@ struct AccessInfo {
 	const ShadowVar *var;
 
 	explicit
-	AccessInfo(AccessType Type, const ShadowVar *Var, INS_ID instructionID) noexcept
+	AccessInfo(AccessType Type, const ShadowVar *Var, const INS_ID& instructionID) noexcept
 		: type(Type), instructionID(instructionID), var(Var) {}
 };
 
