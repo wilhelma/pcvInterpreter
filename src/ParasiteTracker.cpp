@@ -25,8 +25,10 @@ ParasiteTracker::ParasiteTracker() {
 ParasiteTracker::~ParasiteTracker() {}
 
 
-std::shared_ptr<function_frame_t> ParasiteTracker::function_push(){
-	function_stack->push();
+std::shared_ptr<function_frame_t> ParasiteTracker::function_push(FUN_SG funSg,
+							   									 CALLSITE callsiteID,
+							   									 bool is_top_call_site_function) {
+	return function_stack->push(funSg, callsiteID, is_top_call_site_function);
 }
 
 void ParasiteTracker::function_pop(){
@@ -34,7 +36,7 @@ void ParasiteTracker::function_pop(){
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::thread_push(int head_function_index){
-	thread_stack->push(head_function_index);
+	return thread_stack->push(head_function_index);
 }
 
 void ParasiteTracker::thread_pop(){

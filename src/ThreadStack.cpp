@@ -11,8 +11,6 @@
 
 #include "ThreadStack.h"
 
-
-
 void ThreadStack::pop() {
 	stack.pop_back();
 	bottom_index -= 1;
@@ -35,6 +33,7 @@ std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index) {
 	bottom_index += 1;
 	printf("pushing on to thread stack, index is now %d \n", bottom_index);
 	init_frame(bottom_index, head_function_index);
+	return stack.at(bottom_index);
 }
 
 ThreadStack::ThreadStack() {

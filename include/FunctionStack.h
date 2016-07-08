@@ -87,14 +87,19 @@ class FunctionStack {
 		*    @brief Initializes a function frame with index function_index 
 					in the function stack. 
 		*/
-		void init_frame(int function_index);
+		void init_frame(int function_index, 
+					   FUN_SG funSg,
+					   CALLSITE callsiteID,
+					   bool is_top_call_site_function);
 
 		/**
 		*    @fn push()
 		*    @brief Pushes a new function_frame_t onto the function stack 
 					vector.
 		*/
-		std::shared_ptr<function_frame_t> push();
+		std::shared_ptr<function_frame_t> push(FUN_SG funSg, 
+											   CALLSITE callsiteID, 
+											   bool is_top_call_site_function);
 
 		/**
 		*    @fn pop()

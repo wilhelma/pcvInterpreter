@@ -182,11 +182,8 @@ void ParasiteTool::create(const Event* e) {
   last_strand_start_time = _info->startTime;
 
   // push the thread's function onto the stack
-  std::shared_ptr<function_frame_t> new_function_frame = stacks->function_push();
-  new_function_frame->function_signature = calledFunctionSignature;
-  new_function_frame->call_site = callsiteID;
-  new_function_frame->is_top_call_site_function = true;
-
+  std::shared_ptr<function_frame_t> new_function_frame = 
+              stacks->function_push(calledFunctionSignature, callsiteID, true);
   printf("ending new thread Event \n");
 }
 
@@ -241,10 +238,8 @@ void ParasiteTool::call(const Event* e) {
 	CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
 
-  std::shared_ptr<function_frame_t> new_function_frame = stacks->function_push();
-  new_function_frame->function_signature = calledFunctionSignature;
-  new_function_frame->call_site = callsiteID;
-  new_function_frame->is_top_call_site_function = false;
+  std::shared_ptr<function_frame_t> new_function_frame = 
+               stacks->function_push(calledFunctionSignature, callsiteID, true);
 
   printf("ending call Event \n");
 }
