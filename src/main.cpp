@@ -60,8 +60,8 @@ int main(int argc, char* argv[]) {
 						 Events::RETURN | Events::ACCESS );
 
 	// register functionTool, no filters, only CALL and NEWTHREAD events
-  	runner->registerTool(functionTool, NULL,
-                       	Events::CALL | Events::NEWTHREAD );
+  	// runner->registerTool(functionTool, NULL,
+   //                     	Events::CALL | Events::NEWTHREAD );
 
 	// Start interpretation
 	runner->interpret();
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 	delete interpreter;
 	delete service;
 	delete runner;
-	delete functionTool;
+	// delete functionTool;
 	delete parasiteTool;
 	delete debugTool;
 

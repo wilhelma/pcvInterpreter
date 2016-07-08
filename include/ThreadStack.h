@@ -1,8 +1,8 @@
 /**
  *
- *    @file  ParasiteStack.h
- *   @brief  Declarations for the function and thread stack frame structs, and 
- 			 the ParasiteStack class.
+ *    @file  ThreadStack.h
+ *   @brief  Declarations for the thread_frame_t struct and 
+ 			 the ThreadStack class.
  *
  *    @date  06/17/16
  *  @author  Nathaniel Knapp (github.com/deknapp),
@@ -10,70 +10,13 @@
  *
  */
 
-#ifndef PARASITESTACK_H_
-#define PARASITESTACK_H_
+#ifndef ThreadStack_H_
+#define ThreadStack_H_
 
 #include <vector> 
 
 #include "CallSiteHashtable.h"
 #include "Types.h"
-
-/**
-*    @struct function_frame_t
-*    @brief Function stack frame providing information about one function, updated with events.
-*/
-struct function_frame_t {
-
-
-	/**
-	*    @var call_site
-	*    @brief The call site of the frame's function.
-	*/
-	CALLSITE call_site;
-
-	/**
-	*    @var function_signature
-	*    @brief The signature of the function.
-	*/
-	FUN_SG function_signature;
-
-	/**
-	*    @var is_top_call_site_function
-	*    @brief TRUE if the function is the top function of its call site.
-	*/
-	bool is_top_call_site_function;
-
-
-	/**
-	*    @var local_work
-	*    @brief Local work of the function.
-	*/
-	double local_work;
-
-	/**
-	*    @var local_lock_span
-	*    @brief The local lock span of the function.
-	*/
-	double local_lock_span;
-
-	/**
-	*    @var running_work
-	*    @brief The running work of the function's call site. 
-	*/
-	double running_work;
-
-	/**
-	*    @var running_work
-	*    @brief The running lock span of the function's call site. 
-	*/
-	double running_lock_span;
-
-	/**
-	*    @var running_span
-	*    @brief The running span of the function's call site. 
-	*/
-	double running_span;
-};
 
 /**
 *    @struct thread_frame_t
@@ -167,18 +110,12 @@ struct thread_frame_t {
 	}
 };
 
-class ParasiteStack {
+class ThreadStack {
 	public:
 		
-		ParasiteStack();
-		~ParasiteStack();
-
-		/**
-		*    @fn init_function_frame()
-		*    @brief Initializes a function frame with index function_index 
-					in the function stack. 
-		*/
-		void init_function_frame(int function_index);
+		ThreadStack();
+		explicit ThreadStack(std::vector< std::shared_ptr<thread_frame_t> > thread_stack);
+		~ThreadStack();
 
 		/**
 		*    @fn init_thread_frame()
@@ -188,26 +125,11 @@ class ParasiteStack {
 		void init_thread_frame(int thread_index, int head_function_index);
 
 		/**
-		*    @fn function_stack_push()
-		*    @brief Pushes a new function_frame_t onto the function stack 
-					vector.
-		*/
-		void function_stack_push();
-
-		/**
 		*    @fn thread_stack_push()
 		*    @brief Pushes a new thread_frame_t onto the thread stack 
 					vector.
 		*/
 		void thread_stack_push();
-
-
-		/**
-		*    @fn function_stack_pop()
-		*    @brief "Pops" a function_frame_t off the function stack 
-					vector - keeps frame on stack, but decrements index
-		*/
-		void function_stack_pop();
 
 		/**
 		*    @fn thread_stack_pop()
@@ -215,47 +137,26 @@ class ParasiteStack {
 					vector.
 		*/
 		void thread_stack_pop();
-		
-		/**
-		*    @var function_stack
-		*    @brief Function stack that tracks current function in simulator,
-				    implemented as a vector of std::shared_ptr<function_frame_t>.
-		*/
-  		std::vector< std::shared_ptr<function_frame_t> > function_stack;
 
   		/**
-		*    @var thread_stack
-		*    @brief Thread stack that tracks current function in simulator,
-				    implemented as a vector of std::shared_ptr<thread_frame_t>.
-		*/
-  		std::vector< std::shared_ptr<thread_frame_t> > thread_stack;
-
-  		/**
-		*    @var work_table
-		*    @brief Shared pointer to a call_site_hashtable_t which tracks the work
-					for each call site. 
-		*/
-  		std::shared_ptr<call_site_hashtable_t> work_table;
-
-
-  		/**
-		*    @var current_function_index
-		*    @brief The index of the simulator's current function in the
-					function stack vector. 
-		*/
-  		int current_function_index;
-
-  		/**
-		*    @var current_thread
+		*    @var current_thread_index
 		*    @brief The index of the simulator's current thread in the
 					thread stack vector. 
 		*/
   		int current_thread_index;
 
  	private:
-  		ParasiteStack(const ParasiteStack&);
-		ParasiteStack& operator=(const ParasiteStack&);
+
+  		/**
+		*    @var thread_stack
+		*    @brief Thread stack that tracks current function in simulator,
+				    implemented as a vector of std::shared_ptr<thread_frame_t>.
+		*/
+  		std::vector< std::shared_ptr<thread_frame_t> > stack;
+
+  		ThreadStack(const ThreadStack&);
+		ThreadStack& operator=(const ThreadStack&);
 };
 
 
-#endif  // PARASITESTACK_H_ 
+#endif  // ThreadStack_H_ 

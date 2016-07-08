@@ -9,12 +9,14 @@ set(SRC_LIST ${SRC_LIST}
 	CallSiteProfile.cpp
 	DBInterpreter.cpp
 	EventService.cpp
+	FunctionStack.cpp
 	Interpreter.cpp
 	LockMgr.cpp
 	main.cpp
-	ParasiteStack.cpp
+	ParasiteTracker.cpp
 	SAAPRunner.cpp
-	ThreadMgr.cpp)
+	ThreadMgr.cpp
+	ThreadStack.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tools/DebugTool.cpp
