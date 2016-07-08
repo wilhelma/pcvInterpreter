@@ -60,6 +60,13 @@ class ParasiteTool : public Tool {
 	void threadEnd(const Event* e);
 
 	/**
+	*    @fn returnOperations()
+	*    @brief Performs Parasite algorithm operations needed for function returns, 
+				in both threadEnd and returnOfCalled events. 
+	*/
+	void returnOperations(double local_work);
+
+	/**
 	*    @fn printProfile()
 	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
 		 @todo Decide on format to print out profile information.

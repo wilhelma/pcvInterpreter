@@ -54,7 +54,7 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
   end_profile->work_on_span = collected_profile->work;
   end_profile->span_on_span = collected_profile->span;
   end_profile->parallelism_on_span = end_profile->work_on_span/ 
-                                  end_profile->span_on_span;
+                                     end_profile->span_on_span;
   end_profile->count_on_span = collected_profile->count;
 
   // data from top calls of call site
@@ -68,8 +68,8 @@ void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_pr
   end_profile->local_work_on_span = collected_profile->local_work;
   end_profile->local_span_on_span = collected_profile->local_span;
   end_profile->local_parallelism_on_span = end_profile->local_work_on_span / 
-                                        end_profile->local_span_on_span;
-  end_profile->local_count_on_span  = collected_profile->local_count;
+                                           end_profile->local_span_on_span;
+  end_profile->local_count_on_span = collected_profile->local_count;
 }
 
 ParasiteTool::ParasiteTool() {
@@ -261,17 +261,7 @@ void ParasiteTool::call(const Event* e) {
   printf("ending call Event \n");
 }
 
-void ParasiteTool::returnOfCalled(const Event* e) {
-
-  printf("starting return Event \n");
-
-  ReturnEvent* returnEvent = (ReturnEvent*) e;
-  const ReturnInfo* _info(returnEvent->getReturnInfo());
-
-  TIME returnTime = _info->endTime;
-  double local_work = last_function_runtime;
-  // double local_work = returnTime - last_strand_start_time;
-  last_strand_start_time = returnTime;
+void ParasiteTool::returnOperations(double local_work) {
 
   std::shared_ptr<function_frame_t> returned_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
   CALLSITE returning_call_site = returned_function_frame->call_site;
@@ -311,6 +301,21 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   }
 
   main_stack->function_stack_pop();
+}
+
+void ParasiteTool::returnOfCalled(const Event* e) {
+
+  printf("starting return Event \n");
+
+  ReturnEvent* returnEvent = (ReturnEvent*) e;
+  const ReturnInfo* _info(returnEvent->getReturnInfo());
+
+  TIME returnTime = _info->endTime;
+  double local_work = last_function_runtime;
+  // double local_work = returnTime - last_strand_start_time;
+  last_strand_start_time = returnTime;
+
+  returnOperations(local_work);
   printf("ending return Event \n");
 }
 
@@ -322,21 +327,56 @@ void ParasiteTool::threadEnd(const Event* e) {
   const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
+
+  double local_work = threadEndTime - last_strand_start_time;
+
+  returnOperations(local_work);
+
   if (main_stack->current_thread_index == 0) {
 
+    printf("starting thread end Event operations for main thread \n");
+
+    std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->thread_stack.back());
+    ending_thread_frame->local_continuation += local_work;
+    std::shared_ptr<function_frame_t> old_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
+
+    ending_thread_frame->prefix_span += old_bottom_function_frame->running_span;
+    ending_thread_frame->local_span += ending_thread_frame->local_continuation;
+    old_bottom_function_frame->running_work += old_bottom_function_frame->local_work;
+    ending_thread_frame->prefix_span += ending_thread_frame->local_span;
+
+    CallSiteHashtable work_table(main_stack->work_table);
+    CallSiteHashtable bottom_thread_prefix_table(main_stack->thread_stack.back()->prefix_table);
+
+    work_table.add_data_to_hashtable(old_bottom_function_frame->
+                                    is_top_call_site_function,
+                                    old_bottom_function_frame->call_site, 
+                                    old_bottom_function_frame->running_work, 
+                                    ending_thread_frame->prefix_span,
+                                    old_bottom_function_frame->local_work, 
+                                    ending_thread_frame->local_span);
+
+    bottom_thread_prefix_table.add_data_to_hashtable(
+                          old_bottom_function_frame->is_top_call_site_function,
+                          old_bottom_function_frame->call_site, 
+                          old_bottom_function_frame->running_work, 
+                          ending_thread_frame->prefix_span,
+                          old_bottom_function_frame->local_work, 
+                          ending_thread_frame->local_span);
+    
     printf("ENDING MAIN THREAD \n");
     return;
   }
 
-  double strand_length = threadEndTime - last_strand_start_time;
+
   std::shared_ptr<thread_frame_t> ending_thread_frame(main_stack->thread_stack.back());
   std::shared_ptr<thread_frame_t> parent_thread_frame(main_stack->thread_stack.
                                                       at(main_stack->current_thread_index - 1));
 
-  ending_thread_frame->local_continuation += strand_length;
-  std::shared_ptr<function_frame_t> old_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
+  ending_thread_frame->local_continuation += local_work;
+  std::shared_ptr<function_frame_t> old_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index + 1));
 
-  std::shared_ptr<function_frame_t> new_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index - 1));
+  std::shared_ptr<function_frame_t> new_bottom_function_frame(main_stack->function_stack.at(main_stack->current_function_index));
 
   ending_thread_frame->prefix_span += old_bottom_function_frame->running_span;
   ending_thread_frame->local_span += ending_thread_frame->local_continuation;
@@ -413,8 +453,6 @@ void ParasiteTool::threadEnd(const Event* e) {
   // pop the thread off the stack last, 
   // because the pop operation destroys the frame
   main_stack->thread_stack_pop();
-  main_stack->function_stack_pop();
-
   printf("ending non-main thread end Event \n");
 }
 
