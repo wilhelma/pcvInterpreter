@@ -171,14 +171,10 @@ void ParasiteTool::create(const Event* e) {
   TIME create_time = _info->startTime;
   double strand_length = create_time - last_strand_start_time;
 
-  stacks->thread_stack_push();
-  std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomParentThread();
+  std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
   bottom_thread_frame->local_continuation += strand_length;
-  std::shared_ptr<thread_frame_t> new_thread_frame = stacks->bottomThread();
+  std::shared_ptr<thread_frame_t> new_thread_frame = stacks->thread_push(stacks->bottomFunctionIndex());
   new_thread_frame->thread = newThreadID;
-
-  stacks->init_thread_frame(stacks->current_thread_index, 
-                                stacks->current_function_index + 1);
 
   // get information about the thread's head function
   FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
@@ -186,9 +182,7 @@ void ParasiteTool::create(const Event* e) {
   last_strand_start_time = _info->startTime;
 
   // push the thread's function onto the stack
-  stacks->function_stack_push();
-  std::shared_ptr<function_frame_t> new_function_frame = stacks->bottomFunction();
-  stacks->init_function_frame(stacks->current_function_index);
+  std::shared_ptr<function_frame_t> new_function_frame = stacks->function_push();
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
   new_function_frame->is_top_call_site_function = true;
@@ -247,9 +241,7 @@ void ParasiteTool::call(const Event* e) {
 	CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
 
-  stacks->function_stack_push();
-  std::shared_ptr<function_frame_t> new_function_frame = stacks->bottomFunction();
-  stacks->init_function_frame(stacks->current_function_index);
+  std::shared_ptr<function_frame_t> new_function_frame = stacks->function_push();
   new_function_frame->function_signature = calledFunctionSignature;
   new_function_frame->call_site = callsiteID;
   new_function_frame->is_top_call_site_function = false;
@@ -267,7 +259,7 @@ void ParasiteTool::returnOperations(double local_work) {
   double running_span = returned_function_frame->running_span + local_work;
   bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
 
-  std::shared_ptr<function_frame_t> current_function_frame = stacks->parentFunction();
+  std::shared_ptr<function_frame_t> current_function_frame = stacks->bottomParentFunction();
   current_function_frame->running_work += running_work;
   current_function_frame->running_span += running_span;
   current_function_frame->running_lock_span += returned_function_frame->
@@ -275,7 +267,7 @@ void ParasiteTool::returnOperations(double local_work) {
 
   CallSiteHashtable work_table(stacks->work_table);
   CallSiteHashtable bottom_thread_continuation_table(stacks->
-                                                    thread_stack.back()->
+                                                    bottomThread()->
                                                     continuation_table);
   if (is_top_returning_function) {
 
@@ -295,7 +287,7 @@ void ParasiteTool::returnOperations(double local_work) {
     bottom_thread_continuation_table.add_local_data_to_hashtable(returning_call_site, local_work, local_work);
   }
 
-  stacks->function_stack_pop();
+  stacks->function_pop();
 }
 
 void ParasiteTool::returnOfCalled(const Event* e) {
@@ -327,7 +319,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   returnOperations(local_work);
 
-  if (stacks->current_thread_index == 0) {
+  if (stacks->bottomThreadIndex() == 0) {
 
     printf("starting thread end Event operations for main thread \n");
 
@@ -446,7 +438,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   // pop the thread off the stack last, 
   // because the pop operation destroys the frame
-  stacks->thread_stack_pop();
+  stacks->thread_pop();
   printf("ending non-main thread end Event \n");
 }
 
@@ -465,7 +457,7 @@ void ParasiteTool::acquire(const Event* e) {
   if (lock_hashtable.count(lockId)) {
     lock_hashtable.at(lockId) = stacks->bottomFunctionIndex();
   } else {
-    std::pair<unsigned int, int> newPair(lockId, stacks->current_function_index);
+    std::pair<unsigned int, int> newPair(lockId, stacks->bottomFunctionIndex());
     lock_hashtable.insert(newPair);
   }
 

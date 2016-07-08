@@ -83,42 +83,42 @@ class FunctionStack {
 		~FunctionStack();
 
 		/**
-		*    @fn init_function_frame()
+		*    @fn init_frame()
 		*    @brief Initializes a function frame with index function_index 
 					in the function stack. 
 		*/
-		void init_function_frame(int function_index);
+		void init_frame(int function_index);
 
 		/**
-		*    @fn function_stack_push()
+		*    @fn push()
 		*    @brief Pushes a new function_frame_t onto the function stack 
 					vector.
 		*/
-		void function_stack_push();
+		std::shared_ptr<function_frame_t> push();
 
 		/**
-		*    @fn function_stack_pop()
+		*    @fn pop()
 		*    @brief "Pops" a function_frame_t off the function stack 
 					vector - keeps frame on stack, but decrements index
 		*/
-		void function_stack_pop();
+		void pop();
 
   		/**
-		*    @var current_function_index
-		*    @brief The index of the simulator's current function in the
+		*    @var bottom_index
+		*    @brief The index of the simulator's bottom function in the
 					function stack vector. 
 		*/
-  		int current_function_index;
+  		int bottom_index;
 
- 	private:
 
  		/**
 		*    @var function_stack
-		*    @brief Function stack that tracks current function in simulator,
+		*    @brief Function stack that tracks bottom function in simulator,
 				    implemented as a vector of std::shared_ptr<function_frame_t>.
 		*/
   		std::vector< std::shared_ptr<function_frame_t> > stack;
 
+ 	private:
 
   		FunctionStack(const FunctionStack&);
 		FunctionStack& operator=(const FunctionStack&);

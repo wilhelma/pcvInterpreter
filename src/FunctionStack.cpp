@@ -11,23 +11,27 @@
 
 #include "FunctionStack.h"
 
-void FunctionStack::function_stack_push() {
-	function_stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
-	current_function_index += 1;
-	printf("pushing on to function stack, index is now %d \n", current_function_index);
+
+
+void FunctionStack::pop() {
+	bottom_index -= 1;
+	printf("popping off of function stack, index is now %d \n", bottom_index);
 }
 
-void FunctionStack::function_stack_pop() {
-	current_function_index -= 1;
-	printf("popping off of function stack, index is now %d \n", current_function_index);
+void FunctionStack::init_frame(int function_index) {
+	stack.at(function_index)->local_work = 0;
+	stack.at(function_index)->local_lock_span = 0;
+	stack.at(function_index)->running_lock_span = 0;
+	stack.at(function_index)->running_work = 0;
+	stack.at(function_index)->running_span = 0;
 }
 
-void FunctionStack::init_function_frame(int function_index) {
-	function_stack.at(function_index)->local_work = 0;
-	function_stack.at(function_index)->local_lock_span = 0;
-	function_stack.at(function_index)->running_lock_span = 0;
-	function_stack.at(function_index)->running_work = 0;
-	function_stack.at(function_index)->running_span = 0;
+std::shared_ptr<function_frame_t> FunctionStack::push() {
+	stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
+	bottom_index += 1;
+	init_frame(bottom_index);
+	printf("pushing on to function stack, index is now %d \n", bottom_index);
+	return stack.at(bottom_index);
 }
 
 FunctionStack::FunctionStack() {
@@ -35,12 +39,12 @@ FunctionStack::FunctionStack() {
 	// create empty function stack vector
 	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
 
-	function_stack = fxn_stack;
-	current_function_index = -1;
+	stack = fxn_stack;
+	bottom_index = -1;
 
 	// push main function onto the stack
-	function_stack_push();
-	init_function_frame(0);
+	push();
+	init_frame(0);
 }
 
 FunctionStack::~FunctionStack() {

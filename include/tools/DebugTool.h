@@ -28,7 +28,7 @@
 #include "ThreadEndEvent.h"
 
 #include "Interpreter.h"
-#include "ParasiteStack.h"
+#include "ParasiteTracker.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"

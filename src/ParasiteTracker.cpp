@@ -25,32 +25,52 @@ ParasiteTracker::ParasiteTracker() {
 ParasiteTracker::~ParasiteTracker() {}
 
 
-int bottomFunctionIndex() {
-	return function_stack->bottom_function_index;
+std::shared_ptr<function_frame_t> ParasiteTracker::function_push(){
+	function_stack->push();
+}
+
+void ParasiteTracker::function_pop(){
+	function_stack->pop();
+}
+
+std::shared_ptr<thread_frame_t> ParasiteTracker::thread_push(int head_function_index){
+	thread_stack->push(head_function_index);
+}
+
+void ParasiteTracker::thread_pop(){
+	thread_stack->pop();
+}
+
+int ParasiteTracker::bottomThreadIndex() {
+	return thread_stack->bottom_index;
+}
+
+int ParasiteTracker::bottomFunctionIndex() {
+	return function_stack->bottom_index;
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::threadAt(int index) {
 	return thread_stack->stack.at(index);
 }
 
-std::shared_ptr<thread_frame_t> ParasiteTracker::functionAt(int index) {
+std::shared_ptr<function_frame_t> ParasiteTracker::functionAt(int index) {
 	return function_stack->stack.at(index);
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomThread() {
-	return threadAt(thread_stack->bottom_thread_index);
+	return threadAt(thread_stack->bottom_index);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomFunction() {
-	return functionAt(function_stack->bottom_function_index);
+	return functionAt(function_stack->bottom_index);
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomParentThread() {
-	return threadAt(thread_stack->bottom_thread_index - 1);
+	return threadAt(thread_stack->bottom_index - 1);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomParentFunction() {
-	return functionAt(function_stack->bottom_function_index - 1);
+	return functionAt(function_stack->bottom_index - 1);
 }
 
 

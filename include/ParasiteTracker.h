@@ -70,7 +70,20 @@ class ParasiteTracker {
 		*    @brief returns index of bottom function
 		*/
 		int bottomFunctionIndex();
-		
+
+		/**
+		*    @fn bottomFunctionIndex();
+		*    @brief returns index of bottom thread
+		*/
+		int bottomThreadIndex();
+
+
+		std::shared_ptr<function_frame_t> function_push();
+		void function_pop();
+
+		std::shared_ptr<thread_frame_t> thread_push(int head_function_index);
+		void thread_pop();
+
   		/**
 		*    @var work_table
 		*    @brief Shared pointer to a call_site_hashtable_t which tracks the work

@@ -57,14 +57,14 @@ struct thread_frame_t {
 
 	/**
 	*    @var prefix_span
-	*    @brief Prefix span of this thread up to its current child function.
+	*    @brief Prefix span of this thread up to its bottom child function.
 	*/
 	double prefix_span;
 
 
 	/**
 	*    @var lock_span
-	*    @brief Lock span of this thread up to its current child function.
+	*    @brief Lock span of this thread up to its bottom child function.
 	*/
 	double lock_span;
 
@@ -118,41 +118,41 @@ class ThreadStack {
 		~ThreadStack();
 
 		/**
-		*    @fn init_thread_frame()
+		*    @fn init_frame()
 		*    @brief Initializes a thread frame with index thread_index in the 
 					thread stack, and head function index head_function_index.
 		*/
-		void init_thread_frame(int thread_index, int head_function_index);
+		void init_frame(int thread_index, int head_function_index);
 
 		/**
-		*    @fn thread_stack_push()
+		*    @fn push()
 		*    @brief Pushes a new thread_frame_t onto the thread stack 
 					vector.
 		*/
-		void thread_stack_push();
+		std::shared_ptr<thread_frame_t> push(int head_function_index);
 
 		/**
-		*    @fn thread_stack_pop()
+		*    @fn pop()
 		*    @brief Pops a thread_frame_t off of the thread stack 
 					vector.
 		*/
-		void thread_stack_pop();
+		void pop();
 
   		/**
-		*    @var current_thread_index
-		*    @brief The index of the simulator's current thread in the
+		*    @var bottom_index
+		*    @brief The index of the simulator's bottom thread in the
 					thread stack vector. 
 		*/
-  		int current_thread_index;
-
- 	private:
+  		int bottom_index;
 
   		/**
 		*    @var thread_stack
-		*    @brief Thread stack that tracks current function in simulator,
+		*    @brief Thread stack that tracks bottom function in simulator,
 				    implemented as a vector of std::shared_ptr<thread_frame_t>.
 		*/
   		std::vector< std::shared_ptr<thread_frame_t> > stack;
+
+ 	private:
 
   		ThreadStack(const ThreadStack&);
 		ThreadStack& operator=(const ThreadStack&);
