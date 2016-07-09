@@ -43,10 +43,6 @@ ThreadStack::ThreadStack() {
 
 	stack = thrd_stack;
 	bottom_index = -1;
-
-	// push main thread onto the stack
-	push(0);
-	init_frame(0, 0);
 }
 
 ThreadStack::~ThreadStack() {

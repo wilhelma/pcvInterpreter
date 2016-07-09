@@ -18,9 +18,6 @@ FunctionStack::FunctionStack() {
 
 	stack = fxn_stack;
 	bottom_index = -1;
-
-	// push main function onto the stack
-	push((FUN_SG) 0, CALLSITE (0), true);
 }
 
 FunctionStack::~FunctionStack() {
