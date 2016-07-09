@@ -21,8 +21,8 @@
 
 #include "AccessEvent.h"
 #include "CallEvent.h"
+#include "CallSiteEndProfile.h"
 #include "CallSiteProfile.h"
-#include "EndProfiles.h"
 #include "Event.h"
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
@@ -36,14 +36,54 @@
 #include "ShadowVar.h"
 #include "Tool.h"
 
+/**
+*    @struct parasite_profile_t
+*    @brief Work and span information describing entire program being profiled. 
 
- /**
- *
- *    @class  ParasiteTool.h
- *    @brief  Updates work and span variables when Events occur, to produce
- 			  a scalability profile for the entire program as well as 
- 			  each call site. 
- */
+*/
+struct parasite_profile_t {
+
+	/**
+	*    @var work
+	*    @brief The work (the total runtime, scaled) of all instructions
+				executed in the program.
+	*/
+	double work;
+
+	/**
+	*    @var span
+	*    @brief The span (the total runtime, scaled, on the criical path) 
+				of all instructions executed in the program.
+	*/
+	double span;
+
+	/**
+	*    @var lock_span
+	*    @brief The total lock span (the total runtime, scaled, on the criical
+				path, spent while at least one lock is engaged) of all 
+				instructions executed in the program.
+	*/
+	double lock_span;
+
+	/**
+	*    @var parallelism
+	*    @brief The parallelism of the program. This is the work divided by span,
+				which is an upper bound of the program's speedup on any number
+				of processors.
+	*/
+	double parallelism;
+
+	parasite_profile_t() {}
+};
+
+
+/**
+*
+*    @class  ParasiteTool.h
+*    @brief  Updates work and span variables when Events occur, to produce
+			  a scalability profile for the entire program as well as 
+			  each call site. 
+*/
 
 class ParasiteTool : public Tool {
  public:

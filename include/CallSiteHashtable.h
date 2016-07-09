@@ -20,7 +20,7 @@
 #include <string>
 
 #include "CallSiteProfile.h"
-#include "EndProfiles.h"
+#include "CallSiteEndProfile.h"
 #include "Types.h"
 
 /**
@@ -57,9 +57,9 @@ typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_profile_t>, CallS
 /**
 *    @typedef call_site_end_hashtable_t
 *    @brief std::unordered_map used as a hashtable for matching CALLSITE keys
-			to call_site_end_profile_t values. 
+			to CallSiteEndProfile values. 
 */
-typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_end_profile_t>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
+typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteEndProfile>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
 
 class CallSiteHashtable {
  public:

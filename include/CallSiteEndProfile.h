@@ -12,48 +12,11 @@
 #ifndef END_PROFILES_H_
 #define END_PROFILES_H_
 
-/**
-*    @struct parasite_profile_t
-*    @brief Work and span information describing entire program being profiled. 
-
-*/
-struct parasite_profile_t {
-
-	/**
-	*    @var work
-	*    @brief The work (the total runtime, scaled) of all instructions
-				executed in the program.
-	*/
-	double work;
-
-	/**
-	*    @var span
-	*    @brief The span (the total runtime, scaled, on the criical path) 
-				of all instructions executed in the program.
-	*/
-	double span;
-
-	/**
-	*    @var lock_span
-	*    @brief The total lock span (the total runtime, scaled, on the criical
-				path, spent while at least one lock is engaged) of all 
-				instructions executed in the program.
-	*/
-	double lock_span;
-
-	/**
-	*    @var parallelism
-	*    @brief The parallelism of the program. This is the work divided by span,
-				which is an upper bound of the program's speedup on any number
-				of processors.
-	*/
-	double parallelism;
-
-	parasite_profile_t() {}
-};
+#include "CallSiteProfile.h"
+#include "Types.h"
 
 /**
-*   @struct call_site_end_profile_t
+*   @call CallSiteEndProfile
 *   @brief Work and span information describing a call site in the program.
 
 	Any on_work variable accumulates work and span data for every invocation of
@@ -72,13 +35,14 @@ struct parasite_profile_t {
 	traces of the functions that s invokes. 
 
 */
-struct call_site_end_profile_t {
+class CallSiteEndProfile {
 
+ public:
 	/**
-    *    @var call_site
-    *    @brief The call site whose data is contained in the profile. 
-    */
-    CALLSITE call_site;
+	*    @var call_site
+	*    @brief The call site whose data is contained in the profile. 
+	*/
+	CALLSITE call_site;
 
 	/**
 	*    @var work
@@ -260,7 +224,17 @@ struct call_site_end_profile_t {
 	*/
 	double local_count_on_span;
 
-	call_site_end_profile_t() {}
+	CallSiteEndProfile();
+	explicit CallSiteEndProfile(std::shared_ptr<call_site_profile_t> collected_profile);
+	~CallSiteEndProfile();
+
+	void getEndCallSiteWorkProfile(std::shared_ptr<call_site_profile_t> collected_profile);
+	void getEndCallSiteSpanProfile(std::shared_ptr<call_site_profile_t> collected_profile);
+
+ private:
+
+	CallSiteEndProfile(const CallSiteEndProfile&);
+	CallSiteEndProfile& operator=(const CallSiteEndProfile&);
 };
 
 #endif  // END_PROFILES_H_
