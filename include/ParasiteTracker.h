@@ -90,7 +90,7 @@ class ParasiteTracker {
 		*    @brief Shared pointer to a call_site_hashtable_t which tracks the work
 					for each call site. 
 		*/
-  		std::shared_ptr<call_site_hashtable_t> work_table;
+  		CallSiteHashtable work_table;
 
  	private:
 

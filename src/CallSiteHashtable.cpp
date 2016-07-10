@@ -13,25 +13,42 @@
 #include <utility>
 #include "CallSiteHashtable.h"
 
-
-CallSiteHashtable::~CallSiteHashtable() {}
-
-CallSiteHashtable::CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable) {
-	hashtable = hshtable;
+CallSiteHashtable::CallSiteHashtable() {
+	printf("non-explicit call site hashtable constructor called \n");
+	hashtable = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
 }
 
-void CallSiteHashtable::add_in_hashtable( const std::shared_ptr<call_site_hashtable_t> hashtable_to_add) {
+CallSiteHashtable::CallSiteHashtable(CallSiteHashtable const& hashtable_object) {
+	printf("explicit call site hashtable constructor called \n");
+	hashtable = std::move(hashtable_object.hashtable);
+}
 
-	for (auto const &it : *hashtable_to_add) {
+
+CallSiteHashtable::~CallSiteHashtable() {
+
+}
+
+CallSiteHashtable* CallSiteHashtable::operator=(const CallSiteHashtable& table_object) {
+	hashtable = table_object.hashtable;
+	return this;
+}
+
+void CallSiteHashtable::clear() {
+	hashtable->clear();
+}
+
+void CallSiteHashtable::add_in_hashtable(CallSiteHashtable* hashtable_object) {
+
+	for (auto const &it : *(hashtable_object->hashtable)) {
 		CALLSITE key = it.first;
 
 		// if call site profile being added exists in both hashtables, combine them
 		if (hashtable->count(key)) {
 			CallSiteProfile existingProfile(hashtable->at(key));
-		    existingProfile.add_in_callsite_profile_entries(hashtable_to_add->at(key));
+		    existingProfile.add_in_callsite_profile_entries(hashtable_object->hashtable->at(key));
 		} else  {
 			std::pair<CALLSITE, std::shared_ptr<call_site_profile_t> > 
-                                       newPair(key, hashtable_to_add->at(key));
+                                       newPair(key, hashtable_object->hashtable->at(key));
 			hashtable->insert(newPair);
 		}
 	}

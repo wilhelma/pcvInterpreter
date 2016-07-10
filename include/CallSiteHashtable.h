@@ -62,21 +62,28 @@ typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_profile_t>, CallS
 typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteEndProfile>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
 
 class CallSiteHashtable {
- public:
 
+ public:
 	CallSiteHashtable();
-	explicit CallSiteHashtable(std::shared_ptr<call_site_hashtable_t> hshtable);
+	explicit CallSiteHashtable(CallSiteHashtable const& hshtable);
+	
+	CallSiteHashtable* operator=(const CallSiteHashtable& rhs);
 	~CallSiteHashtable();
 
 	/**
-	*    @fn call_site_end_hashtable_t
+	*    @fn clear()
 	*    @brief Adds in added_hashtable into the class's hashtable.
 	*/
-	void add_in_hashtable(const std::shared_ptr<call_site_hashtable_t> 
-														  added_hashtable);
+	void clear();
 
 	/**
-	*    @fn call_site_end_hashtable_t
+	*    @fn add_in_hashtable(...)
+	*    @brief Adds in added_hashtable into the class's hashtable.
+	*/
+	void add_in_hashtable(CallSiteHashtable* hashtable_object);
+
+	/**
+	*    @fn add_data_to_hashtable(...)
 	*    @brief Adds work, span, local_work, and local_span to the profile for
 			    call_site contained in hashtable.
 	*/
@@ -86,7 +93,7 @@ class CallSiteHashtable {
 	                         double local_work, double local_span);
 
 	/**
-	*    @fn call_site_end_hashtable_t
+	*    @fn add_local_data_to_hashtable(...)
 	*    @brief Adds local_work and local_span to the profile for
 			    call_site contained in hashtable.
 	*/
@@ -99,10 +106,7 @@ class CallSiteHashtable {
 				CALLSITE keys to call_site_profile_t values. 
 	*/
 	std::shared_ptr<call_site_hashtable_t> hashtable;
-
- private:
-	CallSiteHashtable(const CallSiteHashtable&);
-	CallSiteHashtable& operator=(const CallSiteHashtable&);
+	
 };
 
 #endif  // CALL_SITE_HASHTABLE_H_

@@ -47,9 +47,8 @@ void ParasiteTool::getEndProfile() {
                             bottom_thread_frame->local_continuation;
 
   CallSiteHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
-  bottom_prefix_table.add_in_hashtable(bottom_thread_frame->continuation_table);
-  std::shared_ptr<call_site_hashtable_t> final_on_span_table = 
-                                              bottom_thread_frame->prefix_table;
+  bottom_prefix_table.add_in_hashtable(&(bottom_thread_frame->continuation_table));
+  CallSiteHashtable final_on_span_table(bottom_thread_frame->prefix_table);
 
   // Calculate work for entire program
   parasite_profile->work = bottom_function_frame->running_work +
@@ -59,12 +58,12 @@ void ParasiteTool::getEndProfile() {
   parasite_profile->parallelism = parasite_profile->work 
                                 / parasite_profile->span;
 
-  std::shared_ptr<call_site_hashtable_t> final_table = stacks->work_table;
+  CallSiteHashtable final_table(stacks->work_table);
 
   // parse the final work table in the main stack data structure 
   // iterate through all entries in the hashtable containing collected
   // work profiles of call sites. 
-  for (auto const &it : *final_table) {
+  for (auto const &it : *final_table.hashtable) {
     std::shared_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
     std::shared_ptr<CallSiteEndProfile> current_call_site_end_profile(new CallSiteEndProfile(current_call_site_profile));
@@ -78,7 +77,7 @@ void ParasiteTool::getEndProfile() {
   // parse the final span table in the main stack data structure 
   // iterate through all entries in the hashtable containing 
   // collected span profiles of call sites. 
-  for (auto const &it : *final_on_span_table) {
+  for (auto const &it : *final_on_span_table.hashtable) {
     std::shared_ptr<call_site_profile_t> current_call_site_profile = it.second;
     CALLSITE current_call_site_ID = it.first;
     std::shared_ptr<CallSiteEndProfile> current_call_site_end_profile = 
@@ -162,7 +161,7 @@ void ParasiteTool::join(const Event* e) {
     bottom_thread_frame->prefix_span -= bottom_thread_frame->
                                         longest_child_lock_span;
     CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
-    prefix_table.add_in_hashtable(bottom_thread_frame->longest_child_table);
+    prefix_table.add_in_hashtable(&(bottom_thread_frame->longest_child_table));
     // local_span does not increase, because critical path goes 
     // through spawned child.
   } else {
@@ -171,7 +170,7 @@ void ParasiteTool::join(const Event* e) {
     // local_continuation to local_span.
     bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
     CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
-    prefix_table.add_in_hashtable(bottom_thread_frame->continuation_table);
+    prefix_table.add_in_hashtable(&(bottom_thread_frame->continuation_table));
   }
 
   // reset longest child and continuation span variables
@@ -299,26 +298,26 @@ void ParasiteTool::threadEnd(const Event* e) {
     parent_thread_frame->local_span += parent_thread_frame->local_continuation;
 
     CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
-    prefix_table.add_in_hashtable(parent_thread_frame->continuation_table);
+    prefix_table.add_in_hashtable(&(parent_thread_frame->continuation_table));
 
     // Save old bottom thread frame tables in 
     // parent frame's longest child variable.
     parent_thread_frame->longest_child_span = ending_thread_frame->
                                               prefix_span;
-    parent_thread_frame->longest_child_table->clear();
+    parent_thread_frame->longest_child_table.clear();
 
-    std::shared_ptr<call_site_hashtable_t> temp_hashtable(parent_thread_frame->longest_child_table);
+    CallSiteHashtable temp_hashtable(parent_thread_frame->longest_child_table);
     parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
     ending_thread_frame->prefix_table = temp_hashtable;
 
-    ending_thread_frame->longest_child_table->clear();
-    ending_thread_frame->continuation_table->clear();
+    ending_thread_frame->longest_child_table.clear();
+    ending_thread_frame->continuation_table.clear();
   }
 
   else {
-      ending_thread_frame->prefix_table->clear();
-      ending_thread_frame->longest_child_table->clear();
-      ending_thread_frame->continuation_table->clear();
+      ending_thread_frame->prefix_table.clear();
+      ending_thread_frame->longest_child_table.clear();
+      ending_thread_frame->continuation_table.clear();
   }
 
   // pop the thread off the stack last, 

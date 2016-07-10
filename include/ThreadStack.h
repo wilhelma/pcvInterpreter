@@ -88,29 +88,27 @@ struct thread_frame_t {
 	*    @var longest_child_lock_span
 	*    @brief Prefix data for each call site in this thread.
 	*/
-	std::shared_ptr<call_site_hashtable_t> prefix_table;
+	CallSiteHashtable prefix_table;
 
 	/**
 	*    @var longest_child_lock_span
 	*    @brief Longest child data for each call site in this thread. 
 	*/
-	std::shared_ptr<call_site_hashtable_t> longest_child_table;
+	CallSiteHashtable longest_child_table;
 
 	/**
 	*    @var longest_child_lock_span
 	*    @brief Continuation data for each call site in this thread.
 	*/
-	std::shared_ptr<call_site_hashtable_t> continuation_table;
+	CallSiteHashtable continuation_table;
 
-	thread_frame_t() {
-
-		prefix_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
-		longest_child_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
-		continuation_table = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
-	}
+	thread_frame_t():prefix_table(CallSiteHashtable()), 
+					 longest_child_table(CallSiteHashtable()),
+					 continuation_table(CallSiteHashtable()) {}
 };
 
 class ThreadStack {
+
 	public:
 		
 		ThreadStack();
