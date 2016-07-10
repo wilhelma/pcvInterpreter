@@ -15,6 +15,7 @@ set(SRC_LIST
 	ThreadMgr.cpp)
 
 set(SRC_LIST ${SRC_LIST}
+	tools/DebugTool.cpp
 	tools/FunctionTrackerTool.cpp
 	tools/LockSetChecker.cpp
 	tools/RaceDetectionTool.cpp)
