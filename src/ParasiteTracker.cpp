@@ -42,11 +42,11 @@ void ParasiteTracker::thread_pop(){
 }
 
 int ParasiteTracker::bottomThreadIndex() {
-	return thread_stack->bottom_index;
+	return (thread_stack->stack.size() - 1);
 }
 
 int ParasiteTracker::bottomFunctionIndex() {
-	return function_stack->bottom_index;
+	return (function_stack->stack.size() - 1);
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::threadAt(int index) {

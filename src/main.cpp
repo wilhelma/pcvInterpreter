@@ -68,7 +68,10 @@ int main(int argc, char* argv[]) {
 
 	// unregister
 	runner->removeTool(functionTool);
+
+	parasiteTool->printProfile();
 	runner->removeTool(parasiteTool);
+
 	runner->removeTool(debugTool);
 
 	delete interpreter;
