@@ -21,7 +21,6 @@ ParasiteTracker::ParasiteTracker() {
 
 ParasiteTracker::~ParasiteTracker() {}
 
-
 std::shared_ptr<function_frame_t> ParasiteTracker::function_push(FUN_SG funSg,
 							   									 CALLSITE callsiteID,
 							   									 bool is_top_call_site_function) {
@@ -29,7 +28,7 @@ std::shared_ptr<function_frame_t> ParasiteTracker::function_push(FUN_SG funSg,
 }
 
 void ParasiteTracker::function_pop(){
-	assert(function_stack->bottom_index > 0);
+	assert(function_stack->bottom_index >= -1);
 	function_stack->pop();
 }
 
@@ -38,7 +37,7 @@ std::shared_ptr<thread_frame_t> ParasiteTracker::thread_push(int head_function_i
 }
 
 void ParasiteTracker::thread_pop(){
-	assert(thread_stack->bottom_index > 0);
+	assert(thread_stack->bottom_index >= -1);
 	thread_stack->pop();
 }
 
@@ -51,39 +50,33 @@ int ParasiteTracker::bottomFunctionIndex() {
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::threadAt(int index) {
-	assert(index >= 0);
+	assert(index >= -1);
+	if (index == -1)
+		index = 0;
 	return thread_stack->stack.at(index);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::functionAt(int index) {
-	assert(index >= 0);
+	assert(index >= -1);
+	if (index == -1)
+		index = 0;
 	return function_stack->stack.at(index);
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomThread() {
-	assert(thread_stack->bottom_index >= 0);
 	return threadAt(thread_stack->bottom_index);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomFunction() {
-	assert(thread_stack->bottom_index >= 0);
 	return functionAt(function_stack->bottom_index);
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomParentThread() {
-	assert(thread_stack->bottom_index >= 0);
-	if (thread_stack->bottom_index == 0)
-		return threadAt(thread_stack->bottom_index);
-	else 
-		return threadAt(thread_stack->bottom_index - 1);
+	return threadAt(thread_stack->bottom_index - 1);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomParentFunction() {
-	assert(function_stack->bottom_index >= 0);
-	if (function_stack->bottom_index == 0)
-		return functionAt(thread_stack->bottom_index);
-	else
-		return functionAt(function_stack->bottom_index - 1);
+	return functionAt(function_stack->bottom_index - 1);
 }
 
 

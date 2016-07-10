@@ -32,11 +32,6 @@ ParasiteTool::ParasiteTool() {
 }
 
 void ParasiteTool::getEndProfile() {
-  // this function should only be called when currently on the main thread
-  // and on the main function
-  assert(stacks->bottomFunctionIndex() == 0);
-  assert(stacks->bottomThreadIndex() == 0);
-
   std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
   std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
 
@@ -287,7 +282,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   // Main function thread ends here 
   if (stacks->bottomThreadIndex() == 0) {
-    printf("ending main thread operations");
+    printf("ending main thread operations\n");
     return;
   }
 

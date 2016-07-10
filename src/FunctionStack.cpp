@@ -9,11 +9,10 @@
  *
  */
 
+#include <cassert>
 #include "FunctionStack.h"
 
 FunctionStack::FunctionStack() {
-
-	printf("function stack constructor has been called!!! \n");
 	// // create empty function stack vector
 	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
 	stack = fxn_stack;
@@ -34,6 +33,7 @@ void FunctionStack::init_frame(int function_index,
 							   CALLSITE callsiteID,
 							   bool is_top_call_site_function) {
 
+	assert(function_index >= 0);	
 	stack.at(function_index)->local_work = 0;
 	stack.at(function_index)->local_lock_span = 0;
 	stack.at(function_index)->running_lock_span = 0;
@@ -51,6 +51,7 @@ std::shared_ptr<function_frame_t> FunctionStack::push(FUN_SG funSg,
 	bottom_index += 1;
 	init_frame(bottom_index, funSg, callsiteID, is_top_call_site_function);
 	printf("pushing on to function stack, index is now %d \n", bottom_index);
+	assert(bottom_index >= 0);
 	return stack.at(bottom_index);
 }
 

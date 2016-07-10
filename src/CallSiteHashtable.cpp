@@ -14,12 +14,10 @@
 #include "CallSiteHashtable.h"
 
 CallSiteHashtable::CallSiteHashtable() {
-	printf("non-explicit call site hashtable constructor called \n");
 	hashtable = std::shared_ptr<call_site_hashtable_t>(new call_site_hashtable_t);
 }
 
 CallSiteHashtable::CallSiteHashtable(CallSiteHashtable const& hashtable_object) {
-	printf("explicit call site hashtable constructor called \n");
 	hashtable = std::move(hashtable_object.hashtable);
 }
 

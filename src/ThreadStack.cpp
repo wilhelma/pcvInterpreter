@@ -9,6 +9,7 @@
  *
  */
 
+#include <cassert>
 #include "ThreadStack.h"
 
 void ThreadStack::pop() {
@@ -19,6 +20,7 @@ void ThreadStack::pop() {
 
 void ThreadStack::init_frame(int thread_index, int head_function_index) {
 
+	assert(thread_index >= 0);
 	stack.at(thread_index)->head_function_index = head_function_index;
 	stack.at(thread_index)->local_span = 0;
 	stack.at(thread_index)->lock_span = 0;
@@ -33,6 +35,7 @@ std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index) {
 	bottom_index += 1;
 	printf("pushing on to thread stack, index is now %d \n", bottom_index);
 	init_frame(bottom_index, head_function_index);
+	assert(bottom_index >= 0);
 	return stack.at(bottom_index);
 }
 
@@ -40,7 +43,6 @@ ThreadStack::ThreadStack() {
 
 	// create empty thread stack vector
 	std::vector< std::shared_ptr<thread_frame_t> > thrd_stack;
-
 	stack = thrd_stack;
 	bottom_index = -1;
 }
