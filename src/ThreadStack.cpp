@@ -12,8 +12,21 @@
 #include <cassert>
 #include "ThreadStack.h"
 
+ThreadStack::ThreadStack() {
+	// create empty thread stack vector
+	std::vector< std::shared_ptr<thread_frame_t> > thrd_stack;
+	stack = thrd_stack;
+	bottom_index = -1;
+}
+
+ThreadStack::~ThreadStack() {
+
+}
+
 void ThreadStack::pop() {
-	stack.pop_back();
+	// the last thread frame must stay on the stack to get the end profile
+	if (stack.size() > 1)
+		stack.pop_back();
 	bottom_index -= 1;
 	printf("popping off of thread stack, index is now %d \n", bottom_index);
 }
@@ -39,17 +52,6 @@ std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index) {
 	return stack.at(bottom_index);
 }
 
-ThreadStack::ThreadStack() {
-
-	// create empty thread stack vector
-	std::vector< std::shared_ptr<thread_frame_t> > thrd_stack;
-	stack = thrd_stack;
-	bottom_index = -1;
-}
-
-ThreadStack::~ThreadStack() {
-
-}
 
 
 

@@ -64,19 +64,19 @@ std::shared_ptr<function_frame_t> ParasiteTracker::functionAt(int index) {
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomThread() {
-	return threadAt(thread_stack->bottom_index);
+	return thread_stack->stack.back();
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomFunction() {
-	return functionAt(function_stack->bottom_index);
+	return function_stack->stack.back();
 }
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::bottomParentThread() {
-	return threadAt(thread_stack->bottom_index - 1);
+	return threadAt(thread_stack->stack.size() - 2);
 }
 
 std::shared_ptr<function_frame_t> ParasiteTracker::bottomParentFunction() {
-	return functionAt(function_stack->bottom_index - 1);
+	return functionAt(function_stack->stack.size() - 2);
 }
 
 

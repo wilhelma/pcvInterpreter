@@ -31,6 +31,11 @@ ParasiteTool::ParasiteTool() {
   total_locks_running = 0;
 }
 
+ParasiteTool::~ParasiteTool() {
+  
+}
+
+
 void ParasiteTool::getEndProfile() {
   std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
   std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
@@ -91,10 +96,6 @@ void ParasiteTool::printProfile() {
   printf("SPAN IS %f \n", parasite_profile->span);
   printf("LOCK SPAN IS %f \n", parasite_profile->lock_span);
 
-}
-
-ParasiteTool::~ParasiteTool() {
-  printProfile();
 }
 
 void ParasiteTool::call(const Event* e) {
@@ -282,6 +283,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   // Main function thread ends here 
   if (stacks->bottomThreadIndex() == 0) {
+    printProfile();
     printf("ending main thread operations\n");
     return;
   }

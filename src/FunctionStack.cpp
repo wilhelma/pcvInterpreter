@@ -13,7 +13,7 @@
 #include "FunctionStack.h"
 
 FunctionStack::FunctionStack() {
-	// // create empty function stack vector
+	// create empty function stack vector
 	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
 	stack = fxn_stack;
 	bottom_index = -1;
@@ -24,6 +24,9 @@ FunctionStack::~FunctionStack() {
 }
 
 void FunctionStack::pop() {
+	// the last function frame must stay on the stack to get the end profile
+	if (stack.size() > 1)
+		stack.pop_back();
 	bottom_index -= 1;
 	printf("popping off of function stack, index is now %d \n", bottom_index);
 }
