@@ -79,7 +79,6 @@ class FunctionStack {
 	public:
 		
 		FunctionStack();
-		explicit FunctionStack(std::vector< std::shared_ptr<function_frame_t> > function_stack);
 		~FunctionStack();
 
 		/**
@@ -107,7 +106,6 @@ class FunctionStack {
 					vector - keeps frame on stack, but decrements index
 		*/
 		void pop();
-
   		/**
 		*    @var bottom_index
 		*    @brief The index of the simulator's bottom function in the

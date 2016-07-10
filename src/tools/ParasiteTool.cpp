@@ -14,14 +14,19 @@
 #include "ParasiteTool.h"
 
 ParasiteTool::ParasiteTool() {
-  stacks = std::unique_ptr<ParasiteTracker>(new ParasiteTracker);
-  parasite_profile = std::unique_ptr<parasite_profile_t>(new parasite_profile_t);
-  end_call_site_profile_hashtable = std::unique_ptr<call_site_end_hashtable_t>(new call_site_end_hashtable_t);
+
+  stacks = std::unique_ptr<ParasiteTracker>(new ParasiteTracker());
+
+  parasite_profile = std::unique_ptr<parasite_profile_t>
+                                                      (new parasite_profile_t);
+  
+  end_call_site_profile_hashtable = std::unique_ptr<call_site_end_hashtable_t>
+                                                (new call_site_end_hashtable_t);
 
   std::unordered_map<unsigned int, int> lck_hashtable;
   lock_hashtable = lck_hashtable;
 
-  last_strand_start_time = (TIME) 0.0;
+  last_strand_start_time = (TIME) 0.0; 
   last_function_runtime = (TIME) 0.0;
   total_locks_running = 0;
 }

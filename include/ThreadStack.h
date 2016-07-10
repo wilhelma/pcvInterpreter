@@ -114,7 +114,6 @@ class ThreadStack {
 	public:
 		
 		ThreadStack();
-		explicit ThreadStack(std::vector< std::shared_ptr<thread_frame_t> > thread_stack);
 		~ThreadStack();
 
 		/**

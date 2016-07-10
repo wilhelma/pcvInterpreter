@@ -13,9 +13,9 @@
 
 FunctionStack::FunctionStack() {
 
-	// create empty function stack vector
+	printf("function stack constructor has been called!!! \n");
+	// // create empty function stack vector
 	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
-
 	stack = fxn_stack;
 	bottom_index = -1;
 }
