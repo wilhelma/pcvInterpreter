@@ -42,16 +42,16 @@ int main(int argc, char* argv[]) {
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
 //	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 
-//	ParasiteTool *parasiteTool = new ParasiteTool();
+  ParasiteTool *parasiteTool = new ParasiteTool();
 
 	DebugTool *debugTool = new DebugTool();
 
 	// register functionTool, no filters, all events except ACCESS
-//	runner->registerTool(parasiteTool, NULL,
-//						 Events::CALL | Events::NEWTHREAD |
-//						 Events::THREADEND | Events::JOIN |
-//						 Events::ACQUIRE | Events::RELEASE |
-//						 Events::RETURN );
+  runner->registerTool(parasiteTool, NULL,
+             Events::CALL | Events::NEWTHREAD |
+             Events::THREADEND | Events::JOIN |
+             Events::ACQUIRE | Events::RELEASE |
+             Events::RETURN );
 
 	runner->registerTool(debugTool, NULL,
 						 Events::CALL | Events::NEWTHREAD | 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 //	runner->removeTool(functionTool);
 
 //	parasiteTool->printProfile();
-//	runner->removeTool(parasiteTool);
+  runner->removeTool(parasiteTool);
 
 	runner->removeTool(debugTool);
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 	delete service;
 	delete runner;
 	// delete functionTool;
-//	delete parasiteTool;
+  delete parasiteTool;
 	delete debugTool;
 
 	return 0;

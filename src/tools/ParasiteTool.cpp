@@ -102,7 +102,6 @@ void ParasiteTool::call(const Event* e) {
   const CallInfo* _info(callEvent->getCallInfo());
 
   FUN_SG calledFunctionSignature = _info->fnSignature;
-  TRD_ID calledThreadID = callEvent->getThread()->threadId;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
 
@@ -139,10 +138,6 @@ void ParasiteTool::create(const Event* e) {
 
 void ParasiteTool::join(const Event* e) {
   printf("starting join Event");
-  JoinEvent* joinEvent = (JoinEvent*) e;
-  const JoinInfo* _info = joinEvent->getJoinInfo();
-	TRD_ID childThreadId = _info->childThread->threadId;
-	TRD_ID parentThreadId = _info->parentThread->threadId;
 
   std::shared_ptr<function_frame_t> bottom_function_frame(stacks->bottomFunction());
   std::shared_ptr<thread_frame_t> bottom_thread_frame(stacks->bottomThread());
