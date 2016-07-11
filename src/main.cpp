@@ -11,11 +11,10 @@
 #include "DBInterpreter.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
-#include "DebugTool.h"
 #include "FunctionTrackerTool.h"
-#include "ParasiteTool.h"
 #include "LockMgr.h"
 #include "ThreadMgr.h"
+
 
 int main(int argc, char* argv[]) {
 
@@ -40,46 +39,21 @@ int main(int argc, char* argv[]) {
 	// create and register tools
 	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
 	//LockSetChecker *raceTool = new LockSetChecker("races.json");
-//	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
-
-  ParasiteTool *parasiteTool = new ParasiteTool();
-
-	DebugTool *debugTool = new DebugTool();
-
-	// register functionTool, no filters, all events except ACCESS
-  runner->registerTool(parasiteTool, NULL,
-             Events::CALL | Events::NEWTHREAD |
-             Events::THREADEND | Events::JOIN |
-             Events::ACQUIRE | Events::RELEASE |
-             Events::RETURN );
-
-	runner->registerTool(debugTool, NULL,
-						 Events::CALL | Events::NEWTHREAD | 
-						 Events::THREADEND | Events::JOIN | 
-						 Events::ACQUIRE | Events::RELEASE | 
-						 Events::RETURN | Events::ACCESS );
-
-	// register functionTool, no filters, only CALL and NEWTHREAD events
-  	// runner->registerTool(functionTool, NULL,
-   //                     	Events::CALL | Events::NEWTHREAD );
+	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
+	// register functionTool, no filters, only CALL events
+  runner->registerTool(functionTool, NULL,
+                       Events::CALL | Events::NEWTHREAD );
 
 	// Start interpretation
 	runner->interpret();
 
 	// unregister
-//	runner->removeTool(functionTool);
-
-//	parasiteTool->printProfile();
-  runner->removeTool(parasiteTool);
-
-	runner->removeTool(debugTool);
+	runner->removeTool(functionTool);
 
 	delete interpreter;
 	delete service;
 	delete runner;
-	// delete functionTool;
-  delete parasiteTool;
-	delete debugTool;
+	delete functionTool;
 
 	return 0;
 }
