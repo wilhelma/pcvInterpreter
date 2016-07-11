@@ -192,12 +192,12 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processMemAccess;
 				break;
-			case InstructionType::ALLOC:
+      case InstructionType::ACQUIRE:
 				search_call = callTable.find(search_segment->second.call_id);
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processAcqAccess;
 				break;
-			case InstructionType::FREE:
+      case InstructionType::RELEASE:
 				search_call = callTable.find(search_segment->second.call_id);
 				if (search_call != callTable.cend())
 					accessFunc = &DBInterpreter::processRelAccess;

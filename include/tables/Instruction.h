@@ -16,12 +16,14 @@
 
 /*! @brief The type of the instruction */
 enum class InstructionType {
-    CALL   = 0,
-    ACCESS = 1,
-    ALLOC  = 2,
-    FREE   = 3,
-    FORK   = 4,
-    JOIN   = 5
+    CALL    = 0,
+    ACCESS  = 1,
+    ALLOC   = 2,
+    FREE    = 3,
+    FORK    = 4,
+    JOIN    = 5,
+    ACQUIRE = 6,
+    RELEASE = 7
 };
 
 typedef struct instruction_t {
