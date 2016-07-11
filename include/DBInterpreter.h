@@ -61,7 +61,9 @@ public:
 				  ThreadMgr *threadMgr)
 		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
 		  _logFile(logFile), _eventService(service)
-	{};
+  {
+    callStack_.push(call_t::MAIN);
+  };
 
 	virtual ~DBInterpreter() override final {};
 

@@ -30,7 +30,7 @@ bool EventService::publish(const ThreadEndEvent *event) const {
 bool EventService::publish(const JoinEvent *event) const {
 	for (const auto& it : _observers)
 		if ((it.second.events & Events::JOIN) != 0)
-			it.first->create(event);
+      it.first->join(event);
 
 	return true;
 }
@@ -54,7 +54,7 @@ bool EventService::publish(const ReleaseEvent *event) const {
 bool EventService::publish(const ReturnEvent *event) const {
 	for (const auto& it : _observers)
     if ((it.second.events & Events::RETURN) != 0)
-			it.first->release(event);
+      it.first->returnOfCalled(event);
 
 	return true;
 }

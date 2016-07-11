@@ -22,43 +22,43 @@ DebugTool::~DebugTool() {
 }
 
 void DebugTool::create(const Event* e) {
-
-  printf("NEW THREAD EVENT \n");
+  static int count = 0; count++;
+  printf("NEW THREAD EVENT %d\n", count);
 }
 
 void DebugTool::join(const Event* e) {
-
-  printf("JOIN EVENT \n");
+  static int count = 0; count++;
+  printf("JOIN EVENT %d\n", count);
 }
 
 void DebugTool::call(const Event* e) {
-
-  printf("CALL EVENT \n");
+  static int count = 0; count++;
+  printf("CALL EVENT %d\n", count);
 }
 
 void DebugTool::returnOfCalled(const Event* e) {
-
-  printf("RETURN EVENT \n");
+  static int count = 0; count++;
+  printf("RETURN EVENT %d\n", count);
 }
 
 void DebugTool::threadEnd(const Event* e) {
-
-  printf("THREAD END EVENT \n");
+  static int count = 0; count++;
+  printf("THREAD END EVENT %d\n", count);
 }
 
 void DebugTool::acquire(const Event* e) {
-
-  printf("ACQUIRE EVENT \n");
+  static int count = 0; count++;
+  printf("ACQUIRE EVENT %d\n", count);
 }
 
 void DebugTool::release(const Event* e) {
-
-  printf("RELEASE EVENT \n");
+  static int count = 0; count++;
+  printf("RELEASE EVENT %d\n", count);
 }
 
 void DebugTool::access(const Event* e) {
-
-  printf("ACCESS EVENT \n");
+  static int count = 0; count++;
+  printf("ACCESS EVENT %d\n", count);
 }
 
 
