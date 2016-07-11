@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "AccessEvent.h"
+#include "AcquireEvent.h"
 #include "CallEvent.h"
 #include "CallSiteEndProfile.h"
 #include "CallSiteProfile.h"
@@ -27,6 +28,7 @@
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
 #include "ReturnEvent.h"
+#include "ReleaseEvent.h"
 #include "ThreadEndEvent.h"
 
 #include "Interpreter.h"
@@ -90,14 +92,14 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
-	void create(const Event* e);
-	void join(const Event* e);
-	void acquire(const Event* e);
-	void release(const Event* e);
-	void access(const Event* e);
-	void call(const Event* e);
-	void returnOfCalled(const Event* e);
-	void threadEnd(const Event* e);
+	void create(const Event* e) override;
+	void join(const Event* e) override;
+	void acquire(const Event* e) override;
+	void release(const Event* e) override;
+	void access(const Event* e) override;
+	void call(const Event* e) override;
+	void returnOfCalled(const Event* e) override;
+	void threadEnd(const Event* e) override;
 
 	/**
 	*    @fn returnOperations()
@@ -148,7 +150,6 @@ class ParasiteTool : public Tool {
 	*/
 	std::unordered_map<unsigned int, int> lock_hashtable;
 
-
 	/**
 	*    @var last_strand_start_time
 	*    @brief Time stamp for the last strand that has started in the simulator.
@@ -165,12 +166,31 @@ class ParasiteTool : public Tool {
 	TIME last_function_runtime;
 
 	/**
-	*    @var total_locks_running
-	*    @brief Tracks the current number of locks running, for calculation of 
-				lock span. Lock span is only recorded when total_locks_running
-				is 1 and a lock is then released. 
+	*    @var last_function_runtime
+	*    @brief Duration of the last function that was called. 
 	*/
-	int total_locks_running;
+	TIME last_thread_runtime;
+
+	/**
+	*    @var in_lock_span
+	*    @brief Tracks whether the calculation is currently within lock span. 
+	*/
+	bool in_lock_span;
+
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the last lock start time, for calculation of 
+				lock span. 
+	*/
+	int lock_span_start_time;
+
+	/**
+	*    @var last_lock_end_time
+	*    @brief Tracks the last lock end time, for calculation of 
+				lock span. 
+	*/
+	int lock_span_end_time;
+
 
  private:
 	// prevent generated functions --------------------------------------------
