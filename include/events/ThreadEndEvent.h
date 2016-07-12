@@ -12,16 +12,10 @@
 #ifndef  THREAD_END_EVENT_H_
 #define  THREAD_END_EVENT_H_
 
-#include "Event.h"
-#include "Types.h"
+#include "fwd/ShadowThread.h"
+#include "fwd/ThreadEndInfo.h"
 
-struct ThreadEndInfo {
-	TIME endTime;
-	TRD_ID id;
-	ThreadEndInfo(TIME endTime,
-				  TRD_ID id) noexcept
-		: endTime(endTime), id(id) {}
-};
+#include "Event.h"
 
 class ThreadEndEvent : public Event {
 public:

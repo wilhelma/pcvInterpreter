@@ -22,7 +22,7 @@ enum class ReferenceType {
     GLOBAL    = (1 << 3)
 };
 
-typedef struct reference_t {
+struct reference_t {
     REF_ID id;
     //REF_ADDR address;
     REF_SIZE size;
@@ -35,12 +35,12 @@ typedef struct reference_t {
                 REF_SIZE refSize,
                 ReferenceType memoryType,
                 REF_NAME refName,
-                INS_ID allocInstr)
+                INS_ID allocInstr) noexcept
         : id(refId), size(refSize), memory_type(memoryType),
           name(refName), allocinstr(allocInstr)
     {
     }
 
-} reference_t;
+};
 
 #endif

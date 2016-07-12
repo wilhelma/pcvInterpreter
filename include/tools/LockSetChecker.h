@@ -5,39 +5,40 @@
  *      Author: wilhelma
  */
 
-#ifndef LOCKSETCHECKER_H_
-#define LOCKSETCHECKER_H_
+#ifndef LOCK_SET_CHECKER_H_
+#define LOCK_SET_CHECKER_H_
 
 #include "Tool.h"
 
-#include <iostream>
-#include <array>
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/NewThreadEvent.h"
+
+#include "fwd/ShadowThread.h"
+#include "fwd/ShadowVar.h"
+
+#include "ShadowLock.h"
+
+#include "Types.h"
+
 #include <set>
 #include <map>
 #include <vector>
 #include <memory>
-#include "Interpreter.h"
-#include "Event.h"
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "NewThreadEvent.h"
-#include "ShadowThread.h"
-#include "ShadowVar.h"
-#include "ShadowLock.h"
-
-#include "Types.h"
 
 #define THREADS 100
 
 class LockSetChecker : public Tool {
 public:
 	LockSetChecker(const char* outFile);
-	void create(const Event* e) override;
-	void join(const Event* e) override;
-	void acquire(const Event* e) override;
-	void release(const Event* e) override;
-	void access(const Event* e) override;
-	void call(const Event* e) override;
+
+	void Access(const AccessEvent* event) override final;
+	void Acquire(const AcquireEvent* event) override final;
+	void NewThread(const NewThreadEvent* event) override final;
+	void Release(const ReleaseEvent* event) override final;
+
 	~LockSetChecker();
 
 	typedef enum { WRITE_READ = 1,		// read after write (RAW)
@@ -48,6 +49,12 @@ public:
 //	static Decoration<ShadowThread, Set> locksheld;
 	
 private:
+
+	virtual void Join(const JoinEvent* event) override final {};
+	virtual void Call(const CallEvent* event) override final {};
+	virtual void Return(const ReturnEvent* event) override final {};
+	virtual void ThreadEnd(const ThreadEndEvent* event) override final {};
+
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {
 		bool operator()(const ShadowLock* lhs, const ShadowLock* rhs) const {

@@ -12,30 +12,10 @@
 #ifndef  CALL_EVENT_H_
 #define  CALL_EVENT_H_
 
-#include "Function.h"
-#include "Types.h"
-#include "ShadowThread.h"
+#include "fwd/CallInfo.h"
+#include "fwd/ShadowThread.h"
 
-typedef struct CallInfo {
-	CALLSITE siteId;
-	TIME runtime;
-	FUN_SG fnSignature;
-	SEG_ID segment;
-	FunctionType fnType;
-	FIL_PT fileName;
-	FIL_PT filePath;
-
-	explicit
-		CallInfo(CALLSITE SiteId,
-				TIME Runtime,
-				FUN_SG FnSignature,
-				SEG_ID Segment,
-				FunctionType FnType,
-				FIL_PT FileName,
-				FIL_PT FilePath) noexcept
-		: siteId(SiteId), runtime(Runtime), fnSignature(FnSignature),
-		segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
-} CallInfo;
+#include "Event.h"
 
 class CallEvent : public Event {
 	public:

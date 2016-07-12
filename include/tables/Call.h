@@ -14,7 +14,7 @@
 
 #include "Types.h"
 
-typedef struct call_t {
+struct call_t {
     CAL_ID sql_id;
     TRD_ID thread_id;
     FUN_ID function_id;
@@ -28,12 +28,12 @@ typedef struct call_t {
            FUN_ID functionID,
            INS_ID instructionID,
            TIME startTime,
-           TIME endTime)
+           TIME endTime) noexcept
         : sql_id(sqlID), thread_id(threadID),
           function_id(functionID), instruction_id(instructionID),
           start_time(startTime), end_time(endTime)
     {
     }
-} call_t;
+};
 
 #endif

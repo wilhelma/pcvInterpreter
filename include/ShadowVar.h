@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOWVAR_H_
-#define SHADOWVAR_H_
+#ifndef SHADOW_VAR_H_
+#define SHADOW_VAR_H_
 
 #include "Reference.h"
 #include "Types.h"
@@ -36,4 +36,4 @@ private:
 	ShadowVar& operator=(const ShadowVar&);
 };
 
-#endif /* SHADOWVAR_H_ */
+#endif

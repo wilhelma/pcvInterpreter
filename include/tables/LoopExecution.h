@@ -14,7 +14,7 @@
 
 #include "Types.h"
 
-typedef struct loopExecution_t {
+struct loopExecution_t {
     LOE_ID sql_id;
     LOE_ID loop_id;
     unsigned parent_iteration;
@@ -24,11 +24,11 @@ typedef struct loopExecution_t {
     loopExecution_t(LOE_ID sqlID,
                     LOE_ID loopID,
                     int parentIteration,
-                    int loopDuration)
+                    int loopDuration) noexcept
                     : sql_id(sqlID), loop_id(loopID),
                       parent_iteration(parentIteration), loop_duration(loopDuration)
     {}
 
-} loopExecution_t;
+};
 
 #endif
