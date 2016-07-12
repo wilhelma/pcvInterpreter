@@ -24,7 +24,7 @@ public:
 	void threadJoined(TRD_ID threadId);
 
 private:
-	static ShadowThread::ThreadId currentThreadId_;
+	static TRD_ID currentThreadId_;
 	typedef std::map<TRD_ID, ShadowThread*> TIdThreadMap_;
 	
 	TIdThreadMap_ tIdThreadMap_;

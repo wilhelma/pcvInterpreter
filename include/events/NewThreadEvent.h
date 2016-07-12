@@ -32,7 +32,7 @@ struct NewThreadInfo {
 class NewThreadEvent : public Event {
 public:
 	NewThreadEvent(const ShadowThread *thread,
-				   const NewThreadInfo *info) :
+				   const NewThreadInfo* const info) :
 		Event(thread), _info(info) {};
 
 	virtual Events getEventType() const override final { return Events::NEWTHREAD; };

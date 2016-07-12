@@ -16,15 +16,12 @@
  *****************************************************************************/
 class ShadowThread {
 public:
-	
-	typedef TRD_ID ThreadId;
 
-	ShadowThread(ThreadId threadId)
+	ShadowThread(TRD_ID threadId)
 		: threadId(threadId)
 	{};
 
-	const ThreadId threadId;
-
+	TRD_ID threadId;
 	CALLSITE currentCallSiteID;
 	FUN_SG currentFunctionSignature; 
 

@@ -114,22 +114,27 @@ void ParasiteTool::call(const Event* e) {
 void ParasiteTool::create(const Event* e) {
   printf("starting new thread Event \n");
   NewThreadEvent* newThreadEvent = (NewThreadEvent*) e;
-  const NewThreadInfo *_info = newThreadEvent->getNewThreadInfo();
-  const TRD_ID newThreadID(_info->childThread->threadId);
+  const NewThreadInfo* const _info = newThreadEvent->getNewThreadInfo();
+  const TRD_ID newThreadID = _info->childThread->threadId;
+
+  // get information about the thread's head function
+  FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
+  CALLSITE callsiteID = _info->childThread->currentCallSiteID;
   TIME create_time = _info->startTime;
+
   double strand_length = create_time - last_strand_start_time;
 
-  std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
-  bottom_thread_frame->local_continuation += strand_length;
-  bottom_thread_frame->unjoined_children += 1;
+  if (stacks->bottomThreadIndex() > -1) {
+    std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
+    bottom_thread_frame->local_continuation += strand_length;
+    bottom_thread_frame->unjoined_children += 1;
+  }
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex());
   new_thread_frame->thread = newThreadID;
 
-  // get information about the thread's head function
-  FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
-  CALLSITE callsiteID = _info->childThread->currentCallSiteID;
+
   last_strand_start_time = _info->startTime;
 
   // push the thread's function onto the stack
