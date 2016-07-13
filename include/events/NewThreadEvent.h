@@ -19,14 +19,15 @@
 struct NewThreadInfo {
   ShadowThread* childThread;
   ShadowThread* parentThread;
-  NUM_CYCLES runtime;
+  TIME runtime;
   TIME startTime;
   NewThreadInfo(ShadowThread* childThread,
                 ShadowThread* parentThread,
-                NUM_CYCLES runtime,
+                TIME_STRING endTimeString,
                 TIME_STRING startTimeString)
     : childThread(childThread), parentThread(parentThread),
-	  runtime(runtime), startTime(timeStringToTime(startTimeString)) {}
+	  runtime(timeStringToTime(endTimeString) - timeStringToTime(startTimeString)), 
+    startTime(timeStringToTime(startTimeString)) {}
 };
 
 class NewThreadEvent : public Event {

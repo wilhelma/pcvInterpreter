@@ -132,7 +132,9 @@ void ParasiteTool::create(const Event* e) {
   FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
   CALLSITE callsiteID = _info->childThread->currentCallSiteID;
   TIME create_time = _info->startTime;
+  TIME runtime = _info->runtime;
   last_thread_start_time = create_time;
+  last_function_runtime = runtime;
  
 
   if (stacks->bottomThreadIndex() > -1) {
@@ -155,7 +157,7 @@ void ParasiteTool::create(const Event* e) {
 
 void ParasiteTool::syncOperations() {
 
-  printf("starting join Event \n");
+  printf("starting sync operations \n");
   std::shared_ptr<thread_frame_t> bottom_thread_frame(stacks->bottomThread());
   // these operations only happen at a sync - after the thread's last child has
   // joined 
@@ -189,7 +191,7 @@ void ParasiteTool::syncOperations() {
   bottom_function_frame->running_span = 0;
   bottom_thread_frame->local_continuation = 0;
 
-  printf("ending join Event \n");
+  printf("ending sync operations \n");
 }
 
 void ParasiteTool::join(const Event* e) {
@@ -266,15 +268,17 @@ void ParasiteTool::threadEnd(const Event* e) {
   last_thread_end_time = threadEndTime;
   last_thread_runtime = last_thread_end_time - last_thread_start_time;
 
-  double local_work = threadEndTime - std::max(last_function_return_time, 
-                                               last_thread_end_time);
+  double local_work = last_thread_runtime;
   printf("local work in thread end event is %f \n", local_work);
   assert(local_work >= 0.0);
   returnOperations(local_work);
 
-  // same as creating a barrier at the thread end, which is correct, because
-  // all child threads must end anyway at the end of the thread
-  syncOperations();
+  // The sync happens at the thread end, which is correct, because
+  // all child threads must end anyway at the end of the thread.
+  // However, this operation is unnecessary for the bottom thread reached.
+  if (stacks->bottomThreadIndex() != stacks->highest_thread_index)
+    syncOperations();
+
   std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
   std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
   std::shared_ptr<function_frame_t> current_function_frame(stacks->bottomFunction());
@@ -314,7 +318,7 @@ void ParasiteTool::threadEnd(const Event* e) {
 
   // Main function thread ends here 
   if (stacks->bottomThreadIndex() == 0) {
-    printf("ending main thread operations\n");
+    printf("ENDING MAIN THREAD \n");
     return;
   }
 

@@ -416,14 +416,11 @@ int DBInterpreter::processFork(const instruction_t& instruction,
                                const thread_t& thread) {
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
+
+    NewThreadInfo info(cT, pT, thread.end_time, thread.start_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
-
-    ThreadEndInfo  end_info(call.end_time, thread.id);
-    ThreadEndEvent end_event(cT, &end_info);
-    _eventService->publish(&end_event);
-
+    
     return 0;
 }
 
@@ -434,6 +431,11 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
 
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
+
+    ThreadEndInfo  end_info(call.end_time, thread.id);
+    ThreadEndEvent end_event(cT, &end_info);
+    _eventService->publish(&end_event);
+
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
     _eventService->publish( &event );

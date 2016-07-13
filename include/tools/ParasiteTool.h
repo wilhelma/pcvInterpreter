@@ -207,15 +207,14 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the last lock start time, for calculation of 
 				lock span. 
 	*/
-	int lock_span_start_time;
+	double lock_span_start_time;
 
 	/**
 	*    @var last_lock_end_time
 	*    @brief Tracks the last lock end time, for calculation of 
 				lock span. 
 	*/
-	int lock_span_end_time;
-
+	double lock_span_end_time;
 
  private:
 	// prevent generated functions --------------------------------------------
