@@ -17,6 +17,9 @@ SAAP.log
 # Ignore databases
 *.db
 
+#
+build*/
+
 # Ignore db and unit tests
 cppUnit/
 recursive_trace/
