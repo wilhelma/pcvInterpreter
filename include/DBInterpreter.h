@@ -22,6 +22,8 @@
 #include "fwd/Thread.h"
 
 #include "fwd/EventService.h"
+#include "fwd/LockMgr.h"
+#include "fwd/ThreadMgr.h"
 
 #include "DBTable.h"
 #include "CallStack.h"
@@ -46,9 +48,6 @@
 
 #include "Types.h"
 
-class LockMgr;
-class ThreadMgr;
-
 /******************************************************************************
  * Database Interpreter
  *****************************************************************************/
@@ -61,7 +60,9 @@ public:
 				  ThreadMgr *threadMgr)
 		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
 		  _logFile(logFile), _eventService(service)
-	{};
+  {
+    callStack_.push(CAL_ID(call_t::MAIN));
+  };
 
 	virtual ~DBInterpreter() override final {};
 
