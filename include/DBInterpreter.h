@@ -10,7 +10,6 @@
 
 // Tables
 #include "fwd/Access.h"
-#include "fwd/Call.h"
 #include "fwd/File.h"
 #include "fwd/Function.h"
 #include "fwd/Instruction.h"
@@ -20,6 +19,7 @@
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
 #include "fwd/Thread.h"
+#include "Call.h"
 
 #include "fwd/EventService.h"
 #include "fwd/LockMgr.h"
@@ -61,7 +61,7 @@ public:
 		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
 		  _logFile(logFile), _eventService(service)
   {
-    callStack_.push(CAL_ID(call_t::MAIN));
+    callStack_.push(call_t::MAIN);
   };
 
 	virtual ~DBInterpreter() override final {};

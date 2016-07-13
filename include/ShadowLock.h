@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOW_LOCK_H_
-#define SHADOW_LOCK_H_
+#ifndef SHADOWLOCK_H_
+#define SHADOWLOCK_H_
 
 #include "Types.h"
 
@@ -22,7 +22,7 @@ public:
 	{};
 	
 	const LockId lockId;
-	TIME last_acquire_time;	
+//	TIME last_acquire_time;	
 	
 	bool operator < (const ShadowLock& other) const { return lockId < other.lockId; };
 
