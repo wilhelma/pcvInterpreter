@@ -109,6 +109,13 @@ class ParasiteTool : public Tool {
 	void returnOperations(double local_work);
 
 	/**
+	*    @fn syncOperations()
+	*    @brief Performs Parasite algorithm operations needed after all 
+				child threads have joined parent thread. 
+	*/
+	void syncOperations();
+
+	/**
 	*    @fn printProfile()
 	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
 		 @todo Decide on format to print out profile information.
@@ -150,14 +157,32 @@ class ParasiteTool : public Tool {
 	*/
 	std::unordered_map<unsigned int, int> lock_hashtable;
 
-	/**
-	*    @var last_strand_start_time
-	*    @brief Time stamp for the last strand that has started in the simulator.
-				A \a strand is a sequence of serially executed instructions 
-				containing no parallel control.
-	*/
-	TIME last_strand_start_time;
 
+	/**
+	*    @var last_function_call_time
+	*    @brief Time stamp for the most recent function call in the simulator. 
+	*/
+	TIME last_function_call_time;
+
+
+	/**
+	*    @var last_function_return_time
+	*    @brief Time stamp for the most recent function return in the simulator.
+	*/
+	TIME last_function_return_time;
+
+
+	/**
+	*    @var last_thread_start_time
+	*    @brief Time stamp for the start of the most recent thread in the simulator.
+	*/
+	TIME last_thread_start_time;
+
+		/**
+	*    @var last_thread_end_time
+	*    @brief Time stamp for the last thread that has ended in the simulator.
+	*/
+	TIME last_thread_end_time;
 
 	/**
 	*    @var last_function_runtime

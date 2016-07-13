@@ -9,6 +9,7 @@
  *
  */
 
+#include <algorithm>    // std::max
 #include <cassert>
 #include <utility>
 #include <limits>
@@ -31,6 +32,10 @@ ParasiteTool::ParasiteTool() {
   lock_span_start_time = (TIME) INT_MAX;
   lock_span_end_time = (TIME) INT_MIN;
   last_function_runtime = (TIME) 0.0; 
+  last_thread_start_time = (TIME) 0.0;
+  last_thread_end_time = (TIME) 0.0;
+  last_function_call_time = (TIME) 0.0;
+  last_function_return_time = (TIME) 0.0;
 }
 
 void ParasiteTool::getEndProfile() {
@@ -106,6 +111,8 @@ void ParasiteTool::call(const Event* e) {
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
+  // last_function_call_time = _info->startTime;
+  // stacks->bottomThread()->last_function_call_time = _info->startTime;
 
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
@@ -125,27 +132,29 @@ void ParasiteTool::create(const Event* e) {
   FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
   CALLSITE callsiteID = _info->childThread->currentCallSiteID;
   TIME create_time = _info->startTime;
-
-  double strand_length = (create_time - last_strand_start_time)/100000.0;
+  last_thread_start_time = create_time;
+ 
 
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
-    bottom_thread_frame->local_continuation += strand_length;
+    double local_work = create_time - std::max(last_function_return_time, last_thread_end_time);
+    printf("using start time of %f in new thread event \n", (double) std::max(last_function_return_time, last_thread_end_time));
+    printf("using local work of %f in new thread event \n", local_work);
+    assert(local_work >= 0.0);
+    // bottom_thread_frame->local_continuation += local_work;
   }
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex());
   new_thread_frame->thread = newThreadID;
 
-
-  last_strand_start_time = _info->startTime;
-
   // push the thread's function onto the stack
   stacks->function_push(calledFunctionSignature, callsiteID, true);
   printf("ending new thread Event \n");
 }
 
-void ParasiteTool::join(const Event* e) {
+void ParasiteTool::syncOperations() {
+
   printf("starting join Event \n");
   std::shared_ptr<thread_frame_t> bottom_thread_frame(stacks->bottomThread());
   // these operations only happen at a sync - after the thread's last child has
@@ -174,11 +183,24 @@ void ParasiteTool::join(const Event* e) {
     prefix_table.add(&(bottom_thread_frame->continuation_table));
   }
 
-  printf("ending join Event \n");
+    // reset longest child and continuation span variables
+  bottom_thread_frame->longest_child_span = 0;
+  bottom_thread_frame->longest_child_lock_span = 0;
+  bottom_function_frame->running_span = 0;
+  bottom_thread_frame->local_continuation = 0;
 
+  printf("ending join Event \n");
+}
+
+void ParasiteTool::join(const Event* e) {
+
+  // does nothing, as this needs to happen at the end of a thread
 }
 
 void ParasiteTool::returnOperations(double local_work) {
+
+  printf("performing return operations for local work %f \n", local_work);
+
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
   returned_function_frame->local_work = local_work;
@@ -226,11 +248,11 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   ReturnEvent* returnEvent = (ReturnEvent*) e;
   const ReturnInfo* _info(returnEvent->getReturnInfo());
   TIME returnTime = _info->endTime;
-  double local_work = last_function_runtime/100000.0;
-  assert(local_work > 0.0);
-  // double local_work = returnTime - last_strand_start_time;
-  last_strand_start_time = returnTime;
-
+  double local_work = last_function_runtime;
+  assert(local_work >= 0.0);
+  last_function_return_time = returnTime;
+  // double local_work = last_function_return_time - last_function_call_time;
+  
   returnOperations(local_work);
   printf("ending return Event \n");
 }
@@ -241,9 +263,18 @@ void ParasiteTool::threadEnd(const Event* e) {
   const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
-  double local_work = (threadEndTime - last_strand_start_time)/100000.0;
-  assert(local_work > 0.0);
+  last_thread_end_time = threadEndTime;
+  last_thread_runtime = last_thread_end_time - last_thread_start_time;
+
+  double local_work = threadEndTime - std::max(last_function_return_time, 
+                                               last_thread_end_time);
+  printf("local work in thread end event is %f \n", local_work);
+  assert(local_work >= 0.0);
   returnOperations(local_work);
+
+  // same as creating a barrier at the thread end, which is correct, because
+  // all child threads must end anyway at the end of the thread
+  syncOperations();
   std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
   std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
   std::shared_ptr<function_frame_t> current_function_frame(stacks->bottomFunction());
