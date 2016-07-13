@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOW_THREAD_H_
-#define SHADOW_THREAD_H_
+#ifndef SHADOWTHREAD_H_
+#define SHADOWTHREAD_H_
 
 #include "Event.h"
 #include "Types.h"
@@ -24,8 +24,8 @@ public:
 
 	const ThreadId threadId;
 
-	CALLSITE currentCallSiteID;
-	FUN_SG currentFunctionSignature; 
+//	CALLSITE currentCallSiteID;
+//	FUN_SG currentFunctionSignature; 
 
 	bool operator < (const ShadowThread& other) const { return threadId < other.threadId; };
 
@@ -36,4 +36,4 @@ private:
 	ShadowThread& operator=(const ShadowThread&);
 };
 
-#endif
+#endif /* SHADOWTHREAD_H_ */

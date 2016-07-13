@@ -10,7 +10,6 @@
 
 // Tables
 #include "fwd/Access.h"
-#include "fwd/Call.h"
 #include "fwd/File.h"
 #include "fwd/Function.h"
 #include "fwd/Instruction.h"
@@ -20,8 +19,11 @@
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
 #include "fwd/Thread.h"
+#include "Call.h"
 
 #include "fwd/EventService.h"
+#include "fwd/LockMgr.h"
+#include "fwd/ThreadMgr.h"
 
 #include "DBTable.h"
 #include "CallStack.h"
@@ -46,9 +48,6 @@
 
 #include "Types.h"
 
-class LockMgr;
-class ThreadMgr;
-
 /******************************************************************************
  * Database Interpreter
  *****************************************************************************/
@@ -61,7 +60,9 @@ public:
 				  ThreadMgr *threadMgr)
 		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
 		  _logFile(logFile), _eventService(service)
-	{};
+  {
+    callStack_.push(call_t::MAIN);
+  };
 
 	virtual ~DBInterpreter() override final {};
 

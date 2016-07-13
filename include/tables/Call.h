@@ -15,6 +15,8 @@
 #include "Types.h"
 
 struct call_t {
+    static const CAL_ID MAIN;// = static_cast<CAL_ID>(1);
+
     CAL_ID sql_id;
     TRD_ID thread_id;
     FUN_ID function_id;

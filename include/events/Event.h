@@ -6,9 +6,6 @@
 #include "Types.h"
 
 #include <string>
-//#include <map>
-//#include <iostream>
-
 
 enum class Events: unsigned char {
     NEWTHREAD = 0x1,  // 00000001

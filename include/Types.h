@@ -1,7 +1,7 @@
 /**
  *
  *    @file  Types.h
- *   @brief  Collects all `typedef`s and `BOOST_STRONG_TYPEDEF()`s.
+ *   @brief  Collects all the user-defined types.
  *
  *    @date  04/19/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
@@ -12,60 +12,85 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
-#include <boost/serialization/strong_typedef.hpp>
 #include <string>
 
-// Define ID to be unsigned
-typedef unsigned ID;
+/// Struct to prevent implicit conversion among types.
+/// \tparam T The type
+/// \tparam n A dumb integer to prevent casts
+/// \todo When used with `T = std::string`,
+/// `string` methods cannot be called.
+template <typename T, size_t n>
+struct StrongTypedef {
+	/// \brief Constructor
+	/// It's explicit in order to prevent implicit casts
+	constexpr explicit StrongTypedef(T value) noexcept
+		: Value_(value)
+		{}
+
+	/// \brief Copy constructor
+	constexpr StrongTypedef(const StrongTypedef& input) noexcept
+		: Value_(input.Value_)
+		{}
+
+	/// \brief Implicit conversion operator.
+	/// A return by value is used sice I assume the
+	/// underlying type should be a primitive.
+	operator const T() const { return Value_; }
+
+	/// \brief This is called when operator++ is
+	/// called on the object.
+	operator T&() { return Value_; }
+private:
+	T Value_;
+};
 
 // All others IDs should have the same type as ID
-BOOST_STRONG_TYPEDEF( ID, ACC_ID )
-BOOST_STRONG_TYPEDEF( ID, CAL_ID )
-BOOST_STRONG_TYPEDEF( ID, FIL_ID )
-BOOST_STRONG_TYPEDEF( ID, FUN_ID )
-BOOST_STRONG_TYPEDEF( ID, INS_ID )
-BOOST_STRONG_TYPEDEF( ID, LOP_ID )
-BOOST_STRONG_TYPEDEF( ID, LOE_ID )
-BOOST_STRONG_TYPEDEF( ID, LOI_ID )
-BOOST_STRONG_TYPEDEF( ID, REF_ID )
-BOOST_STRONG_TYPEDEF( ID, SEG_ID )
-BOOST_STRONG_TYPEDEF( ID, TRD_ID )
+using ID     = unsigned;
+using ACC_ID = StrongTypedef<ID,  0>;
+using CAL_ID = StrongTypedef<ID,  1>;
+using FIL_ID = StrongTypedef<ID,  2>;
+using FUN_ID = StrongTypedef<ID,  3>;
+using INS_ID = StrongTypedef<ID,  4>;
+using LOP_ID = StrongTypedef<ID,  5>;
+using LOE_ID = StrongTypedef<ID,  6>;
+using LOI_ID = StrongTypedef<ID,  7>;
+using REF_ID = StrongTypedef<ID,  8>;
+using SEG_ID = StrongTypedef<ID,  9>;
+using TRD_ID = StrongTypedef<ID, 10>;
 
 // Access Types
-BOOST_STRONG_TYPEDEF( unsigned, POS )
-//BOOST_STRONG_TYPEDEF( unsigned, ACC_TYP ) // Already uses AccessType
-//BOOST_STRONG_TYPEDEF( unsigned, MEM_ST )  // Already uses AccessState
+using POS   = StrongTypedef<unsigned, 11>;
+// ACC_TYP Already uses AccessType
+// MEM_ST  Already uses AccessState
 
 // Call Types
-BOOST_STRONG_TYPEDEF( clock_t, TIME )
-BOOST_STRONG_TYPEDEF( size_t, CALLSITE )
+using TIME     = StrongTypedef<clock_t, 12>;
+using CALLSITE = StrongTypedef<size_t,  13>;
 
 // File Types
-typedef std::string FIL_PT;
+using FIL_PT = std::string;
 
 // Function Types
-typedef std::string FUN_SG; 
-//BOOST_STRONG_TYPEDEF( uint32_t, FUN_TYP ) // Already uses FunctionType
-BOOST_STRONG_TYPEDEF( unsigned, LIN_NO )
+using FUN_SG = std::string; 
+// FUN_TYP Already uses FunctionType
+using LIN_NO = StrongTypedef<unsigned, 14>; 
 
 // Instruction Types
-//BOOST_STRONG_TYPEDEF( unsigned, INS_TYP ) // Already uses InstructionType
+// INS_TYP Already uses InstructionType
 
 // TODO loops
 
 // Reference Types
-BOOST_STRONG_TYPEDEF( size_t, REF_SIZE )
-//BOOST_STRONG_TYPEDEF( unsigned, REF_MTYP ) // Already uses ReferenceType
-typedef std::string REF_NAME;
+using REF_SIZE = StrongTypedef<size_t, 15>;
+// REF_MTYP Already uses ReferenceType
+using REF_NAME = std::string;
 
 // Segment Types
-//BOOST_STRONG_TYPEDEF( bool, SEG_TYP )     // Already uses SegmentType 
+// SEG_TYP Already uses SegmentType 
 
 // Thread Types
-BOOST_STRONG_TYPEDEF( unsigned, PID )
-//BOOST_STRONG_TYPEDEF( std::string, TIME_STRING )
-// XXX using strong typedefs with strings prevents from using string methods
-typedef std::string TIME_STRING;
-BOOST_STRONG_TYPEDEF( unsigned, NUM_CYCLES )
+using PID = StrongTypedef<unsigned, 16>;
+using TIME_STRING = std::string;
+using NUM_CYCLES = StrongTypedef<unsigned, 16>;
 
 #endif /* TYPES_H_ */

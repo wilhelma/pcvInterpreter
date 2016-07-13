@@ -22,6 +22,7 @@ set(SRC_LIST ${SRC_LIST}
 
 set(SRC_LIST ${SRC_LIST}
 	tables/AccessTable.cpp
+	tables/Call.cpp
 	tables/CallTable.cpp
 	tables/FileTable.cpp
 	tables/FunctionTable.cpp

@@ -15,7 +15,7 @@ SAAP.log
 *.json
 
 # Ignore databases
-# *.db
+*.db
 
 # Ignore db and unit tests
 cppUnit/
