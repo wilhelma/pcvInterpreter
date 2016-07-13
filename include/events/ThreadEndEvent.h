@@ -18,9 +18,9 @@
 struct ThreadEndInfo {
 	TIME endTime;
 	TRD_ID id;
-	ThreadEndInfo(TIME endTime,
+	ThreadEndInfo(TIME_STRING endTime,
 				  TRD_ID id) noexcept
-		: endTime(endTime), id(id) {}
+		: endTime(timeStringToTime(endTime)), id(id) {}
 };
 
 class ThreadEndEvent : public Event {

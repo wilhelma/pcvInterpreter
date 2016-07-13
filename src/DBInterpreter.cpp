@@ -305,6 +305,7 @@ int DBInterpreter::processCall(CAL_ID callId,
 				}
 
 				CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
+            (TIME) (call.start_time),
 						(TIME) (call.end_time - call.start_time),
 						(FUN_SG)search->second.signature,
 						(SEG_ID) call.sql_id, // XXX BUG segment or call?
@@ -420,7 +421,7 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     NewThreadInfo info(cT, pT, thread.end_time, thread.start_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
-    
+
     return 0;
 }
 
@@ -432,7 +433,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
 
-    ThreadEndInfo  end_info(call.end_time, thread.id);
+    ThreadEndInfo  end_info(thread.end_time, thread.id);
     ThreadEndEvent end_event(cT, &end_info);
     _eventService->publish(&end_event);
 

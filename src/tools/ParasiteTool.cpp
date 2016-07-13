@@ -104,16 +104,15 @@ ParasiteTool::~ParasiteTool() {
 }
 
 void ParasiteTool::call(const Event* e) {
-  printf("starting call Event \n");
   CallEvent* callEvent = (CallEvent*) e;
   const CallInfo* _info(callEvent->getCallInfo());
 
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
-  // last_function_call_time = _info->startTime;
-  // stacks->bottomThread()->last_function_call_time = _info->startTime;
-
+  last_function_call_time = _info->callTime;
+  printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
+  
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
   stacks->function_push(calledFunctionSignature, 
@@ -135,7 +134,6 @@ void ParasiteTool::create(const Event* e) {
   TIME runtime = _info->runtime;
   last_thread_start_time = create_time;
   last_function_runtime = runtime;
- 
 
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
@@ -143,15 +141,17 @@ void ParasiteTool::create(const Event* e) {
     printf("using start time of %f in new thread event \n", (double) std::max(last_function_return_time, last_thread_end_time));
     printf("using local work of %f in new thread event \n", local_work);
     assert(local_work >= 0.0);
-    // bottom_thread_frame->local_continuation += local_work;
+    bottom_thread_frame->local_continuation += local_work;
   }
+
+  // push the thread's function onto the stack
+  stacks->function_push(calledFunctionSignature, callsiteID, true);
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex());
   new_thread_frame->thread = newThreadID;
 
-  // push the thread's function onto the stack
-  stacks->function_push(calledFunctionSignature, callsiteID, true);
+
   printf("ending new thread Event \n");
 }
 
@@ -169,6 +169,8 @@ void ParasiteTool::syncOperations() {
   if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
+    assert(bottom_thread_frame->lock_span == 0.0);
+    assert(bottom_thread_frame->longest_child_lock_span == 0.0);
     bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
     bottom_thread_frame->prefix_span -= bottom_thread_frame->
                                         longest_child_lock_span;
@@ -268,7 +270,7 @@ void ParasiteTool::threadEnd(const Event* e) {
   last_thread_end_time = threadEndTime;
   last_thread_runtime = last_thread_end_time - last_thread_start_time;
 
-  double local_work = last_thread_runtime;
+  double local_work = threadEndTime - last_function_call_time;
   printf("local work in thread end event is %f \n", local_work);
   assert(local_work >= 0.0);
   returnOperations(local_work);

@@ -18,6 +18,7 @@
 
 typedef struct CallInfo {
 	CALLSITE siteId;
+	TIME callTime;
 	TIME runtime;
 	FUN_SG fnSignature;
 	SEG_ID segment;
@@ -27,13 +28,14 @@ typedef struct CallInfo {
 
 	explicit
 		CallInfo(CALLSITE SiteId,
+				TIME CallTime, 
 				TIME Runtime,
 				FUN_SG FnSignature,
 				SEG_ID Segment,
 				FunctionType FnType,
 				FIL_PT FileName,
 				FIL_PT FilePath) noexcept
-		: siteId(SiteId), runtime(Runtime), fnSignature(FnSignature),
+		: siteId(SiteId), callTime(CallTime), runtime(Runtime), fnSignature(FnSignature),
 		segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
 } CallInfo;
 
