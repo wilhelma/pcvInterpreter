@@ -166,7 +166,7 @@ class ParasiteTool : public Tool {
 	TIME last_function_runtime;
 
 	/**
-	*    @var last_function_runtime
+	*    @var last_thread_runtime
 	*    @brief Duration of the last function that was called. 
 	*/
 	TIME last_thread_runtime;

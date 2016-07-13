@@ -131,7 +131,6 @@ void ParasiteTool::create(const Event* e) {
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
     bottom_thread_frame->local_continuation += strand_length;
-    bottom_thread_frame->unjoined_children += 1;
   }
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
@@ -147,56 +146,42 @@ void ParasiteTool::create(const Event* e) {
 }
 
 void ParasiteTool::join(const Event* e) {
-  printf("starting join Event");
+  printf("starting join Event \n");
   std::shared_ptr<thread_frame_t> bottom_thread_frame(stacks->bottomThread());
   // these operations only happen at a sync - after the thread's last child has
   // joined 
-  bottom_thread_frame->unjoined_children -= 1;
-  if (bottom_thread_frame->unjoined_children == 0) {
+  std::shared_ptr<function_frame_t> bottom_function_frame(stacks->bottomFunction());
+  bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
+  bottom_function_frame->running_lock_span += bottom_thread_frame->local_lock_span;
 
-    printf("starting sync Event");
-
-    std::shared_ptr<function_frame_t> bottom_function_frame(stacks->bottomFunction());
-    bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
-    bottom_function_frame->running_lock_span += bottom_thread_frame->local_lock_span;
-
-    // If critical path goes through spawned child
-    if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
-      bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
-      bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
-      bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
-      bottom_thread_frame->prefix_span -= bottom_thread_frame->
-                                          longest_child_lock_span;
-      CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
-      prefix_table.add(&(bottom_thread_frame->longest_child_table));
-      // local_span does not increase, because critical path goes 
-      // through spawned child.
-    } else {
-      bottom_thread_frame->prefix_span += bottom_function_frame->running_span;
-      // Critical path goes through continuation, which is local. Add
-      // local_continuation to local_span.
-      bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
-      CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
-      prefix_table.add(&(bottom_thread_frame->continuation_table));
-    }
-
-    // reset longest child and continuation span variables
-    bottom_thread_frame->longest_child_span = 0;
-    bottom_thread_frame->longest_child_lock_span = 0;
-    bottom_function_frame->running_span = 0;
-    bottom_thread_frame->local_continuation = 0;
-
-    printf("ending sync Event \n");
+  // If critical path goes through spawned child
+  if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
+    bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
+    bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
+    bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
+    bottom_thread_frame->prefix_span -= bottom_thread_frame->
+                                        longest_child_lock_span;
+    CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
+    prefix_table.add(&(bottom_thread_frame->longest_child_table));
+    // local_span does not increase, because critical path goes 
+    // through spawned child.
+  } else {
+    bottom_thread_frame->prefix_span += bottom_function_frame->running_span;
+    // Critical path goes through continuation, which is local. Add
+    // local_continuation to local_span.
+    bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
+    CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
+    prefix_table.add(&(bottom_thread_frame->continuation_table));
   }
+
+  printf("ending join Event \n");
+
 }
 
 void ParasiteTool::returnOperations(double local_work) {
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
-  
   returned_function_frame->local_work = local_work;
-
-
   double running_work = returned_function_frame->running_work + local_work;
   double running_span = returned_function_frame->running_span + local_work;
   double running_lock_span = returned_function_frame->running_lock_span + 
@@ -240,9 +225,9 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   printf("starting return Event \n");
   ReturnEvent* returnEvent = (ReturnEvent*) e;
   const ReturnInfo* _info(returnEvent->getReturnInfo());
-
   TIME returnTime = _info->endTime;
   double local_work = last_function_runtime;
+  assert(local_work > 0.0);
   // double local_work = returnTime - last_strand_start_time;
   last_strand_start_time = returnTime;
 
@@ -257,6 +242,7 @@ void ParasiteTool::threadEnd(const Event* e) {
   TIME threadEndTime = _info->endTime;
 
   double local_work = threadEndTime - last_strand_start_time;
+  assert(local_work > 0.0);
   returnOperations(local_work);
   std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
   std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());

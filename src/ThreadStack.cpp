@@ -41,7 +41,6 @@ void ThreadStack::init_frame(int thread_index, int head_function_index) {
 	stack.at(thread_index)->prefix_span = 0; 
 	stack.at(thread_index)->longest_child_span = 0;
 	stack.at(thread_index)->longest_child_lock_span = 0;
-	stack.at(thread_index)->unjoined_children = 0;
 }
 
 std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index) {
