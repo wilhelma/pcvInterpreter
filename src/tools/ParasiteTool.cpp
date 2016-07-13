@@ -126,7 +126,7 @@ void ParasiteTool::create(const Event* e) {
   CALLSITE callsiteID = _info->childThread->currentCallSiteID;
   TIME create_time = _info->startTime;
 
-  double strand_length = create_time - last_strand_start_time;
+  double strand_length = (create_time - last_strand_start_time)/100000.0;
 
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
@@ -226,7 +226,7 @@ void ParasiteTool::returnOfCalled(const Event* e) {
   ReturnEvent* returnEvent = (ReturnEvent*) e;
   const ReturnInfo* _info(returnEvent->getReturnInfo());
   TIME returnTime = _info->endTime;
-  double local_work = last_function_runtime;
+  double local_work = last_function_runtime/100000.0;
   assert(local_work > 0.0);
   // double local_work = returnTime - last_strand_start_time;
   last_strand_start_time = returnTime;
@@ -241,7 +241,7 @@ void ParasiteTool::threadEnd(const Event* e) {
   const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
-  double local_work = threadEndTime - last_strand_start_time;
+  double local_work = (threadEndTime - last_strand_start_time)/100000.0;
   assert(local_work > 0.0);
   returnOperations(local_work);
   std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
