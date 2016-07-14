@@ -14,7 +14,9 @@
 #include "CallInfo.h"
 #include "fwd/ShadowThread.h"
 #include "Event.h"
-
+#include "Function.h"
+#include "ShadowThread.h"
+#include "Types.h"
 
 class CallEvent : public Event {
 	public:

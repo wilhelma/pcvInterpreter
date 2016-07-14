@@ -7,7 +7,7 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 
-# Igonre compiled binary
+# Ignore compiled binary
 pcv
 
 # Log file from framework
@@ -17,8 +17,9 @@ pcv.log
 # Ignore databases
 *.db
 
-#
+# Ignore build files
 build*/
+
 
 # Ignore db and unit tests
 cppUnit/

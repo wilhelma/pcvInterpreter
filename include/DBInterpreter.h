@@ -116,13 +116,7 @@ private:
 	int processReturn(const instruction_t& ins);
 
 	int processInstruction(const instruction_t& instruction);
-	int processSegment(SEG_ID segmentId,
-					   const segment_t& segment,
-					   const instruction_t& instruction);
-	int processCall(CAL_ID callId,
-					const call_t& call,
-					const segment_t& segment,
-					const instruction_t& instruction);
+  int processCall(const instruction_t& instruction);
 	int processAccessGeneric(ACC_ID accessId,
 							 const access_t& access,
 							 const instruction_t& instruction,

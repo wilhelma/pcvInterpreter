@@ -28,6 +28,14 @@
 #include "ThreadEndInfo.h"
 
 #include <boost/log/trivial.hpp>
+#include <utility>
+#include <iostream>
+
+DebugTool::DebugTool() {
+
+}
+
+DebugTool::~DebugTool() {}
 
 void DebugTool::Access(const AccessEvent* event) {
 	const AccessInfo& ai = *(event->getAccessInfo());
@@ -55,10 +63,21 @@ void DebugTool::Call(const CallEvent* event) {
 		<< " > File path:  " << ci.filePath << "\n";
 }
 
+
 void DebugTool::Join(const JoinEvent* event) {
 //	const JoinInfo& ji = *(event->getJoinInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "JoinEvent:";
+}
+
+void DebugTool::Call(const Event* e) {
+  static int count = 0; count++;
+
+	const CallEvent* callEvent = static_cast<const CallEvent*>(e);
+	const CallInfo* callInfo = callEvent->getCallInfo();
+  ::std::cout << "CALL EVENT " << count
+              << " Runtime: " << callInfo->runtime
+              << std::endl;
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {

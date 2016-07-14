@@ -10,10 +10,14 @@
 #include "DebugTool.h"
 #include "EventService.h"
 #include "ParasiteTool.h"
+//#include "RaceDetectionTool.h"
+//#include "LockSetChecker.h"
+#include "FunctionTrackerTool.h"
 #include "LockMgr.h"
 #include "SAAPRunner.h"
 #include "ThreadMgr.h"
 #include <boost/log/trivial.hpp>
+
 
 int main(int argc, char* argv[]) {
 

@@ -42,6 +42,8 @@
 #include "EventService.h"
 #include "AccessInfo.h"
 
+#include "DBTable.h"
+#include "Types.h"
 
 int DBInterpreter::loadDB(const char* path, sqlite3 **db) const {
     if (sqlite3_open_v2(path, db,
@@ -204,9 +206,8 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 		switch (ins.instruction_type) {
 			case InstructionType::CALL:
         printf("CALL instruction \n");
-				// XXX this doesn't change `accessFunc`
-				processSegment(ins.segment_id, search_segment->second, ins);
-				processReturn(ins);
+        processCall(ins);
+        processReturn(ins);
 				break;
 			case InstructionType::ACCESS:
         printf("ACCESS instruction \n");
@@ -277,72 +278,57 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 	return IN_OK;
 }
 
-int DBInterpreter::processSegment(SEG_ID segmentId,
-                                  const segment_t& seg,
-                                  const instruction_t& ins) {
-
-    auto search = callTable.find(seg.call_id);
-    if (search != callTable.end()) {
-        if (!processCall(seg.call_id, search->second, seg, ins))
-            return 1;
-    } else {
-        BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
-        return 1;
-    }
-
-    return 0;
-}
-
 size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
     size_t h1 = std::hash<unsigned>()(funId);
     size_t h2 = std::hash<unsigned>()(lineNo);
     return h1 ^ (h2 << 1);
 }
 
-int DBInterpreter::processCall(CAL_ID callId,
-                               const call_t& call,
-                               const segment_t& seg,
-                               const instruction_t& ins) {
 
-	// fetch called function
-	auto search = functionTable.find(call.function_id);
+int DBInterpreter::processCall(const instruction_t& instruction) {
 
-	// check that the function exists
-	if (search == functionTable.end()) {
-		BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
-		return IN_NO_ENTRY;
-	}
+  int ret = IN_NO_ENTRY;
 
-	switch(search->second.type) {
-		case FunctionType::FUNCTION:
-		case FunctionType::METHOD:
-			{
-				// serch for the file where the call has happened from
-				auto searchFile = fileTable.find(search->second.file_id);
-				if (searchFile == fileTable.end()) {
-					BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
-					return 1;
-				}
+  auto callIt = callTable.find(getCallID(instruction));
+  if (callIt != callTable.end()) {
+    const call_t& call = callIt->second;
 
-				CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
-            (TIME) (call.start_time),
-						(TIME) (call.end_time - call.start_time),
-						(FUN_SG)search->second.signature,
-						(SEG_ID) call.sql_id, // XXX BUG segment or call?
-						search->second.type,
-						(FIL_PT)searchFile->second.file_name,
-						(FIL_PT)searchFile->second.file_path);
 
-				ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-				CallEvent event(thread, &info);
-				_eventService->publish(&event);
-				break;
-			}
-		default:
-			break;
-	}
+    auto functionIt = functionTable.find(call.function_id);
+    if (functionIt != functionTable.end()) {
+      const function_t& function = functionIt->second;
 
-	return IN_OK;
+      switch(function.type) {
+      case FunctionType::FUNCTION:
+      case FunctionType::METHOD:
+      {
+        // serch for the file where the call has happened from
+        auto fileIt = fileTable.find(function.file_id);
+        if (fileIt != fileTable.end()) {
+          const file_t& file = fileIt->second;
+
+          CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, instruction.line_number)),
+                         static_cast<TIME>(call.end_time - call.start_time),
+                         function.signature,
+                         instruction.segment_id,
+                         function.type,
+                         file.file_name,
+                         file.file_path);
+
+          ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+          CallEvent event(thread, &info);
+          _eventService->publish(&event);
+          ret = IN_OK;
+          break;
+        }
+      }
+      default:
+          break;
+      }
+    }
+  }
+
+  return ret;
 }
 
 int DBInterpreter::processAccessGeneric(ACC_ID accessId,

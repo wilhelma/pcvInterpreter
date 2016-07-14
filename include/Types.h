@@ -64,7 +64,7 @@ using POS   = StrongTypedef<unsigned, 11>;
 // MEM_ST  Already uses AccessState
 
 // Call Types
-using TIME     = StrongTypedef<clock_t, 12>;
+using TIME     = StrongTypedef<uint64_t, 12>;
 using CALLSITE = StrongTypedef<size_t,  13>;
 
 // File Types
