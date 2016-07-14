@@ -51,6 +51,16 @@ void DebugTool::Acquire(const AcquireEvent* event) {
 		<< "AcquireEvent:";
 }
 
+void DebugTool::NewThread(const Event* e) {
+  static int count = 0; count++;
+  const NewThreadEvent* threadEvent = static_cast<const NewThreadEvent*>(e);
+  const NewThreadInfo* threadInfo = threadEvent->getNewThreadInfo();
+  ::std::cout << "NEW THREAD EVENT " << count
+              << " startTime: " << threadInfo->startTime
+              << " runtime: " << threadInfo->runtime
+              << std::endl;
+}
+
 void DebugTool::Call(const CallEvent* event) {
 	const CallInfo& ci = *(event->getCallInfo());
 	BOOST_LOG_TRIVIAL(debug) 
