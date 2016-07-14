@@ -22,7 +22,7 @@ bool EventService::publish(const NewThreadEvent *event) const {
 bool EventService::publish(const ThreadEndEvent *event) const {
 	for (const auto& it : _observers)
 		if ((it.second.events & Events::THREADEND) != 0)
-			it.first->create(event);
+      it.first->threadEnd(event);
 
 	return true;
 }

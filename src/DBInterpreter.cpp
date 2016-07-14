@@ -150,111 +150,119 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	return call_id;
 }
 
-int DBInterpreter::processReturn(const instruction_t& ins) {
-	auto search = segmentTable.find(ins.segment_id);
-	if (search == segmentTable.end()) {
-		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
-		return IN_NO_ENTRY;
-	}
+int DBInterpreter::processReturn(const instruction_t& ins,
+                                 const call_t& call) {
 
-	if (!callStack_.isEmpty()) {
-		CAL_ID parent_call_id = search->second.call_id;
-		while (parent_call_id != callStack_.top()) {
-			callStack_.pop();
+  while (!callStack_.isEmpty() &&
+         call.sql_id != callStack_.top()) {
+    const CAL_ID topCallId = callStack_.top();
 
-			// in this case, the call didn't happen in the
-			// parent ID scope, so the "parent" call has returned
-			auto parent_call = callTable.find(parent_call_id);
-			ReturnInfo info(parent_call_id, parent_call->second.end_time);
-			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
-			ReturnEvent event(thread, &info);
-			_eventService->publish(&event);
-		}
-	}
+    auto callIt = callTable.find(topCallId);
+    if (callIt != callTable.end()) {
 
-	callStack_.push(getCallID(ins));
+      // publish a return call event in case of mismatching call id's
+      const call_t& topCall = callIt->second;
+      ReturnInfo info(topCallId, topCall.end_time);
+      ShadowThread* thread = threadMgr_->getThread(topCall.thread_id);
+      ReturnEvent event(thread, &info);
+      _eventService->publish(&event);
+
+      // publish a thread end event in case of mismatching thread id's
+      if (call.thread_id != topCall.thread_id) {
+        ThreadEndInfo  end_info(topCall.end_time, thread->threadId);
+        ThreadEndEvent end_event(thread, &end_info);
+        _eventService->publish(&end_event);
+      }
+
+      callStack_.pop();
+    } else {
+      return IN_NO_ENTRY;
+    }
+  }
+
 	return IN_OK;
 }
 
-int DBInterpreter::processInstruction(const instruction_t& ins) {
-    processAccess_t accessFunc = nullptr;
 
-	SegmentTable::const_iterator search_segment = segmentTable.find(ins.segment_id);
-	CallTable::const_iterator search_call = callTable.cend(); // dumb value
-	if (search_segment != segmentTable.end()) {
-		switch (ins.instruction_type) {
-			case InstructionType::CALL:
-        printf("CALL instruction \n");
-        processCall(ins);
-        processReturn(ins);
-				break;
-			case InstructionType::ACCESS:
-        printf("ACCESS instruction \n");
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())
-					accessFunc = &DBInterpreter::processMemAccess;
-				break;
-      case InstructionType::ACQUIRE:
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())	
-          accessFunc = &DBInterpreter::processAcqAccess;
-				break;
-      case InstructionType::RELEASE:
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())
-					accessFunc = &DBInterpreter::processRelAccess;
-				break;
-			case InstructionType::FORK:
-				for (const auto& it : threadTable) {
-					const thread_t& thread = it.second;
-					if (ins.instruction_id == thread.create_instruction_id) {
-						search_call = callTable.find(search_segment->second.call_id);
-						if (search_call != callTable.cend())
-							processFork(ins, search_segment->second, search_call->second, thread);
-					}
-				}
-				break;
-			case InstructionType::JOIN:
-				for (const auto& it : threadTable) {
-					const thread_t& thread = it.second;
-					if (ins.instruction_id == thread.join_instruction_id) {
-						search_call = callTable.find(search_segment->second.call_id);
-						if (search_call != callTable.cend())
-							processJoin(ins, search_segment->second, search_call->second, thread);
-					}
-				}
-				break;
-			default:
-				return IN_NO_ENTRY;
-		}
-	}
+int DBInterpreter::processAccess(const instruction_t& instruction,
+                                 const segment_t& segment,
+                                 const call_t& call,
+                                 processAccess_t accessFunc) {
+  // loop over all memory accesses of the instruction
+  const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
+  const auto& avIt = insAccessMap.find(instruction.instruction_id);
+  if (avIt != insAccessMap.end()) {
+    for (const auto& it : avIt->second) {
 
-	if (accessFunc != nullptr) {
-		// loop over all memory accesses of the instruction
-    const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
-    const auto& avIt = insAccessMap.find(ins.instruction_id);
-    if (avIt != insAccessMap.end()) {
-      for (const auto& it : avIt->second) {
+      auto accessIt = accessTable.find(it);
+      if (accessIt != accessTable.end()) {
+        const access_t& access = accessIt->second;
 
-        auto searchAccess = accessTable.find(it);
-        if (searchAccess != accessTable.end()) {
-
-          // possible BUG (conversion INS_ID -> ACC_ID)
-          processAccessGeneric(searchAccess->first,
-              searchAccess->second,
-              ins,
-              search_segment->second,
-              search_call->second,
-              accessFunc);
-        } else {
-          BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
-          return IN_NO_ENTRY;
-        }
+        processAccessGeneric(access.sql_id,
+                             access,
+                             instruction,
+                             segment,
+                             call,
+                             accessFunc);
+      } else {
+        BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
+        return IN_NO_ENTRY;
       }
     }
-	}
+  }
+  return IN_OK;
+}
 
-	return IN_OK;
+int DBInterpreter::processInstruction(const instruction_t& ins) {
+  int ret = IN_NO_ENTRY;
+
+  auto segmentIt = segmentTable.find(ins.segment_id);
+  if (segmentIt != segmentTable.end()) {
+    const segment_t& segment = segmentIt->second;
+    
+    auto callIt = callTable.find(segment.call_id);
+    if (callIt != callTable.end()) {
+      const call_t& call = callIt->second;
+
+      // handle call/thread stack returns
+      processReturn(ins, call);
+
+      switch (ins.instruction_type) {
+      case InstructionType::CALL:
+        ret = processCall(ins);
+        break;
+      case InstructionType::ACCESS:
+        ret = processAccess(ins, segment, call, &DBInterpreter::processMemAccess);
+        break;
+      case InstructionType::ACQUIRE:
+        ret = processAccess(ins, segment, call, &DBInterpreter::processAcqAccess);
+        break;
+      case InstructionType::RELEASE:
+        ret = processAccess(ins, segment, call, &DBInterpreter::processRelAccess);
+        break;
+      case InstructionType::FORK:
+        for (const auto& it : threadTable) {
+          const thread_t& thread = it.second;
+          if (ins.instruction_id == thread.create_instruction_id) {
+            ret = processFork(ins, segment, call, thread);
+          }
+        }
+        break;
+      case InstructionType::JOIN:
+        for (const auto& it : threadTable) {
+          const thread_t& thread = it.second;
+          if (ins.instruction_id == thread.join_instruction_id) {
+              ret = processJoin(ins, segment, call, thread);
+          }
+        }
+        break;
+      default:
+        ret = IN_NO_ENTRY;
+      }
+    }
+  }
+
+  return ret;
 }
 
 size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
@@ -263,11 +271,11 @@ size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
     return h1 ^ (h2 << 1);
 }
 
-int DBInterpreter::processCall(const instruction_t& instruction) {
+int DBInterpreter::processCall(const instruction_t& ins) {
 
   int ret = IN_NO_ENTRY;
 
-  auto callIt = callTable.find(getCallID(instruction));
+  auto callIt = callTable.find(getCallID(ins));
   if (callIt != callTable.end()) {
     const call_t& call = callIt->second;
 
@@ -285,10 +293,11 @@ int DBInterpreter::processCall(const instruction_t& instruction) {
         if (fileIt != fileTable.end()) {
           const file_t& file = fileIt->second;
 
-          CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, instruction.line_number)),
+          CallInfo info( static_cast<CALLSITE>(getHash(call.function_id,
+                                                       ins.line_number)),
                          static_cast<TIME>(call.end_time - call.start_time),
                          function.signature,
-                         instruction.segment_id,
+                         ins.segment_id,
                          function.type,
                          file.file_name,
                          file.file_path);
@@ -296,6 +305,7 @@ int DBInterpreter::processCall(const instruction_t& instruction) {
           ShadowThread* thread = threadMgr_->getThread(call.thread_id);
           CallEvent event(thread, &info);
           _eventService->publish(&event);
+          callStack_.push(call.sql_id);
           ret = IN_OK;
           break;
         }
@@ -404,11 +414,6 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
-
-    ThreadEndInfo  end_info(call.end_time, thread.id);
-    ThreadEndEvent end_event(cT, &end_info);
-    _eventService->publish(&end_event);
-
     return 0;
 }
 

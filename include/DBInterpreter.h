@@ -114,7 +114,8 @@ private:
 	template<typename IdT, typename T>
 	int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
 
-	int processReturn(const instruction_t& ins);
+  int processReturn(const instruction_t& ins,
+                    const call_t& call);
 
 	int processInstruction(const instruction_t& instruction);
   int processCall(const instruction_t& instruction);
@@ -124,7 +125,11 @@ private:
 							 const segment_t& segment,
 							 const call_t& call,
 							 processAccess_t func);
-	int processMemAccess(ACC_ID accessId,
+  int processAccess(const instruction_t& instruction,
+                    const segment_t& segment,
+                    const call_t& call,
+                    processAccess_t accessFunc);
+  int processMemAccess(ACC_ID accessId,
 						 const access_t& access,
 						 const instruction_t& instruction,
 						 const segment_t& segment,

@@ -24,7 +24,13 @@ DebugTool::~DebugTool() {
 
 void DebugTool::create(const Event* e) {
   static int count = 0; count++;
-  printf("NEW THREAD EVENT %d\n", count);
+
+  const NewThreadEvent* threadEvent = static_cast<const NewThreadEvent*>(e);
+  const NewThreadInfo* threadInfo = threadEvent->getNewThreadInfo();
+  ::std::cout << "NEW THREAD EVENT " << count
+              << " startTime: " << threadInfo->startTime
+              << " runtime: " << threadInfo->runtime
+              << std::endl;
 }
 
 void DebugTool::join(const Event* e) {
