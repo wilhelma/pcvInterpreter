@@ -12,7 +12,7 @@
 #ifndef  JOIN_EVENT_H_
 #define  JOIN_EVENT_H_
 
-#include "fwd/JoinInfo.h"
+#include "JoinInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"

@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 	// FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 
 	// register functionTool, no filters, all events except ACCESS
-    std::shared_ptr<ParasiteToo> parasiteTool(new ParasiteTool());
+    std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
 	runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
 
     std::shared_ptr<DebugTool> debugTool(new DebugTool());
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	runner->interpret();
 
 	// unregister
-	runner->removeTool(parasiteTool);
+	runner->removeTool(parasiteTool.get());
 	runner->removeTool(debugTool.get());
 	return 0;
 }

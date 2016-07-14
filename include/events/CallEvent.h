@@ -11,7 +11,7 @@
 
 #ifndef  CALL_EVENT_H_
 #define  CALL_EVENT_H_
-#include "fwd/CallInfo.h"
+#include "CallInfo.h"
 #include "fwd/ShadowThread.h"
 #include "Event.h"
 

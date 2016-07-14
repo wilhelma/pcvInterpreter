@@ -6,6 +6,7 @@
 #include "Types.h"
 
 #include <string>
+#include <stdlib.h>
 
 enum class Events: unsigned char {
     NEWTHREAD = 0x1,  // 00000001
@@ -51,10 +52,7 @@ bool operator!= (Events A, T b ) noexcept {
 /// a `TIME` variable (i.e. `clock_t`)
 inline
 const TIME timeStringToTime(const TIME_STRING& t) {
-    printf("converting string %s \n", t.c_str());
 	int found = t.find_last_of('.');
-    TIME result = static_cast<TIME>(atoi(t.substr(found + 1).c_str()));
-    printf("result is %lu \n", result/CLOCKS_PER_SEC);
 	return static_cast<TIME>(atoi(t.substr(found + 1).c_str()));
 }
 

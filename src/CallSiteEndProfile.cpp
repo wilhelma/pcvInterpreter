@@ -57,15 +57,15 @@ void CallSiteEndProfile::getEndCallSiteSpanProfile(std::shared_ptr<call_site_pro
   local_count_on_span = collected_profile->local_count;
 }
 
-CallSiteEndProfile::CallSiteEndProfile(std::shared_ptr<call_site_profile_t> collected_profile) {
+CallSiteEndProfile::CallSiteEndProfile(std::shared_ptr<call_site_profile_t> collected_profile) : call_site(0) {
 
   call_site = collected_profile->call_site;
   getEndCallSiteWorkProfile(collected_profile);
+  getEndCallSiteSpanProfile(collected_profile);
 }
 
-CallSiteEndProfile::CallSiteEndProfile() {
+CallSiteEndProfile::CallSiteEndProfile() : call_site(0) {}
 
-}
 
 CallSiteEndProfile::~CallSiteEndProfile() {
 

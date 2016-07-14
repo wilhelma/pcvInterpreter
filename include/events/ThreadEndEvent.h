@@ -13,7 +13,7 @@
 #define  THREAD_END_EVENT_H_
 
 #include "fwd/ShadowThread.h"
-#include "fwd/ThreadEndInfo.h"
+#include "ThreadEndInfo.h"
 #include "Event.h"
 
 class ThreadEndEvent : public Event {

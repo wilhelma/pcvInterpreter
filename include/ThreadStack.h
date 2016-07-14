@@ -102,7 +102,8 @@ struct thread_frame_t {
 	*/
 	CallSiteHashtable continuation_table;
 
-	thread_frame_t():prefix_table(CallSiteHashtable()), 
+	thread_frame_t():thread(0),
+					 prefix_table(CallSiteHashtable()), 
 					 longest_child_table(CallSiteHashtable()),
 					 continuation_table(CallSiteHashtable()) {}
 };

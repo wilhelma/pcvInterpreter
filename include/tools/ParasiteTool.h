@@ -92,14 +92,14 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
-	void create(const Event* e) override;
-	void join(const Event* e) override;
-	void acquire(const Event* e) override;
-	void release(const Event* e) override;
-	void access(const Event* e) override;
-	void call(const Event* e) override;
-	void returnOfCalled(const Event* e) override;
-	void threadEnd(const Event* e) override;
+	void Access(const AccessEvent* e) override;
+	void Acquire(const AcquireEvent* e) override;
+    void Call(const CallEvent* e) override;
+	void Join(const JoinEvent* e) override;
+	void NewThread(const NewThreadEvent* e) override;
+	void Release(const ReleaseEvent* e) override;
+	void Return(const ReturnEvent* e) override;
+	void ThreadEnd(const ThreadEndEvent* e) override;
 
 	/**
 	*    @fn returnOperations()
@@ -171,24 +171,18 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_function_return_time;
 
-
-	/**
-	*    @var last_thread_start_time
-	*    @brief Time stamp for the start of the most recent thread in the simulator.
-	*/
-	TIME last_thread_start_time;
-
-		/**
-	*    @var last_thread_end_time
-	*    @brief Time stamp for the last thread that has ended in the simulator.
-	*/
-	TIME last_thread_end_time;
-
 	/**
 	*    @var last_function_runtime
 	*    @brief Duration of the last function that was called. 
 	*/
 	TIME last_function_runtime;
+
+	/**
+	*    @var last_thread_end_time
+	*    @brief Time stamp for the last thread that has ended in the simulator.
+	*/
+	TIME last_thread_end_time;
+
 
 	/**
 	*    @var last_thread_runtime
@@ -197,24 +191,26 @@ class ParasiteTool : public Tool {
 	TIME last_thread_runtime;
 
 	/**
-	*    @var in_lock_span
-	*    @brief Tracks whether the calculation is currently within lock span. 
+	*    @var last_thread_start_time
+	*    @brief Time stamp for the start of the most recent thread in the simulator.
 	*/
-	bool in_lock_span;
+	TIME last_thread_start_time;
 
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the last lock start time, for calculation of 
-				lock span. 
-	*/
-	double lock_span_start_time;
 
 	/**
 	*    @var last_lock_end_time
 	*    @brief Tracks the last lock end time, for calculation of 
 				lock span. 
 	*/
-	double lock_span_end_time;
+	TIME lock_span_end_time;
+
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the last lock start time, for calculation of 
+				lock span. 
+	*/
+	TIME lock_span_start_time;
+
 
  private:
 	// prevent generated functions --------------------------------------------

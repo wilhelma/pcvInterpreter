@@ -12,7 +12,7 @@
 #ifndef  RETURN_EVENT_H_
 #define  RETURN_EVENT_H_
 
-#include "fwd/ReturnInfo.h"
+#include "ReturnInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"

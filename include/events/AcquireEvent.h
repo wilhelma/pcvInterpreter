@@ -13,7 +13,7 @@
 #define  ACQUIRE_EVENT_H_
 
 #include "fwd/ShadowThread.h"
-#include "fwd/AcquireInfo.h"
+#include "AcquireInfo.h"
 
 #include "Event.h"
 

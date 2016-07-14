@@ -16,7 +16,15 @@
 #include <climits>
 #include "ParasiteTool.h"
 
-ParasiteTool::ParasiteTool() {
+ParasiteTool::ParasiteTool():
+                             last_function_call_time(0.0), 
+                             last_function_return_time(0.0),
+                             last_function_runtime(0.0), 
+                             last_thread_end_time(0.0), 
+                             last_thread_runtime(0.0),
+                             last_thread_start_time(0.0),
+                             lock_span_end_time(0.0),
+                             lock_span_start_time(0.0) {
 
   stacks = std::unique_ptr<ParasiteTracker>(new ParasiteTracker());
 
@@ -28,14 +36,6 @@ ParasiteTool::ParasiteTool() {
 
   std::unordered_map<unsigned int, int> lck_hashtable;
   lock_hashtable = lck_hashtable;
-
-  lock_span_start_time = (TIME) INT_MAX;
-  lock_span_end_time = (TIME) INT_MIN;
-  last_function_runtime = (TIME) 0.0; 
-  last_thread_start_time = (TIME) 0.0;
-  last_thread_end_time = (TIME) 0.0;
-  last_function_call_time = (TIME) 0.0;
-  last_function_return_time = (TIME) 0.0;
 }
 
 void ParasiteTool::getEndProfile() {
@@ -103,9 +103,8 @@ ParasiteTool::~ParasiteTool() {
   printProfile();
 }
 
-void ParasiteTool::call(const Event* e) {
-  CallEvent* callEvent = (CallEvent*) e;
-  const CallInfo* _info(callEvent->getCallInfo());
+void ParasiteTool::Call(const CallEvent* e) {
+  const CallInfo* _info(e->getCallInfo());
 
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
@@ -121,19 +120,14 @@ void ParasiteTool::call(const Event* e) {
   printf("ending call Event \n");
 }
 
-void ParasiteTool::create(const Event* e) {
+void ParasiteTool::NewThread(const NewThreadEvent* e) {
   printf("starting new thread Event \n");
-  NewThreadEvent* newThreadEvent = (NewThreadEvent*) e;
-  const NewThreadInfo* const _info = newThreadEvent->getNewThreadInfo();
+  const NewThreadInfo* const _info = e->getNewThreadInfo();
   const TRD_ID newThreadID = _info->childThread->threadId;
 
   // get information about the thread's head function
-  FUN_SG calledFunctionSignature = _info->childThread->currentFunctionSignature;
-  CALLSITE callsiteID = _info->childThread->currentCallSiteID;
   TIME create_time = _info->startTime;
-  TIME runtime = _info->runtime;
   last_thread_start_time = create_time;
-  last_function_runtime = runtime;
 
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
@@ -143,9 +137,6 @@ void ParasiteTool::create(const Event* e) {
     assert(local_work >= 0.0);
     bottom_thread_frame->local_continuation += local_work;
   }
-
-  // push the thread's function onto the stack
-  stacks->function_push(calledFunctionSignature, callsiteID, true);
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex());
@@ -196,14 +187,21 @@ void ParasiteTool::syncOperations() {
   printf("ending sync operations \n");
 }
 
-void ParasiteTool::join(const Event* e) {
+void ParasiteTool::Join(const JoinEvent* e) {
 
   // does nothing, as this needs to happen at the end of a thread
 }
 
-void ParasiteTool::returnOperations(double local_work) {
-
-  printf("performing return operations for local work %f \n", local_work);
+void ParasiteTool::Return(const ReturnEvent* e) {
+  printf("starting return Event \n");
+  const ReturnInfo* _info(e->getReturnInfo());
+  TIME returnTime = _info->endTime;
+  double local_work = last_function_runtime;
+  assert(local_work >= 0.0);
+  last_function_return_time = returnTime;
+  // double local_work = last_function_return_time - last_function_call_time;
+  
+    printf("performing return operations for local work %f \n", local_work);
 
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
@@ -245,36 +243,20 @@ void ParasiteTool::returnOperations(double local_work) {
   }
 
   stacks->function_pop();
-}
-
-void ParasiteTool::returnOfCalled(const Event* e) {
-  printf("starting return Event \n");
-  ReturnEvent* returnEvent = (ReturnEvent*) e;
-  const ReturnInfo* _info(returnEvent->getReturnInfo());
-  TIME returnTime = _info->endTime;
-  double local_work = last_function_runtime;
-  assert(local_work >= 0.0);
-  last_function_return_time = returnTime;
-  // double local_work = last_function_return_time - last_function_call_time;
-  
-  returnOperations(local_work);
   printf("ending return Event \n");
 }
 
-void ParasiteTool::threadEnd(const Event* e) {
+void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
   printf("starting thread end Event \n");
-  ThreadEndEvent* threadEndEvent = (ThreadEndEvent*) e;
-  const ThreadEndInfo* _info(threadEndEvent->getThreadEndInfo());
+  const ThreadEndInfo* _info(e->getThreadEndInfo());
   TIME threadEndTime = _info->endTime;
 
   last_thread_end_time = threadEndTime;
-  last_thread_runtime = last_thread_end_time - last_thread_start_time;
+  last_thread_runtime = (TIME) (last_thread_end_time - last_thread_start_time);
 
   double local_work = threadEndTime - last_function_call_time;
   printf("local work in thread end event is %f \n", local_work);
   assert(local_work >= 0.0);
-  returnOperations(local_work);
-
   // The sync happens at the thread end, which is correct, because
   // all child threads must end anyway at the end of the thread.
   // However, this operation is unnecessary for the bottom thread reached.
@@ -360,10 +342,9 @@ void ParasiteTool::threadEnd(const Event* e) {
   printf("ending non-main thread end Event \n");
 }
 
-void ParasiteTool::acquire(const Event* e) {
+void ParasiteTool::Acquire(const AcquireEvent* e) {
 
-  AcquireEvent* acquireEvent = (AcquireEvent*) e;
-  const AcquireInfo* _info(acquireEvent->getAcquireInfo());
+  const AcquireInfo* _info(e->getAcquireInfo());
   std::shared_ptr<ShadowLock> acquiredLock(_info->lock);
 
   // TIME acquireTime = e->acquireTime;
@@ -375,7 +356,7 @@ void ParasiteTool::acquire(const Event* e) {
   else 
     lock_span_start_time += last_thread_runtime;
 
-  acquiredLock->last_acquire_time = (TIME) 0.0;
+  // acquiredLock->last_acquire_time = (TIME) 0.0;
   lock_span_start_time = (TIME) 0.0;
 
   unsigned int lockId = acquiredLock->lockId;
@@ -389,10 +370,9 @@ void ParasiteTool::acquire(const Event* e) {
 
 }
 
-void ParasiteTool::release(const Event* e) {
+void ParasiteTool::Release(const ReleaseEvent* e) {
 
-  ReleaseEvent* releaseEvent = (ReleaseEvent*) e;
-  const ReleaseInfo* _info(releaseEvent->getReleaseInfo());
+  const ReleaseInfo* _info(e->getReleaseInfo());
 	std::shared_ptr<ShadowLock> releasedLock(_info->lock);
   // release_time = e->releaseTime;
   TIME release_time = (TIME) 0.0;
@@ -413,7 +393,7 @@ void ParasiteTool::release(const Event* e) {
     lock_span_start_time += last_thread_runtime;
 }
 
-void ParasiteTool::access(const Event* e) {
+void ParasiteTool::Access(const AccessEvent* e) {
   printf("ERROR: Parasite Tool does not implement access event");
   return;
 }

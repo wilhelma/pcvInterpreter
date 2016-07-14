@@ -17,13 +17,8 @@
 class ShadowThread {
 public:
 
-	ShadowThread(TRD_ID threadId)
-		: threadId(threadId)
-	{};
-
 	TRD_ID threadId;
-	CALLSITE currentCallSiteID;
-	FUN_SG currentFunctionSignature; 
+	ShadowThread(TRD_ID ThreadId): threadId(ThreadId) {};
 
 	bool operator < (const ShadowThread& other) const { return threadId < other.threadId; };
 

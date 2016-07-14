@@ -65,7 +65,7 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 	const NewThreadInfo& nti = *(event->getNewThreadInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "NewThreadEvent:\n"
-		<< " > Num. cycles: " << nti.runtime << "\n"
+		// << " > Num. cycles: " << nti.runtime << "\n"
 		<< " > Start time:  " << nti.startTime << "\n";
 }
 

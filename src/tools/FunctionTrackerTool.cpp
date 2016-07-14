@@ -52,8 +52,8 @@ void FunctionTrackerTool::NewThread(const NewThreadEvent* e ) {
   const NewThreadInfo* info = event->getNewThreadInfo();
 
   std::cerr << "New Thread... parent: " << info->parentThread->threadId
-            << " child: " << info->childThread->threadId
-            << " runtime: " << info->runtime << std::endl;
+            << " child: " << info->childThread->threadId;
+            // << " runtime: " << info->runtime << std::endl;
 }
 
 void FunctionTrackerTool::Call(const CallEvent* e) {

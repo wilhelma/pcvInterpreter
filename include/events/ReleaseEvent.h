@@ -12,7 +12,7 @@
 #ifndef  RELEASE_EVENT_H_
 #define  RELEASE_EVENT_H_
 
-#include "fwd/ReleaseInfo.h"
+#include "ReleaseInfo.h"
 #include "fwd/ShadowLock.h"
 
 #include "Event.h"

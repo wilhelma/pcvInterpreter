@@ -169,6 +169,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 }
 
 int DBInterpreter::processReturn(const instruction_t& ins) {
+
 	auto search = segmentTable.find(ins.segment_id);
 	if (search == segmentTable.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
@@ -410,7 +411,6 @@ int DBInterpreter::processAcqAccess(ACC_ID accessId,
     AcquireInfo info(lock);
     AcquireEvent event( thread, &info );
     _eventService->publish( &event );
-
     return 0;
 }
 
@@ -434,10 +434,10 @@ int DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
+
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-
-    NewThreadInfo info(cT, pT, thread.end_time, thread.start_time);
+    NewThreadInfo info(cT, pT, thread.start_time, thread.end_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
 
@@ -452,7 +452,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
 
-    ThreadEndInfo  end_info(thread.end_time, thread.id);
+    ThreadEndInfo  end_info(timeStringToTime(thread.end_time), thread.id);
     ThreadEndEvent end_event(cT, &end_info);
     _eventService->publish(&end_event);
 

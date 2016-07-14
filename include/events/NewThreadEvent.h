@@ -12,7 +12,7 @@
 #ifndef  NEW_THREAD_EVENT_H_
 #define  NEW_THREAD_EVENT_H_
 
-#include "fwd/NewThreadInfo.h"
+#include "NewThreadInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"

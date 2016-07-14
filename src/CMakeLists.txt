@@ -24,8 +24,7 @@ set(SRC_LIST ${SRC_LIST}
 	tools/DebugTool.cpp
 	tools/FunctionTrackerTool.cpp
 	tools/LockSetChecker.cpp
-	tools/ParasiteTool.cpp
-	tools/RaceDetectionTool.cpp)
+	tools/ParasiteTool.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tables/AccessTable.cpp

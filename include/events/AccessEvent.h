@@ -12,7 +12,7 @@
 #ifndef  ACCESS_EVENT_H_
 #define  ACCESS_EVENT_H_
 
-#include "fwd/AccessInfo.h"
+#include "AccessInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"
