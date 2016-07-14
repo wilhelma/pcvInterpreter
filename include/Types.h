@@ -46,7 +46,7 @@ typedef ID TRD_ID;
 BOOST_STRONG_TYPEDEF( unsigned, POS )
 
 // Call Types
-BOOST_STRONG_TYPEDEF( clock_t, TIME )
+BOOST_STRONG_TYPEDEF( uint64_t, TIME )
 BOOST_STRONG_TYPEDEF( size_t, CALLSITE )
 
 // File Types

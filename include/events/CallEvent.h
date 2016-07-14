@@ -26,13 +26,13 @@ typedef struct CallInfo {
 	FIL_PT filePath;
 
 	explicit
-		CallInfo(CALLSITE SiteId,
-				TIME Runtime,
-				FUN_SG FnSignature,
-				SEG_ID Segment,
-				FunctionType FnType,
-				FIL_PT FileName,
-				FIL_PT FilePath) noexcept
+    CallInfo(const CALLSITE& SiteId,
+             const TIME& Runtime,
+             const FUN_SG& FnSignature,
+             const SEG_ID& Segment,
+             const FunctionType& FnType,
+             const FIL_PT& FileName,
+             const FIL_PT& FilePath) noexcept
 		: siteId(SiteId), runtime(Runtime), fnSignature(FnSignature),
 		segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
 } CallInfo;

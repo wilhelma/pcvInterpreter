@@ -16,8 +16,8 @@ const std::pair<CallTable::iterator, bool> CallTable::fill(sqlite3_stmt *sqlstmt
     TRD_ID thread_id      = static_cast<TRD_ID>(sqlite3_column_int(sqlstmt, 1));
     FUN_ID function_id    = static_cast<FUN_ID>(sqlite3_column_int(sqlstmt, 2));
     INS_ID instruction_id = static_cast<INS_ID>(sqlite3_column_int(sqlstmt, 3));
-    TIME start_time       = static_cast<TIME>(sqlite3_column_int(sqlstmt, 4));
-    TIME end_time         = static_cast<TIME>(sqlite3_column_int(sqlstmt, 5));
+    TIME start_time       = static_cast<TIME>(sqlite3_column_int64(sqlstmt, 4));
+    TIME end_time         = static_cast<TIME>(sqlite3_column_int64(sqlstmt, 5));
 
     call_t *tmp = new call_t(id, thread_id, function_id, instruction_id, start_time, end_time);
 

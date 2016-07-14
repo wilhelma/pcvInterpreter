@@ -10,8 +10,9 @@
  */
 
 #include <utility>
+#include <iostream>
 #include "DebugTool.h"
-
+#include "CallEvent.h"
 
 DebugTool::DebugTool() {
 
@@ -33,7 +34,12 @@ void DebugTool::join(const Event* e) {
 
 void DebugTool::call(const Event* e) {
   static int count = 0; count++;
-  printf("CALL EVENT %d\n", count);
+
+	const CallEvent* callEvent = static_cast<const CallEvent*>(e);
+	const CallInfo* callInfo = callEvent->getCallInfo();
+  ::std::cout << "CALL EVENT " << count
+              << " Runtime: " << callInfo->runtime
+              << std::endl;
 }
 
 void DebugTool::returnOfCalled(const Event* e) {
