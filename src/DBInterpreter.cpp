@@ -315,6 +315,7 @@ int DBInterpreter::processCall(const instruction_t& ins) {
 
           CallInfo info( static_cast<CALLSITE>(getHash(call.function_id,
                                                        ins.line_number)),
+                         static_cast<TIME>(call.start_time),
                          static_cast<TIME>(call.end_time - call.start_time),
                          function.signature,
                          ins.segment_id,

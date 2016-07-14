@@ -39,14 +39,8 @@ int main(int argc, char* argv[]) {
 
     std::shared_ptr<SAAPRunner> runner(new SAAPRunner(interpreter.get()));
 
-	// create and register tools
-	// RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
-	// LockSetChecker *raceTool = new LockSetChecker("races.json");
-	// FunctionTrackerTool *functionTool = new FunctionTrackerTool();
-
-	// register functionTool, no filters, all events except ACCESS
-    std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
-	runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
+ 	// std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
+	// runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
 
     std::shared_ptr<DebugTool> debugTool(new DebugTool());
 	runner->registerTool(debugTool.get(), NULL, Events::ALL);
@@ -55,7 +49,7 @@ int main(int argc, char* argv[]) {
 	runner->interpret();
 
 	// unregister
-	runner->removeTool(parasiteTool.get());
+	//runner->removeTool(parasiteTool.get());
 	runner->removeTool(debugTool.get());
 	return 0;
 }

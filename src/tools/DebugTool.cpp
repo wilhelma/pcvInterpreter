@@ -31,12 +31,6 @@
 #include <utility>
 #include <iostream>
 
-DebugTool::DebugTool() {
-
-}
-
-DebugTool::~DebugTool() {}
-
 void DebugTool::Access(const AccessEvent* event) {
 	const AccessInfo& ai = *(event->getAccessInfo());
 	BOOST_LOG_TRIVIAL(debug) 
@@ -49,16 +43,6 @@ void DebugTool::Acquire(const AcquireEvent* event) {
 //	const AcquireInfo& ai = *(event->getAcquireInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "AcquireEvent:";
-}
-
-void DebugTool::NewThread(const Event* e) {
-  static int count = 0; count++;
-  const NewThreadEvent* threadEvent = static_cast<const NewThreadEvent*>(e);
-  const NewThreadInfo* threadInfo = threadEvent->getNewThreadInfo();
-  ::std::cout << "NEW THREAD EVENT " << count
-              << " startTime: " << threadInfo->startTime
-              << " runtime: " << threadInfo->runtime
-              << std::endl;
 }
 
 void DebugTool::Call(const CallEvent* event) {
@@ -78,16 +62,6 @@ void DebugTool::Join(const JoinEvent* event) {
 //	const JoinInfo& ji = *(event->getJoinInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "JoinEvent:";
-}
-
-void DebugTool::Call(const Event* e) {
-  static int count = 0; count++;
-
-	const CallEvent* callEvent = static_cast<const CallEvent*>(e);
-	const CallInfo* callInfo = callEvent->getCallInfo();
-  ::std::cout << "CALL EVENT " << count
-              << " Runtime: " << callInfo->runtime
-              << std::endl;
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {
