@@ -12,13 +12,10 @@
 #ifndef  ACQUIRE_EVENT_H_
 #define  ACQUIRE_EVENT_H_
 
-#include "Event.h"
-#include "ShadowLock.h"
+#include "fwd/ShadowThread.h"
+#include "fwd/AcquireInfo.h"
 
-struct AcquireInfo {
-	ShadowLock *lock;
-	AcquireInfo(ShadowLock *lock) : lock(lock) {}
-};
+#include "Event.h"
 
 class AcquireEvent : public Event {
 public:

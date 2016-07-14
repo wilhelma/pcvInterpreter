@@ -1,61 +1,62 @@
-	/*
+/*
  * LockSetChecker.cpp
  *
  *  Created on: Aug 28, 2014
  *      Author: wilhelma
  */
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <algorithm>
 #include "LockSetChecker.h"
-#include "Event.h"
+
+#include "fwd/ShadowLock.h"
+
+#include "AccessEvent.h"
+#include "AccessInfo.h"
+#include "AcquireEvent.h"
+#include "AcquireInfo.h"
+#include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
+#include "ReleaseEvent.h"
+#include "ReleaseInfo.h"
+
 #include "ShadowThread.h"
 #include "ShadowVar.h"
-#include "ShadowLock.h"
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/prettywriter.h"
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+
 LockSetChecker::LockSetChecker(const char *outFile) : outFile_(outFile) {
 }
 
 LockSetChecker::~LockSetChecker() {
-
 	dumpRaceEntries(outFile_);
 }
 
-void LockSetChecker::create(const Event* e) {
-
-   	ShadowThread* childThread = 
-		dynamic_cast<const NewThreadEvent*>(e)->getNewThreadInfo()->childThread;
-
+void LockSetChecker::NewThread(const NewThreadEvent* event) {
+   	ShadowThread* childThread = event->getNewThreadInfo()->childThread;
 	// LockSet_u = set of all possible locks
-	lockSet_[childThread] =  lockSet_[e->getThread()];
+	lockSet_[childThread] =  lockSet_[event->getThread()];
 }
 
-void LockSetChecker::join(const Event* e) {
-
-}
-
-void LockSetChecker::acquire(const Event* e) {
-
+void LockSetChecker::Acquire(const AcquireEvent* event) {
 	// LockSet_t = LockSet_t + {lock}	
-	lockSet_[e->getThread()].insert(((AcquireEvent*)e)->getAcquireInfo()->lock);
+	lockSet_[event->getThread()].insert(event->getAcquireInfo()->lock);
 }
 
-void LockSetChecker::release(const Event* e) {
-
+void LockSetChecker::Release(const ReleaseEvent* event) {
 	// LockSet_t = LockSet_t - {lock}
-	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
-	lockSet_[e->getThread()].erase(lock); 
+//	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
+	auto lock = event->getReleaseInfo()->lock;
+	lockSet_[event->getThread()].erase(lock); 
 }
 
-void LockSetChecker::access(const Event* e) {
-
-	const AccessEvent *event = dynamic_cast<const AccessEvent*>(e);
+void LockSetChecker::Access(const AccessEvent* event) {
 	const REF_ID ref = event->getAccessInfo()->var->id;
 	const TRD_ID threadId = event->getThread()->threadId;
 
@@ -69,7 +70,7 @@ void LockSetChecker::access(const Event* e) {
 				event->getAccessInfo()->instructionID;
 
 			// R_x[t].lockset = LockSet_t
-			readVarSet_[ref][threadId].lockset = lockSet_[e->getThread()];
+			readVarSet_[ref][threadId].lockset = lockSet_[event->getThread()];
 
 			if (lsIsEmptySet( readVarSet_[ref][threadId].lockset,
 								  writeVarSet_[ref].lockset) ) {
@@ -89,7 +90,7 @@ void LockSetChecker::access(const Event* e) {
 	case AccessType::WRITE:
 		{	
 			// W_x.lockset = W_x.lockset intersect Lockset_t
-			lsIntersect(writeVarSet_[ref].lockset, lockSet_[e->getThread()]);
+			lsIntersect(writeVarSet_[ref].lockset, lockSet_[event->getThread()]);
 
 			// check W_x.lockset = empty
 			if (writeVarSet_[ref].lockset.empty())	{
@@ -143,8 +144,6 @@ void LockSetChecker::dumpRaceEntries(const char* fileName) const {
     file << buffer.GetString();
     file.close();
 }
-
-void LockSetChecker::call(const Event* e) { }
 
 bool LockSetChecker::lsIsEmptySet(const LockSet_& lhs,
 									 const LockSet_& rhs) const {

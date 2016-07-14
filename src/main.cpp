@@ -5,17 +5,15 @@
  *      Author: wilhelma
  */
 
-#include <boost/log/trivial.hpp>
-#include "SAAPRunner.h"
-#include "EventService.h"
+
 #include "DBInterpreter.h"
-//#include "RaceDetectionTool.h"
-//#include "LockSetChecker.h"
 #include "DebugTool.h"
-#include "FunctionTrackerTool.h"
+#include "EventService.h"
 #include "ParasiteTool.h"
 #include "LockMgr.h"
+#include "SAAPRunner.h"
 #include "ThreadMgr.h"
+#include <boost/log/trivial.hpp>
 
 int main(int argc, char* argv[]) {
 
@@ -26,60 +24,34 @@ int main(int argc, char* argv[]) {
 	}
 
 	// create interpreter, event service, and saap runner
-	EventService *service = new EventService();
-	LockMgr *lockMgr = new LockMgr();
-	ThreadMgr *threadMgr = new ThreadMgr();
-	DBInterpreter *interpreter = new DBInterpreter(argv[1],
-												   "SAAP.log",
-												   service,
-												   lockMgr,
-												   threadMgr);
-	
-	SAAPRunner *runner = new SAAPRunner(interpreter);
+    std::shared_ptr<EventService> service(new EventService());
+    std::shared_ptr<LockMgr> lockMgr(new LockMgr());
+    std::shared_ptr<ThreadMgr> threadMgr(new ThreadMgr());
+    std::shared_ptr<DBInterpreter> interpreter(new DBInterpreter(argv[1],
+			"SAAP.log",
+			service.get(),
+			lockMgr.get(),
+			threadMgr.get()));
+
+    std::shared_ptr<SAAPRunner> runner(new SAAPRunner(interpreter.get()));
 
 	// create and register tools
-	//RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
-	//LockSetChecker *raceTool = new LockSetChecker("races.json");
-//	FunctionTrackerTool *functionTool = new FunctionTrackerTool();
-
-  ParasiteTool *parasiteTool = new ParasiteTool();
-
-	DebugTool *debugTool = new DebugTool();
+	// RaceDetectionTool *raceTool = new RaceDetectionTool("races.json");
+	// LockSetChecker *raceTool = new LockSetChecker("races.json");
+	// FunctionTrackerTool *functionTool = new FunctionTrackerTool();
 
 	// register functionTool, no filters, all events except ACCESS
-  runner->registerTool(parasiteTool, NULL,
-             Events::CALL | Events::NEWTHREAD |
-             Events::THREADEND | Events::JOIN |
-             Events::ACQUIRE | Events::RELEASE |
-             Events::RETURN );
+    std::shared_ptr<ParasiteToo> parasiteTool(new ParasiteTool());
+	runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
 
-	runner->registerTool(debugTool, NULL,
-						 Events::CALL | Events::NEWTHREAD | 
-						 Events::THREADEND | Events::JOIN | 
-						 Events::ACQUIRE | Events::RELEASE | 
-						 Events::RETURN | Events::ACCESS );
-
-	// register functionTool, no filters, only CALL and NEWTHREAD events
-  	// runner->registerTool(functionTool, NULL,
-   //                     	Events::CALL | Events::NEWTHREAD );
+    std::shared_ptr<DebugTool> debugTool(new DebugTool());
+	runner->registerTool(debugTool.get(), NULL, Events::ALL);
 
 	// Start interpretation
 	runner->interpret();
 
 	// unregister
-//	runner->removeTool(functionTool);
-
-//	parasiteTool->printProfile();
-  runner->removeTool(parasiteTool);
-
-	runner->removeTool(debugTool);
-
-	delete interpreter;
-	delete service;
-	delete runner;
-	// delete functionTool;
-  delete parasiteTool;
-	delete debugTool;
-
+	runner->removeTool(parasiteTool);
+	runner->removeTool(debugTool.get());
 	return 0;
 }

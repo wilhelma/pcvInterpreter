@@ -1,66 +1,92 @@
 /**
  *
  *    @file  DebugTool.cpp
- *   @brief  Implementation file for the class `DebugTool`
+ *   @brief  
  *
- *    @date  06/17/16
- *  @author  Nathaniel Knapp (github.com/deknapp),
- *           <nathaniel.knapp@gmail.com>
+ *    @date  07/10/16
+ *  @author  Paolo Di Giglio (github.com/pdigiglio),
+ *           <p.digiglio91@gmail.com>
  *
  */
 
-#include <utility>
 #include "DebugTool.h"
+#include "AccessEvent.h"
+#include "AccessInfo.h"
+#include "AcquireEvent.h"
+#include "AcquireInfo.h"
+#include "CallEvent.h"
+#include "CallInfo.h"
+#include "JoinEvent.h"
+#include "JoinInfo.h"
+#include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
+#include "ReleaseEvent.h"
+#include "ReleaseInfo.h"
+#include "ReturnEvent.h"
+#include "ReturnInfo.h"
+#include "ThreadEndEvent.h"
+#include "ThreadEndInfo.h"
 
+#include <boost/log/trivial.hpp>
 
-DebugTool::DebugTool() {
-
+void DebugTool::Access(const AccessEvent* event) {
+	const AccessInfo& ai = *(event->getAccessInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "AccessEvent:\n"
+		<< " > Access Type:  " << static_cast<unsigned>(ai.type) << "\n"
+		<< " > Instruct. id: " << ai.instructionID << "\n";
 }
 
-DebugTool::~DebugTool() {
-
+void DebugTool::Acquire(const AcquireEvent* event) {
+//	const AcquireInfo& ai = *(event->getAcquireInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "AcquireEvent:";
 }
 
-void DebugTool::create(const Event* e) {
-  static int count = 0; count++;
-  printf("NEW THREAD EVENT %d\n", count);
+void DebugTool::Call(const CallEvent* event) {
+	const CallInfo& ci = *(event->getCallInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "CallEvent:\n"
+		<< " > Call Site:  " << ci.siteId << "\n"
+		<< " > Time:       " << ci.runtime << "\n"
+		<< " > Fun. sig.:  " << ci.fnSignature << "\n"
+		<< " > Fun. type:  " << static_cast<unsigned>(ci.fnType) << "\n"
+		<< " > File name:  " << ci.fileName << "\n"
+		<< " > File path:  " << ci.filePath << "\n";
 }
 
-void DebugTool::join(const Event* e) {
-  static int count = 0; count++;
-  printf("JOIN EVENT %d\n", count);
+void DebugTool::Join(const JoinEvent* event) {
+//	const JoinInfo& ji = *(event->getJoinInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "JoinEvent:";
 }
 
-void DebugTool::call(const Event* e) {
-  static int count = 0; count++;
-  printf("CALL EVENT %d\n", count);
+void DebugTool::NewThread(const NewThreadEvent* event) {
+	const NewThreadInfo& nti = *(event->getNewThreadInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "NewThreadEvent:\n"
+		<< " > Num. cycles: " << nti.runtime << "\n"
+		<< " > Start time:  " << nti.startTime << "\n";
 }
 
-void DebugTool::returnOfCalled(const Event* e) {
-  static int count = 0; count++;
-  printf("RETURN EVENT %d\n", count);
+void DebugTool::Release(const ReleaseEvent* event) {
+//	const ReleaseInfo& ri = *(event->getReleaseInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "ReleaseEvent:";
 }
 
-void DebugTool::threadEnd(const Event* e) {
-  static int count = 0; count++;
-  printf("THREAD END EVENT %d\n", count);
+void DebugTool::Return(const ReturnEvent* event) {
+	const ReturnInfo& ri = *(event->getReturnInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "ReturnEvent:\n"
+		<< " > Call ID: " << ri.call << "\n"
+		<< " > End time: " << ri.endTime << "\n";
 }
 
-void DebugTool::acquire(const Event* e) {
-  static int count = 0; count++;
-  printf("ACQUIRE EVENT %d\n", count);
+void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
+	const ThreadEndInfo& tei = *(event->getThreadEndInfo());
+	BOOST_LOG_TRIVIAL(debug) 
+		<< "ThreadEvent:\n"
+		<< " > Thread ID: " << tei.id << "\n"
+		<< " > End time:  " << tei.endTime << "\n";
 }
-
-void DebugTool::release(const Event* e) {
-  static int count = 0; count++;
-  printf("RELEASE EVENT %d\n", count);
-}
-
-void DebugTool::access(const Event* e) {
-  static int count = 0; count++;
-  printf("ACCESS EVENT %d\n", count);
-}
-
-
-
-

@@ -15,7 +15,10 @@ pcv.log
 *.json
 
 # Ignore databases
-# *.db
+*.db
+
+#
+build*/
 
 # Ignore db and unit tests
 cppUnit/

@@ -9,13 +9,14 @@
  *
  */
 
-#include "Tool.h"
-#include "Event.h"
+#include "FunctionTrackerTool.h"
+
+#include "CallInfo.h"
+#include "NewThreadInfo.h"
+#include "ShadowThread.h"
 
 #include <iostream>
 
-#include "FunctionTrackerTool.h"
-#include "ShadowThread.h"
 
 /**
  * @brief Constructor for `FunctionTrackerTool`
@@ -46,7 +47,7 @@ FunctionTrackerTool::~FunctionTrackerTool() {
 	_outFile.close();
 } 
 
-void FunctionTrackerTool::create( const Event* e ) {
+void FunctionTrackerTool::NewThread(const NewThreadEvent* e ) {
   const NewThreadEvent* event = static_cast<const NewThreadEvent*>(e);
   const NewThreadInfo* info = event->getNewThreadInfo();
 
@@ -55,19 +56,7 @@ void FunctionTrackerTool::create( const Event* e ) {
             << " runtime: " << info->runtime << std::endl;
 }
 
-void FunctionTrackerTool::join( const Event* e ) {
-}
-
-void FunctionTrackerTool::acquire( const Event* e ) {
-}
-
-void FunctionTrackerTool::release( const Event* e ) {
-}
-
-void FunctionTrackerTool::access( const Event* e ) {
-}
-
-void FunctionTrackerTool::call( const Event* e ) {
+void FunctionTrackerTool::Call(const CallEvent* e) {
     // cast event into its specific type
 	const CallEvent *event = static_cast<const CallEvent*>(e);
 

@@ -20,7 +20,7 @@ enum class SegmentType : bool {
     LOOP   = 1
 };
 
-typedef struct segment_t {
+struct segment_t {
     SEG_ID sql_id;
     CAL_ID call_id;
     SegmentType segment_type;
@@ -30,13 +30,13 @@ typedef struct segment_t {
     segment_t(SEG_ID sqlID,
               CAL_ID callId,
               SegmentType segmentType,
-              LOI_ID loopPointer)
+              LOI_ID loopPointer) noexcept
         : sql_id(sqlID), call_id(callId),
           segment_type(segmentType),
           loop_pointer(loopPointer)
     {
     }
 
-} segment_t;
+};
 
 #endif

@@ -1,7 +1,8 @@
-set(INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include
-						${pcv_SOURCE_DIR}/include/events
-						${pcv_SOURCE_DIR}/include/tables
-						${pcv_SOURCE_DIR}/include/tools)
+set(INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/
+						${pcv_SOURCE_DIR}/include/events/
+						${pcv_SOURCE_DIR}/include/infos/
+						${pcv_SOURCE_DIR}/include/tables/
+						${pcv_SOURCE_DIR}/include/tools/)
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST ${SRC_LIST}
@@ -28,6 +29,7 @@ set(SRC_LIST ${SRC_LIST}
 
 set(SRC_LIST ${SRC_LIST}
 	tables/AccessTable.cpp
+	tables/Call.cpp
 	tables/CallTable.cpp
 	tables/FileTable.cpp
 	tables/FunctionTable.cpp
