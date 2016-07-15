@@ -26,7 +26,7 @@ enum class InstructionType {
     RELEASE = 7
 };
 
-typedef struct instruction_t {
+struct instruction_t {
     INS_ID instruction_id;
     SEG_ID segment_id;
     InstructionType instruction_type;
@@ -36,11 +36,11 @@ typedef struct instruction_t {
     instruction_t(INS_ID instructionId,
                   SEG_ID segmentId,
                   InstructionType instructionType,
-                  LIN_NO lineNumber) 
+                  LIN_NO lineNumber) noexcept
                   : instruction_id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
     {
     }
-} instruction_t;
+};
 
 #endif

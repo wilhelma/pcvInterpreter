@@ -9,16 +9,13 @@
  *
  */
 
-#ifndef  RELEASE_INFO_H_
-#define  RELEASE_INFO_H_
+#ifndef  RELEASE_EVENT_H_
+#define  RELEASE_EVENT_H_
+
+#include "ReleaseInfo.h"
+#include "fwd/ShadowLock.h"
 
 #include "Event.h"
-#include "ShadowLock.h"
-
-struct ReleaseInfo {
-	ShadowLock *lock;
-	ReleaseInfo(ShadowLock* lock) : lock(lock) {}
-};
 
 class ReleaseEvent : public Event {
 public:

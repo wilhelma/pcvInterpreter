@@ -28,7 +28,7 @@ enum class AccessState {
     READ_WRITE_SHARED = 3
 };
 
-typedef struct access_t {
+struct access_t {
     ACC_ID sql_id;
     INS_ID instruction_id;
     POS position;
@@ -42,12 +42,12 @@ typedef struct access_t {
              POS pos,
              REF_ID referenceID,
              AccessType accessType,
-             AccessState memoryState)
+             AccessState memoryState) noexcept
         : sql_id(sqlID), instruction_id(instructionID), position(pos),
           reference_id(referenceID), access_type(accessType),
           memory_state(memoryState)
     {
     }
-} access_t;
+};
 
 #endif

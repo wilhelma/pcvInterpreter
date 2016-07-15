@@ -35,7 +35,7 @@ enum class FunctionType : uint32_t  {
 	SIGNAL_BROADCAST = (1 << 14),
 };
 
-typedef struct function_t {
+struct function_t {
     FUN_ID sql_id;
     FUN_SG signature;
     FunctionType type;
@@ -47,7 +47,7 @@ typedef struct function_t {
                FUN_SG fnSignature,
                FunctionType fnType,
                FIL_ID fileId,
-               LIN_NO lineNumber)
+               LIN_NO lineNumber) noexcept
         : sql_id(sqlID), signature(fnSignature), type(fnType),
           file_id(fileId), line_number(lineNumber)
     {
@@ -124,6 +124,6 @@ typedef struct function_t {
 //      }
 //      return Function::OTHER;
 //  }
-} function_t;
+};
 
 #endif

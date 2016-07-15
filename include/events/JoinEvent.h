@@ -12,15 +12,10 @@
 #ifndef  JOIN_EVENT_H_
 #define  JOIN_EVENT_H_
 
-#include "Event.h"
-#include "ShadowLock.h"
+#include "JoinInfo.h"
+#include "fwd/ShadowThread.h"
 
-struct JoinInfo {
-  ShadowThread* childThread;
-  ShadowThread* parentThread;
-  JoinInfo(ShadowThread* childThread, ShadowThread* parentThread)
-    : childThread(childThread), parentThread(parentThread) {}
-};
+#include "Event.h"
 
 class JoinEvent : public Event {
 public:

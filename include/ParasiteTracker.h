@@ -92,6 +92,12 @@ class ParasiteTracker {
 		*/
   		CallSiteHashtable work_table;
 
+		/**
+		*    @var highest_thread_index
+		*    @brief Tracks the highest thread index reached.
+		*/
+		int highest_thread_index;
+
  	private:
 
  		/**

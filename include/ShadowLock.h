@@ -22,8 +22,6 @@ public:
 	{};
 	
 	const LockId lockId;
-	TIME last_acquire_time;	
-	
 	bool operator < (const ShadowLock& other) const { return lockId < other.lockId; };
 
 private:

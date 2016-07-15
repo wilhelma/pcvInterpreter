@@ -1,5 +1,5 @@
 /*
- * Observer.h
+ * Tool.h
  *
  *  Created on: Aug 27, 2014
  *      Author: wilhelma
@@ -8,20 +8,29 @@
 #ifndef OBSERVER_H_
 #define OBSERVER_H_
 
-class Event;
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ThreadEndEvent.h"
 
 class Tool {
-public:
-virtual void create(const Event* e) = 0;
-virtual void threadEnd(const Event* e) = 0;
-virtual void join(const Event* e) = 0;
-virtual void acquire(const Event* e) = 0;
-virtual void release(const Event* e) = 0;
-virtual void access(const Event* e) = 0;
-virtual void call(const Event* e) = 0;
-virtual void returnOfCalled(const Event* e) = 0;
 
+public:
+
+virtual void Access(const AccessEvent* e) = 0;
+virtual void Acquire(const AcquireEvent* e) = 0;
+virtual void Call(const CallEvent* e) = 0;
+virtual void Join(const JoinEvent* e) = 0;
+virtual void NewThread(const NewThreadEvent* e) = 0;
+virtual void Release(const ReleaseEvent* e) = 0;
+virtual void Return(const ReturnEvent* e) = 0;
+virtual void ThreadEnd(const ThreadEndEvent* e) = 0;
 virtual ~Tool() {};
+
 };
 
 #endif /* OBSERVER_H_ */

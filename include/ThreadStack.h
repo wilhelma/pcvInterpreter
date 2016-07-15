@@ -31,13 +31,6 @@ struct thread_frame_t {
 	TRD_ID thread;
 
 	/**
-	*    @var unjoined children
-	*    @brief The number of children of the thread that havne't returned 
-				to the parent yet. 
-	*/
-	int unjoined_children;
-
-	/**
 	*    @var head_function_index
 	*    @brief The index of the thread's head function (the first function called 
 				in the thread after it spawns), in the function_stack of main_stack.
@@ -109,7 +102,8 @@ struct thread_frame_t {
 	*/
 	CallSiteHashtable continuation_table;
 
-	thread_frame_t():prefix_table(CallSiteHashtable()), 
+	thread_frame_t():thread(0),
+					 prefix_table(CallSiteHashtable()), 
 					 longest_child_table(CallSiteHashtable()),
 					 continuation_table(CallSiteHashtable()) {}
 };

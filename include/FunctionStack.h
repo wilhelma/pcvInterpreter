@@ -71,6 +71,9 @@ struct function_frame_t {
 	*    @brief The running span of the function's call site. 
 	*/
 	double running_span;
+
+	function_frame_t() : call_site(0)
+	{}
 };
 
 

@@ -12,18 +12,10 @@
 #ifndef  RETURN_EVENT_H_
 #define  RETURN_EVENT_H_
 
+#include "ReturnInfo.h"
+#include "fwd/ShadowThread.h"
+
 #include "Event.h"
-#include "Types.h"
-
-typedef struct ReturnInfo {
-	CAL_ID call;
-	TIME   endTime;
-
-	ReturnInfo(CAL_ID call,
-			   TIME endTime)
-		: call(call), endTime(endTime)
-	{}
-} ReturnInfo;
 
 class ReturnEvent : public Event {
 	public:

@@ -70,9 +70,17 @@ class CallSiteHashtable {
 	CallSiteHashtable* operator=(const CallSiteHashtable& rhs);
 	~CallSiteHashtable();
 
+
+	/**
+	*    @fn contains()
+	*    @brief Returns true if the hashtable contains a profile for call_site.
+	*/
+	bool contains(CALLSITE call_site);
+
+
 	/**
 	*    @fn clear()
-	*    @brief Adds in added_hashtable into the class's hashtable.
+	*    @brief Clears the unordered_map / hashtable. 
 	*/
 	void clear();
 
@@ -80,25 +88,24 @@ class CallSiteHashtable {
 	*    @fn add_in_hashtable(...)
 	*    @brief Adds in added_hashtable into the class's hashtable.
 	*/
-	void add_in_hashtable(CallSiteHashtable* hashtable_object);
+	void add(CallSiteHashtable* hashtable_object);
 
 	/**
-	*    @fn add_data_to_hashtable(...)
+	*    @fn add_data(...)
 	*    @brief Adds work, span, local_work, and local_span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_data_to_hashtable(bool is_top_function,
-	                         CALLSITE call_site,
-	                         double work, double span,
-	                         double local_work, double local_span);
+	void add_data(bool is_top_function, CALLSITE call_site,
+                  double work, double span,
+                  double local_work, double local_span);
 
 	/**
-	*    @fn add_local_data_to_hashtable(...)
+	*    @fn add_local_data(...)
 	*    @brief Adds local_work and local_span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_local_data_to_hashtable(CALLSITE call_site,
-	                                 double local_work, double local_span);
+	void add_local_data(bool is_top_function, CALLSITE call_site,
+	                    double local_work, double local_span);
 
 	/**
 	*    @var hashtable

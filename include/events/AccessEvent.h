@@ -9,23 +9,16 @@
  *
  */
 
-#ifndef  ACCESS_INFO_H_
-#define  ACCESS_INFO_H_
+#ifndef  ACCESS_EVENT_H_
+#define  ACCESS_EVENT_H_
 
-#include "Access.h"
+#include "AccessInfo.h"
+#include "fwd/ShadowThread.h"
+
 #include "Event.h"
-#include "ShadowThread.h"
-#include "ShadowVar.h"
+#include "Access.h"
 #include "Types.h"
 
-struct AccessInfo {
-	AccessType type;
-	INS_ID instructionID;
-	ShadowVar *var;
-
-	AccessInfo(AccessType Type, ShadowVar *Var, INS_ID instructionID)
-		: type(Type), instructionID(instructionID), var(Var) {}
-};
 
 class AccessEvent : public Event {
 public:

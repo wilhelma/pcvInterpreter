@@ -105,6 +105,7 @@ struct call_site_profile_t {
     */
     double local_count;
 
+    call_site_profile_t() : call_site(0) {}  
 };
 
 class CallSiteProfile {

@@ -6,22 +6,42 @@
  */
 #include "DBInterpreter.h"
 
+#include "fwd/ShadowLock.h"
+#include "fwd/ShadowThread.h"
+#include "fwd/ShadowVar.h"
+
 #include <iostream>
-#include <cstdlib>
-#include <cstring>
 #include <string>
 #include <functional>
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 
-#include "Event.h"
-#include "EventService.h"
-#include "ShadowThread.h"
-#include "ShadowVar.h"
-#include "ShadowLock.h"
+#include "DBTable.h"
+
 #include "LockMgr.h"
 #include "ThreadMgr.h"
+
+#include "AccessEvent.h"
+#include "AccessInfo.h"
+#include "AcquireEvent.h"
+#include "AcquireInfo.h"
+#include "CallEvent.h"
+#include "CallInfo.h"
+#include "JoinEvent.h"
+#include "JoinInfo.h"
+#include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
+#include "ReleaseEvent.h"
+#include "ReleaseInfo.h"
+#include "ReturnEvent.h"
+#include "ReturnInfo.h"
+#include "ThreadEndEvent.h"
+#include "ThreadEndInfo.h"
+
+#include "EventService.h"
+#include "AccessInfo.h"
+
 #include "DBTable.h"
 #include "Types.h"
 
@@ -155,6 +175,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	return call_id;
 }
 
+
 int DBInterpreter::processReturn(const instruction_t& ins,
                                  const call_t& call) {
 
@@ -178,7 +199,6 @@ int DBInterpreter::processReturn(const instruction_t& ins,
         ThreadEndEvent end_event(thread, &end_info);
         _eventService->publish(&end_event);
       }
-
       callStack_.pop();
     } else {
       return IN_NO_ENTRY;
@@ -339,6 +359,7 @@ int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
         const file_t& file = fileIt->second;
 
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
+                       static_cast<TIME>(call.start_time),
                        static_cast<TIME>(call.end_time - call.start_time),
                        function.signature,
                        segId,
@@ -441,7 +462,6 @@ int DBInterpreter::processAcqAccess(ACC_ID accessId,
     AcquireInfo info(lock);
     AcquireEvent event( thread, &info );
     _eventService->publish( &event );
-
     return 0;
 }
 
@@ -464,7 +484,7 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 int DBInterpreter::processFork(const thread_t& thread) {
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
+    NewThreadInfo info(cT, pT, thread.start_time, thread.end_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
     return 0;
@@ -477,6 +497,11 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
 
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
+
+    ThreadEndInfo  end_info(timeStringToTime(thread.end_time), thread.id);
+    ThreadEndEvent end_event(cT, &end_info);
+    _eventService->publish(&end_event);
+
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
     _eventService->publish( &event );

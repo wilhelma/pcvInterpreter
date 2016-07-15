@@ -1,16 +1,12 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 
-#include <cstring>
-#include <map>
-#include <iostream>
+#include "fwd/ShadowThread.h"
 
-// to retrieve the custom typedefs
 #include "Types.h"
 
-class ShadowThread;
-class ShadowLock;
-class ShadowVar;
+#include <string>
+#include <stdlib.h>
 
 enum class Events: unsigned char {
     NEWTHREAD = 0x1,  // 00000001
