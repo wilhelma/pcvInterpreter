@@ -48,13 +48,13 @@ class CallSiteEndProfile {
 	*    @var work
 	*    @brief Work of non-recursive executions of callsite. 
 	*/
-	double work;
+	uint64_t work;
 
 	/**
 	*    @var span
 	*    @brief Span of non-recursive executions of callsite.
 	*/
-	double span;
+	uint64_t span;
 
 	/**
 	*    @var parallelism
@@ -66,25 +66,25 @@ class CallSiteEndProfile {
 	*    @var count
 	*    @brief Number of non-recurisve invocations of callsite. 
 	*/
-	double count;
+	int count;
 
 	/**
 	*    @var top_work
 	*    @brief Work of top callsite invocations.
 	*/
-	double top_work;
+	uint64_t top_work;
 
 	/**
 	*    @var top_lock_span
 	*    @brief Lock span of top callsite invocations.
 	*/
-	double top_lock_span;
+	uint64_t top_lock_span;
 
 	/**
 	*    @var top_span
 	*    @brief Span of top callsite invocations.
 	*/
-	double top_span;
+	uint64_t top_span;
 
 	/**
 	*    @var top_parallelism
@@ -96,26 +96,26 @@ class CallSiteEndProfile {
 	*    @var top_count
 	*    @brief Number of top invocations of callsite.
 	*/
-	double top_count;
+	int top_count;
 
 
 	/**
 	*    @var local_work
 	*    @brief Local work of callsite (excluding work of functions callsite invokes).
 	*/
-	double local_work;
+	uint64_t local_work;
 
 	/**
 	*    @var local_lock_span
 	*    @brief Local lock span of callsite (excluding lock span of functions callsite invokes).
 	*/
-	double local_lock_span;
+	uint64_t local_lock_span;
 
 	/**
 	*    @var local_span
 	*    @brief Local span of callsite (excluding span of functions callsite invokes).
 	*/
-	double local_span;
+	uint64_t local_span;
 
 	/**
 	*    @var local_parallelism
@@ -127,25 +127,25 @@ class CallSiteEndProfile {
 	*    @var local_count
 	*    @brief Local count of callsite invocations (excluding callsite invocations from functions callsite invokes).
 	*/
-	double local_count;
+	int local_count;
 
 	/**
 	*    @var work_on_span
 	*    @brief Work of non-recursive executions of callsite on the critical path of the program. 
 	*/
-	double work_on_span;
+	uint64_t work_on_span;
 
 	/**
 	*    @var span_on_span
 	*    @brief Span of non-recursive executions of callsite on the critical path of the program. 
 	*/
-	double span_on_span;
+	uint64_t span_on_span;
 
 	/**
 	*    @var lock_span_on_span
 	*    @brief Lock span of non-recursive executions of callsite on the critical path of the program. 
 	*/
-	double lock_span_on_span;
+	uint64_t lock_span_on_span;
 
 	/**
 	*    @var parallelism_on_span
@@ -157,25 +157,25 @@ class CallSiteEndProfile {
 	*    @var count_on_span
 	*    @brief Invocation count of non-recursive executions of callsite on the critical path of the program. 
 	*/
-	double count_on_span;
+	int count_on_span;
 
 	/**
 	*    @var top_work_on_span
 	*    @brief Top work of callsite on the critical path of the program. 
 	*/
-	double top_work_on_span;
+	uint64_t top_work_on_span;
 
 	/**
 	*    @var top_lock_span_on_span
 	*    @brief Top lock span of callsite on the critical path of the program. 
 	*/
-	double top_lock_span_on_span;
+	uint64_t top_lock_span_on_span;
 
 	/**
 	*    @var top_span_on_span
 	*    @brief Top span of callsite on the critical path of the program. 
 	*/
-	double top_span_on_span;
+	uint64_t top_span_on_span;
 
 	/**
 	*    @var top_span_on_span
@@ -187,28 +187,28 @@ class CallSiteEndProfile {
 	*    @var top_count_on_span
 	*    @brief Top invocation counts of callsite on the critical path of the program. 
 	*/
-	double top_count_on_span;
+	int top_count_on_span;
 
 	/**
 	*    @var local_work_on_span
 	*    @brief Local work of callsite (excluding work of functions callsite invokes)
 				on the critical path of the program.
 	*/
-	double local_work_on_span;
+	uint64_t local_work_on_span;
 
 	/**
 	*    @var local_lock_span_on_span
 	*    @brief Local lock span of callsite (excluding lock span of functions callsite invokes)
 				on the critical path of the program.
 	*/
-	double local_lock_span_on_span;
+	uint64_t local_lock_span_on_span;
 
 	/**
 	*    @var local_span_on_span
 	*    @brief Local span of callsite (excluding span of functions callsite invokes)
 				on the critical path of the program.
 	*/
-	double local_span_on_span;
+	uint64_t local_span_on_span;
 
 	/**
 	*    @var local_parallelism_on_span
@@ -222,7 +222,7 @@ class CallSiteEndProfile {
 	*    @brief Local invocation count of callsite (excluding invocation count of functions callsite invokes)
 				on the critical path of the program.
 	*/
-	double local_count_on_span;
+	int local_count_on_span;
 
 	CallSiteEndProfile();
 	explicit CallSiteEndProfile(std::shared_ptr<call_site_profile_t> collected_profile);
