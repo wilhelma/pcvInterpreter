@@ -217,6 +217,12 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
+	/**
+	*    @var code_is_in_main
+	*    @brief True if the code is the main thread has already been created.
+	*/
+	bool tool_in_main;
+
  private:
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);

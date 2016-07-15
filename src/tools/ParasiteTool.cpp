@@ -138,14 +138,18 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
   const TRD_ID newThreadID = _info->childThread->threadId;
 
   // get information about the thread's head function
-  TIME create_time = _info->startTime;
-  printf("create time is %llu \n", (uint64_t) create_time);
-  last_thread_start_time = create_time;
+  TIME new_thread_time = _info->startTime;
+  printf("new_thread time is %llu \n", (uint64_t) new_thread_time);
+  last_thread_start_time = new_thread_time;
 
   std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
-  assert(create_time >= last_event_time);
-  uint64_t local_work = create_time - last_event_time;
-  last_event_time = create_time;
+  assert(new_thread_time >= last_event_time);
+  uint64_t local_work = 0;
+  if (tool_in_main)
+    local_work = new_thread_time - last_event_time;
+  if (!tool_in_main)
+    tool_in_main = true;
+  last_event_time = new_thread_time;
   printf("last event time is now %llu \n", (uint64_t) last_event_time);
   printf("using local work of %llu in new thread event \n", local_work);
   bottom_thread_frame->local_continuation += local_work;
