@@ -118,8 +118,11 @@ private:
                     const call_t& call);
 
 	int processInstruction(const instruction_t& instruction);
+  int processStart();
+  int processEnd();
   int processCall(const instruction_t& instruction);
-	int processAccessGeneric(ACC_ID accessId,
+  int processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
+  int processAccessGeneric(ACC_ID accessId,
 							 const access_t& access,
 							 const instruction_t& instruction,
 							 const segment_t& segment,
@@ -151,10 +154,7 @@ private:
 					const segment_t& segment,
 					const call_t& call,
 					const thread_t& thread);
-  int processFork(const instruction_t& instruction,
-                  const segment_t& segment,
-                  const call_t& call,
-                  const thread_t& thread);
+  int processFork(const thread_t& thread);
 
   size_t getHash(unsigned funId, unsigned lineNo) const;
 

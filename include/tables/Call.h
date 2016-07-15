@@ -15,7 +15,7 @@
 #include "Types.h"
 
 typedef struct call_t {
-    const static CAL_ID MAIN = 1;
+    enum { MAIN = 1 };
 
     CAL_ID sql_id;
     TRD_ID thread_id;
