@@ -20,15 +20,15 @@
 #include "ParasiteTool.h"
 
 ParasiteTool::ParasiteTool():
-                             last_function_call_time(0.0), 
-                             last_function_return_time(0.0),
-                             last_function_runtime(0.0), 
-                             last_thread_end_time(0.0), 
-                             last_thread_runtime(0.0),
-                             last_thread_start_time(0.0),
-                             lock_span_end_time(0.0),
-                             lock_span_start_time(0.0),
-                             last_event_time(0.0) {
+                             last_function_call_time(0), 
+                             last_function_return_time(0),
+                             last_function_runtime(0), 
+                             last_thread_end_time(0), 
+                             last_thread_runtime(0),
+                             last_thread_start_time(0),
+                             lock_span_end_time(0),
+                             lock_span_start_time(0),
+                             last_event_time(0) {
 
   stacks = std::unique_ptr<ParasiteTracker>(new ParasiteTracker());
 
@@ -139,15 +139,15 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
   // get information about the thread's head function
   TIME create_time = _info->startTime;
+  printf("create time is %llu \n", (uint64_t) create_time);
   last_thread_start_time = create_time;
 
   std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
-  assert(local_work >= 0);
+  assert(create_time >= last_event_time);
   uint64_t local_work = create_time - last_event_time;
   last_event_time = create_time;
   printf("last event time is now %llu \n", (uint64_t) last_event_time);
   printf("using local work of %llu in new thread event \n", local_work);
-  assert(local_work >= 0.0);
   bottom_thread_frame->local_continuation += local_work;
 
   std::shared_ptr<thread_frame_t> new_thread_frame = 
@@ -172,8 +172,8 @@ void ParasiteTool::syncOperations() {
   if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
-    assert(bottom_thread_frame->lock_span == 0.0);
-    assert(bottom_thread_frame->longest_child_lock_span == 0.0);
+    assert(bottom_thread_frame->lock_span == 0);
+    assert(bottom_thread_frame->longest_child_lock_span == 0);
     bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
     bottom_thread_frame->prefix_span -= bottom_thread_frame->
                                         longest_child_lock_span;
@@ -208,12 +208,11 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   printf("starting return Event \n");
   const ReturnInfo* _info(e->getReturnInfo());
   TIME returnTime = _info->endTime;
+  assert(returnTime >= last_event_time);
   uint64_t local_work = static_cast<TIME> (returnTime - last_event_time);
   last_event_time = returnTime;
   printf("last event time is now %llu \n", (uint64_t) last_event_time);
-  assert(local_work >= 0.0);
   last_function_return_time = returnTime;
-  // uint64_t local_work = last_function_return_time - last_function_call_time;
   
   printf("performing return operations for local work %llu \n", local_work);
 
@@ -361,15 +360,15 @@ void ParasiteTool::Acquire(const AcquireEvent* e) {
 
   // TIME acquireTime = e->acquireTime;
 	// acquiredLock->last_acquire_time = e->acquireTime;
-  TIME acquire_time = static_cast<TIME> (0.0);
+  TIME acquire_time = static_cast<TIME> (0);
 
   if ((acquire_time - last_thread_runtime) < lock_span_start_time)
     lock_span_start_time = acquire_time;
   else 
     lock_span_start_time += last_thread_runtime;
 
-  // acquiredLock->last_acquire_time = static_cast<TIME> 0.0;
-  lock_span_start_time = static_cast<TIME> (0.0);
+  // acquiredLock->last_acquire_time = static_cast<TIME> 0;
+  lock_span_start_time = static_cast<TIME> (0);
 
   unsigned int lockId = acquiredLock->lockId;
 
@@ -387,9 +386,9 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
   const ReleaseInfo* _info(e->getReleaseInfo());
 	std::shared_ptr<ShadowLock> releasedLock(_info->lock);
   // release_time = e->releaseTime;
-  TIME release_time = static_cast<TIME> (0.0);
+  TIME release_time = static_cast<TIME> (0);
 
-  uint64_t lock_span = 0.0;
+  uint64_t lock_span = 0;
   // uint64_t lock_span = release_time - releasedLock->last_acquire_time;
 
   // unsigned int lockId = releasedLock->lockId;
