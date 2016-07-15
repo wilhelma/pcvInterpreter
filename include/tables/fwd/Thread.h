@@ -12,6 +12,5 @@
 #ifndef  FWD_ACCESS_H_
 #define  FWD_ACCESS_H_
 
-struct access_t;
 
 #endif

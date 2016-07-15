@@ -127,14 +127,19 @@ int DBInterpreter::process() {
         return IN_ABORT;
     }
 
+    // handle start of main routine
+    processStart();
+
     // process database entries
     for (const auto& instruction : instructionTable)
         processInstruction(instruction.second);
 
+    // handle end of main routine
+    processEnd();
+
     closeDB(&db);
     return 0;
 }
-
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	auto search = segmentTable.find(ins.segment_id);
@@ -233,6 +238,52 @@ int DBInterpreter::processAccess(const instruction_t& instruction,
   return IN_OK;
 }
 
+int DBInterpreter::processStart() {
+  int ret = IN_NO_ENTRY;
+
+  auto callIt = callTable.find(call_t::MAIN);
+  if (callIt != callTable.end()) {
+    const call_t& call = callIt->second;
+    auto threadIt = threadTable.find(call.thread_id);
+    if (threadIt != threadTable.end()) {
+      const thread_t& thread = threadIt->second;
+      processFork(thread);
+      processCall(call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));
+      ret = IN_OK;
+    }
+  }
+
+  return ret;
+}
+
+int DBInterpreter::processEnd() {
+  int ret = IN_NO_ENTRY;
+
+  auto callIt = callTable.find(call_t::MAIN);
+  if (callIt != callTable.end()) {
+    const call_t& call = callIt->second;
+    auto threadIt = threadTable.find(call.thread_id);
+    if (threadIt != threadTable.end()) {
+      const thread_t& thread = threadIt->second;
+
+      // publish a return call event for main
+      ShadowThread* sThread = threadMgr_->getThread(call.thread_id);
+      ReturnInfo info(call.sql_id, call.end_time);
+      ReturnEvent event(sThread, &info);
+      _eventService->publish(&event);
+
+      // publish a thread end event for the main thread
+      ThreadEndInfo  end_info(call.end_time, thread.id);
+      ThreadEndEvent end_event(sThread, &end_info);
+      _eventService->publish(&end_event);
+
+      ret = IN_OK;
+    }
+  }
+
+  return ret;
+}
+
 int DBInterpreter::processInstruction(const instruction_t& ins) {
   int ret = IN_NO_ENTRY;
 
@@ -264,7 +315,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
         for (const auto& it : threadTable) {
           const thread_t& thread = it.second;
           if (ins.instruction_id == thread.create_instruction_id) {
-            ret = processFork(ins, segment, call, thread);
+            ret = processFork(thread);
           }
         }
         break;
@@ -291,6 +342,47 @@ size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
     return h1 ^ (h2 << 1);
 }
 
+int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
+  int ret = IN_NO_ENTRY;
+
+  auto functionIt = functionTable.find(call.function_id);
+  if (functionIt != functionTable.end()) {
+    const function_t& function = functionIt->second;
+
+    switch(function.type) {
+    case FunctionType::FUNCTION:
+    case FunctionType::METHOD:
+    {
+      // serch for the file where the call has happened from
+      auto fileIt = fileTable.find(function.file_id);
+      if (fileIt != fileTable.end()) {
+        const file_t& file = fileIt->second;
+
+        CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
+                       static_cast<TIME>(call.start_time),
+                       static_cast<TIME>(call.end_time - call.start_time),
+                       function.signature,
+                       segId,
+                       function.type,
+                       file.file_name,
+                       file.file_path);
+
+        ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+        CallEvent event(thread, &info);
+        _eventService->publish(&event);
+        callStack_.push(call.sql_id);
+        ret = IN_OK;
+        break;
+      }
+    }
+    default:
+      break;
+    }
+  }
+
+  return ret;
+}
+
 int DBInterpreter::processCall(const instruction_t& ins) {
 
   int ret = IN_NO_ENTRY;
@@ -298,43 +390,7 @@ int DBInterpreter::processCall(const instruction_t& ins) {
   auto callIt = callTable.find(getCallID(ins));
   if (callIt != callTable.end()) {
     const call_t& call = callIt->second;
-
-
-    auto functionIt = functionTable.find(call.function_id);
-    if (functionIt != functionTable.end()) {
-      const function_t& function = functionIt->second;
-
-      switch(function.type) {
-      case FunctionType::FUNCTION:
-      case FunctionType::METHOD:
-      {
-        // serch for the file where the call has happened from
-        auto fileIt = fileTable.find(function.file_id);
-        if (fileIt != fileTable.end()) {
-          const file_t& file = fileIt->second;
-
-          CallInfo info( static_cast<CALLSITE>(getHash(call.function_id,
-                                                       ins.line_number)),
-                         static_cast<TIME>(call.start_time),
-                         static_cast<TIME>(call.end_time - call.start_time),
-                         function.signature,
-                         ins.segment_id,
-                         function.type,
-                         file.file_name,
-                         file.file_path);
-
-          ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-          CallEvent event(thread, &info);
-          _eventService->publish(&event);
-          callStack_.push(call.sql_id);
-          ret = IN_OK;
-          break;
-        }
-      }
-      default:
-          break;
-      }
-    }
+    ret = processCall(call, ins.line_number, ins.segment_id);
   }
 
   return ret;
@@ -425,11 +481,7 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
     return 0;
 }
 
-int DBInterpreter::processFork(const instruction_t& instruction,
-                               const segment_t& segment,
-                               const call_t& call,
-                               const thread_t& thread) {
-
+int DBInterpreter::processFork(const thread_t& thread) {
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.start_time, thread.end_time);

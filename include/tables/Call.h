@@ -14,16 +14,15 @@
 
 #include "Types.h"
 
-
 struct call_t {
-  
-    static const CAL_ID MAIN;// = static_cast<CAL_ID>(1);
     CAL_ID sql_id;
     TRD_ID thread_id;
     FUN_ID function_id;
     INS_ID instruction_id;
     TIME start_time;
     TIME end_time;
+
+    static const CAL_ID MAIN;
 
     explicit
     call_t(CAL_ID sqlID,
@@ -34,9 +33,7 @@ struct call_t {
            TIME endTime) noexcept
         : sql_id(sqlID), thread_id(threadID),
           function_id(functionID), instruction_id(instructionID),
-          start_time(startTime), end_time(endTime)
-    {
-    }
+          start_time(startTime), end_time(endTime) { }
 };
 
 #endif
