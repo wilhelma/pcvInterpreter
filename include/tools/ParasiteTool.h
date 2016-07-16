@@ -73,9 +73,14 @@ struct parasite_profile_t {
 				which is an upper bound of the program's speedup on any number
 				of processors.
 	*/
-	uint64_t parallelism;
+	long long parallelism;
 
-	parasite_profile_t() {}
+	parasite_profile_t() {
+		work = 0;
+		span = 0;
+		lock_span = 0;
+		parallelism = 0;
+	}
 };
 
 
@@ -222,6 +227,13 @@ class ParasiteTool : public Tool {
 	*    @brief True if the code is the main thread has already been created.
 	*/
 	bool tool_in_main;
+
+	/**
+	*    @var calling_head_function
+	*    @brief True if the simulator has just started a thread, and is about to call 
+	*           the thread's heaad function. 
+	*/
+	bool calling_head_function;
 
  private:
 	// prevent generated functions --------------------------------------------

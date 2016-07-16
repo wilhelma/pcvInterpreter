@@ -51,8 +51,8 @@ link_directories   (${SQLITE_LIBRARY_DIR})
 
 # ------------------------------------ CXX and C Flags --------------------------------------------- #
 
-set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -pedantic -Wall -Wno-unknown-pragmas -std=c++11 -march=native")
-#set(CMAKE_C_FLAGS   "-fPIC -DBIGARRAY_MULTIPLIER=1 -Wall -Wno-unknown-pragmas -march=native" )
+set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -pedantic -g -Wall -Wno-unknown-pragmas -std=c++11 -march=native")
+#set(CMAKE_C_FLAGS   "-fPIC -DBIGARRAY_MULTIPLIER=1 -g -Wall -Wno-unknown-pragmas -march=native" )
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 
 # Add subdirectories

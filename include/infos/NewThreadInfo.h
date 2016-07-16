@@ -19,14 +19,16 @@
 struct NewThreadInfo {
 	ShadowThread* childThread;
 	ShadowThread* parentThread;
+	NUM_CYCLES numCycles;
 	TIME startTime;
 	TIME endTime;
 
 	explicit NewThreadInfo(ShadowThread* childThread,
-			ShadowThread* parentThread,
+			ShadowThread* parentThread, NUM_CYCLES numCycles,
 			const TIME_STRING& startTimeString,
 			const TIME_STRING& endTimeString) noexcept
 		: childThread(childThread), parentThread(parentThread),
+		numCycles(numCycles),
 		startTime(timeStringToTime(startTimeString)),
 		endTime(timeStringToTime(endTimeString)) {}
 };

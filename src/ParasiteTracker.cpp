@@ -48,7 +48,7 @@ void ParasiteTracker::thread_pop(){
 }
 
 int ParasiteTracker::bottomThreadIndex() {
-	return (thread_stack->stack.size() - 1);
+	return thread_stack->bottom_index;
 }
 
 int ParasiteTracker::bottomFunctionIndex() {

@@ -41,32 +41,32 @@ struct thread_frame_t {
 	*    @var local_continuation
 	*    @brief Local continuation span of this thread's head function.
 	*/
-	double local_continuation;
+	uint64_t local_continuation;
 
 	/**
 	*    @var local_span
 	*    @brief Local span of this thread's head function.
 	*/
-	double local_span;
+	uint64_t local_span;
 
 	/**
 	*    @var local_span
 	*    @brief Local lock span of this thread's head function.
 	*/
-	double local_lock_span;
+	uint64_t local_lock_span;
 
 	/**
 	*    @var prefix_span
 	*    @brief Prefix span of this thread up to its bottom child function.
 	*/
-	double prefix_span;
+	uint64_t prefix_span;
 
 
 	/**
 	*    @var lock_span
 	*    @brief Lock span of this thread up to its bottom child function.
 	*/
-	double lock_span;
+	uint64_t lock_span;
 
 
 	/**
@@ -74,14 +74,14 @@ struct thread_frame_t {
 	*    @brief Span of the longest spawned child of this thread's head function
 				observed so far
 	*/
-	double longest_child_span;
+	uint64_t longest_child_span;
 
 	/**
 	*    @var longest_child_lock_span
 	*    @brief Lock span of the longest spawned child of this thread's head
 			    function observed so far.
 	*/
-	double longest_child_lock_span;
+	uint64_t longest_child_lock_span;
 
 
 	/**
@@ -103,6 +103,8 @@ struct thread_frame_t {
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
+					 local_span(0),
+					 prefix_span(0), 
 					 prefix_table(CallSiteHashtable()), 
 					 longest_child_table(CallSiteHashtable()),
 					 continuation_table(CallSiteHashtable()) {}

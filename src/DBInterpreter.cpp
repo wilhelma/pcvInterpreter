@@ -273,9 +273,9 @@ int DBInterpreter::processEnd() {
       _eventService->publish(&event);
 
       // publish a thread end event for the main thread
-      ThreadEndInfo  end_info(call.end_time, thread.id);
-      ThreadEndEvent end_event(sThread, &end_info);
-      _eventService->publish(&end_event);
+      // ThreadEndInfo  end_info(call.end_time, thread.id);
+      // ThreadEndEvent end_event(sThread, &end_info);
+      // _eventService->publish(&end_event);
 
       ret = IN_OK;
     }
@@ -484,7 +484,7 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 int DBInterpreter::processFork(const thread_t& thread) {
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.start_time, thread.end_time);
+    NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time, thread.end_time);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
     return 0;
