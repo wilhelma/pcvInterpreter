@@ -53,106 +53,106 @@
  *****************************************************************************/
 class DBInterpreter : public Interpreter {
 public:
-	DBInterpreter(const char* DBPath,
-			      const char* logFile, 
-				  EventService *service,
-				  LockMgr *lockMgr,
-				  ThreadMgr *threadMgr)
-		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
-		  _logFile(logFile), _eventService(service)
+  DBInterpreter(const char* DBPath,
+                const char* logFile,
+                EventService *service,
+                LockMgr *lockMgr,
+                ThreadMgr *threadMgr)
+    : Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
+      _logFile(logFile), _eventService(service)
   {
     callStack_.push(call_t::MAIN);
-  };
+  }
 
-	virtual ~DBInterpreter() override final {};
+  virtual ~DBInterpreter() override final {}
 
-	virtual int process() override final;
-	virtual EventService* getEventService() override final { return _eventService; };
+  virtual int process() override final;
+  virtual EventService* getEventService() override final { return _eventService; }
 
 private:
 
-	// types-------------------------------------------------------------------
-	typedef int (DBInterpreter::*fillFunc_t)(sqlite3_stmt*);
-	typedef int (DBInterpreter::*processAccess_t)(ACC_ID accessID,
-												  const access_t& access,
-												  const instruction_t& instruction,
-												  const segment_t& segment,
-												  const call_t& call,
-												  const reference_t& reference);
+  // types-------------------------------------------------------------------
+  typedef int (DBInterpreter::*fillFunc_t)(sqlite3_stmt*);
+  typedef int (DBInterpreter::*processAccess_t)(ACC_ID accessID,
+                                                const access_t& access,
+                                                const instruction_t& instruction,
+                                                const segment_t& segment,
+                                                const call_t& call,
+                                                const reference_t& reference);
 
-	typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
+  typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
-	// members-----------------------------------------------------------------
-	AccessTable        accessTable;
-	CallTable          callTable;
-	FileTable          fileTable;
-	FunctionTable      functionTable;
-	InstructionTable   instructionTable;
-	LoopTable          loopTable;
-	LoopExecutionTable loopExecutionTable;
-	LoopIterationTable loopIterationTable;
-	ReferenceTable     referenceTable;
-	SegmentTable       segmentTable; 
-	ThreadTable        threadTable;
+  // members-----------------------------------------------------------------
+  AccessTable        accessTable;
+  CallTable          callTable;
+  FileTable          fileTable;
+  FunctionTable      functionTable;
+  InstructionTable   instructionTable;
+  LoopTable          loopTable;
+  LoopExecutionTable loopExecutionTable;
+  LoopIterationTable loopIterationTable;
+  ReferenceTable     referenceTable;
+  SegmentTable       segmentTable;
+  ThreadTable        threadTable;
 
-	CallStack callStack_;
+  CallStack callStack_;
   
-	const char* _dbPath;
-	const char* _logFile;
-	EventService *_eventService;
-	shadowVarMap_t _shadowVarMap;
+  const char* _dbPath;
+  const char* _logFile;
+  EventService *_eventService;
+  shadowVarMap_t _shadowVarMap;
 
-	// private methods---------------------------------------------------------
-	static InstructionType transformInstrType(const instruction_t& ins);
-	static ReferenceType getVarType(ReferenceType memType);
+  // private methods---------------------------------------------------------
+  static InstructionType transformInstrType(const instruction_t& ins);
+  static ReferenceType getVarType(ReferenceType memType);
 
-	int loadDB(const char* path, sqlite3 **db) const;
-	int importDB(sqlite3 **db);
-	int closeDB(sqlite3 **db) const;
+  int loadDB(const char* path, sqlite3 **db) const;
+  int importDB(sqlite3 **db);
+  int closeDB(sqlite3 **db) const;
 
-	template<typename IdT, typename T>
-	int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
+  template<typename IdT, typename T>
+  int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
 
   int processReturn(const instruction_t& ins,
                     const call_t& call);
 
-	int processInstruction(const instruction_t& instruction);
+  int processInstruction(const instruction_t& instruction);
   int processStart();
   int processEnd();
   int processCall(const instruction_t& instruction);
   int processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
   int processAccessGeneric(ACC_ID accessId,
-							 const access_t& access,
-							 const instruction_t& instruction,
-							 const segment_t& segment,
-							 const call_t& call,
-							 processAccess_t func);
+                           const access_t& access,
+                           const instruction_t& instruction,
+                           const segment_t& segment,
+                           const call_t& call,
+                           processAccess_t func);
   int processAccess(const instruction_t& instruction,
                     const segment_t& segment,
                     const call_t& call,
                     processAccess_t accessFunc);
   int processMemAccess(ACC_ID accessId,
-						 const access_t& access,
-						 const instruction_t& instruction,
-						 const segment_t& segment,
-						 const call_t& call,
-						 const reference_t& reference);
-	int processAcqAccess(ACC_ID accessID,
-						 const access_t& access,
-						 const instruction_t& instruction,
-						 const segment_t& segment,
-						 const call_t& call,
-						 const reference_t& reference);
-	int processRelAccess(ACC_ID accessID,
-						 const access_t& access,
-						 const instruction_t& instruction,
-						 const segment_t& segment,
-						 const call_t& call,
-						 const reference_t& reference);
-	int processJoin(const instruction_t& instruction,
-					const segment_t& segment,
-					const call_t& call,
-					const thread_t& thread);
+                       const access_t& access,
+                       const instruction_t& instruction,
+                       const segment_t& segment,
+                       const call_t& call,
+                       const reference_t& reference);
+  int processAcqAccess(ACC_ID accessID,
+                       const access_t& access,
+                       const instruction_t& instruction,
+                       const segment_t& segment,
+                       const call_t& call,
+                       const reference_t& reference);
+  int processRelAccess(ACC_ID accessID,
+                       const access_t& access,
+                       const instruction_t& instruction,
+                       const segment_t& segment,
+                       const call_t& call,
+                       const reference_t& reference);
+  int processJoin(const instruction_t& instruction,
+                  const segment_t& segment,
+                  const call_t& call,
+                  const thread_t& thread);
   int processFork(const thread_t& thread);
 
   size_t getHash(unsigned funId, unsigned lineNo) const;
@@ -166,9 +166,9 @@ private:
   /// or `IN_NO_ENTRY` otherwise.
   const CAL_ID getCallID(const instruction_t& ins) const;
 
-	// prevent generated functions
-	DBInterpreter(const DBInterpreter&);
-	DBInterpreter& operator=(const DBInterpreter&);
+  // prevent generated functions
+  DBInterpreter(const DBInterpreter&);
+  DBInterpreter& operator=(const DBInterpreter&);
 };
 
 

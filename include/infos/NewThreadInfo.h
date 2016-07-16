@@ -18,17 +18,16 @@
 
 struct NewThreadInfo {
 	ShadowThread* childThread;
-	ShadowThread* parentThread;
+  ShadowThread* parentThread;
 	TIME startTime;
-	TIME endTime;
+  TIME runTime;
 
-	explicit NewThreadInfo(ShadowThread* childThread,
-			ShadowThread* parentThread,
-			const TIME_STRING& startTimeString,
-			const TIME_STRING& endTimeString) noexcept
-		: childThread(childThread), parentThread(parentThread),
-		startTime(timeStringToTime(startTimeString)),
-		endTime(timeStringToTime(endTimeString)) {}
+  explicit NewThreadInfo(ShadowThread* childThread,
+                         ShadowThread* parentThread,
+                         const TIME& startTime,
+                         const TIME& runTime) noexcept
+    : childThread(childThread), parentThread(parentThread),
+      startTime(startTime), runTime(runTime) {}
 };
 
 #endif

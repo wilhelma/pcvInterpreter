@@ -49,8 +49,9 @@ void DebugTool::Call(const CallEvent* event) {
 	const CallInfo& ci = *(event->getCallInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "CallEvent:\n"
-		<< " > Call Site:  " << ci.siteId << "\n"
-		<< " > Time:       " << ci.runtime << "\n"
+        << " > Call Site:  " << ci.siteId << "\n"
+        << " > Start Time  " << ci.startTime << "\n"
+        << " > Runtime:    " << ci.runtime << "\n"
 		<< " > Fun. sig.:  " << ci.fnSignature << "\n"
 		<< " > Fun. type:  " << static_cast<unsigned>(ci.fnType) << "\n"
 		<< " > File name:  " << ci.fileName << "\n"
@@ -69,7 +70,8 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "NewThreadEvent:\n"
 		// << " > Num. cycles: " << nti.runtime << "\n"
-		<< " > Start time:  " << nti.startTime << "\n";
+        << " > Start time:  " << nti.startTime << "\n"
+        << " > Runtime      " << nti.runTime << "\n";
 }
 
 void DebugTool::Release(const ReleaseEvent* event) {
