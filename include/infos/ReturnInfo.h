@@ -15,12 +15,12 @@
 #include "Types.h"
 
 typedef struct ReturnInfo {
-	CAL_ID call;
-	TIME   endTime;
+  CAL_ID call;
+  TIME   endTime;
 
-	explicit ReturnInfo(const CAL_ID& call, const TIME& endTime) noexcept
-		: call(call), endTime(endTime)
-	{}
+  explicit ReturnInfo(const CAL_ID& call, const TIME& endTime) noexcept
+    : call(call), endTime(endTime)
+  {}
 } ReturnInfo;
 
 #endif

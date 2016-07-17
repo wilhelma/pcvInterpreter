@@ -189,15 +189,21 @@ int DBInterpreter::processReturn(const instruction_t& ins,
       // publish a return call event in case of mismatching call id's
       const call_t& topCall = callIt->second;
       ReturnInfo info(topCallId, topCall.end_time);
-      ShadowThread* thread = threadMgr_->getThread(topCall.thread_id);
-      ReturnEvent event(thread, &info);
+      ShadowThread* sThread = threadMgr_->getThread(topCall.thread_id);
+      ReturnEvent event(sThread, &info);
       _eventService->publish(&event);
 
       // publish a thread end event in case of mismatching thread id's
       if (call.thread_id != topCall.thread_id) {
-        ThreadEndInfo  end_info(topCall.end_time, thread->threadId);
-        ThreadEndEvent end_event(thread, &end_info);
-        _eventService->publish(&end_event);
+          auto threadIt = threadTable.find(call.thread_id);
+          if (threadIt != threadTable.end()) {
+              const thread_t& thread = threadIt->second;
+              ThreadEndInfo  end_info(static_cast<TIME>(
+                                          call.start_time + thread.num_cycles),
+                                      sThread->threadId);
+              ThreadEndEvent end_event(sThread, &end_info);
+              _eventService->publish(&end_event);
+          }
       }
       callStack_.pop();
     } else {
@@ -273,10 +279,11 @@ int DBInterpreter::processEnd() {
       _eventService->publish(&event);
 
       // publish a thread end event for the main thread
-      // ThreadEndInfo  end_info(call.end_time, thread.id);
-      // ThreadEndEvent end_event(sThread, &end_info);
-      // _eventService->publish(&end_event);
-
+      ThreadEndInfo  end_info(static_cast<TIME>(
+                                  call.start_time + thread.num_cycles),
+                              thread.id);
+      ThreadEndEvent end_event(sThread, &end_info);
+      _eventService->publish(&end_event);
       ret = IN_OK;
     }
   }
@@ -359,7 +366,7 @@ int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
         const file_t& file = fileIt->second;
 
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
-                       static_cast<TIME>(call.start_time),
+                       call.start_time,
                        static_cast<TIME>(call.end_time - call.start_time),
                        function.signature,
                        segId,
@@ -482,11 +489,15 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 }
 
 int DBInterpreter::processFork(const thread_t& thread) {
-    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time, thread.end_time);
-    NewThreadEvent event( pT, &info );
-    _eventService->publish( &event );
+    auto callIt = callTable.find(thread.call_id);
+    if (callIt != callTable.end()) {
+        const call_t& call = callIt->second;
+        ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
+        ShadowThread *cT = threadMgr_->getThread(thread.id);
+        NewThreadInfo info(cT, pT, call.start_time, thread.num_cycles);
+        NewThreadEvent event( pT, &info );
+        _eventService->publish( &event );
+    }
     return 0;
 }
 

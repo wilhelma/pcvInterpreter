@@ -15,11 +15,11 @@
 #include "Types.h"
 
 struct ThreadEndInfo {
-	TIME endTime;
-	TRD_ID id;
+  TIME endTime;
+  TRD_ID id;
 
-	explicit ThreadEndInfo(const TIME& endTime, const TRD_ID& id) noexcept
-		: endTime(endTime), id(id) {}
+  explicit ThreadEndInfo(const TIME& endTime, const TRD_ID& id) noexcept
+    : endTime(endTime), id(id) {}
 };
 
 #endif
