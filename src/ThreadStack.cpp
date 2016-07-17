@@ -19,13 +19,11 @@ ThreadStack::ThreadStack() {
 	bottom_index = -1;
 }
 
-ThreadStack::~ThreadStack() {
-
-}
+ThreadStack::~ThreadStack() {}
 
 void ThreadStack::pop() {
 	// the last thread frame must stay on the stack to get the end profile
-	if (stack.size() > 0)
+	if (stack.size() > 1)
 		stack.pop_back();
 	bottom_index -= 1;
 	printf("popping off of thread stack, index is now %d \n", bottom_index);

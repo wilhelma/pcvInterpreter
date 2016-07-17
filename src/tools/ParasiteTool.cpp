@@ -42,7 +42,7 @@ ParasiteTool::ParasiteTool():
   lock_hashtable = lck_hashtable;
 
   // PUSH MAIN THREAD AND MAIN FUNTION ONTO THE STACK 
-  // stacks->thread_push(0);
+  stacks->thread_push(0, (TRD_ID) 0);
   stacks->function_push("BASE", (CALLSITE) 0, true);
 
 }
@@ -126,30 +126,16 @@ ParasiteTool::~ParasiteTool() {
 
 void ParasiteTool::Call(const CallEvent* e) {
   const CallInfo* _info(e->getCallInfo());
-
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
   last_function_call_time = _info->callTime;
-  if (calling_head_function) {
-    last_thread_start_time = _info->callTime;
-    calling_head_function = false;
-  }
-  printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
-
-  std::shared_ptr<thread_frame_t> bottom_parent_frame = stacks->bottomParentThread();
-  TIME local_work = (TIME) 0;
-  assert(last_function_call_time > last_event_time);
-  if (tool_in_main)
-    local_work = (TIME) (last_function_call_time - last_event_time);
-  if (!tool_in_main)
-    tool_in_main = true;
+  assert(_info->callTime >= last_event_time);
   last_event_time = _info->callTime;
-  printf("last event time is now %llu \n", (unsigned long long) last_event_time);
-  printf("using local work of %llu in new thread event \n", (unsigned long long) local_work);
-  bottom_parent_frame->local_continuation += local_work;
-  printf("last event time is now %llu \n", (unsigned long long) last_event_time);
-  
+  if (calling_head_function) 
+    calling_head_function = false;
+
+  printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
   stacks->function_push(calledFunctionSignature, 
@@ -164,7 +150,19 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
   const TRD_ID newThreadID = _info->childThread->threadId;
   calling_head_function = true;
 
-  last_thread_runtime = static_cast<TIME>(_info->runTime);
+  std::shared_ptr<thread_frame_t> bottom_parent_frame = stacks->bottomThread();
+  TIME local_work = (TIME) 0;
+  printf("last event time is now %llu \n", (unsigned long long) _info->startTime);
+  assert(_info->startTime >= last_event_time);
+  if (tool_in_main)
+    local_work = (TIME) (_info->startTime - (last_event_time - last_thread_runtime));
+  if (!tool_in_main)
+    tool_in_main = true;
+  last_event_time = _info->startTime;
+  last_thread_start_time = _info->startTime;
+  printf("using local work of %llu in new thread event \n", (unsigned long long) local_work);
+  bottom_parent_frame->local_continuation += local_work;
+  last_thread_runtime = _info->runTime;
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex(),
                                                 newThreadID);
@@ -278,7 +276,10 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
   printf("starting thread end Event \n");
-  // const ThreadEndInfo* _info(e->getThreadEndInfo());
+  const ThreadEndInfo* _info(e->getThreadEndInfo());
+  last_thread_end_time = _info->endTime;
+  last_event_time = _info->endTime;
+  printf("last_event_time now %llu \n", (unsigned long long) last_event_time);
 
   // The sync happens at the thread end, which is correct, because
   // all child threads must end anyway at the end of the thread.
