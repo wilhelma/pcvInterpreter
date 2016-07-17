@@ -52,26 +52,26 @@ void ParasiteTool::getEndProfile() {
   std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
 
   // Calculate span for entire program 
-  parasite_profile->span =  bottom_function_frame->running_span +
+  parasite_profile->span =  (TIME) (bottom_function_frame->running_span +
                             bottom_thread_frame->prefix_span +
                             bottom_thread_frame->local_span +
-                            bottom_thread_frame->local_continuation;
+                            bottom_thread_frame->local_continuation);
 
-  printf("bottom function running span is %llu \n", bottom_function_frame->running_span);
-  printf("bottom thread prefix span is %llu \n", bottom_thread_frame->prefix_span);
-  printf("bottom thread local span is %llu \n", bottom_thread_frame->local_span);
-  printf("bottom thread local continuation is %llu \n", bottom_thread_frame->local_continuation);
+  printf("bottom function running span is %llu \n", (unsigned long long) bottom_function_frame->running_span);
+  printf("bottom thread prefix span is %llu \n", (unsigned long long) bottom_thread_frame->prefix_span);
+  printf("bottom thread local span is %llu \n", (unsigned long long) bottom_thread_frame->local_span);
+  printf("bottom thread local continuation is %llu \n", (unsigned long long) bottom_thread_frame->local_continuation);
 
   CallSiteHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
   bottom_prefix_table.add(&(bottom_thread_frame->continuation_table));
   CallSiteHashtable final_on_span_table(bottom_thread_frame->prefix_table);
 
   // Calculate work for entire program
-  parasite_profile->work = bottom_function_frame->running_work +
-                           bottom_function_frame->local_work;
+  parasite_profile->work = (TIME) (bottom_function_frame->running_work +
+                           bottom_function_frame->local_work);
 
-  printf("bottom function local work is %llu \n", bottom_function_frame->local_work);
-  printf("bottom function running work is %llu \n", bottom_function_frame->running_work);
+  printf("bottom function local work is %llu \n", (unsigned long long) bottom_function_frame->local_work);
+  printf("bottom function running work is %llu \n", (unsigned long long) bottom_function_frame->running_work);
 
   // Calculate parallelism for entire program                     
   parasite_profile->parallelism = static_cast<long long>(parasite_profile->work)
@@ -113,10 +113,10 @@ void ParasiteTool::getEndProfile() {
 void ParasiteTool::printProfile() {
   // first, calculate all the end profiles before outputting them 
   getEndProfile();
-  printf("PARALLELISM IS %llu \n", parasite_profile->parallelism);
-  printf("WORK IS %llu \n", parasite_profile->work);
-  printf("SPAN IS %llu \n", parasite_profile->span);
-  printf("LOCK SPAN IS %llu \n", parasite_profile->lock_span);
+  printf("PARALLELISM IS %llu \n", (unsigned long long) parasite_profile->parallelism);
+  printf("WORK IS %llu \n", (unsigned long long) parasite_profile->work);
+  printf("SPAN IS %llu \n", (unsigned long long) parasite_profile->span);
+  printf("LOCK SPAN IS %llu \n", (unsigned long long) parasite_profile->lock_span);
 }
 
 ParasiteTool::~ParasiteTool() {
@@ -141,14 +141,14 @@ void ParasiteTool::Call(const CallEvent* e) {
   TIME local_work = (TIME) 0;
   assert(last_function_call_time > last_event_time);
   if (tool_in_main)
-    local_work = last_function_call_time - last_event_time;
+    local_work = (TIME) (last_function_call_time - last_event_time);
   if (!tool_in_main)
     tool_in_main = true;
   last_event_time = _info->callTime;
-  printf("last event time is now %llu \n", (TIME) last_event_time);
-  printf("using local work of %llu in new thread event \n", local_work);
+  printf("last event time is now %llu \n", (unsigned long long) last_event_time);
+  printf("using local work of %llu in new thread event \n", (unsigned long long) local_work);
   bottom_parent_frame->local_continuation += local_work;
-  printf("last event time is now %llu \n", (TIME) last_event_time);
+  printf("last event time is now %llu \n", (unsigned long long) last_event_time);
   
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
@@ -164,10 +164,10 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
   const TRD_ID newThreadID = _info->childThread->threadId;
   calling_head_function = true;
 
-  last_thread_runtime = static_cast<TIME>(_info->numCycles);
+  last_thread_runtime = static_cast<TIME>(_info->runTime);
   std::shared_ptr<thread_frame_t> new_thread_frame = 
-                            stacks->thread_push(stacks->bottomFunctionIndex());
-  new_thread_frame->thread = newThreadID;
+                            stacks->thread_push(stacks->bottomFunctionIndex(),
+                                                newThreadID);
   printf("ending new thread Event \n");
 }
 
@@ -185,7 +185,7 @@ void ParasiteTool::syncOperations() {
   if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
 
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
-    printf("prefix span is being increased by %llu \n", bottom_thread_frame->longest_child_span);
+    printf("prefix span is being increased by %llu \n", (unsigned long long) bottom_thread_frame->longest_child_span);
 
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
     assert(bottom_thread_frame->lock_span == (TIME) 0);
@@ -199,7 +199,7 @@ void ParasiteTool::syncOperations() {
     // through spawned child.
   } else {
     bottom_thread_frame->prefix_span += bottom_function_frame->running_span;
-    printf("prefix span increased by %llu \n", bottom_function_frame->running_span);
+    printf("prefix span increased by %llu \n", (unsigned long long) bottom_function_frame->running_span);
     // Critical path goes through continuation, which is local. Add
     // local_continuation to local_span.
     bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
@@ -228,16 +228,16 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   assert(returnTime >= last_event_time);
   TIME local_work = static_cast<TIME> (returnTime - last_event_time);
   last_event_time = returnTime;
-  printf("last event time is now %llu \n", (TIME) last_event_time);
+  printf("last event time is now %llu \n", (unsigned long long) last_event_time);
   last_function_return_time = returnTime;
   
-  printf("performing return operations for local work %llu \n", local_work);
+  printf("performing return operations for local work %llu \n", (unsigned long long) local_work);
 
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
   returned_function_frame->local_work = local_work;
-  TIME running_work = returned_function_frame->running_work + local_work;
-  TIME running_span = returned_function_frame->running_span + local_work;
+  TIME running_work = (TIME) (returned_function_frame->running_work + local_work);
+  TIME running_span = (TIME) (returned_function_frame->running_span + local_work);
   // TIME running_lock_span = returned_function_frame->running_lock_span + 
   //                            returned_function_frame->local_lock_span;
   bool is_top_returning_function = returned_function_frame->is_top_call_site_function;

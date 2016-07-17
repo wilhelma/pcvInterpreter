@@ -34,7 +34,7 @@ struct CallInfo {
            FunctionType FnType,
            const FIL_PT& FileName,
            const FIL_PT& FilePath) noexcept
-    : siteId(SiteId), startTime(CallTime), runtime(Runtime), fnSignature(FnSignature),
+    : siteId(SiteId), callTime(CallTime), runtime(Runtime), fnSignature(FnSignature),
       segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
 };
 

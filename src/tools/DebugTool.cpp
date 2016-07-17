@@ -50,7 +50,7 @@ void DebugTool::Call(const CallEvent* event) {
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "CallEvent:\n"
         << " > Call Site:  " << ci.siteId << "\n"
-        << " > Start Time  " << ci.startTime << "\n"
+        << " > Start Time  " << ci.callTime << "\n"
         << " > Runtime:    " << ci.runtime << "\n"
 		<< " > Fun. sig.:  " << ci.fnSignature << "\n"
 		<< " > Fun. type:  " << static_cast<unsigned>(ci.fnType) << "\n"
