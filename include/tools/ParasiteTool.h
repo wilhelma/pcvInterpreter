@@ -50,14 +50,14 @@ struct parasite_profile_t {
 	*    @brief The work (the total runtime, scaled) of all instructions
 				executed in the program.
 	*/
-	uint64_t work;
+	TIME work;
 
 	/**
 	*    @var span
 	*    @brief The span (the total runtime, scaled, on the criical path) 
 				of all instructions executed in the program.
 	*/
-	uint64_t span;
+	TIME span;
 
 	/**
 	*    @var lock_span
@@ -65,7 +65,7 @@ struct parasite_profile_t {
 				path, spent while at least one lock is engaged) of all 
 				instructions executed in the program.
 	*/
-	uint64_t lock_span;
+	TIME lock_span;
 
 	/**
 	*    @var parallelism
@@ -75,12 +75,7 @@ struct parasite_profile_t {
 	*/
 	long long parallelism;
 
-	parasite_profile_t() {
-		work = 0;
-		span = 0;
-		lock_span = 0;
-		parallelism = 0;
-	}
+	parasite_profile_t(): work(0), span(0), lock_span(0), parallelism(0) {}
 };
 
 
@@ -111,7 +106,7 @@ class ParasiteTool : public Tool {
 	*    @brief Performs Parasite algorithm operations needed for function returns, 
 				in both threadEnd and returnOfCalled events. 
 	*/
-	void returnOperations(uint64_t local_work);
+	void returnOperations(TIME local_work);
 
 	/**
 	*    @fn syncOperations()

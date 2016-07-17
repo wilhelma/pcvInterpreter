@@ -46,33 +46,34 @@ struct function_frame_t {
 	*    @var local_work
 	*    @brief Local work of the function.
 	*/
-	uint64_t local_work;
+	TIME local_work;
 
 	/**
 	*    @var local_lock_span
 	*    @brief The local lock span of the function.
 	*/
-	uint64_t local_lock_span;
+	TIME local_lock_span;
 
 	/**
 	*    @var running_work
 	*    @brief The running work of the function's call site. 
 	*/
-	uint64_t running_work;
+	TIME running_work;
 
 	/**
 	*    @var running_work
 	*    @brief The running lock span of the function's call site. 
 	*/
-	uint64_t running_lock_span;
+	TIME running_lock_span;
 
 	/**
 	*    @var running_span
 	*    @brief The running span of the function's call site. 
 	*/
-	uint64_t running_span;
+	TIME running_span;
 
-	function_frame_t() : call_site(0)
+	function_frame_t() : call_site(0), local_work(0), local_lock_span(0),
+						 running_work(0), running_lock_span(0), running_span(0)
 	{}
 };
 

@@ -31,23 +31,20 @@ void ThreadStack::pop() {
 	printf("popping off of thread stack, index is now %d \n", bottom_index);
 }
 
-void ThreadStack::init_frame(int thread_index, int head_function_index) {
+void ThreadStack::init_frame(int thread_index, int head_function_index, 
+											   TRD_ID thread_id) {
 
 	assert(thread_index >= 0);
 	stack.at(thread_index)->head_function_index = head_function_index;
-	stack.at(thread_index)->local_span = 0;
-	stack.at(thread_index)->lock_span = 0;
-  	stack.at(thread_index)->local_continuation = 0;
-	stack.at(thread_index)->prefix_span = 0; 
-	stack.at(thread_index)->longest_child_span = 0;
-	stack.at(thread_index)->longest_child_lock_span = 0;
+	stack.at(thread_index)->thread = thread_id;
 }
 
-std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index) {
+std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index, 
+	 														TRD_ID thread_id) {
 	stack.push_back(std::shared_ptr<thread_frame_t> (new thread_frame_t));
 	bottom_index += 1;
 	printf("pushing on to thread stack, index is now %d \n", bottom_index);
-	init_frame(bottom_index, head_function_index);
+	init_frame(bottom_index, head_function_index, thread_id);
 	assert(bottom_index >= 0);
 	return stack.at(bottom_index);
 }

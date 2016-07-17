@@ -138,17 +138,17 @@ void ParasiteTool::Call(const CallEvent* e) {
   printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
 
   std::shared_ptr<thread_frame_t> bottom_parent_frame = stacks->bottomParentThread();
-  uint64_t local_work = 0;
+  TIME local_work = (TIME) 0;
   assert(last_function_call_time > last_event_time);
   if (tool_in_main)
     local_work = last_function_call_time - last_event_time;
   if (!tool_in_main)
     tool_in_main = true;
   last_event_time = _info->callTime;
-  printf("last event time is now %llu \n", (uint64_t) last_event_time);
+  printf("last event time is now %llu \n", (TIME) last_event_time);
   printf("using local work of %llu in new thread event \n", local_work);
   bottom_parent_frame->local_continuation += local_work;
-  printf("last event time is now %llu \n", (uint64_t) last_event_time);
+  printf("last event time is now %llu \n", (TIME) last_event_time);
   
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
@@ -188,8 +188,8 @@ void ParasiteTool::syncOperations() {
     printf("prefix span is being increased by %llu \n", bottom_thread_frame->longest_child_span);
 
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
-    assert(bottom_thread_frame->lock_span == 0);
-    assert(bottom_thread_frame->longest_child_lock_span == 0);
+    assert(bottom_thread_frame->lock_span == (TIME) 0);
+    assert(bottom_thread_frame->longest_child_lock_span == (TIME) 0);
     // bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
     // bottom_thread_frame->prefix_span -= bottom_thread_frame->
                                        // longest_child_lock_span;
@@ -208,10 +208,10 @@ void ParasiteTool::syncOperations() {
   }
 
     // reset longest child and continuation span variables
-  bottom_thread_frame->longest_child_span = 0;
-  bottom_thread_frame->longest_child_lock_span = 0;
-  bottom_function_frame->running_span = 0;
-  bottom_thread_frame->local_continuation = 0;
+  bottom_thread_frame->longest_child_span = (TIME) 0;
+  bottom_thread_frame->longest_child_lock_span = (TIME) 0;
+  bottom_function_frame->running_span = (TIME) 0;
+  bottom_thread_frame->local_continuation = (TIME) 0;
 
   printf("ending sync operations \n");
 }
@@ -226,9 +226,9 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   const ReturnInfo* _info(e->getReturnInfo());
   TIME returnTime = _info->endTime;
   assert(returnTime >= last_event_time);
-  uint64_t local_work = static_cast<TIME> (returnTime - last_event_time);
+  TIME local_work = static_cast<TIME> (returnTime - last_event_time);
   last_event_time = returnTime;
-  printf("last event time is now %llu \n", (uint64_t) last_event_time);
+  printf("last event time is now %llu \n", (TIME) last_event_time);
   last_function_return_time = returnTime;
   
   printf("performing return operations for local work %llu \n", local_work);
@@ -236,9 +236,9 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
   returned_function_frame->local_work = local_work;
-  uint64_t running_work = returned_function_frame->running_work + local_work;
-  uint64_t running_span = returned_function_frame->running_span + local_work;
-  // uint64_t running_lock_span = returned_function_frame->running_lock_span + 
+  TIME running_work = returned_function_frame->running_work + local_work;
+  TIME running_span = returned_function_frame->running_span + local_work;
+  // TIME running_lock_span = returned_function_frame->running_lock_span + 
   //                            returned_function_frame->local_lock_span;
   bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
 
@@ -398,8 +398,8 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
   // release_time = e->releaseTime;
   TIME release_time = static_cast<TIME> (0);
 
-  uint64_t lock_span = 0;
-  // uint64_t lock_span = release_time - releasedLock->last_acquire_time;
+  TIME lock_span = (TIME) 0;
+  // TIME lock_span = release_time - releasedLock->last_acquire_time;
 
   // unsigned int lockId = releasedLock->lockId;
   unsigned int lockId = (unsigned int) 0;

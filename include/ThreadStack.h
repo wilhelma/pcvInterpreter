@@ -41,32 +41,32 @@ struct thread_frame_t {
 	*    @var local_continuation
 	*    @brief Local continuation span of this thread's head function.
 	*/
-	uint64_t local_continuation;
+	TIME local_continuation;
 
 	/**
 	*    @var local_span
 	*    @brief Local span of this thread's head function.
 	*/
-	uint64_t local_span;
+	TIME local_span;
 
 	/**
 	*    @var local_span
 	*    @brief Local lock span of this thread's head function.
 	*/
-	uint64_t local_lock_span;
+	TIME local_lock_span;
 
 	/**
 	*    @var prefix_span
 	*    @brief Prefix span of this thread up to its bottom child function.
 	*/
-	uint64_t prefix_span;
+	TIME prefix_span;
 
 
 	/**
 	*    @var lock_span
 	*    @brief Lock span of this thread up to its bottom child function.
 	*/
-	uint64_t lock_span;
+	TIME lock_span;
 
 
 	/**
@@ -74,14 +74,14 @@ struct thread_frame_t {
 	*    @brief Span of the longest spawned child of this thread's head function
 				observed so far
 	*/
-	uint64_t longest_child_span;
+	TIME longest_child_span;
 
 	/**
 	*    @var longest_child_lock_span
 	*    @brief Lock span of the longest spawned child of this thread's head
 			    function observed so far.
 	*/
-	uint64_t longest_child_lock_span;
+	TIME longest_child_lock_span;
 
 
 	/**
@@ -103,8 +103,13 @@ struct thread_frame_t {
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
+					 local_continuation(0),
 					 local_span(0),
+					 local_lock_span(0),
 					 prefix_span(0), 
+					 lock_span(0), 
+					 longest_child_span(0),
+					 longest_child_lock_span(0), 
 					 prefix_table(CallSiteHashtable()), 
 					 longest_child_table(CallSiteHashtable()),
 					 continuation_table(CallSiteHashtable()) {}
@@ -122,14 +127,15 @@ class ThreadStack {
 		*    @brief Initializes a thread frame with index thread_index in the 
 					thread stack, and head function index head_function_index.
 		*/
-		void init_frame(int thread_index, int head_function_index);
+		void init_frame(int thread_index, int head_function_index, TRD_ID thread);
 
 		/**
 		*    @fn push()
 		*    @brief Pushes a new thread_frame_t onto the thread stack 
 					vector.
 		*/
-		std::shared_ptr<thread_frame_t> push(int head_function_index);
+		std::shared_ptr<thread_frame_t> push(int head_function_index,
+											 TRD_ID thread_id);
 
 		/**
 		*    @fn pop()
