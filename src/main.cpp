@@ -43,7 +43,9 @@ int main(int argc, char* argv[]) {
 	// runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
 
     std::shared_ptr<DebugTool> debugTool(new DebugTool());
+    std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
 	runner->registerTool(debugTool.get(), NULL, Events::ALL);
+	runner->registerTool(parasiteTool.get(), NULL, Events::ALL);
 
 	// Start interpretation
 	runner->interpret();
@@ -51,5 +53,6 @@ int main(int argc, char* argv[]) {
 	// unregister
 	//runner->removeTool(parasiteTool.get());
 	runner->removeTool(debugTool.get());
+	runner->removeTool(parasiteTool.get());
 	return 0;
 }
