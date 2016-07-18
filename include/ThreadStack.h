@@ -103,6 +103,13 @@ struct thread_frame_t {
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
+					 local_continuation(0),
+					 local_span(0),
+					 local_lock_span(0),
+					 prefix_span(0), 
+					 lock_span(0), 
+					 longest_child_span(0),
+					 longest_child_lock_span(0), 
 					 prefix_table(CallSiteHashtable()), 
 					 longest_child_table(CallSiteHashtable()),
 					 continuation_table(CallSiteHashtable()) {}
@@ -120,14 +127,15 @@ class ThreadStack {
 		*    @brief Initializes a thread frame with index thread_index in the 
 					thread stack, and head function index head_function_index.
 		*/
-		void init_frame(int thread_index, int head_function_index);
+		void init_frame(int thread_index, int head_function_index, TRD_ID thread);
 
 		/**
 		*    @fn push()
 		*    @brief Pushes a new thread_frame_t onto the thread stack 
 					vector.
 		*/
-		std::shared_ptr<thread_frame_t> push(int head_function_index);
+		std::shared_ptr<thread_frame_t> push(int head_function_index,
+											 TRD_ID thread_id);
 
 		/**
 		*    @fn pop()

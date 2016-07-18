@@ -72,7 +72,8 @@ struct function_frame_t {
 	*/
 	TIME running_span;
 
-	function_frame_t() : call_site(0)
+	function_frame_t() : call_site(0), local_work(0), local_lock_span(0),
+						 running_work(0), running_lock_span(0), running_span(0)
 	{}
 };
 

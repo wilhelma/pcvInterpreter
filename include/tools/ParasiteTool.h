@@ -50,14 +50,14 @@ struct parasite_profile_t {
 	*    @brief The work (the total runtime, scaled) of all instructions
 				executed in the program.
 	*/
-	double work;
+	TIME work;
 
 	/**
 	*    @var span
 	*    @brief The span (the total runtime, scaled, on the criical path) 
 				of all instructions executed in the program.
 	*/
-	double span;
+	TIME span;
 
 	/**
 	*    @var lock_span
@@ -65,7 +65,7 @@ struct parasite_profile_t {
 				path, spent while at least one lock is engaged) of all 
 				instructions executed in the program.
 	*/
-	double lock_span;
+	TIME lock_span;
 
 	/**
 	*    @var parallelism
@@ -73,9 +73,9 @@ struct parasite_profile_t {
 				which is an upper bound of the program's speedup on any number
 				of processors.
 	*/
-	double parallelism;
+	long long parallelism;
 
-	parasite_profile_t() {}
+	parasite_profile_t(): work(0), span(0), lock_span(0), parallelism(0) {}
 };
 
 
@@ -106,7 +106,7 @@ class ParasiteTool : public Tool {
 	*    @brief Performs Parasite algorithm operations needed for function returns, 
 				in both threadEnd and returnOfCalled events. 
 	*/
-	void returnOperations(double local_work);
+	void returnOperations(TIME local_work);
 
 	/**
 	*    @fn syncOperations()
@@ -211,6 +211,24 @@ class ParasiteTool : public Tool {
 	*/
 	TIME lock_span_start_time;
 
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the time of the last event
+	*/
+	TIME last_event_time;
+
+	/**
+	*    @var code_is_in_main
+	*    @brief True if the code is the main thread has already been created.
+	*/
+	bool tool_in_main;
+
+	/**
+	*    @var calling_head_function
+	*    @brief True if the simulator has just started a thread, and is about to call 
+	*           the thread's heaad function. 
+	*/
+	bool calling_head_function;
 
  private:
 	// prevent generated functions --------------------------------------------

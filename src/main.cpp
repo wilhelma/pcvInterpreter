@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
 
     std::shared_ptr<SAAPRunner> runner(new SAAPRunner(interpreter.get()));
 
- 	// std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
-	// runner->registerTool(parasiteTool.get(), NULL,Events::ALL);
+ 	std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
+	runner->registerTool(parasiteTool.get(), NULL, Events::ALL);
 
     std::shared_ptr<DebugTool> debugTool(new DebugTool());
     std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	runner->interpret();
 
 	// unregister
-	//runner->removeTool(parasiteTool.get());
+	runner->removeTool(parasiteTool.get());
 	runner->removeTool(debugTool.get());
 	runner->removeTool(parasiteTool.get());
 	return 0;

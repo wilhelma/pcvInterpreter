@@ -42,68 +42,68 @@ struct call_site_profile_t {
     *    @var work
     *    @brief Work of non-recursive executions of callsite. 
     */
-    double work;
+    uint64_t work;
 
     /**
     *    @var span
     *    @brief Span of non-recursive executions of callsite.
     */
-    double span;
+    uint64_t span;
 
     /**
     *    @var count
     *    @brief Number of non-recurisve invocations of callsite. 
     */
-    double count;
+    uint64_t count;
 
     /**
     *    @var top_work
     *    @brief Work of top callsite invocations.
     */
-    double top_work;
+    uint64_t top_work;
 
     /**
     *    @var top_lock_span
     *    @brief Lock span of top callsite invocations.
     */
-    double top_lock_span;
+    uint64_t top_lock_span;
 
     /**
     *    @var top_span
     *    @brief Span of top callsite invocations.
     */
-    double top_span;
+    uint64_t top_span;
 
     /**
     *    @var top_count
     *    @brief Number of top invocations of callsite.
     */
-    double top_count;
+    int top_count;
 
 
     /**
     *    @var local_work
     *    @brief Local work of callsite (excluding work of functions callsite invokes).
     */
-    double local_work;
+    uint64_t local_work;
 
     /**
     *    @var local_lock_span
     *    @brief Local lock span of callsite (excluding lock span of functions callsite invokes).
     */
-    double local_lock_span;
+    uint64_t local_lock_span;
 
     /**
     *    @var local_span
     *    @brief Local span of callsite (excluding span of functions callsite invokes).
     */
-    double local_span;
+    uint64_t local_span;
 
     /**
     *    @var local_count
     *    @brief Local count of callsite invocations (excluding callsite invocations from functions callsite invokes).
     */
-    double local_count;
+    int  local_count;
 
     call_site_profile_t() : call_site(0) {}  
 };
@@ -125,8 +125,8 @@ class CallSiteProfile {
     *    @brief Initialize prof with the information provided in function parameters
     */
     void init_callsite_profile(CALLSITE call_site, bool is_top_function, 
-                                                    double work, double span,
-                                                    double local_work, double local_span);
+                                                    uint64_t work, uint64_t span,
+                                                    uint64_t local_work, uint64_t local_span);
     /**
     *    @var prof
     *    @brief The call_site_profile_t that the profile's methods act on. 

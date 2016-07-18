@@ -31,8 +31,8 @@ void CallSiteProfile::add_in_callsite_profile_entries(const std::shared_ptr<call
 
 void CallSiteProfile::init_callsite_profile(CALLSITE call_site,
         						                         bool is_top_function,
-                                             double work, double span,
-                                             double local_work, double local_span) {
+                                             uint64_t work, uint64_t span,
+                                             uint64_t local_work, uint64_t local_span) {
     prof->call_site = call_site;
     prof->local_count = 0;
     prof->local_work = local_work;

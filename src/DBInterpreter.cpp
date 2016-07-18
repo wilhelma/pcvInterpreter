@@ -284,7 +284,6 @@ int DBInterpreter::processEnd() {
                               sThread->threadId);
       ThreadEndEvent end_event(sThread, &end_info);
       _eventService->publish(&end_event);
-
       ret = IN_OK;
     }
   }
@@ -490,12 +489,12 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
 }
 
 int DBInterpreter::processFork(const thread_t& thread) {
+
     ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.start_cycle, thread.num_cycles);
     NewThreadEvent event( pT, &info );
     _eventService->publish( &event );
-
     return 0;
 }
 
