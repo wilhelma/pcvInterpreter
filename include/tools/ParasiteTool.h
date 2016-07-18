@@ -73,7 +73,7 @@ struct parasite_profile_t {
 				which is an upper bound of the program's speedup on any number
 				of processors.
 	*/
-	long long parallelism;
+	double parallelism;
 
 	parasite_profile_t(): work(0), span(0), lock_span(0), parallelism(0) {}
 };
@@ -216,7 +216,7 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
+	
 	/**
 	*    @var code_is_in_main
 	*    @brief True if the code is the main thread has already been created.
