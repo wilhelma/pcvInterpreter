@@ -8,6 +8,10 @@
 #ifndef INTERPRETER_H_
 #define INTERPRETER_H_
 
+#include "fwd/EventService.h"
+#include "fwd/LockMgr.h"
+#include "fwd/ThreadMgr.h"
+
 /******************************************************************************
  * Constants and Types
  *****************************************************************************/
@@ -17,10 +21,6 @@ typedef enum {
 	IN_ENTRY_EXISTS = 2,	// Entry already exists.
 	IN_ABORT = 3			// Operation aborted.
 } OkCode;
-
-class EventService;
-class LockMgr;
-class ThreadMgr;
 
 /******************************************************************************
  * Interpreter (abstract)
