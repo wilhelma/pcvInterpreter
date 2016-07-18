@@ -91,7 +91,7 @@ void DebugTool::Return(const ReturnEvent* event) {
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
 	const ThreadEndInfo& tei = *(event->getThreadEndInfo());
 	BOOST_LOG_TRIVIAL(debug) 
-		<< "ThreadEvent:\n"
+        << "ThreadEndEvent:\n"
 		<< " > Thread ID: " << tei.id << "\n"
 		<< " > End time:  " << tei.endTime << "\n";
 }
