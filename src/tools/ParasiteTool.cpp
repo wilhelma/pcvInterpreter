@@ -126,7 +126,7 @@ void ParasiteTool::Call(const CallEvent* e) {
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
-  last_function_call_time = _info->startTime;
+  last_function_call_time = _info->callTime;
   printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
