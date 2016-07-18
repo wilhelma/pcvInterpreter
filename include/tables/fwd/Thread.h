@@ -1,6 +1,6 @@
 /**
  *
- *    @file  Access.h
+ *    @file  Thread.h
  *   @brief  Forward header.
  *
  *    @date  07/06/16
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_ACCESS_H_
-#define  FWD_ACCESS_H_
+#ifndef  FWD_THREAD_H_
+#define  FWD_THREAD_H_
 
-struct access_t;
+struct thread_t;
 
 #endif
