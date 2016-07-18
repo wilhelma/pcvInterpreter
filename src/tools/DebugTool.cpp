@@ -69,7 +69,7 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 	const NewThreadInfo& nti = *(event->getNewThreadInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "NewThreadEvent:\n"
-		// << " > Num. cycles: " << nti.runtime << "\n"
+        << " > Thread id: " << nti.childThread->threadId << std::endl
         << " > Start time:  " << nti.startTime << "\n"
         << " > Runtime      " << nti.runTime << "\n";
 }
@@ -91,7 +91,7 @@ void DebugTool::Return(const ReturnEvent* event) {
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
 	const ThreadEndInfo& tei = *(event->getThreadEndInfo());
 	BOOST_LOG_TRIVIAL(debug) 
-		<< "ThreadEvent:\n"
+        << "ThreadEndEvent:\n"
 		<< " > Thread ID: " << tei.id << "\n"
 		<< " > End time:  " << tei.endTime << "\n";
 }
