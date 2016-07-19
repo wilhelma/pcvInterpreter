@@ -56,7 +56,8 @@ struct function_frame_t {
 
 	/**
 	*    @var running_work
-	*    @brief The running work of the function's call site. 
+	*    @brief The running work of the function's call site. Same as the running
+				span of the function. 
 	*/
 	TIME running_work;
 
@@ -66,14 +67,8 @@ struct function_frame_t {
 	*/
 	TIME running_lock_span;
 
-	/**
-	*    @var running_span
-	*    @brief The running span of the function's call site. 
-	*/
-	TIME running_span;
-
 	function_frame_t() : call_site(0), local_work(0), local_lock_span(0),
-						 running_work(0), running_lock_span(0), running_span(0)
+						 running_work(0), running_lock_span(0)
 	{}
 };
 

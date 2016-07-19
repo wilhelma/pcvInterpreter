@@ -41,75 +41,60 @@ struct thread_frame_t {
 	TIME last_longest_child_span;
 
 	/**
-	*    @var local_continuation
-	*    @brief Local continuation span of this thread's head function.
+	*    @var continuation_span
+	*    @brief Continuation span of this thread. 
 	*/
-	TIME local_continuation;
+	TIME continuation_span;
 
-	/**
-	*    @var local_span
-	*    @brief Local span of this thread's head function.
-	*/
-	TIME local_span;
 
-	/**
-	*    @var local_lock_span
-	*    @brief Local lock span of this thread's head function.
-	*/
-	TIME local_lock_span;
-
-	/**
+ 	/**
 	*    @var prefix_span
-	*    @brief Prefix span of this thread up to its bottom child function.
+	*    @brief Prefix span of this thread. 
 	*/
 	TIME prefix_span;
 
 
 	/**
 	*    @var lock_span
-	*    @brief Lock span of this thread up to its bottom child function.
+	*    @brief Lock span of this thread. 
 	*/
 	TIME lock_span;
 
 
 	/**
 	*    @var lock_span
-	*    @brief Span of the longest spawned child of this thread's head function
-				observed so far
+	*    @brief Span of the longest spawned child of this thread.
 	*/
 	TIME longest_child_span;
 
 	/**
 	*    @var longest_child_lock_span
-	*    @brief Lock span of the longest spawned child of this thread's head
-			    function observed so far.
+	*    @brief Lock span of the longest spawned child of this thread.
 	*/
 	TIME longest_child_lock_span;
 
 
 	/**
-	*    @var longest_child_lock_span
+	*    @var prefix_table
 	*    @brief Prefix data for each call site in this thread.
 	*/
 	CallSiteHashtable prefix_table;
 
 	/**
-	*    @var longest_child_lock_span
+	*    @var longest_child_table
 	*    @brief Longest child data for each call site in this thread. 
 	*/
 	CallSiteHashtable longest_child_table;
 
 	/**
-	*    @var longest_child_lock_span
+	*    @var continuation_table
 	*    @brief Continuation data for each call site in this thread.
 	*/
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
 					 last_longest_child_span(0),
-					 local_continuation(0),
-					 local_span(0),
-					 local_lock_span(0),
+					 continuation_span(0),
 					 prefix_span(0), 
 					 lock_span(0), 
 					 longest_child_span(0),
