@@ -110,13 +110,6 @@ class FunctionStack {
 					vector - keeps frame on stack, but decrements index
 		*/
 		void pop();
-  		/**
-		*    @var bottom_index
-		*    @brief The index of the simulator's bottom function in the
-					function stack vector. 
-		*/
-  		int bottom_index;
-
 
  		/**
 		*    @var function_stack

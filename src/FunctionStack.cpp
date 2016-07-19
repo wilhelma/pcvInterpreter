@@ -17,7 +17,6 @@ FunctionStack::FunctionStack() {
 	// create empty function stack vector
 	std::vector< std::shared_ptr<function_frame_t> > fxn_stack;
 	stack = fxn_stack;
-	bottom_index = -1;
 }
 
 FunctionStack::~FunctionStack() {
@@ -25,32 +24,32 @@ FunctionStack::~FunctionStack() {
 }
 
 void FunctionStack::pop() {
+
 	// the last function frame must stay on the stack to get the end profile
-	if (stack.size() > 1)
-		stack.pop_back();
-	bottom_index -= 1;
-	printf("popping off of function stack, index is now %d \n", bottom_index);
+	assert(stack.size() > 1);
+	int bottom_index = stack.size() - 1;
+	stack.pop_back();
+	printf("popped off of function stack, index is now %d \n", bottom_index);
 }
 
-void FunctionStack::init_frame(int function_index, 
+void FunctionStack::init_frame(int index, 
 							   FUN_SG funSg,
 							   CALLSITE callsiteID,
 							   bool is_top_call_site_function) {
-
-	assert(function_index >= 0);	
-	stack.at(function_index)->call_site = callsiteID;
-	stack.at(function_index)->function_signature = funSg;
-	stack.at(function_index)->is_top_call_site_function = is_top_call_site_function;
+	assert(index >= 0);	
+	stack.at(index)->call_site = callsiteID;
+	stack.at(index)->function_signature = funSg;
+	stack.at(index)->is_top_call_site_function = is_top_call_site_function;
 }
 
 std::shared_ptr<function_frame_t> FunctionStack::push(FUN_SG funSg, 
 									   CALLSITE callsiteID, 
 									   bool is_top_call_site_function) {
 	stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
-	bottom_index += 1;
+	int bottom_index = stack.size() - 1;
 	init_frame(bottom_index, funSg, callsiteID, is_top_call_site_function);
 	printf("pushing on to function stack, index is now %d \n", bottom_index);
-	assert(bottom_index >= (TIME) 0);
-	return stack.at(bottom_index);
+	assert(bottom_index >= 0);
+	return stack.back();
 }
 

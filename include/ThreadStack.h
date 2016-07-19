@@ -37,6 +37,9 @@ struct thread_frame_t {
 	*/
 	int head_function_index;
 
+
+	TIME last_longest_child_span;
+
 	/**
 	*    @var local_continuation
 	*    @brief Local continuation span of this thread's head function.
@@ -50,7 +53,7 @@ struct thread_frame_t {
 	TIME local_span;
 
 	/**
-	*    @var local_span
+	*    @var local_lock_span
 	*    @brief Local lock span of this thread's head function.
 	*/
 	TIME local_lock_span;
@@ -103,6 +106,7 @@ struct thread_frame_t {
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
+					 last_longest_child_span(0),
 					 local_continuation(0),
 					 local_span(0),
 					 local_lock_span(0),
@@ -143,13 +147,6 @@ class ThreadStack {
 					vector.
 		*/
 		void pop();
-
-  		/**
-		*    @var bottom_index
-		*    @brief The index of the simulator's bottom thread in the
-					thread stack vector. 
-		*/
-  		int bottom_index;
 
   		/**
 		*    @var thread_stack

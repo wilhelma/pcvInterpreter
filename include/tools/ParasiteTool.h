@@ -102,20 +102,6 @@ class ParasiteTool : public Tool {
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
 	/**
-	*    @fn returnOperations()
-	*    @brief Performs Parasite algorithm operations needed for function returns, 
-				in both threadEnd and returnOfCalled events. 
-	*/
-	void returnOperations(TIME local_work);
-
-	/**
-	*    @fn syncOperations()
-	*    @brief Performs Parasite algorithm operations needed after all 
-				child threads have joined parent thread. 
-	*/
-	void syncOperations();
-
-	/**
 	*    @fn printProfile()
 	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
 		 @todo Decide on format to print out profile information.
@@ -216,7 +202,7 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-	
+
 	/**
 	*    @var code_is_in_main
 	*    @brief True if the code is the main thread has already been created.

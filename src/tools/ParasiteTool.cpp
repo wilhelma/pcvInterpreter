@@ -113,41 +113,52 @@ void ParasiteTool::printProfile() {
 
 ParasiteTool::~ParasiteTool() {
   printf("Calling destructor \n");
+  printf("================ \n");
+  printf("PRINT BEGIN \n");
   printProfile();
+  printf("PRINT END \n");
+  printf("================ \n");
 }
 
 void ParasiteTool::Call(const CallEvent* e) {
+
+  printf("================ \n");
+  printf("CALL BEGIN \n");
   const CallInfo* _info(e->getCallInfo());
   FUN_SG calledFunctionSignature = _info->fnSignature;
   CALLSITE callsiteID = _info->siteId;
   last_function_runtime = _info->runtime;
   last_function_call_time = _info->callTime;
-  last_event_time = last_function_call_time;
+  last_event_time = _info->callTime;
   printf("starting call Event with signature %s \n", calledFunctionSignature.c_str());
   bool is_top_call_site_function = stacks->work_table.contains(callsiteID);
 
   stacks->function_push(calledFunctionSignature, 
                         callsiteID, 
                         is_top_call_site_function);
-  printf("ending call Event \n");
+  printf("CALL END \n");
+  printf("================ \n");
 }
 
 void ParasiteTool::NewThread(const NewThreadEvent* e) {
-  printf("starting new thread Event \n");
+  printf("================ \n");
+  printf("NEW THREAD BEGIN \n");
   const NewThreadInfo* const _info = e->getNewThreadInfo();
   const TRD_ID newThreadID = _info->childThread->threadId;
 
   // get information about the thread's head function
   TIME create_time = _info->startTime;
-  last_thread_start_time = create_time;
+  last_thread_start_time = _info->startTime;
 
   if (stacks->bottomThreadIndex() > -1) {
     std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
     TIME local_work = static_cast<TIME>(create_time - last_event_time);
-    printf("using local work of %llu in new thread event \n", static_cast<unsigned long long>(local_work));
+    printf("using local work of %llu in new thread event \n", 
+                                  static_cast<unsigned long long>(local_work));
     assert(local_work >= 0);
     bottom_thread_frame->local_continuation += local_work;
-    std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
+    std::shared_ptr<function_frame_t> bottom_function_frame = 
+                                                      stacks->bottomFunction();
     bottom_function_frame->local_work += local_work;
   }
 
@@ -155,26 +166,25 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
   std::shared_ptr<thread_frame_t> new_thread_frame = 
                             stacks->thread_push(stacks->bottomFunctionIndex(),
                                                 newThreadID);
-  printf("ending new thread Event \n");
+   printf("NEW THREAD END \n");
+   printf("================ \n");
 }
 
-void ParasiteTool::syncOperations() {
-
-  printf("starting sync operations \n");
+void ParasiteTool::Join(const JoinEvent* e) {
+   
+  printf("================ \n");
+  printf("STARTING JOIN \n");
   std::shared_ptr<thread_frame_t> bottom_thread_frame(stacks->bottomThread());
-  // these operations only happen at a sync - after the thread's last child has
-  // joined 
-  std::shared_ptr<function_frame_t> bottom_function_frame(stacks->bottomFunction());
-  bottom_function_frame->running_span += bottom_thread_frame->local_continuation;
-  printf("running span increased by local coninuation span %llu \n", (unsigned long long) bottom_thread_frame->local_continuation);
   // bottom_function_frame->running_lock_span += bottom_thread_frame->local_lock_span;
+  printf("IN JOIN: longest child span is %llu \n", (unsigned long long) bottom_thread_frame->longest_child_span);
+  printf("IN JOIN: local continuation is %llu \n", (unsigned long long) bottom_thread_frame->local_continuation);
 
-  // If critical path goes through spawned child
-  if (bottom_thread_frame->longest_child_span > bottom_function_frame->running_span) {
+   // If critical path goes through spawned child
+  if (bottom_thread_frame->longest_child_span > bottom_thread_frame->local_continuation) {
 
+    bottom_thread_frame->prefix_span -= bottom_thread_frame->last_longest_child_span;
+    bottom_thread_frame->last_longest_child_span = bottom_thread_frame->longest_child_span;
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
-    printf("prefix span increased by lc_span %llu \n", (unsigned long long) bottom_thread_frame->longest_child_span);
-
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
 
     assert(bottom_thread_frame->lock_span == static_cast<TIME>(0));
@@ -184,11 +194,11 @@ void ParasiteTool::syncOperations() {
                                        // longest_child_lock_span;
     CallSiteHashtable prefix_table(bottom_thread_frame->prefix_table);
     prefix_table.add(&(bottom_thread_frame->longest_child_table));
-    local_span does not increase, because critical path goes 
-    through spawned child.
+    //local_span does not increase, because critical path goes 
+    //through spawned child.
   } else {
-    bottom_thread_frame->prefix_span += bottom_function_frame->running_span;
-    printf("prefix span increased by running_span %llu \n", (unsigned long long) bottom_function_frame->running_span);
+
+    bottom_thread_frame->prefix_span += bottom_thread_frame->local_continuation;
     // Critical path goes through continuation, which is local. Add
     // local_continuation to local_span.
     bottom_thread_frame->local_span += bottom_thread_frame->local_continuation;
@@ -199,19 +209,14 @@ void ParasiteTool::syncOperations() {
   // reset longest child and continuation span variables
   bottom_thread_frame->longest_child_span = static_cast<TIME>(0);
   bottom_thread_frame->longest_child_lock_span = static_cast<TIME>(0);
-  bottom_function_frame->running_span = static_cast<TIME>(0);
   bottom_thread_frame->local_continuation = static_cast<TIME>(0);
-
-  printf("ending sync operations \n");
-}
-
-void ParasiteTool::Join(const JoinEvent* e) {
-
-  // does nothing, as this needs to happen at the end of a thread
+  printf("JOIN END \n");
+  printf("================ \n");
 }
 
 void ParasiteTool::Return(const ReturnEvent* e) {
-  printf("starting return Event \n");
+  printf("================ \n");
+  printf("RETURN START \n");
   const ReturnInfo* _info(e->getReturnInfo());
   TIME returnTime = _info->endTime;
   assert(returnTime >= last_event_time);
@@ -224,18 +229,22 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
   std::shared_ptr<function_frame_t> returned_function_frame(stacks->bottomFunction());
   CALLSITE returning_call_site = returned_function_frame->call_site;
-  returned_function_frame->local_work = local_work;
+  returned_function_frame->local_work += local_work;
+
+  std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
+  bottom_thread_frame->local_continuation += local_work;
+
+  if (stacks->bottomFunctionIndex() == 0)
+    return;
 
   TIME running_work = static_cast<TIME>(returned_function_frame->running_work + local_work);
   TIME running_span = static_cast<TIME>(returned_function_frame->running_span + local_work);
   //TIME running_lock_span = static_cast<TIME>(returned_function_frame->running_lock_span + 
                                              // returned_function_frame->local_lock_span);
   bool is_top_returning_function = returned_function_frame->is_top_call_site_function;
-
   std::shared_ptr<function_frame_t> parent_function_frame = stacks->bottomParentFunction();
   parent_function_frame->running_work += running_work;
   parent_function_frame->running_span += running_span;
-
   // parent_function_frame->running_lock_span += running_lock_span;
 
   CallSiteHashtable work_table(stacks->work_table);
@@ -264,21 +273,20 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   }
 
   stacks->function_pop();
-  printf("ending return Event \n");
+  printf("RETURN END \n");
+  printf("================ \n");
 }
 
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
-  printf("starting thread end Event \n");
+  printf("================ \n");
+  printf("THREAD END BEGIN \n");
   const ThreadEndInfo* _info(e->getThreadEndInfo());
   last_thread_end_time = _info->endTime;
   last_event_time = _info->endTime;
   printf("last_event_time now %llu \n", (unsigned long long) last_event_time);
 
-  // The sync happens at the thread end, which is correct, because
-  // all child threads must end anyway at the end of the thread.
-  // However, this operation is unnecessary for the bottom thread reached.
-  if (stacks->bottomThreadIndex() != stacks->highest_thread_index)
-    syncOperations();
+  if (stacks->bottomThreadIndex() == 0)
+    return;
 
   std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
   std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
@@ -317,16 +325,11 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
                               ending_thread_frame->local_span);
   }
 
-  if (stacks->bottomThreadIndex() == 1) {
-    return;
-  }
-
   // if the ending thread is the longest child encountered so far
   if (current_function_frame->running_span + ending_thread_frame->local_continuation  
                                            > ending_thread_frame->longest_child_span) {
 
     parent_thread_frame->prefix_span += current_function_frame->running_span;
-    printf("parent prefix span increased in thread end by running_span %llu \n", (unsigned long long) current_function_frame->running_span);
     parent_thread_frame->local_span += parent_thread_frame->local_continuation;
 
     CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
@@ -336,6 +339,9 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
     // parent frame's longest child variable.
     parent_thread_frame->longest_child_span = ending_thread_frame->
                                               prefix_span;
+    printf("longest child span of frame %d is now %llu \n",
+            stacks->bottomThreadIndex() - 1, 
+            (unsigned long long) ending_thread_frame->prefix_span);                                          
     parent_thread_frame->longest_child_table.clear();
 
     CallSiteHashtable temp_hashtable(parent_thread_frame->longest_child_table);
@@ -355,7 +361,8 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
   // pop the thread off the stack last, 
   // because the pop operation destroys the frame
   stacks->thread_pop();
-  printf("ending non-main thread end Event \n");
+  printf("THREAD END END \n");
+  printf("================ \n");
 }
 
 void ParasiteTool::Acquire(const AcquireEvent* e) {
