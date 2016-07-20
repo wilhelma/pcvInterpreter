@@ -8,7 +8,6 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(SRC_LIST ${SRC_LIST}
 	CallSiteHashtable.cpp
 	CallSiteProfile.cpp
-	CallSiteEndProfile.cpp
 	DBInterpreter.cpp
 	EventService.cpp
 	FunctionStack.cpp

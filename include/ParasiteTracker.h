@@ -78,8 +78,7 @@ class ParasiteTracker {
 		int bottomThreadIndex();
 
 		std::shared_ptr<function_frame_t> function_push(FUN_SG funSg,
-							   							CALLSITE callsiteID,
-							   							bool is_top_call_site_function);
+							   							CALLSITE callsiteID);
 		void function_pop();
 
 		std::shared_ptr<thread_frame_t> thread_push(int head_function_index,

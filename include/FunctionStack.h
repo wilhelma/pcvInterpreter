@@ -36,13 +36,6 @@ struct function_frame_t {
 	FUN_SG function_signature;
 
 	/**
-	*    @var is_top_call_site_function
-	*    @brief TRUE if the function is the top function of its call site.
-	*/
-	bool is_top_call_site_function;
-
-
-	/**
 	*    @var local_work
 	*    @brief Local work of the function.
 	*/
@@ -87,8 +80,7 @@ class FunctionStack {
 		*/
 		void init_frame(int function_index, 
 					   FUN_SG funSg,
-					   CALLSITE callsiteID,
-					   bool is_top_call_site_function);
+					   CALLSITE callsiteID);
 
 		/**
 		*    @fn push()
@@ -96,8 +88,7 @@ class FunctionStack {
 					vector.
 		*/
 		std::shared_ptr<function_frame_t> push(FUN_SG funSg, 
-											   CALLSITE callsiteID, 
-											   bool is_top_call_site_function);
+											   CALLSITE callsiteID);
 
 		/**
 		*    @fn pop()

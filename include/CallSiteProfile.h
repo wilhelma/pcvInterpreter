@@ -51,13 +51,18 @@ struct call_site_profile_t {
     TIME span;
 
     /**
+    *    @var parallelism
+    *    @brief Parallelism of callsite.  
+    */
+    double parallelism;
+
+    /**
     *    @var count
     *    @brief Number of invocations of callsite. 
     */
-    TIME count;
+    int count;
 
-
-    call_site_profile_t() : call_site(0) {}  
+    call_site_profile_t() : call_site(0), work(0), span(0), parallelism(0) {}  
 };
 
 class CallSiteProfile {
@@ -76,8 +81,8 @@ class CallSiteProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_profile(CALLSITE call_site, bool is_top_function, 
-                                                    TIME work, TIME span);
+    void init_callsite_profile(CALLSITE call_site, TIME work, TIME span);
+    
     /**
     *    @var prof
     *    @brief The call_site_profile_t that the profile's methods act on. 

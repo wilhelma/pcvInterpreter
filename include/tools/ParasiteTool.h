@@ -22,7 +22,6 @@
 #include "AccessEvent.h"
 #include "AcquireEvent.h"
 #include "CallEvent.h"
-#include "CallSiteEndProfile.h"
 #include "CallSiteProfile.h"
 #include "Event.h"
 #include "JoinEvent.h"
@@ -107,14 +106,6 @@ class ParasiteTool : public Tool {
 		 @todo Decide on format to print out profile information.
 	*/
 	void printProfile();
-
-	/**
-	*    @fn getEndProfile()
-	*    @brief Converts the information contained in main_stack
-				to the end profiles for each call site in (end_call_site_profile_hashtable)
-				and the overall program (parasite_profile).
-	*/
-	void getEndProfile();
 	
 	/**
 	*    @var main_stack
@@ -203,18 +194,6 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
-	/**
-	*    @var code_is_in_main
-	*    @brief True if the code is the main thread has already been created.
-	*/
-	bool tool_in_main;
-
-	/**
-	*    @var calling_head_function
-	*    @brief True if the simulator has just started a thread, and is about to call 
-	*           the thread's heaad function. 
-	*/
-	bool calling_head_function;
 
  private:
 	// prevent generated functions --------------------------------------------
