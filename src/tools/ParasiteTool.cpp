@@ -141,10 +141,13 @@ void ParasiteTool::Join(const JoinEvent* e) {
   printf("IN JOIN: local continuation is %llu \n", (unsigned long long) bottom_thread_frame->continuation_span);
 
    // If critical path goes through spawned child
+
+  // If F.l > F.c
   if (bottom_thread_frame->longest_child_span > bottom_thread_frame->continuation_span) {
 
     bottom_thread_frame->prefix_span -= bottom_thread_frame->last_longest_child_span;
     bottom_thread_frame->last_longest_child_span = bottom_thread_frame->longest_child_span;
+    // F.p += F.l
     bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
     bottom_thread_frame->lock_span += lock_span_end_time - lock_span_start_time;
 
@@ -157,8 +160,10 @@ void ParasiteTool::Join(const JoinEvent* e) {
     prefix_table.add(&(bottom_thread_frame->longest_child_table));
     //local_span does not increase, because critical path goes 
     //through spawned child.
-  } else {
+  } // F.c > F.l
+    else {
 
+    // F.p += F.c 
     bottom_thread_frame->prefix_span += bottom_thread_frame->continuation_span;
     // Critical path goes through continuation, which is local. Add
     // continuation_span to local_span.
@@ -167,13 +172,16 @@ void ParasiteTool::Join(const JoinEvent* e) {
   }
 
   // reset longest child and continuation span variables
+  // F.l = 0
   bottom_thread_frame->longest_child_span = static_cast<TIME>(0);
   bottom_thread_frame->longest_child_lock_span = static_cast<TIME>(0);
+  // F.c = 0
   bottom_thread_frame->continuation_span = static_cast<TIME>(0);
   printf("JOIN END \n");
   printf("================ \n");
 }
 
+// Called G returns to F
 void ParasiteTool::Return(const ReturnEvent* e) {
   printf("================ \n");
   printf("RETURN START \n");
@@ -191,6 +199,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   returned_function_frame->local_work += local_work;
 
   std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
+
+  // F.c += G.p
   bottom_thread_frame->continuation_span += local_work;
 
   if (stacks->bottomFunctionIndex() == 0)
@@ -200,6 +210,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   //TIME running_lock_span = static_cast<TIME>(returned_function_frame->running_lock_span + 
                                              // returned_function_frame->local_lock_span);
   std::shared_ptr<function_frame_t> parent_function_frame = stacks->bottomParentFunction();
+
+  // F.w += G.w
   parent_function_frame->running_work += running_work;
   // parent_function_frame->running_lock_span += running_lock_span;
 
@@ -207,7 +219,9 @@ void ParasiteTool::Return(const ReturnEvent* e) {
   CallSiteHashtable bottom_thread_continuation_table(stacks->
                                                     bottomThread()->
                                                     continuation_table);
+  // F.w += G.w
   work_table.add_data(returning_call_site, running_work, running_work);
+  // F.c += G.p
   bottom_thread_continuation_table.add_data(returning_call_site, running_work,
                                                                  running_work);
 
@@ -244,7 +258,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
   // if the ending thread is the longest child encountered so far
   // F is parent thread, G is ending thread
   if (ending_thread_frame->prefix_span + parent_thread_frame->continuation_span 
-                                    > parent_thread_frame->longest_child_span) {
+                                       > parent_thread_frame->longest_child_span) {
 
     // Save old bottom thread frame tables in 
     // parent frame's longest child variable.
@@ -261,9 +275,11 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
     // F.p += F.c
     CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
     prefix_table.add(&(parent_thread_frame->continuation_table));
+    parent_thread_frame->prefix_span += parent_thread_frame->continuation_span;
 
     // F.c = 0
     parent_thread_frame->continuation_table.clear();
+    parent_thread_frame->continuation_span = static_cast<TIME>(0);
   }
 
   // pop the thread off the stack last, 

@@ -29,7 +29,11 @@ void CallSiteProfile::init_callsite_profile(CALLSITE call_site,
 	prof->call_site = call_site;
 	prof->work = work;
 	prof->span = span;
-	prof->parallelism = work/span;
+
+	if (span != 0)
+		prof->parallelism = work/span;
+	else
+		prof->parallelism = 0;
 }
 
 
