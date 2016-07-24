@@ -31,16 +31,12 @@ ParasiteTool::ParasiteTool():
 
 	parasite_profile = std::unique_ptr<parasite_profile_t>
 																											(new parasite_profile_t);
-	
-	end_call_site_profile_hashtable = std::unique_ptr<call_site_end_hashtable_t>
-																								(new call_site_end_hashtable_t);
 
 	std::unordered_map<unsigned int, int> lck_hashtable;
 	lock_hashtable = lck_hashtable;
 }
 
 void ParasiteTool::printProfile() {
-	// first, calculate all the end profiles before outputting them 
 	assert(stacks->bottomThreadIndex() == 0);
 	assert(stacks->bottomFunctionIndex() == 0);
 	std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
@@ -54,10 +50,6 @@ void ParasiteTool::printProfile() {
 	printf("bottom thread prefix span is %llu \n", (unsigned long long) bottom_thread_frame->prefix_span);
 	printf("bottom thread local continuation is %llu \n", (unsigned long long) bottom_thread_frame->continuation_span);
 
-	CallSiteHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
-	bottom_prefix_table.add(&(bottom_thread_frame->continuation_table));
-	CallSiteHashtable final_on_span_table(bottom_thread_frame->prefix_table);
-
 	// Calculate work for entire program
 	parasite_profile->work = static_cast<TIME>(bottom_function_frame->running_work +
 																						 bottom_function_frame->local_work);
@@ -69,7 +61,12 @@ void ParasiteTool::printProfile() {
 	parasite_profile->parallelism =  static_cast<double> (parasite_profile->work)
 																 / static_cast<double> (parasite_profile->span);
 
-	CallSiteHashtable final_table(stacks->work_table);
+	// Print out information for each call site
+  CallSiteHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
+	bottom_prefix_table.add(&(bottom_thread_frame->continuation_table));
+	CallSiteHashtable final_span_table(bottom_thread_frame->prefix_table);
+	final_span_table.print();
+
 	printf("PARALLELISM IS %f \n", parasite_profile->parallelism);
 	printf("WORK IS %llu \n", (unsigned long long) parasite_profile->work);
 	printf("SPAN IS %llu \n", (unsigned long long) parasite_profile->span);
@@ -208,16 +205,13 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 																						 // returned_function_frame->local_lock_span);
 	std::shared_ptr<function_frame_t> parent_function_frame = stacks->bottomParentFunction();
 
-	// F.w += G.wc
+	// F.w += G.w
 	parent_function_frame->running_work += running_work;
 	// parent_function_frame->running_lock_span += running_lock_span;
 
-	CallSiteHashtable work_table(stacks->work_table);
 	CallSiteHashtable bottom_thread_continuation_table(stacks->
 																										bottomThread()->
 																										continuation_table);
-	// F.w += G.w
-	work_table.add_data(returning_call_site, running_work, running_work);
 	// F.c += G.p
 	bottom_thread_continuation_table.add_data(returning_call_site, running_work,
 																																 running_work);
@@ -241,13 +235,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
 	std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
 	std::shared_ptr<function_frame_t> current_function_frame(stacks->bottomFunction());
-	CallSiteHashtable work_table(stacks->work_table);
 	CallSiteHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
-
-	work_table.add_data(current_function_frame->call_site, 
-											current_function_frame->running_work, 
-											ending_thread_frame->prefix_span);
-
 	parent_thread_prefix_table.add_data(current_function_frame->call_site, 
 																			current_function_frame->running_work, 
 																			ending_thread_frame->prefix_span);
@@ -261,7 +249,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 		// Save old bottom thread frame tables in 
 		// parent frame's longest child variable.
-
 		// F.l = G.p
 		parent_thread_frame->longest_child_span = ending_thread_frame->
 																							prefix_span;

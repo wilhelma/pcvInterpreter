@@ -62,7 +62,7 @@ struct call_site_profile_t {
     */
     int count;
 
-    call_site_profile_t() : call_site(0), work(0), span(0), parallelism(0) {}  
+    call_site_profile_t() : call_site(0), work(0), span(0), parallelism(0), count(0) {}  
 };
 
 class CallSiteProfile {
@@ -70,6 +70,8 @@ class CallSiteProfile {
  public:
     explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
     ~CallSiteProfile();
+
+    void print();
 
     /**
     *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add)

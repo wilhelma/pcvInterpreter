@@ -31,6 +31,15 @@ CallSiteHashtable* CallSiteHashtable::operator=(const CallSiteHashtable& table_o
 	return this;
 }
 
+void CallSiteHashtable::print() {
+
+	for (auto const &it : *hashtable) {
+		CALLSITE key = it.first;
+		CallSiteProfile currentProfile(hashtable->at(key));
+		currentProfile.print();
+	}
+}
+
 void CallSiteHashtable::clear() {
 	hashtable->clear();
 }
@@ -51,13 +60,6 @@ void CallSiteHashtable::add(CallSiteHashtable* hashtable_object) {
 	}
 }
 
-bool CallSiteHashtable::contains(CALLSITE call_site) {
-	if (hashtable->count(call_site))
-		return true;
-	else 
-		return false;
-}
-
 void CallSiteHashtable::add_data(CALLSITE call_site, TIME work, TIME span) {
 	if (hashtable->count(call_site)) {
 		CallSiteProfile profile(hashtable->at(call_site));
@@ -75,5 +77,14 @@ void CallSiteHashtable::add_data(CALLSITE call_site, TIME work, TIME span) {
 		hashtable->insert(newPair);
 	}
 }
+
+bool CallSiteHashtable::contains(CALLSITE call_site) {
+	if (hashtable->count(call_site))
+		return true;
+	else 
+		return false;
+}
+
+
 
 

@@ -53,13 +53,6 @@ struct CallSiteEqual {
 */
 typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_profile_t>, CallSiteHash, CallSiteEqual> call_site_hashtable_t;
 
-/**
-*    @typedef call_site_end_hashtable_t
-*    @brief std::unordered_map used as a hashtable for matching CALLSITE keys
-			to CallSiteEndProfile values. 
-*/
-typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteProfile>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
-
 class CallSiteHashtable {
 
  public:
@@ -69,6 +62,7 @@ class CallSiteHashtable {
 	CallSiteHashtable* operator=(const CallSiteHashtable& rhs);
 	~CallSiteHashtable();
 
+	void print();
 
 	/**
 	*    @fn contains()

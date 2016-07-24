@@ -85,12 +85,6 @@ class ParasiteTracker {
 													TRD_ID thread_id);
 		void thread_pop();
 
-  		/**
-		*    @var work_table
-		*    @brief Shared pointer to a call_site_hashtable_t which tracks the work
-					for each call site. 
-		*/
-  		CallSiteHashtable work_table;
 
  	private:
 

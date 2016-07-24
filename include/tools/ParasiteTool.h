@@ -120,14 +120,6 @@ class ParasiteTool : public Tool {
 	std::unique_ptr<parasite_profile_t> parasite_profile;
 
 	/**
-	*    @var end_call_site_profile_hashtable 
-	*    @brief Contains a detailed profile of work and span measurements
-				for each call site after simulator finishes.
-	*/
-	std::unique_ptr<call_site_end_hashtable_t> end_call_site_profile_hashtable;
-
-
-	/**
 	*    @var lock_hashtable
 	*    @brief Maps lock IDs to the index of their respective functions in the 
 				function stack. 
