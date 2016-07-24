@@ -37,9 +37,6 @@ struct thread_frame_t {
 	*/
 	int head_function_index;
 
-
-	TIME last_longest_child_span;
-
 	/**
 	*    @var continuation_span
 	*    @brief Continuation span of this thread. 
@@ -93,7 +90,6 @@ struct thread_frame_t {
 	CallSiteHashtable continuation_table;
 
 	thread_frame_t():thread(0),
-					 last_longest_child_span(0),
 					 continuation_span(0),
 					 prefix_span(0), 
 					 lock_span(0), 
