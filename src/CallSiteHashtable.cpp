@@ -26,11 +26,6 @@ CallSiteHashtable::~CallSiteHashtable() {
 
 }
 
-CallSiteHashtable* CallSiteHashtable::operator=(const CallSiteHashtable& table_object) {
-	hashtable = table_object.hashtable;
-	return this;
-}
-
 void CallSiteHashtable::print() {
 
 	for (auto const &it : *hashtable) {

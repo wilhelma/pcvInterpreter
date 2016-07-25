@@ -256,7 +256,8 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 						stacks->bottomThreadIndex() - 1, 
 						(unsigned long long) ending_thread_frame->prefix_span);  
 		parent_thread_frame->longest_child_table.clear();
-		parent_thread_frame->longest_child_table = ending_thread_frame->prefix_table;
+		ending_thread_frame->prefix_table.add(&(ending_thread_frame->continuation_table));
+		parent_thread_frame->longest_child_table.add(&(ending_thread_frame->prefix_table));
 
 		// F.p += F.c
 		CallSiteHashtable prefix_table(parent_thread_frame->prefix_table);
