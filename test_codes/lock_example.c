@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 pthread_t tid[2];
 int counter;
@@ -16,10 +17,13 @@ void* doSomeThing(void *arg)
     counter += 1;
     printf("\n Job %d started\n", counter);
 
-    for(i=0; i<25;i++) {
-        i = i*1.1;
-        printf("four score and seven years ago \n");
+    double result = 0;
+
+    for (i=0; i<1000000; i++){
+       result = result + sin(i) * tan(i);
     }
+
+    printf("\n Job %d finished\n", counter);
 
     pthread_mutex_unlock(&lock);
 
@@ -28,7 +32,6 @@ void* doSomeThing(void *arg)
         printf("four score and seven years ago \n");
     }
 
-    printf("\n Job %d finished\n", counter);
     return NULL;
 }
 
