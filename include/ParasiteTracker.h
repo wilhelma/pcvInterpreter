@@ -78,26 +78,13 @@ class ParasiteTracker {
 		int bottomThreadIndex();
 
 		std::shared_ptr<function_frame_t> function_push(FUN_SG funSg,
-							   							CALLSITE callsiteID,
-							   							bool is_top_call_site_function);
+							   							CALLSITE callsiteID);
 		void function_pop();
 
 		std::shared_ptr<thread_frame_t> thread_push(int head_function_index,
 													TRD_ID thread_id);
 		void thread_pop();
 
-  		/**
-		*    @var work_table
-		*    @brief Shared pointer to a call_site_hashtable_t which tracks the work
-					for each call site. 
-		*/
-  		CallSiteHashtable work_table;
-
-		/**
-		*    @var highest_thread_index
-		*    @brief Tracks the highest thread index reached.
-		*/
-		int highest_thread_index;
 
  	private:
 

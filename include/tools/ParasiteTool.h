@@ -22,7 +22,6 @@
 #include "AccessEvent.h"
 #include "AcquireEvent.h"
 #include "CallEvent.h"
-#include "CallSiteEndProfile.h"
 #include "CallSiteProfile.h"
 #include "Event.h"
 #include "JoinEvent.h"
@@ -73,7 +72,7 @@ struct parasite_profile_t {
 				which is an upper bound of the program's speedup on any number
 				of processors.
 	*/
-	long long parallelism;
+	double parallelism;
 
 	parasite_profile_t(): work(0), span(0), lock_span(0), parallelism(0) {}
 };
@@ -102,33 +101,11 @@ class ParasiteTool : public Tool {
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
 	/**
-	*    @fn returnOperations()
-	*    @brief Performs Parasite algorithm operations needed for function returns, 
-				in both threadEnd and returnOfCalled events. 
-	*/
-	void returnOperations(TIME local_work);
-
-	/**
-	*    @fn syncOperations()
-	*    @brief Performs Parasite algorithm operations needed after all 
-				child threads have joined parent thread. 
-	*/
-	void syncOperations();
-
-	/**
 	*    @fn printProfile()
 	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
 		 @todo Decide on format to print out profile information.
 	*/
 	void printProfile();
-
-	/**
-	*    @fn getEndProfile()
-	*    @brief Converts the information contained in main_stack
-				to the end profiles for each call site in (end_call_site_profile_hashtable)
-				and the overall program (parasite_profile).
-	*/
-	void getEndProfile();
 	
 	/**
 	*    @var main_stack
@@ -141,14 +118,6 @@ class ParasiteTool : public Tool {
 	*    @brief Contains parallelism, work, and span after simulator finishes.
 	*/
 	std::unique_ptr<parasite_profile_t> parasite_profile;
-
-	/**
-	*    @var end_call_site_profile_hashtable 
-	*    @brief Contains a detailed profile of work and span measurements
-				for each call site after simulator finishes.
-	*/
-	std::unique_ptr<call_site_end_hashtable_t> end_call_site_profile_hashtable;
-
 
 	/**
 	*    @var lock_hashtable
@@ -217,18 +186,6 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
-	/**
-	*    @var code_is_in_main
-	*    @brief True if the code is the main thread has already been created.
-	*/
-	bool tool_in_main;
-
-	/**
-	*    @var calling_head_function
-	*    @brief True if the simulator has just started a thread, and is about to call 
-	*           the thread's heaad function. 
-	*/
-	bool calling_head_function;
 
  private:
 	// prevent generated functions --------------------------------------------

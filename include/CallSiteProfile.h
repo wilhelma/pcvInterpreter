@@ -40,72 +40,29 @@ struct call_site_profile_t {
 
     /**
     *    @var work
-    *    @brief Work of non-recursive executions of callsite. 
+    *    @brief Work of callsite. 
     */
-    uint64_t work;
+    TIME work;
 
     /**
     *    @var span
-    *    @brief Span of non-recursive executions of callsite.
+    *    @brief Span of callsite. 
     */
-    uint64_t span;
+    TIME span;
+
+    /**
+    *    @var parallelism
+    *    @brief Parallelism of callsite.  
+    */
+    double parallelism;
 
     /**
     *    @var count
-    *    @brief Number of non-recurisve invocations of callsite. 
+    *    @brief Number of invocations of callsite. 
     */
-    uint64_t count;
+    int count;
 
-    /**
-    *    @var top_work
-    *    @brief Work of top callsite invocations.
-    */
-    uint64_t top_work;
-
-    /**
-    *    @var top_lock_span
-    *    @brief Lock span of top callsite invocations.
-    */
-    uint64_t top_lock_span;
-
-    /**
-    *    @var top_span
-    *    @brief Span of top callsite invocations.
-    */
-    uint64_t top_span;
-
-    /**
-    *    @var top_count
-    *    @brief Number of top invocations of callsite.
-    */
-    int top_count;
-
-
-    /**
-    *    @var local_work
-    *    @brief Local work of callsite (excluding work of functions callsite invokes).
-    */
-    uint64_t local_work;
-
-    /**
-    *    @var local_lock_span
-    *    @brief Local lock span of callsite (excluding lock span of functions callsite invokes).
-    */
-    uint64_t local_lock_span;
-
-    /**
-    *    @var local_span
-    *    @brief Local span of callsite (excluding span of functions callsite invokes).
-    */
-    uint64_t local_span;
-
-    /**
-    *    @var local_count
-    *    @brief Local count of callsite invocations (excluding callsite invocations from functions callsite invokes).
-    */
-    int  local_count;
-
-    call_site_profile_t() : call_site(0) {}  
+    call_site_profile_t() : call_site(0), work(0), span(0), parallelism(0), count(0) {}  
 };
 
 class CallSiteProfile {
@@ -113,6 +70,8 @@ class CallSiteProfile {
  public:
     explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
     ~CallSiteProfile();
+
+    void print();
 
     /**
     *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add)
@@ -124,9 +83,8 @@ class CallSiteProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_profile(CALLSITE call_site, bool is_top_function, 
-                                                    uint64_t work, uint64_t span,
-                                                    uint64_t local_work, uint64_t local_span);
+    void init_callsite_profile(CALLSITE call_site, TIME work, TIME span);
+    
     /**
     *    @var prof
     *    @brief The call_site_profile_t that the profile's methods act on. 

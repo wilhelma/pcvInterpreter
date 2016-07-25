@@ -14,41 +14,37 @@
 CallSiteProfile::~CallSiteProfile() {}
 
 CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_profile_t> init_profile) {
-  prof = init_profile;
+	prof = init_profile;
 }
 
 void CallSiteProfile::add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add) {
-  prof->local_work += profile_to_add->local_work;
-  prof->local_span += profile_to_add->local_span;
-  prof->local_count += profile_to_add->local_count;
-  prof->work += profile_to_add->work;
-  prof->span += profile_to_add->span;
-  prof->count += profile_to_add->count;
-  prof->top_work += profile_to_add->top_work;
-  prof->top_span += profile_to_add->top_span;
-  prof->top_count += profile_to_add->top_count;
+	prof->work += profile_to_add->work;
+	prof->span += profile_to_add->span;
+	prof->count += profile_to_add->count;
+	prof->parallelism = static_cast<double>(prof->work)/static_cast<double>(prof->span);
 }
 
 void CallSiteProfile::init_callsite_profile(CALLSITE call_site,
-        						                         bool is_top_function,
-                                             uint64_t work, uint64_t span,
-                                             uint64_t local_work, uint64_t local_span) {
-    prof->call_site = call_site;
-    prof->local_count = 0;
-    prof->local_work = local_work;
-    prof->local_span = local_span;
+                                            TIME work, TIME span) {
+	prof->call_site = call_site;
+	prof->work = work;
+	prof->span = span;
+	prof->count = 1;
 
-    prof->count = 1;
+	if (span != 0)
+		prof->parallelism = static_cast<double>(work)/static_cast<double>(span);
+	else
+		prof->parallelism = 0;
+}
 
-    if (is_top_function)
-        prof->top_count = 1;
-    else
-        prof->top_count = 0;
-
-    prof->work = work;
-    prof->span = span;
-    prof->top_work = work;
-    prof->top_span = span;
+void CallSiteProfile::print() {
+	printf(" ================ \n");
+	printf("CALL SITE %d \n", static_cast<int>(prof->call_site));
+	printf("WORK is %llu \n", static_cast<unsigned long long>(prof->work));
+	printf("SPAN is %llu \n", static_cast<unsigned long long>(prof->span));
+	printf("COUNT is %d \n", prof->count);
+	printf("PARALLELISM is %f \n", static_cast<double>(prof->work)/static_cast<double>(prof->span));
+	printf("================\n");
 }
 
 

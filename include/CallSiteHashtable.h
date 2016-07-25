@@ -20,7 +20,6 @@
 #include <string>
 
 #include "CallSiteProfile.h"
-#include "CallSiteEndProfile.h"
 #include "Types.h"
 
 /**
@@ -54,13 +53,6 @@ struct CallSiteEqual {
 */
 typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_profile_t>, CallSiteHash, CallSiteEqual> call_site_hashtable_t;
 
-/**
-*    @typedef call_site_end_hashtable_t
-*    @brief std::unordered_map used as a hashtable for matching CALLSITE keys
-			to CallSiteEndProfile values. 
-*/
-typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteEndProfile>, CallSiteHash, CallSiteEqual>  call_site_end_hashtable_t;
-
 class CallSiteHashtable {
 
  public:
@@ -70,6 +62,7 @@ class CallSiteHashtable {
 	CallSiteHashtable* operator=(const CallSiteHashtable& rhs);
 	~CallSiteHashtable();
 
+	void print();
 
 	/**
 	*    @fn contains()
@@ -92,20 +85,10 @@ class CallSiteHashtable {
 
 	/**
 	*    @fn add_data(...)
-	*    @brief Adds work, span, local_work, and local_span to the profile for
+	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_data(bool is_top_function, CALLSITE call_site,
-                  double work, double span,
-                  double local_work, double local_span);
-
-	/**
-	*    @fn add_local_data(...)
-	*    @brief Adds local_work and local_span to the profile for
-			    call_site contained in hashtable.
-	*/
-	void add_local_data(bool is_top_function, CALLSITE call_site,
-	                    double local_work, double local_span);
+	void add_data(CALLSITE call_site, TIME work, TIME span);
 
 	/**
 	*    @var hashtable

@@ -36,13 +36,6 @@ struct function_frame_t {
 	FUN_SG function_signature;
 
 	/**
-	*    @var is_top_call_site_function
-	*    @brief TRUE if the function is the top function of its call site.
-	*/
-	bool is_top_call_site_function;
-
-
-	/**
 	*    @var local_work
 	*    @brief Local work of the function.
 	*/
@@ -56,7 +49,8 @@ struct function_frame_t {
 
 	/**
 	*    @var running_work
-	*    @brief The running work of the function's call site. 
+	*    @brief The running work of the function's call site. Same as the running
+				span of the function. 
 	*/
 	TIME running_work;
 
@@ -66,14 +60,8 @@ struct function_frame_t {
 	*/
 	TIME running_lock_span;
 
-	/**
-	*    @var running_span
-	*    @brief The running span of the function's call site. 
-	*/
-	TIME running_span;
-
 	function_frame_t() : call_site(0), local_work(0), local_lock_span(0),
-						 running_work(0), running_lock_span(0), running_span(0)
+						 running_work(0), running_lock_span(0)
 	{}
 };
 
@@ -92,8 +80,7 @@ class FunctionStack {
 		*/
 		void init_frame(int function_index, 
 					   FUN_SG funSg,
-					   CALLSITE callsiteID,
-					   bool is_top_call_site_function);
+					   CALLSITE callsiteID);
 
 		/**
 		*    @fn push()
@@ -101,8 +88,7 @@ class FunctionStack {
 					vector.
 		*/
 		std::shared_ptr<function_frame_t> push(FUN_SG funSg, 
-											   CALLSITE callsiteID, 
-											   bool is_top_call_site_function);
+											   CALLSITE callsiteID);
 
 		/**
 		*    @fn pop()
@@ -110,13 +96,6 @@ class FunctionStack {
 					vector - keeps frame on stack, but decrements index
 		*/
 		void pop();
-  		/**
-		*    @var bottom_index
-		*    @brief The index of the simulator's bottom function in the
-					function stack vector. 
-		*/
-  		int bottom_index;
-
 
  		/**
 		*    @var function_stack
