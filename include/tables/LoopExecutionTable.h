@@ -17,9 +17,6 @@
 #include "Types.h"
 
 class LoopExecutionTable final: public DBTable<LOE_ID, const loopExecution_t> {
-//	public:
-//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
-//		{ return insert(i.operator*<loopExecution_t>()); }
 };
 
 #endif

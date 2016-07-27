@@ -41,7 +41,7 @@
 #include "SegmentTable.h"
 #include "ThreadTable.h"
 
-//#include <sqlite3.h>
+#include <sqlite3.h>
 #include <map>
 #include <vector>
 #include <string.h>

@@ -14,29 +14,11 @@ set(SRC_LIST
 	main.cpp
 	ThreadMgr.cpp)
 
-#	SAAPRunner.cpp
-
 set(SRC_LIST ${SRC_LIST}
 	database/DBManager.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tables/Call.cpp)
-
-#database/SQLStatementIterator.cpp)
-
-#set(SRC_LIST ${SRC_LIST}
-#	tables/AccessTable.cpp
-#	tables/Call.cpp
-#	tables/CallTable.cpp
-#	tables/FileTable.cpp
-#	tables/FunctionTable.cpp
-#	tables/InstructionTable.cpp
-#	tables/LoopExecutionTable.cpp
-#	tables/LoopIterationTable.cpp
-#	tables/LoopTable.cpp
-#	tables/ReferenceTable.cpp
-#	tables/SegmentTable.cpp
-#	tables/ThreadTable.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tools/DebugTool.cpp

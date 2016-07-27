@@ -17,9 +17,6 @@
 #include "Types.h"
 
 class ThreadTable final: public DBTable<TRD_ID, const thread_t> {
-//	public:
-//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
-//		{ return insert(i.operator*<thread_t>()); }
 };
 
 #endif

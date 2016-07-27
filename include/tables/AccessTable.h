@@ -23,13 +23,13 @@ class AccessTable final: public DBTable<ACC_ID, const access_t> {
 		virtual const std::pair<AccessTable::iterator, bool> insert(const access_t& entry) override final
 		{
 			_insAccessMap[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-			return map_.insert(typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
+			return Map_.insert(typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
 		}
 
 		virtual AccessTable::iterator insert(AccessTable::iterator hint, const access_t& entry) override final
 		{
 			_insAccessMap[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-			return map_.insert(hint, typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
+			return Map_.insert(hint, typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
 		}
 
 		typedef std::vector<ACC_ID> accessVector_t;

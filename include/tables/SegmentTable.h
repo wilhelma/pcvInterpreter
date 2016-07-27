@@ -17,9 +17,6 @@
 #include "Types.h"
 
 class SegmentTable final: public DBTable<SEG_ID, const segment_t> {
-//	public:
-//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
-//		{ return insert(i.operator*<segment_t>()); }
 };
 
 #endif

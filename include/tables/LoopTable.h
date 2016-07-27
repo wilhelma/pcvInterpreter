@@ -17,9 +17,6 @@
 #include "Types.h"
 
 class LoopTable final: public DBTable<LOP_ID, const loop_t> {
-//	public:
-//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
-//		{ return insert(i.operator*<loop_t>()); }
 };
 
 #endif

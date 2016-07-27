@@ -17,9 +17,6 @@
 #include "Types.h"
 
 class ReferenceTable final: public DBTable<REF_ID, const reference_t> {
-//	public:
-//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
-//		{ return insert(i.operator*<reference_t>()); }
 };
 
 #endif
