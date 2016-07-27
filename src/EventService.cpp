@@ -12,7 +12,7 @@
 #include <iostream>
 
 bool EventService::publish(const NewThreadEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::NEWTHREAD) != 0) 
 			it.first->NewThread(event);
 
@@ -20,7 +20,7 @@ bool EventService::publish(const NewThreadEvent *event) const {
 }
 
 bool EventService::publish(const ThreadEndEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::THREADEND) != 0)
 			it.first->ThreadEnd(event);
 
@@ -28,7 +28,7 @@ bool EventService::publish(const ThreadEndEvent *event) const {
 }
 
 bool EventService::publish(const JoinEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::JOIN) != 0)
 			it.first->Join(event);
 
@@ -36,7 +36,7 @@ bool EventService::publish(const JoinEvent *event) const {
 }
 
 bool EventService::publish(const AcquireEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::ACQUIRE) != 0)
 			it.first->Acquire(event);
 
@@ -44,7 +44,7 @@ bool EventService::publish(const AcquireEvent *event) const {
 }
 
 bool EventService::publish(const ReleaseEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::RELEASE) != 0)
 			it.first->Release(event);
 
@@ -52,7 +52,7 @@ bool EventService::publish(const ReleaseEvent *event) const {
 }
 
 bool EventService::publish(const ReturnEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
     if ((it.second.events & Events::RETURN) != 0)
 			it.first->Return(event);
 
@@ -60,7 +60,7 @@ bool EventService::publish(const ReturnEvent *event) const {
 }
 
 bool EventService::publish(const AccessEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::ACCESS) != 0)
 			it.first->Access(event);
 
@@ -68,17 +68,9 @@ bool EventService::publish(const AccessEvent *event) const {
 }
 
 bool EventService::publish(const CallEvent *event) const {
-	for (const auto& it : _observers)
+	for (const auto& it : Observers_)
 		if ((it.second.events & Events::CALL) != 0)
 			it.first->Call(event);
 
 	return true;
-}
-
-bool EventService::subscribe(Tool* tool, const Filter* const filter, Events events) {
-	return _observers.insert(_observers_t::value_type(tool, _observer(filter, events))).second;
-}
-
-bool EventService::unsubscribe(Tool* tool) {
-	return (_observers.erase(tool) > 0);
 }

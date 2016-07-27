@@ -30,8 +30,12 @@ class CallStack {
 			Stack_.pop_back();
 			return call;
 		}
-		/// Push a value on top of the stack
-		void push(CAL_ID id) { Stack_.push_back(id); }
+
+		/// Push a value on top of the stack (copy it)
+		void push(const CAL_ID& id) { Stack_.push_back(id); }
+
+		/// Push a value on top of the stack (move it)
+		void push(CAL_ID&& id) { Stack_.push_back(id); }
 
 		/// Check whether the stack is empty
 		const bool isEmpty() const { return Stack_.empty(); }

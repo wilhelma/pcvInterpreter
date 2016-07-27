@@ -36,7 +36,7 @@ enum class FunctionType : uint32_t  {
 };
 
 struct function_t {
-    FUN_ID sql_id;
+    FUN_ID id;
     FUN_SG signature;
     FunctionType type;
     FIL_ID file_id;
@@ -48,7 +48,7 @@ struct function_t {
                FunctionType fnType,
                FIL_ID fileId,
                LIN_NO lineNumber) noexcept
-        : sql_id(sqlID), signature(fnSignature), type(fnType),
+        : id(sqlID), signature(fnSignature), type(fnType),
           file_id(fileId), line_number(lineNumber)
     {
     }

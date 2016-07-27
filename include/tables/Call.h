@@ -17,7 +17,7 @@
 struct call_t {
     static const CAL_ID MAIN;// = static_cast<CAL_ID>(1);
 
-    CAL_ID sql_id;
+    CAL_ID id;
     TRD_ID thread_id;
     FUN_ID function_id;
     INS_ID instruction_id;
@@ -31,7 +31,7 @@ struct call_t {
            INS_ID instructionID,
            TIME startTime,
            TIME endTime) noexcept
-        : sql_id(sqlID), thread_id(threadID),
+        : id(sqlID), thread_id(threadID),
           function_id(functionID), instruction_id(instructionID),
           start_time(startTime), end_time(endTime)
     {

@@ -12,15 +12,14 @@
 #ifndef  LOOP_EXECUTION_TABLE_H_
 #define  LOOP_EXECUTION_TABLE_H_
 
-#include <sqlite3.h>
-
 #include "DBTable.h"
 #include "LoopExecution.h"
 #include "Types.h"
 
-class LoopExecutionTable: public DBTable<LOE_ID, const loopExecution_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class LoopExecutionTable final: public DBTable<LOE_ID, const loopExecution_t> {
+//	public:
+//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
+//		{ return insert(i.operator*<loopExecution_t>()); }
 };
 
 #endif

@@ -15,25 +15,25 @@
 #include <string>
 
 /// Struct to prevent implicit conversion among types.
-/// \tparam T The type
-/// \tparam n A dumb integer to prevent casts
-/// \todo When used with `T = std::string`,
-/// `string` methods cannot be called.
+/// @tparam T The type
+/// @tparam n A dumb integer to prevent casts
+/// @todo When used with `T = std::string`,
+///// `string` methods cannot be called.
 template <typename T, size_t n>
 struct StrongTypedef {
-	/// \brief Constructor
-	/// It's explicit in order to prevent implicit casts
+	/// @brief Constructor.
+	/// @details It's `explicit` in order to prevent implicit casts.
 	constexpr explicit StrongTypedef(T value) noexcept
 		: Value_(value)
 		{}
 
-	/// \brief Copy constructor
-	constexpr StrongTypedef(const StrongTypedef& input) noexcept
+	/// @brief Copy constructor
+	constexpr StrongTypedef(const StrongTypedef<T,n>& input) noexcept
 		: Value_(input.Value_)
 		{}
 
-	/// \brief Implicit conversion operator.
-	/// A return by value is used sice I assume the
+	/// @brief Implicit conversion operator.
+	/// @details A return by value is used sice I assume the
 	/// underlying type should be a primitive.
 	operator const T() const { return Value_; }
 

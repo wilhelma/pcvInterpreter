@@ -15,13 +15,13 @@
 #include "Types.h"
 
 struct loop_t {
-    LOP_ID sql_id;
+    LOP_ID id;
     unsigned line_number;
 
     explicit
     loop_t(LOP_ID sqlID,
            int lineNumber) noexcept
-        : sql_id(sqlID), line_number(lineNumber)
+        : id(sqlID), line_number(lineNumber)
     {}
 
 };

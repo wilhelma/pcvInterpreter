@@ -26,34 +26,65 @@
 /// \class EventService (observable)
 class EventService {
 public:
-	EventService() {}
+	/// (Default) constructor.
+	EventService() {};
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const AccessEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const AcquireEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const CallEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const JoinEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const NewThreadEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ReleaseEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ReturnEvent *event) const;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ThreadEndEvent *event) const;
-	bool subscribe(Tool* tool, const Filter* const filter, Events events);
-	bool unsubscribe(Tool* tool);
+
+	/// @brief Subscribes a tool to the `EventService`.
+	bool subscribe(Tool* tool, const Filter* const filter, Events events) {
+		return Observers_.insert( std::map<Tool*, const Observer>::value_type(
+					tool, Observer(filter, events))).second; }
+
+	/// @brief Unsubscribes a tool to the `EventService`.
+	bool unsubscribe(Tool* tool)
+	{ return (Observers_.erase(tool) > 0); }
+		
 
 private:
 	// structures
-	struct _observer {
+	struct Observer {
 		const Filter* const filter;
 		Events events;
 
-		explicit _observer(const Filter* const f, Events e) noexcept
+		explicit Observer(const Filter* const f, Events e) noexcept
 			: filter(f), events(e)
 		{}
 	};
 
-	// types
-	typedef std::map<Tool*, const _observer> _observers_t;
-
-	// private members
-	_observers_t _observers;
+	/// Maps every registered tool to its filter and the events
+	/// it subscribed for.
+	std::map<Tool*, const Observer> Observers_;
 
 	// prevent generated functions
 	EventService(const EventService&);

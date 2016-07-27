@@ -12,15 +12,14 @@
 #ifndef  THREAD_TABLE_H_
 #define  THREAD_TABLE_H_
 
-#include <sqlite3.h>
-
 #include "DBTable.h"
 #include "Thread.h"
 #include "Types.h"
 
-class ThreadTable: public DBTable<TRD_ID, const thread_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class ThreadTable final: public DBTable<TRD_ID, const thread_t> {
+//	public:
+//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
+//		{ return insert(i.operator*<thread_t>()); }
 };
 
 #endif

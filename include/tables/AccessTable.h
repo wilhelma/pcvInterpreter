@@ -12,16 +12,25 @@
 #ifndef  ACCESS_TABLE_H_
 #define  ACCESS_TABLE_H_
 
-#include <sqlite3.h>
-#include <vector>
-
 #include "Access.h"
 #include "DBTable.h"
 #include "Types.h"
 
-class AccessTable: public DBTable<ACC_ID, const access_t> {
+#include <vector>
+
+class AccessTable final: public DBTable<ACC_ID, const access_t> {
 	public:
-		virtual const std::pair<AccessTable::iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+		virtual const std::pair<AccessTable::iterator, bool> insert(const access_t& entry) override final
+		{
+			_insAccessMap[entry.instruction_id].push_back(entry.id); // create 1:n associations 
+			return map_.insert(typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
+		}
+
+		virtual AccessTable::iterator insert(AccessTable::iterator hint, const access_t& entry) override final
+		{
+			_insAccessMap[entry.instruction_id].push_back(entry.id); // create 1:n associations 
+			return map_.insert(hint, typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
+		}
 
 		typedef std::vector<ACC_ID> accessVector_t;
 		typedef std::map<INS_ID, accessVector_t> insAccessMap_t;

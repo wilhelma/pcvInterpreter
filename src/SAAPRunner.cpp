@@ -15,12 +15,9 @@ bool SAAPRunner::registerTool(Tool* tool,
 							  const Filter* filter,
 							  enum Events events)
 {
-	_interpreter->getEventService()->subscribe(tool, filter, events);
+	Interpreter_->getEventService()->subscribe(tool, filter, events);
 	return true;
 }
 
 bool SAAPRunner::removeTool(Tool* tool)
-{
-	_interpreter->getEventService()->unsubscribe(tool);
-	return true;
-}
+{ Interpreter_->getEventService()->unsubscribe(tool); }

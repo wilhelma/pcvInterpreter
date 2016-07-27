@@ -17,7 +17,10 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 
+#include "SQLStatementIterator.h"
+
 #include "DBTable.h"
+#include "DBManager.h"
 
 #include "LockMgr.h"
 #include "ThreadMgr.h"
@@ -43,46 +46,34 @@
 #include "AccessInfo.h"
 
 
-int DBInterpreter::loadDB(const char* path, sqlite3 **db) const {
-    if (sqlite3_open_v2(path, db,
-            SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL) != SQLITE_OK) {
-        BOOST_LOG_TRIVIAL(fatal) << "Can't open " << path << " - error: "
-                                 << sqlite3_errmsg(*db);
-        sqlite3_close(*db);
-        return IN_ABORT;
-    } else {
-        BOOST_LOG_TRIVIAL(trace) << "successfully opened " << path;
-        return IN_OK;
-    }
+template<typename IdT, typename T>
+inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
+	std::copy(SQLStatementIterator<T>(db.query(query_string)),
+			  SQLStatementIterator<T>::end(), inserter(table));
 }
 
-int DBInterpreter::importDB(sqlite3 **db) {
-
-    int rc;
+void DBInterpreter::importDB(const std::string& DBPath) { 
+	// try to open the database
+	DBManager db;
+	try {
+		db.open(DBPath);
+	} catch (const SQLException& e) {
+		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		std::abort();
+	}
 
     // Read from all the tables in the database
-    if ((rc = fillGeneric("SELECT * from Access;",
-                          db, &accessTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Call;",
-                          db, &callTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from File;",
-                          db, &fileTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Function;",
-                          db, &functionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Instruction;",
-                          db, &instructionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Loop;",
-                          db, &loopTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopExecution;",
-                          db, &loopExecutionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopIteration;",
-                          db, &loopIterationTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Reference;",
-                          db, &referenceTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Segment;",
-                          db, &segmentTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Thread;",
-                          db, &threadTable)) != 0) return rc;
+    fill("SELECT * from Access;",        db, accessTable);
+    fill("SELECT * from Call;",          db, callTable);
+    fill("SELECT * from File;",          db, fileTable);
+    fill("SELECT * from Function;",      db, functionTable);
+    fill("SELECT * from Instruction;",   db, instructionTable);
+    fill("SELECT * from Loop;",          db, loopTable);
+    fill("SELECT * from LoopExecution;", db, loopExecutionTable);
+    fill("SELECT * from LoopIteration;", db, loopIterationTable);
+    fill("SELECT * from Reference;",     db, referenceTable);
+    fill("SELECT * from Segment;",       db, segmentTable);
+    fill("SELECT * from Thread;",        db, threadTable);
 
     BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
     BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
@@ -95,44 +86,25 @@ int DBInterpreter::importDB(sqlite3 **db) {
     BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
     BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
     BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
-    return 0;
-}
-
-int DBInterpreter::closeDB(sqlite3 **db) const {
-
-    if ( sqlite3_close(*db) != SQLITE_OK)
-        BOOST_LOG_TRIVIAL(fatal) <<  "Can't close database - error: "
-                                 <<  sqlite3_errmsg(*db);
-
-    return IN_OK;
 }
 
 /// The main process routine. Loops over instructions.
-int DBInterpreter::process() {
-
-    sqlite3 *db;
-
-    // open the database
-    if ( loadDB(_dbPath, &db) != IN_OK ) {
-        return IN_ABORT;
-    }
-
-    // fill the internal maps with database entries
-    int rc = importDB(&db);
-    if ( rc != IN_OK) {
-        BOOST_LOG_TRIVIAL(error) << "Can't fill internal structures."
-                                 << " Error code: " << rc;
-        return IN_ABORT;
-    }
+int DBInterpreter::process(const std::string& DBPath) {
+	// fill internal tables with the database entries
+	try {
+		importDB(DBPath);
+	} catch (const SQLException& e) {
+		// this should only happen if the database can't be closed
+		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		std::abort();
+	}
 
     // process database entries
     for (const auto& instruction : instructionTable)
         processInstruction(instruction.second);
 
-    closeDB(&db);
     return 0;
 }
-
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	auto search = segmentTable.find(ins.segment_id);
@@ -150,9 +122,9 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	bool found = false;
 	for (const auto& it : callTable) {
 		// if there's a call whose instruction id is the same as
-		// ins.instruction_id, get its id
-		if (it.second.instruction_id == ins.instruction_id) {
-			call_id = it.second.sql_id;
+		// ins.id, get its id
+		if (it.second.id == ins.id) {
+			call_id = it.second.id;
 			found = true;
 			break;
 		}
@@ -161,10 +133,11 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// if the iterator reached the end, no entry has been found in callT_
 	if (!found) {
 		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
-			<< ins.instruction_id;
+			<< ins.id;
 		return static_cast<CAL_ID>(IN_NO_ENTRY);
 	}
 
+	std::cout << "call_id = " << call_id << std::endl;
 	return call_id;
 }
 
@@ -224,7 +197,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 			case InstructionType::FORK:
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
-					if (ins.instruction_id == thread.create_instruction_id) {
+					if (ins.id == thread.create_instruction_id) {
 						search_call = callTable.find(search_segment->second.call_id);
 						if (search_call != callTable.cend())
 							processFork(ins, search_segment->second, search_call->second, thread);
@@ -234,7 +207,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 			case InstructionType::JOIN:
 				for (const auto& it : threadTable) {
 					const thread_t& thread = it.second;
-					if (ins.instruction_id == thread.join_instruction_id) {
+					if (ins.id == thread.join_instruction_id) {
 						search_call = callTable.find(search_segment->second.call_id);
 						if (search_call != callTable.cend())
 							processJoin(ins, search_segment->second, search_call->second, thread);
@@ -249,7 +222,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 	if (accessFunc != nullptr) {
 		// loop over all memory accesses of the instruction
     const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
-    const auto& avIt = insAccessMap.find(ins.instruction_id);
+    const auto& avIt = insAccessMap.find(ins.id);
     if (avIt != insAccessMap.end()) {
       for (const auto& it : avIt->second) {
 
@@ -324,7 +297,7 @@ int DBInterpreter::processCall(CAL_ID callId,
 				CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
 						(TIME) (call.end_time - call.start_time),
 						(FUN_SG)search->second.signature,
-						(SEG_ID) call.sql_id, // XXX BUG segment or call?
+						(SEG_ID) call.id, // XXX BUG segment or call?
 						search->second.type,
 						(FIL_PT)searchFile->second.file_name,
 						(FIL_PT)searchFile->second.file_path);
@@ -388,7 +361,7 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
     ShadowThread* thread = threadMgr_->getThread(call.thread_id);
     AccessInfo info( access.access_type,
                      var,
-                     instruction.instruction_id);
+                     instruction.id);
     AccessEvent event( thread, &info );
     _eventService->publish( &event );
 
@@ -458,32 +431,3 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     return 0;
 }
 
-template<typename IdT, typename T>
-int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table) {
-    sqlite3_stmt *sqlstmt = 0;
-
-   /* Execute SQL statement */
-   if (sqlite3_prepare_v2(*db, sql, strlen(sql), &sqlstmt, NULL) != SQLITE_OK) {
-       BOOST_LOG_TRIVIAL(error) << "Error preparing db: " << sqlite3_errmsg(*db);
-       return 1;
-   }
-
-   // cycles through the entries till the database is over
-   bool reading = true;
-   while (reading) {
-       switch(sqlite3_step(sqlstmt)) {
-       case SQLITE_ROW:
-           // process the statement with the function passed as argument
-           table->fill(sqlstmt);
-           break;
-       case SQLITE_DONE:
-           reading = false;
-           break;
-       default:
-           BOOST_LOG_TRIVIAL(trace) << "Iterating db failed!";
-           return 2;
-       }
-   }
-
-   return 0;
-}

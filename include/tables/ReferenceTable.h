@@ -12,15 +12,14 @@
 #ifndef  REFERENCE_TABLE_H_
 #define  REFERENCE_TABLE_H_
 
-#include <sqlite3.h>
-
 #include "DBTable.h"
 #include "Reference.h"
 #include "Types.h"
 
-class ReferenceTable: public DBTable<REF_ID, const reference_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class ReferenceTable final: public DBTable<REF_ID, const reference_t> {
+//	public:
+//		virtual const std::pair<iterator, bool> fill(const SQLStatementIterator& i) override final
+//		{ return insert(i.operator*<reference_t>()); }
 };
 
 #endif

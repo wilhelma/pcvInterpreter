@@ -15,14 +15,14 @@
 #include "Types.h"
 
 struct file_t {
-    FIL_ID sql_id;
+    FIL_ID id;
     FIL_PT file_path;
     FIL_PT file_name; // retrieved from file_path
 
     explicit
     file_t(FIL_ID sqlID,
            FIL_PT filePath) noexcept
-        : sql_id(sqlID), file_path(filePath)
+        : id(sqlID), file_path(filePath)
     {
         retrieveFileName( filePath );
     }

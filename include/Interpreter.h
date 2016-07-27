@@ -12,6 +12,8 @@
 #include "fwd/LockMgr.h"
 #include "fwd/ThreadMgr.h"
 
+#include <string>
+
 /******************************************************************************
  * Constants and Types
  *****************************************************************************/
@@ -28,10 +30,10 @@ typedef enum {
 class Interpreter {
 	public:
 		Interpreter(LockMgr* lockMgr, ThreadMgr* threadMgr, const char* logFile); 
-		virtual int process() = 0;
 		void initLogger() const;
 
 		virtual ~Interpreter() {}
+		virtual int process(const std::string& DBPath) = 0;
 		virtual EventService* getEventService() = 0;
 
 	protected:

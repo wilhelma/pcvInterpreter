@@ -41,7 +41,7 @@
 #include "SegmentTable.h"
 #include "ThreadTable.h"
 
-#include <sqlite3.h>
+//#include <sqlite3.h>
 #include <map>
 #include <vector>
 #include <string.h>
@@ -53,12 +53,11 @@
  *****************************************************************************/
 class DBInterpreter : public Interpreter {
 public:
-	DBInterpreter(const char* DBPath,
-			      const char* logFile, 
+	DBInterpreter(const char* logFile, 
 				  EventService *service,
 				  LockMgr *lockMgr,
 				  ThreadMgr *threadMgr)
-		: Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
+		: Interpreter(lockMgr, threadMgr, logFile),
 		  _logFile(logFile), _eventService(service)
   {
     callStack_.push(call_t::MAIN);
@@ -66,7 +65,7 @@ public:
 
 	virtual ~DBInterpreter() override final {};
 
-	virtual int process() override final;
+	virtual int process(const std::string& DBPath) override final;
 	virtual EventService* getEventService() override final { return _eventService; };
 
 private:
@@ -97,7 +96,6 @@ private:
 
 	CallStack callStack_;
   
-	const char* _dbPath;
 	const char* _logFile;
 	EventService *_eventService;
 	shadowVarMap_t _shadowVarMap;
@@ -106,12 +104,7 @@ private:
 	static InstructionType transformInstrType(const instruction_t& ins);
 	static ReferenceType getVarType(ReferenceType memType);
 
-	int loadDB(const char* path, sqlite3 **db) const;
-	int importDB(sqlite3 **db);
-	int closeDB(sqlite3 **db) const;
-
-	template<typename IdT, typename T>
-	int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
+	void importDB(const std::string& DBPath);
 
 	int processReturn(const instruction_t& ins);
 

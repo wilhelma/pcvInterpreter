@@ -21,7 +21,7 @@ enum class SegmentType : bool {
 };
 
 struct segment_t {
-    SEG_ID sql_id;
+    SEG_ID id;
     CAL_ID call_id;
     SegmentType segment_type;
     LOI_ID loop_pointer;
@@ -31,7 +31,7 @@ struct segment_t {
               CAL_ID callId,
               SegmentType segmentType,
               LOI_ID loopPointer) noexcept
-        : sql_id(sqlID), call_id(callId),
+        : id(sqlID), call_id(callId),
           segment_type(segmentType),
           loop_pointer(loopPointer)
     {
