@@ -49,7 +49,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 
-// helper function to initialize the log
+// Helper function to initialize the log.
 void initialize_logger(const std::string& logFileName) {
 	namespace logging = boost::log;
 	namespace expr    = boost::log::expressions;
@@ -65,7 +65,6 @@ void initialize_logger(const std::string& logFileName) {
 			);
 
 	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
-
 	logging::add_common_attributes();
 }
 
@@ -119,7 +118,6 @@ void DBInterpreter::importDB(const std::string& DBPath) {
     BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << ThreadTable_.size();
 }
 
-/// The main process routine. Loops over instructions.
 ErrorCode DBInterpreter::process(const std::string& DBPath) {
 	// fill internal tables with the database entries
 	try {
@@ -168,7 +166,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 
-	std::cout << "call_id = " << call_id << std::endl;
+	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
 	return call_id;
 }
 
@@ -194,7 +192,9 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins) {
 		}
 	}
 
-	CallStack_.push(getCallID(ins));
+	CAL_ID call_id(getCallID(ins));
+	std::cerr << "[processReturn] call_id = " << call_id << std::endl;
+	CallStack_.push(call_id);
 	return ErrorCode::OK;
 }
 
