@@ -89,7 +89,7 @@ void ParasiteTool::printCallSiteProfiles() {
 
 void ParasiteTool::printProfile() {
 
-	//printCallSiteProfiles();
+	printCallSiteProfiles();
 	printOverallProfile();
 }
 
@@ -136,9 +136,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 		bottom_thread_frame->continuation_span += local_work;
 		std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
 		bottom_function_frame->local_work += local_work;
-		printf("HERE IN \n");
 		work_table->add_data(bottom_function_frame->call_site, local_work);
-		printf("HERE OUT \n");
 	}
 
 	last_event_time = create_time;

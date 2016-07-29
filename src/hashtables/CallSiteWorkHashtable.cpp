@@ -58,14 +58,11 @@ void CallSiteWorkHashtable::add(CallSiteWorkHashtable* hashtable_object) {
 }
 
 void CallSiteWorkHashtable::add_data(CALLSITE call_site, TIME work) {
-	printf("HERE 0 \n");
 	if (hashtable->count(call_site)) {
-		printf("HERE 1 \n");
 		CallSiteWorkProfile profile(hashtable->at(call_site));
   		profile.prof->count += 1;
   		profile.prof->work += work;
 	} else {
-		printf("HERE 2 \n");
 		std::shared_ptr<call_site_work_profile_t> new_ptr(new call_site_work_profile_t());
 		CallSiteWorkProfile new_profile(new_ptr);
 		new_profile.init_callsite_profile(call_site, work);

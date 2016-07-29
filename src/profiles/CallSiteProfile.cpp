@@ -18,6 +18,8 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
  							     std::shared_ptr<call_site_work_profile_t> 
  							      								 work_profile) {
 
+	std::shared_ptr<call_site_profile_t> prf(new call_site_profile_t());
+	prof = prf;
 	prof->call_site = work_profile->call_site;
 	prof->work = work_profile->work;
 	prof->span = span_profile->span;
