@@ -13,7 +13,7 @@
 
 #include "Event.h"
 #include "EventService.h"
-#include "Interpreter.h"
+#include "DBInterpreter.h"
 
 
 #include <string>
@@ -22,7 +22,7 @@
 class SAAPRunner {
 public:
 	/// Constructor.
-	SAAPRunner(Interpreter *interpreter) :
+	SAAPRunner(DBInterpreter *interpreter) :
 		Interpreter_(interpreter)
 	{}
 
@@ -48,7 +48,7 @@ private:
 //	/// Private unique pointer to the `Interpreter`.
 //	std::unique_ptr<Interpreter> Interpreter_;
 
-	Interpreter* Interpreter_;
+	DBInterpreter* Interpreter_;
 
 	// prevent generated functions
 	SAAPRunner(const SAAPRunner&);

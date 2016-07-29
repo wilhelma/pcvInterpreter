@@ -14,9 +14,6 @@
 #include <string>
 #include <functional>
 
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-
 #include "SQLStatementIterator.h"
 
 #include "DBTable.h"
@@ -45,6 +42,40 @@
 #include "EventService.h"
 #include "AccessInfo.h"
 
+// logging system
+#include <boost/log/core.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+
+// helper function to initialize the log
+void initialize_logger(const std::string& logFileName) {
+	namespace logging = boost::log;
+	namespace expr    = boost::log::expressions;
+
+	logging::add_file_log(
+			logging::keywords::file_name = logFileName,
+			logging::keywords::format = (
+				expr::stream
+				<< expr::attr< unsigned int >("LineID")
+				<< ": <" << logging::trivial::severity
+				<< "> " << expr::smessage
+				)	
+			);
+
+	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
+
+	logging::add_common_attributes();
+}
+
+DBInterpreter::DBInterpreter(const std::string& logFile, EventService *service, LockMgr *lockMgr, ThreadMgr *threadMgr) :
+	EventService_(service), lockMgr_(lockMgr), threadMgr_(threadMgr)
+{
+	initialize_logger(logFile);
+	CallStack_.push(call_t::MAIN);
+};
+
 
 template<typename IdT, typename T>
 inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
@@ -63,33 +94,33 @@ void DBInterpreter::importDB(const std::string& DBPath) {
 	}
 
     // Read from all the tables in the database
-    fill("SELECT * from Access;",        db, accessTable);
-    fill("SELECT * from Call;",          db, callTable);
-    fill("SELECT * from File;",          db, fileTable);
-    fill("SELECT * from Function;",      db, functionTable);
-    fill("SELECT * from Instruction;",   db, instructionTable);
-    fill("SELECT * from Loop;",          db, loopTable);
-    fill("SELECT * from LoopExecution;", db, loopExecutionTable);
-    fill("SELECT * from LoopIteration;", db, loopIterationTable);
-    fill("SELECT * from Reference;",     db, referenceTable);
-    fill("SELECT * from Segment;",       db, segmentTable);
-    fill("SELECT * from Thread;",        db, threadTable);
+    fill("SELECT * from Access;",        db, AccessTable_);
+    fill("SELECT * from Call;",          db, CallTable_);
+    fill("SELECT * from File;",          db, FileTable_);
+    fill("SELECT * from Function;",      db, FunctionTable_);
+    fill("SELECT * from Instruction;",   db, InstructionTable_);
+    fill("SELECT * from Loop;",          db, LoopTable_);
+    fill("SELECT * from LoopExecution;", db, LoopExecutionTable_);
+    fill("SELECT * from LoopIteration;", db, LoopIterationTable_);
+    fill("SELECT * from Reference;",     db, ReferenceTable_);
+    fill("SELECT * from Segment;",       db, SegmentTable_);
+    fill("SELECT * from Thread;",        db, ThreadTable_);
 
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << loopTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << loopExecutionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << loopIterationTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << AccessTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << CallTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << FileTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << FunctionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << InstructionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << LoopTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << LoopExecutionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << LoopIterationTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << ReferenceTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << SegmentTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << ThreadTable_.size();
 }
 
 /// The main process routine. Loops over instructions.
-int DBInterpreter::process(const std::string& DBPath) {
+ErrorCode DBInterpreter::process(const std::string& DBPath) {
 	// fill internal tables with the database entries
 	try {
 		importDB(DBPath);
@@ -100,18 +131,18 @@ int DBInterpreter::process(const std::string& DBPath) {
 	}
 
     // process database entries
-    for (const auto& instruction : instructionTable)
+    for (const auto& instruction : InstructionTable_)
         processInstruction(instruction.second);
 
-    return 0;
+    return ErrorCode::OK;
 }
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = segmentTable.find(ins.segment_id);
-	if (search == segmentTable.cend()) {
+	auto search = SegmentTable_.find(ins.segment_id);
+	if (search == SegmentTable_.cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
-			<< " not found in segmentTable";
-		return static_cast<CAL_ID>(IN_NO_ENTRY);
+			<< " not found in SegmentTable_";
+		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 	return search->second.call_id;
 }
@@ -120,7 +151,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// look for the call id of the instruction
 	CAL_ID call_id(0);
 	bool found = false;
-	for (const auto& it : callTable) {
+	for (const auto& it : CallTable_) {
 		// if there's a call whose instruction id is the same as
 		// ins.id, get its id
 		if (it.second.id == ins.id) {
@@ -134,45 +165,45 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	if (!found) {
 		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
 			<< ins.id;
-		return static_cast<CAL_ID>(IN_NO_ENTRY);
+		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 
 	std::cout << "call_id = " << call_id << std::endl;
 	return call_id;
 }
 
-int DBInterpreter::processReturn(const instruction_t& ins) {
-	auto search = segmentTable.find(ins.segment_id);
-	if (search == segmentTable.end()) {
+ErrorCode DBInterpreter::processReturn(const instruction_t& ins) {
+	auto search = SegmentTable_.find(ins.segment_id);
+	if (search == SegmentTable_.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
-		return IN_NO_ENTRY;
+		return ErrorCode::NO_ENTRY;
 	}
 
-	if (!callStack_.isEmpty()) {
+	if (!CallStack_.isEmpty()) {
 		CAL_ID parent_call_id = search->second.call_id;
-		while (parent_call_id != callStack_.top()) {
-			callStack_.pop();
+		while (parent_call_id != CallStack_.top()) {
+			CallStack_.pop();
 
 			// in this case, the call didn't happen in the
 			// parent ID scope, so the "parent" call has returned
-			auto parent_call = callTable.find(parent_call_id);
+			auto parent_call = CallTable_.find(parent_call_id);
 			ReturnInfo info(parent_call_id, parent_call->second.end_time);
 			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
 			ReturnEvent event(thread, &info);
-			_eventService->publish(&event);
+			getEventService()->publish(&event);
 		}
 	}
 
-	callStack_.push(getCallID(ins));
-	return IN_OK;
+	CallStack_.push(getCallID(ins));
+	return ErrorCode::OK;
 }
 
-int DBInterpreter::processInstruction(const instruction_t& ins) {
+ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
     processAccess_t accessFunc = nullptr;
 
-	SegmentTable::const_iterator search_segment = segmentTable.find(ins.segment_id);
-	CallTable::const_iterator search_call = callTable.cend(); // dumb value
-	if (search_segment != segmentTable.end()) {
+	SegmentTable::const_iterator search_segment = SegmentTable_.find(ins.segment_id);
+	CallTable::const_iterator search_call = CallTable_.cend(); // dumb value
+	if (search_segment != SegmentTable_.end()) {
 		switch (ins.instruction_type) {
 			case InstructionType::CALL:
 				// XXX this doesn't change `accessFunc`
@@ -180,56 +211,55 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 				processReturn(ins);
 				break;
 			case InstructionType::ACCESS:
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())
+				search_call = CallTable_.find(search_segment->second.call_id);
+				if (search_call != CallTable_.cend())
 					accessFunc = &DBInterpreter::processMemAccess;
 				break;
             case InstructionType::ACQUIRE:
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())
+				search_call = CallTable_.find(search_segment->second.call_id);
+				if (search_call != CallTable_.cend())
 					accessFunc = &DBInterpreter::processAcqAccess;
 				break;
       case InstructionType::RELEASE:
-				search_call = callTable.find(search_segment->second.call_id);
-				if (search_call != callTable.cend())
+				search_call = CallTable_.find(search_segment->second.call_id);
+				if (search_call != CallTable_.cend())
 					accessFunc = &DBInterpreter::processRelAccess;
 				break;
 			case InstructionType::FORK:
-				for (const auto& it : threadTable) {
+				for (const auto& it : ThreadTable_) {
 					const thread_t& thread = it.second;
 					if (ins.id == thread.create_instruction_id) {
-						search_call = callTable.find(search_segment->second.call_id);
-						if (search_call != callTable.cend())
+						search_call = CallTable_.find(search_segment->second.call_id);
+						if (search_call != CallTable_.cend())
 							processFork(ins, search_segment->second, search_call->second, thread);
 					}
 				}
 				break;
 			case InstructionType::JOIN:
-				for (const auto& it : threadTable) {
+				for (const auto& it : ThreadTable_) {
 					const thread_t& thread = it.second;
 					if (ins.id == thread.join_instruction_id) {
-						search_call = callTable.find(search_segment->second.call_id);
-						if (search_call != callTable.cend())
+						search_call = CallTable_.find(search_segment->second.call_id);
+						if (search_call != CallTable_.cend())
 							processJoin(ins, search_segment->second, search_call->second, thread);
 					}
 				}
 				break;
 			default:
-				return IN_NO_ENTRY;
+				return ErrorCode::NO_ENTRY;
 		}
 	}
 
 	if (accessFunc != nullptr) {
 		// loop over all memory accesses of the instruction
-    const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
+    const AccessTable::insAccessMap_t& insAccessMap = AccessTable_.getInsAccessMap();
     const auto& avIt = insAccessMap.find(ins.id);
     if (avIt != insAccessMap.end()) {
       for (const auto& it : avIt->second) {
 
-        auto searchAccess = accessTable.find(it);
-        if (searchAccess != accessTable.end()) {
+        auto searchAccess = AccessTable_.find(it);
+        if (searchAccess != AccessTable_.end()) {
 
-          // possible BUG (conversion INS_ID -> ACC_ID)
           processAccessGeneric(searchAccess->first,
               searchAccess->second,
               ins,
@@ -238,49 +268,46 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
               accessFunc);
         } else {
           BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
-          return IN_NO_ENTRY;
+          return ErrorCode::NO_ENTRY;
         }
       }
     }
 	}
 
-	return IN_OK;
+	return ErrorCode::OK;
 }
 
-int DBInterpreter::processSegment(SEG_ID segmentId,
+ErrorCode DBInterpreter::processSegment(SEG_ID segmentId,
                                   const segment_t& seg,
                                   const instruction_t& ins) {
 
-    auto search = callTable.find(seg.call_id);
-    if (search != callTable.end()) {
-        if (!processCall(seg.call_id, search->second, seg, ins))
-            return 1;
-    } else {
-        BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
-        return 1;
-    }
-
-    return 0;
+	auto search = CallTable_.find(seg.call_id);
+	if (search == CallTable_.end()) {
+		BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
+		return ErrorCode::NO_ENTRY;
+	}
+	
+	return processCall(seg.call_id, search->second, seg, ins);
 }
 
-size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
+size_t getHash(unsigned funId, unsigned lineNo) {
     size_t h1 = std::hash<unsigned>()(funId);
     size_t h2 = std::hash<unsigned>()(lineNo);
     return h1 ^ (h2 << 1);
 }
 
-int DBInterpreter::processCall(CAL_ID callId,
+ErrorCode DBInterpreter::processCall(CAL_ID callId,
                                const call_t& call,
                                const segment_t& seg,
                                const instruction_t& ins) {
 
 	// fetch called function
-	auto search = functionTable.find(call.function_id);
+	auto search = FunctionTable_.find(call.function_id);
 
 	// check that the function exists
-	if (search == functionTable.end()) {
+	if (search == FunctionTable_.end()) {
 		BOOST_LOG_TRIVIAL(error) << "Function not found: " << call.function_id;
-		return IN_NO_ENTRY;
+		return ErrorCode::NO_ENTRY;
 	}
 
 	switch(search->second.type) {
@@ -288,10 +315,10 @@ int DBInterpreter::processCall(CAL_ID callId,
 		case FunctionType::METHOD:
 			{
 				// serch for the file where the call has happened from
-				auto searchFile = fileTable.find(search->second.file_id);
-				if (searchFile == fileTable.end()) {
+				auto searchFile = FileTable_.find(search->second.file_id);
+				if (searchFile == FileTable_.end()) {
 					BOOST_LOG_TRIVIAL(error) << "File not found: " << search->second.file_id;
-					return 1;
+					return ErrorCode::NO_ENTRY;
 				}
 
 				CallInfo info( (CALLSITE)getHash(call.function_id, ins.line_number),
@@ -304,42 +331,35 @@ int DBInterpreter::processCall(CAL_ID callId,
 
 				ShadowThread* thread = threadMgr_->getThread(call.thread_id);
 				CallEvent event(thread, &info);
-				_eventService->publish(&event);
+				getEventService()->publish(&event);
 				break;
 			}
 		default:
 			break;
 	}
 
-	return IN_OK;
+	return ErrorCode::OK;
 }
 
-int DBInterpreter::processAccessGeneric(ACC_ID accessId,
+ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
                                         const access_t& access,
                                         const instruction_t& instruction,
                                         const segment_t& segment,
                                         const call_t& call,
                                         processAccess_t func) {
 
-//  std::string refId = std::string(access.reference_id);
-//  auto search = referenceTable.find(_refNoIdMap[refId]);
     REF_ID refId = access.reference_id;
-    auto search = referenceTable.find(refId);
-    if ( search != referenceTable.end() ) {
-
-        (this->* func)(accessId, access, instruction, segment,
-                       call, search->second);
-
-    } else {
+    auto search = ReferenceTable_.find(refId);
+    if ( search == ReferenceTable_.end() ) {
         BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
+        return ErrorCode::NO_ENTRY;
+	}
 
-        return IN_NO_ENTRY;
-    }
-
-    return IN_OK;
+    return (this->* func)(accessId, access, instruction, segment,
+                       call, search->second);
 }
 
-int DBInterpreter::processMemAccess(ACC_ID accessId,
+ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
@@ -363,12 +383,12 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
                      var,
                      instruction.id);
     AccessEvent event( thread, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processAcqAccess(ACC_ID accessId,
+ErrorCode DBInterpreter::processAcqAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
@@ -379,12 +399,12 @@ int DBInterpreter::processAcqAccess(ACC_ID accessId,
     ShadowLock *lock = lockMgr_->getLock(reference.id);
     AcquireInfo info(lock);
     AcquireEvent event( thread, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processRelAccess(ACC_ID accessId,
+ErrorCode DBInterpreter::processRelAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
@@ -395,12 +415,12 @@ int DBInterpreter::processRelAccess(ACC_ID accessId,
     ShadowLock *lock = lockMgr_->getLock(reference.id);
     ReleaseInfo info(lock);
     ReleaseEvent event( thread, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processFork(const instruction_t& instruction,
+ErrorCode DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
@@ -408,16 +428,16 @@ int DBInterpreter::processFork(const instruction_t& instruction,
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
     NewThreadEvent event( pT, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
     ThreadEndInfo  end_info(call.end_time, thread.id);
     ThreadEndEvent end_event(cT, &end_info);
-    _eventService->publish(&end_event);
+    getEventService()->publish(&end_event);
 
-    return 0;
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processJoin(const instruction_t& instruction,
+ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
@@ -426,8 +446,7 @@ int DBInterpreter::processJoin(const instruction_t& instruction,
     ShadowThread *cT = threadMgr_->getThread(thread.id);
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
+    return ErrorCode::OK;
 }
-

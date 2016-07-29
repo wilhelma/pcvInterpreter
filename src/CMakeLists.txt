@@ -9,7 +9,6 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(SRC_LIST
 	DBInterpreter.cpp
 	EventService.cpp
-	Interpreter.cpp
 	LockMgr.cpp
 	main.cpp
 	ThreadMgr.cpp)
