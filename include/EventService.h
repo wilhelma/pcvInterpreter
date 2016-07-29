@@ -33,41 +33,41 @@ public:
 	/// @param event The event to publish.
 	bool publish(const AccessEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `AcquireEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const AcquireEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `CallEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const CallEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `JoinEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const JoinEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `NewThreadEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const NewThreadEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `ReleaseEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const ReleaseEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `ReturnEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const ReturnEvent *event) const;
 
-	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @brief Puiblish an `ThreadEndEvent` to the registered tools.
 	/// @param event The event to publish.
 	bool publish(const ThreadEndEvent *event) const;
 
 	/// @brief Subscribes a tool to the `EventService`.
-	bool subscribe(Tool* tool, const Filter* const filter, Events events) {
-		return Observers_.insert( std::map<Tool*, const Observer>::value_type(
+	bool subscribe(Tool* const tool, const Filter* const filter, Events events) {
+		return Observers_.insert( std::map<Tool* const, const Observer>::value_type(
 					tool, Observer(filter, events))).second; }
 
 	/// @brief Unsubscribes a tool to the `EventService`.
-	bool unsubscribe(Tool* tool)
+	bool unsubscribe(Tool* const tool)
 	{ return (Observers_.erase(tool) > 0); }
 		
 
@@ -84,7 +84,7 @@ private:
 
 	/// Maps every registered tool to its filter and the events
 	/// it subscribed for.
-	std::map<Tool*, const Observer> Observers_;
+	std::map<Tool* const, const Observer> Observers_;
 
 	// prevent generated functions
 	EventService(const EventService&);

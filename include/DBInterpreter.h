@@ -25,9 +25,10 @@
 #include "fwd/LockMgr.h"
 #include "fwd/ThreadMgr.h"
 
-#include "DBTable.h"
 #include "CallStack.h"
 #include "Interpreter.h"
+
+#include "DBTable.h"
 #include "ShadowVar.h"
 #include "AccessTable.h"
 #include "CallTable.h"
@@ -41,16 +42,12 @@
 #include "SegmentTable.h"
 #include "ThreadTable.h"
 
-#include <sqlite3.h>
 #include <map>
-#include <vector>
-#include <string.h>
+#include <string>
 
 #include "Types.h"
 
-/******************************************************************************
- * Database Interpreter
- *****************************************************************************/
+/// Database Interpreter.
 class DBInterpreter : public Interpreter {
 public:
 	DBInterpreter(const char* logFile, 
@@ -71,7 +68,6 @@ public:
 private:
 
 	// types-------------------------------------------------------------------
-	typedef int (DBInterpreter::*fillFunc_t)(sqlite3_stmt*);
 	typedef int (DBInterpreter::*processAccess_t)(ACC_ID accessID,
 												  const access_t& access,
 												  const instruction_t& instruction,
