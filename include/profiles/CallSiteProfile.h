@@ -14,20 +14,14 @@
 
 #include <unordered_map>
 #include <memory>
+
+#include "CallSiteSpanProfile.h"
+#include "CallSiteWorkProfile.h"
 #include "Types.h"
 
 /**
 *   @struct call_site_profile_t
 *   @brief Work and span information describing a call site in the program.
-
-    A measurement for a call site s without prefixes "top" or "local" aggregates the work and span of
-    every execution of s that is not a recursive execution of s.
-
-    A measurement for a call site s with prefix "top" aggregates the work and span of every execution 
-    of s from a nonrecursive invocation of its caller.
-
-    A measurement for a call site s with prefix "local_" is the work in Trace(s) minus the work in the
-    traces of the functions that s invokes. 
 */
 
 struct call_site_profile_t {
@@ -69,6 +63,11 @@ class CallSiteProfile {
     
  public:
     explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
+    explicit CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
+                                                                 span_profile,
+                                 std::shared_ptr<call_site_work_profile_t> 
+                                                                 work_profile);
+
     ~CallSiteProfile();
 
     void print();

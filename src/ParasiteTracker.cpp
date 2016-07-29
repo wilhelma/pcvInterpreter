@@ -14,7 +14,7 @@
 
 ParasiteTracker::ParasiteTracker() {
 
-	std::shared_ptr<call_site_hashtable_t> wrk_table(new call_site_hashtable_t);
+	std::shared_ptr<call_site_work_hashtable_t> wrk_table(new call_site_work_hashtable_t);
 	function_stack = std::unique_ptr<FunctionStack>(new FunctionStack());
 	thread_stack = std::unique_ptr<ThreadStack>(new ThreadStack());
 }

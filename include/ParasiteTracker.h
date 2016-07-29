@@ -15,7 +15,7 @@
 
 #include <vector> 
 
-#include "CallSiteHashtable.h"
+#include "CallSiteWorkHashtable.h"
 #include "FunctionStack.h"
 #include "ThreadStack.h"
 #include "Types.h"
@@ -84,7 +84,6 @@ class ParasiteTracker {
 		std::shared_ptr<thread_frame_t> thread_push(int head_function_index,
 													TRD_ID thread_id);
 		void thread_pop();
-
 
  	private:
 

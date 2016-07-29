@@ -346,7 +346,7 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
 size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
     size_t h1 = std::hash<unsigned>()(funId);
     size_t h2 = std::hash<unsigned>()(lineNo);
-    printf("FUNCTION %u, line number %u , hash %u \n", funId, lineNo, (h1 ^ (h2 << 1)));
+    printf("FUNCTION %u, line number %u , hash %lu \n", funId, lineNo, (h1 ^ (h2 << 1)));
     return h1 ^ (h2 << 1);
 }
 

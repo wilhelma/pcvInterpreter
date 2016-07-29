@@ -15,7 +15,7 @@
 
 #include <vector> 
 
-#include "CallSiteHashtable.h"
+#include "CallSiteSpanHashtable.h"
 #include "Types.h"
 
 /**
@@ -75,19 +75,19 @@ struct thread_frame_t {
 	*    @var prefix_table
 	*    @brief Prefix data for each call site in this thread.
 	*/
-	CallSiteHashtable prefix_table;
+	CallSiteSpanHashtable prefix_table;
 
 	/**
 	*    @var longest_child_table
 	*    @brief Longest child data for each call site in this thread. 
 	*/
-	CallSiteHashtable longest_child_table;
+	CallSiteSpanHashtable longest_child_table;
 
 	/**
 	*    @var continuation_table
 	*    @brief Continuation data for each call site in this thread.
 	*/
-	CallSiteHashtable continuation_table;
+	CallSiteSpanHashtable continuation_table;
 
 	thread_frame_t():thread(0),
 					 continuation_span(0),
@@ -95,9 +95,9 @@ struct thread_frame_t {
 					 lock_span(0), 
 					 longest_child_span(0),
 					 longest_child_lock_span(0), 
-					 prefix_table(CallSiteHashtable()), 
-					 longest_child_table(CallSiteHashtable()),
-					 continuation_table(CallSiteHashtable()) {}
+					 prefix_table(CallSiteSpanHashtable()), 
+					 longest_child_table(CallSiteSpanHashtable()),
+					 continuation_table(CallSiteSpanHashtable()) {}
 };
 
 class ThreadStack {

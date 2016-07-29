@@ -1,13 +1,13 @@
 set(INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/
 						${pcv_SOURCE_DIR}/include/events/
+                        ${pcv_SOURCE_DIR}/include/hashtables/
 						${pcv_SOURCE_DIR}/include/infos/
+						${pcv_SOURCE_DIR}/include/profiles/
 						${pcv_SOURCE_DIR}/include/tables/
 						${pcv_SOURCE_DIR}/include/tools/)
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST ${SRC_LIST}
-	CallSiteHashtable.cpp
-	CallSiteProfile.cpp
 	DBInterpreter.cpp
 	EventService.cpp
 	FunctionStack.cpp
@@ -18,6 +18,15 @@ set(SRC_LIST ${SRC_LIST}
 	SAAPRunner.cpp
 	ThreadMgr.cpp
 	ThreadStack.cpp)
+
+set(SRC_LIST ${SRC_LIST}
+	hashtables/CallSiteSpanHashtable.cpp
+	hashtables/CallSiteWorkHashtable.cpp)
+
+set(SRC_LIST ${SRC_LIST}
+	profiles/CallSiteProfile.cpp
+	profiles/CallSiteSpanProfile.cpp
+	profiles/CallSiteWorkProfile.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	tools/DebugTool.cpp

@@ -23,6 +23,9 @@
 #include "AcquireEvent.h"
 #include "CallEvent.h"
 #include "CallSiteProfile.h"
+#include "CallSiteSpanProfile.h"
+#include "CallSiteWorkHashtable.h"
+#include "CallSiteWorkProfile.h"
 #include "Event.h"
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
@@ -106,6 +109,21 @@ class ParasiteTool : public Tool {
 		 @todo Decide on format to print out profile information.
 	*/
 	void printProfile();
+
+	/**
+	*    @fn printOverallProfile()
+	*    @brief Prints overall profile in a format to be decided. 
+		 @todo Decide on format to print out profile information.
+	*/
+	void printOverallProfile();
+
+
+	/**
+	*    @fn printCallSiteProfiles()
+	*    @brief Prints call ite profile information, in a format to be decided. 
+		 @todo Decide on format to print out profile information.
+	*/
+	void printCallSiteProfiles();
 	
 	/**
 	*    @var main_stack
@@ -118,6 +136,8 @@ class ParasiteTool : public Tool {
 	*    @brief Contains parallelism, work, and span after simulator finishes.
 	*/
 	std::unique_ptr<parasite_profile_t> parasite_profile;
+
+	std::shared_ptr<CallSiteWorkHashtable> work_table;
 
 	/**
 	*    @var lock_hashtable
