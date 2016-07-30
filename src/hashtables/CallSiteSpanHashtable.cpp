@@ -55,7 +55,7 @@ void CallSiteSpanHashtable::add(CallSiteSpanHashtable* hashtable_object) {
 	}
 }
 
-void CallSiteSpanHashtable::add_data(CALLSITE call_site, TIME span) {
+void CallSiteSpanHashtable::add_span(CALLSITE call_site, TIME span) {
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;

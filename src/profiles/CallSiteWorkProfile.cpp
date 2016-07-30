@@ -19,12 +19,13 @@ CallSiteWorkProfile::CallSiteWorkProfile(std::shared_ptr<call_site_work_profile_
 
 void CallSiteWorkProfile::add_in_callsite_profile_entries(const std::shared_ptr<call_site_work_profile_t> profile_to_add) {
 	prof->work += profile_to_add->work;
-	prof->count += profile_to_add->count;
+	prof->count += (profile_to_add->count - 1);
 }
 
 void CallSiteWorkProfile::init_callsite_profile(CALLSITE call_site, TIME work) {
 	prof->call_site = call_site;
 	prof->work = work;
+	prof->count = 1;
 }
 
 void CallSiteWorkProfile::print() {
