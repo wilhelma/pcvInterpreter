@@ -32,6 +32,14 @@ struct call_site_profile_t {
     */
     CALLSITE call_site;
 
+
+    /**
+    *    @var function_signature 
+    *    @brief The function signature of the call site whose data is contained
+                in the profile. 
+    */
+    FUN_SG function_signature;
+
     /**
     *    @var work
     *    @brief Work of callsite. 

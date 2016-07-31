@@ -29,6 +29,14 @@ struct call_site_work_profile_t {
     */
     CALLSITE call_site;
 
+
+    /**
+    *    @var function_signature 
+    *    @brief The function singature of the call site whose data is contained
+                in the profile. 
+    */
+    FUN_SG function_signature;
+
     /**
     *    @var work
     *    @brief Work of callsite. 
@@ -62,7 +70,7 @@ class CallSiteWorkProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_profile(CALLSITE call_site, TIME work);
+    void init_callsite_profile(CALLSITE call_site, FUN_SG function_signature, TIME work);
     
     /**
     *    @var prof

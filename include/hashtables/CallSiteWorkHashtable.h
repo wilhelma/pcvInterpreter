@@ -54,14 +54,14 @@ class CallSiteWorkHashtable {
 	*/
 	void clear();
 
-	void increment_count(CALLSITE call_site);
+	void increment_count(CALLSITE call_site,  FUN_SG function_signature);
 
 	/**
 	*    @fn add_data(...)
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_work(CALLSITE call_site, TIME work);
+	void add_work(CALLSITE call_site, FUN_SG function_signature, TIME work);
 
 	/**
 	*    @var hashtable

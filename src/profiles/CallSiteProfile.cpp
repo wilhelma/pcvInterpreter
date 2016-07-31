@@ -21,6 +21,7 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 	std::shared_ptr<call_site_profile_t> prf(new call_site_profile_t());
 	prof = prf;
 	prof->call_site = work_profile->call_site;
+	prof->function_signature = work_profile->function_signature;
 	prof->work = work_profile->work;
 	prof->span = span_profile->span;
 	prof->count = work_profile->count;
@@ -34,6 +35,7 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 void CallSiteProfile::print() {
 	printf(" ================ \n");
 	printf("CALL SITE %d \n", static_cast<int>(prof->call_site));
+	printf("FUNCTION SIGNATURE is %s \n", prof->function_signature.c_str());
 	printf("WORK is %llu \n", static_cast<unsigned long long>(prof->work));
 	printf("SPAN is %llu \n", static_cast<unsigned long long>(prof->span));
 	printf("COUNT is %d \n", prof->count);
