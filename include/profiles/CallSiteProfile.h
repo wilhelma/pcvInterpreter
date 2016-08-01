@@ -12,8 +12,9 @@
 #ifndef CALL_SITE_PROFILE_H_
 #define CALL_SITE_PROFILE_H_
 
-#include <unordered_map>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 #include "CallSiteSpanProfile.h"
 #include "CallSiteWorkProfile.h"
@@ -34,17 +35,25 @@ struct call_site_profile_t {
 
 
     /**
+    *    @var count
+    *    @brief Number of invocations of callsite. 
+    */
+    int count;
+
+    /**
     *    @var function_signature 
     *    @brief The function signature of the call site whose data is contained
                 in the profile. 
     */
     FUN_SG function_signature;
 
+
     /**
-    *    @var work
-    *    @brief Work of callsite. 
+    *    @var parallelism
+    *    @brief Parallelism of callsite.  
     */
-    TIME work;
+    double parallelism;
+
 
     /**
     *    @var span
@@ -53,18 +62,12 @@ struct call_site_profile_t {
     TIME span;
 
     /**
-    *    @var parallelism
-    *    @brief Parallelism of callsite.  
+    *    @var work
+    *    @brief Work of callsite. 
     */
-    double parallelism;
+    TIME work;
 
-    /**
-    *    @var count
-    *    @brief Number of invocations of callsite. 
-    */
-    int count;
-
-    call_site_profile_t() : call_site(0), work(0), span(0), parallelism(0), count(0) {}  
+    call_site_profile_t() : call_site(0),  count(0), parallelism(0), span(0), work(0) {}  
 };
 
 class CallSiteProfile {
@@ -73,7 +76,7 @@ class CallSiteProfile {
     explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
     explicit CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
                                                                  span_profile,
-                                 std::shared_ptr<call_site_work_profile_t> 
+                             std::shared_ptr<call_site_work_profile_t> 
                                                                  work_profile);
 
     ~CallSiteProfile();

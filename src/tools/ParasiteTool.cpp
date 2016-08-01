@@ -9,6 +9,9 @@
  *
  */
 
+#define COMMAND_LINE_OUTPUT 1
+#define JSON_OUTPUT 1
+
 #include <algorithm>    // std::max
 #include <cassert>
 #include <utility>
@@ -63,8 +66,6 @@ void ParasiteTool::printOverallProfile() {
 
 void ParasiteTool::printCallSiteProfiles() {
 
-	std::shared_ptr<function_frame_t> bottom_function_frame = 
-													   stacks->bottomFunction();
 	std::shared_ptr<thread_frame_t> bottom_thread_frame = 
 														 stacks->bottomThread();
 
@@ -86,13 +87,43 @@ void ParasiteTool::printProfile() {
 	printOverallProfile();
 }
 
+void ParasiteTool::writeJson() {
+
+	std::shared_ptr<ParasiteJsonWriter> parasiteJsonWriter(new ParasiteJsonWriter());
+	std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
+
+	// Output json information for whole profile
+	parasiteJsonWriter->writeOverallProfile(parasite_profile);
+
+	// Output json information for each call site
+    CallSiteSpanHashtable bottom_prefix_table(bottom_thread_frame->prefix_table);
+	bottom_prefix_table.add(&(bottom_thread_frame->continuation_table));
+	std::shared_ptr<call_site_work_hashtable_t> wrk_table = work_table->hashtable;
+
+	for (auto const &it : *wrk_table) {
+		CALLSITE key = it.first;
+		std::shared_ptr<CallSiteProfile> currentProfile
+					(new CallSiteProfile(bottom_prefix_table.hashtable->at(key),
+									     wrk_table->at(key)));
+		parasiteJsonWriter->writeCallSite(currentProfile);
+	}
+
+}
+
 ParasiteTool::~ParasiteTool() {
 	printf("Calling destructor \n");
-	printf("================ \n");
-	printf("PRINT BEGIN \n");
-	printProfile();
-	printf("PRINT END \n");
-	printf("================ \n");
+
+	if (COMMAND_LINE_OUTPUT) {
+		printf("================ \n");
+		printf("PRINT BEGIN \n");
+		printProfile();
+		printf("PRINT END \n");
+		printf("================ \n");
+	}
+
+	if (JSON_OUTPUT) {
+		writeJson();
+	}
 }
 
 void ParasiteTool::Call(const CallEvent* e) {

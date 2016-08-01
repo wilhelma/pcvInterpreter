@@ -14,6 +14,7 @@ set(SRC_LIST ${SRC_LIST}
 	Interpreter.cpp
 	LockMgr.cpp
 	main.cpp
+	ParasiteJsonWriter.cpp
 	ParasiteTracker.cpp
 	SAAPRunner.cpp
 	ThreadMgr.cpp

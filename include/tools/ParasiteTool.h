@@ -27,59 +27,19 @@
 #include "CallSiteWorkHashtable.h"
 #include "CallSiteWorkProfile.h"
 #include "Event.h"
+#include "Interpreter.h"
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
+#include "ParasiteJsonWriter.h"
+#include "ParasiteProfile.h"
+#include "ParasiteTracker.h"
 #include "ReturnEvent.h"
 #include "ReleaseEvent.h"
-#include "ThreadEndEvent.h"
-
-#include "Interpreter.h"
-#include "ParasiteTracker.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
+#include "ThreadEndEvent.h"
 #include "Tool.h"
-
-/**
-*    @struct parasite_profile_t
-*    @brief Work and span information describing entire program being profiled. 
-
-*/
-struct parasite_profile_t {
-
-	/**
-	*    @var work
-	*    @brief The work (the total runtime, scaled) of all instructions
-				executed in the program.
-	*/
-	TIME work;
-
-	/**
-	*    @var span
-	*    @brief The span (the total runtime, scaled, on the criical path) 
-				of all instructions executed in the program.
-	*/
-	TIME span;
-
-	/**
-	*    @var lock_span
-	*    @brief The total lock span (the total runtime, scaled, on the criical
-				path, spent while at least one lock is engaged) of all 
-				instructions executed in the program.
-	*/
-	TIME lock_span;
-
-	/**
-	*    @var parallelism
-	*    @brief The parallelism of the program. This is the work divided by span,
-				which is an upper bound of the program's speedup on any number
-				of processors.
-	*/
-	double parallelism;
-
-	parasite_profile_t(): work(0), span(0), lock_span(0), parallelism(0) {}
-};
-
 
 /**
 *
@@ -124,6 +84,8 @@ class ParasiteTool : public Tool {
 		 @todo Decide on format to print out profile information.
 	*/
 	void printCallSiteProfiles();
+
+	void writeJson();
 	
 	/**
 	*    @var main_stack
@@ -135,7 +97,7 @@ class ParasiteTool : public Tool {
 	*    @var parasite_profile
 	*    @brief Contains parallelism, work, and span after simulator finishes.
 	*/
-	std::unique_ptr<parasite_profile_t> parasite_profile;
+	std::shared_ptr<parasite_profile_t> parasite_profile;
 
 	std::shared_ptr<CallSiteWorkHashtable> work_table;
 
