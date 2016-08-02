@@ -11,6 +11,7 @@
 
 #define COMMAND_LINE_OUTPUT 1
 #define JSON_OUTPUT 1
+#define GRAPH_OUTPUT 1
 
 #include <algorithm>    // std::max
 #include <cassert>
@@ -121,9 +122,11 @@ ParasiteTool::~ParasiteTool() {
 		printf("================ \n");
 	}
 
-	if (JSON_OUTPUT) {
+	if (JSON_OUTPUT) 
 		writeJson();
-	}
+
+	if (GRAPH_OUTPUT)
+		thread_graph.write_dot_file();
 }
 
 void ParasiteTool::Call(const CallEvent* e) {
@@ -290,16 +293,13 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 						 local_work);
 	stacks->bottomThread()->continuation_span += local_work;
 	stacks->bottomThread()->continuation_table.add_span(stacks->bottomFunction()->call_site, local_work);
+	thread_graph.add_thread_end(graph_edge_length);
 
-	if (stacks->bottomThreadIndex() == 0) {
-		// end generation of graph here
+	if (stacks->bottomThreadIndex() == 0)
 		return;
-	}
-
 
 	std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
 	std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
-	thread_graph.add_thread_end(graph_edge_length);
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function_frame->call_site, 
 										ending_thread_frame->prefix_span);
@@ -376,7 +376,7 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 	// release_time = e->releaseTime;
 
 	TIME release_time = static_cast<TIME>(0);
-	TIME lock_span = static_cast<TIME>(0);
+	// TIME lock_span = static_cast<TIME>(0);
 
 	// TIME lock_span = release_time - releasedLock->last_acquire_time;
 

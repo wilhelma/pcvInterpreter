@@ -28,11 +28,10 @@ DAG::~DAG() {}
 void DAG::add_thread_create(TIME length) {
 
 	vertex_descr_type start_vertex = bgl::add_vertex(*dag);
-	EdgeInfo props;
-	props.length = static_cast<double>(length) / 
+	double lngth = static_cast<double>(length) / 
 				   static_cast<double>(SCALING_FACTOR);
 	bgl::add_edge(start_vertex_stack.back(), start_vertex, 
-			 	  props, *dag);
+			 	  bgl::property<boost::edge_weight_t, double>(lngth), *dag);
 	start_vertex_stack.push_back(start_vertex);
 	start_vertex_stack.push_back(start_vertex);
 }
@@ -40,10 +39,16 @@ void DAG::add_thread_create(TIME length) {
 void DAG::add_thread_end(TIME length) {
 
 	vertex_descr_type end_vertex = bgl::add_vertex(*dag);
-	EdgeInfo props;
-	props.length = static_cast<double>(length) / 
+	double lngth = static_cast<double>(length) / 
 				   static_cast<double>(SCALING_FACTOR);
 	bgl::add_edge(start_vertex_stack.back(), end_vertex,
-				  props, *dag);
+				  bgl::property<boost::edge_weight_t, double>(lngth), *dag);
 	start_vertex_stack.pop_back();
+}
+
+void DAG::write_dot_file() {
+
+	std::ofstream dot("parasite_graph.dot");
+	write_graphviz(dot, *dag, bgl::default_writer(), 
+					 bgl::make_label_writer(get(boost::edge_weight_t(), *dag)));
 }
