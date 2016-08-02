@@ -153,8 +153,10 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	// get information about the thread's head function
 	TIME create_time = _info->startTime;
 	last_thread_start_time = _info->startTime;
+	TIME graph_edge_length = static_cast<TIME>(_info->startTime - last_thread_start_time);
 
 	if (stacks->bottomThreadIndex() != -1) {
+		thread_graph.add_thread_create(graph_edge_length);
 		std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
 		TIME local_work = static_cast<TIME>(create_time - last_event_time);
 		printf("using local work of %llu in new thread event \n", static_cast<unsigned long long>(local_work));
@@ -275,7 +277,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	printf("THREAD END BEGIN \n");
 	const ThreadEndInfo* _info(e->getThreadEndInfo());
 	last_thread_end_time = _info->endTime;
-
+	TIME graph_edge_length = static_cast<TIME>(last_thread_end_time - last_thread_start_time);
 	TIME local_work = static_cast<TIME>(_info->endTime - last_event_time);
 	printf("local work in thread end is %llu \n", (unsigned long long) local_work);
 	last_event_time = _info->endTime;
@@ -289,12 +291,15 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	stacks->bottomThread()->continuation_span += local_work;
 	stacks->bottomThread()->continuation_table.add_span(stacks->bottomFunction()->call_site, local_work);
 
-	if (stacks->bottomThreadIndex() == 0) 
+	if (stacks->bottomThreadIndex() == 0) {
+		// end generation of graph here
 		return;
+	}
 
 
-	std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
 	std::shared_ptr<thread_frame_t> ending_thread_frame(stacks->bottomThread());
+	std::shared_ptr<thread_frame_t> parent_thread_frame(stacks->bottomParentThread());
+	thread_graph.add_thread_end(graph_edge_length);
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function_frame->call_site, 
 										ending_thread_frame->prefix_span);

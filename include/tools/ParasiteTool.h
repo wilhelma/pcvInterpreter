@@ -26,6 +26,7 @@
 #include "CallSiteSpanProfile.h"
 #include "CallSiteWorkHashtable.h"
 #include "CallSiteWorkProfile.h"
+#include "DAG.h"
 #include "Event.h"
 #include "Interpreter.h"
 #include "JoinEvent.h"
@@ -108,6 +109,7 @@ class ParasiteTool : public Tool {
 	*/
 	std::unordered_map<unsigned int, int> lock_hashtable;
 
+	DAG thread_graph;
 
 	/**
 	*    @var last_function_call_time
