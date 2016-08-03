@@ -39,12 +39,13 @@ class DAG {
  public:
 	DAG();
 	~DAG();
-	void add_thread_create(TIME length);
-	void add_thread_end(TIME length);
+	vertex_descr_type add_edge(vertex_descr_type start, TIME length); 
+	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
+	
 	void write_dot_file();
 
 	std::shared_ptr<Dag> dag;
-	std::vector<vertex_descr_type> start_vertex_stack;
+	vertex_descr_type last_vertex;
 };
 
 #endif /* DAG_H */

@@ -87,6 +87,10 @@ class ParasiteTool : public Tool {
 	void printCallSiteProfiles();
 
 	void writeJson();
+
+	vertex_descr_type add_edge(TIME length);
+
+	void add_join_edge(vertex_descr_type start);
 	
 	/**
 	*    @var main_stack
@@ -170,6 +174,11 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the time of the last thread event
+	*/
+	TIME last_thread_event_time;
 
  private:
 	// prevent generated functions --------------------------------------------
