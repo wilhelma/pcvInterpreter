@@ -39,18 +39,18 @@ ParasiteTool::ParasiteTool():last_function_call_time(0),
 	lock_hashtable = lck_hashtable;
 }
 
-vertex_descr_type ParasiteTool::add_edge(TIME length) {
+vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
 
 	vertex_descr_type new_vertex = 
-		thread_graph.add_edge(stacks->bottomThread()->last_vertex, length);
+		thread_graph.add_edge(stacks->bottomThread()->last_vertex, length,
+							  end_vertex_label);
 	stacks->bottomThread()->last_vertex = new_vertex;
 	return new_vertex;
 }
 
 void ParasiteTool::add_join_edge(vertex_descr_type start) {
 
-	thread_graph.add_join_edge(start,
-		    				   stacks->bottomThread()->last_vertex);
+	thread_graph.add_join_edge(start, stacks->bottomThread()->last_vertex);
 }
 
 
@@ -177,7 +177,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	if (stacks->bottomThreadIndex() != -1) {
 		std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
 		TIME local_work = static_cast<TIME>(create_time - last_event_time);
-		vertex_descr_type thread_start_vertex = add_edge(local_work);
+		vertex_descr_type thread_start_vertex = add_edge(local_work, "TS");
 		printf("using local work of %llu in new thread event \n", static_cast<unsigned long long>(local_work));
 		assert(local_work >= 0);
 		bottom_thread_frame->continuation_span += local_work;
@@ -265,7 +265,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	TIME returnTime = _info->endTime;
 	assert(returnTime >= last_event_time);
 	TIME local_work = static_cast<TIME> (returnTime - last_event_time);
-	add_edge(local_work);
+	add_edge(local_work, "R");
 	last_event_time = returnTime;
 	printf("last event time is now %llu \n", (unsigned long long) last_event_time);
 	last_function_return_time = returnTime;
@@ -316,7 +316,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	TIME this_thread_start_time = stacks->bottomThread()->thread_start_time;
 	TIME last_thread_runtime = static_cast<TIME>(_info->endTime - this_thread_start_time);
 	TIME local_work = static_cast<TIME>(_info->endTime - last_event_time);
-	add_edge(local_work);
+	add_edge(local_work, "TE");
 	printf("local work in thread end is %llu \n", (unsigned long long) local_work);
 	last_event_time = _info->endTime;
 	printf("last_event_time now %llu \n", (unsigned long long) last_event_time);

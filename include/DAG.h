@@ -13,10 +13,11 @@
 #define DAG_H
 
 #include <boost/graph/adjacency_list.hpp> 
+#include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/graph/properties.hpp>
-
+ 
 #include <fstream>
 #include <string>
 #include <vector>
@@ -25,25 +26,30 @@
 
 namespace bgl = boost;
 
+typedef bgl::property<bgl::vertex_name_t, std::string> VertexNameProp;
+typedef bgl::property<bgl::edge_weight_t, double> EdgeWeightProp;
 
 typedef bgl::adjacency_list
-		   <bgl::vecS, bgl::vecS, bgl::directedS,
-    		bgl::no_property, 
-    		bgl::property<bgl::edge_weight_t, double> > Dag;
+		   <bgl::vecS, 
+		    bgl::vecS, 
+		    bgl::directedS, 
+		    VertexNameProp,
+		    EdgeWeightProp > Dag;
+
 typedef bgl::graph_traits<Dag>::vertex_descriptor vertex_descr_type;
 typedef bgl::graph_traits<Dag>::edge_descriptor edge_descr_type;
-typedef std::map<edge_descr_type, double> LengthMap;
 
 class DAG {
 
  public:
 	DAG();
 	~DAG();
-	vertex_descr_type add_edge(vertex_descr_type start, TIME length); 
+	vertex_descr_type add_edge(vertex_descr_type start, TIME length,
+								std::string end_vertex_label);
 	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
 	
 	void write_dot_file();
-
+	int vertex_count;
 	std::shared_ptr<Dag> dag;
 	vertex_descr_type last_vertex;
 };

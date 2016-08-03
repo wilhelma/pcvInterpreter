@@ -88,7 +88,7 @@ class ParasiteTool : public Tool {
 
 	void writeJson();
 
-	vertex_descr_type add_edge(TIME length);
+	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
 	void add_join_edge(vertex_descr_type start);
 	
