@@ -18,6 +18,7 @@ DAG::DAG() : vertex_count(1) {
 	std::shared_ptr<Dag> directed_asymmetric_graph(new Dag());
 	dag = directed_asymmetric_graph;
 	last_vertex = bgl::add_vertex(VertexNameProp("1_TS"), *dag);
+	source = last_vertex;
 }
 
 DAG::~DAG() {}
@@ -35,6 +36,15 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 	bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
 	last_vertex = end;
 	return end;
+}
+
+std::vector<double> DAG::shortest_paths(vertex_descr_type source) {
+	
+	std::vector<vertex_descr_type> p(num_vertices(*dag));
+	std::vector<double> d(num_vertices(*dag));
+	bgl::dijkstra_shortest_paths(*dag, source, 
+								 bgl::predecessor_map(&p[0]).distance_map(&d[0]));
+	return d;
 }
 
 void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {

@@ -98,10 +98,18 @@ void ParasiteTool::printCallSiteProfiles() {
 	}
 }
 
+void ParasiteTool::printGraphInformation() {
+
+	std::vector<double> path = thread_graph.shortest_paths(thread_graph.source);
+	for (std::vector<double>::const_iterator i = path.begin(); i != path.end(); ++i)
+    	std::cout << *i << std::endl;
+}
+
 void ParasiteTool::printProfile() {
 
 	printCallSiteProfiles();
 	printOverallProfile();
+	printGraphInformation();
 }
 
 void ParasiteTool::writeJson() {

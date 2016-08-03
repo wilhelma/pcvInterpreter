@@ -47,10 +47,13 @@ class DAG {
 	vertex_descr_type add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label);
 	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
+
+	std::vector<double> shortest_paths(vertex_descr_type source);
 	
 	void write_dot_file();
 	int vertex_count;
 	std::shared_ptr<Dag> dag;
+	vertex_descr_type source;
 	vertex_descr_type last_vertex;
 };
 
