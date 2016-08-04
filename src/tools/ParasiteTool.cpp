@@ -44,6 +44,7 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 	vertex_descr_type new_vertex = 
 		thread_graph.add_edge(stacks->bottomThread()->last_vertex, length,
 							  end_vertex_label);
+
 	stacks->bottomThread()->last_vertex = new_vertex;
 	return new_vertex;
 }
@@ -100,16 +101,17 @@ void ParasiteTool::printCallSiteProfiles() {
 
 void ParasiteTool::printGraphInformation() {
 
-	std::vector<double> path = thread_graph.shortest_paths(thread_graph.source);
-	for (std::vector<double>::const_iterator i = path.begin(); i != path.end(); ++i)
-    	std::cout << *i << std::endl;
+	// thread_graph.shortest_paths();
+	// double span = thread_graph.span();
+
+	// std::cout << "GRAPH SPAN IS " << span << std::endl;
 }
 
 void ParasiteTool::printProfile() {
 
 	printCallSiteProfiles();
 	printOverallProfile();
-	printGraphInformation();
+	//printGraphInformation();
 }
 
 void ParasiteTool::writeJson() {
@@ -136,7 +138,9 @@ void ParasiteTool::writeJson() {
 }
 
 ParasiteTool::~ParasiteTool() {
+
 	printf("Calling destructor \n");
+	thread_graph.sink = thread_graph.last_vertex;
 
 	if (COMMAND_LINE_OUTPUT) {
 		printf("================ \n");

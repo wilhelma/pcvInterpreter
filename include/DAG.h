@@ -13,6 +13,9 @@
 #define DAG_H
 
 #include <boost/graph/adjacency_list.hpp> 
+#include <boost/graph/bellman_ford_shortest_paths.hpp>
+#include <boost/graph/copy.hpp>
+#include <boost/graph/dag_shortest_paths.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/iteration_macros.hpp>
@@ -38,6 +41,7 @@ typedef bgl::adjacency_list
 
 typedef bgl::graph_traits<Dag>::vertex_descriptor vertex_descr_type;
 typedef bgl::graph_traits<Dag>::edge_descriptor edge_descr_type;
+typedef bgl::graph_traits<Dag>::edge_iterator edge_it_type;
 
 class DAG {
 
@@ -48,12 +52,17 @@ class DAG {
 								std::string end_vertex_label);
 	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
 
-	std::vector<double> shortest_paths(vertex_descr_type source);
-	
+	// std::vector<double> longest_paths();
+	// std::vector<double> shortest_paths();
+	// double span();
+
 	void write_dot_file();
+
 	int vertex_count;
 	std::shared_ptr<Dag> dag;
+	std::shared_ptr<Dag> tree;
 	vertex_descr_type source;
+	vertex_descr_type sink;
 	vertex_descr_type last_vertex;
 };
 
