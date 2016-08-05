@@ -49,9 +49,10 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 	return new_vertex;
 }
 
-void ParasiteTool::add_join_edge(vertex_descr_type start) {
+void ParasiteTool::add_join_edges(vertex_descr_type start) {
 
-	thread_graph.add_join_edge(start, stacks->bottomThread()->last_vertex);
+	add_edge(static_cast<TIME>(0.0), "J");
+	thread_graph.add_join_edges(start, stacks->bottomThread()->last_vertex);
 }
 
 
@@ -227,7 +228,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	printf("IN JOIN: local continuation is %llu \n", (unsigned long long) bottom_thread_frame->continuation_span);
 
 
-	add_join_edge(bottom_thread_frame->join_vertex_list.front());
+	add_join_edges(bottom_thread_frame->join_vertex_list.front());
 	bottom_thread_frame->join_vertex_list.pop_front();
 
 	 // If critical path goes through spawned child

@@ -92,7 +92,7 @@ class ParasiteTool : public Tool {
 
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
-	void add_join_edge(vertex_descr_type start);
+	void add_join_edges(vertex_descr_type start);
 	
 	/**
 	*    @var main_stack
