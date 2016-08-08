@@ -313,10 +313,10 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
         ret = processAccess(ins, segment, call, &DBInterpreter::processMemAccess);
         break;
       case InstructionType::ACQUIRE:
-        ret = processAccess(ins, segment, call, &DBInterpreter::processAcqAccess);
+        ret = processAcquire(ins);
         break;
       case InstructionType::RELEASE:
-        ret = processAccess(ins, segment, call, &DBInterpreter::processRelAccess);
+        ret = processRelease(ins);
         break;
       case InstructionType::FORK:
         for (const auto& it : threadTable) {
@@ -457,35 +457,49 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
     return 0;
 }
 
-int DBInterpreter::processAcqAccess(ACC_ID accessId,
-                                    const access_t& access,
-                                    const instruction_t& instruction,
-                                    const segment_t& segment,
-                                    const call_t& call,
-                                    const reference_t& reference) {
-
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-    ShadowLock *lock = lockMgr_->getLock(reference.id);
-    AcquireInfo info(lock);
-    AcquireEvent event( thread, &info );
-    _eventService->publish( &event );
-    return 0;
+int DBInterpreter::processAcquire(const instruction_t& ins) {
+    auto callIt = callTable.find(getCallID(ins));
+    if (callIt != callTable.end()) {
+      const call_t& call = callIt->second;
+      for (auto accIt : accessTable) {
+        const access_t& access = accIt.second;
+        if (access.instruction_id == ins.instruction_id) {
+          auto refIt = referenceTable.find(access.reference_id);
+          ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
+          if (lock != nullptr) {
+            ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+            AcquireInfo info(lock, call.start_time);
+            AcquireEvent event( thread, &info );
+            _eventService->publish( &event );
+            return IN_OK;
+          }
+        }
+      }
+    }
+    return IN_NO_ENTRY;
 }
 
-int DBInterpreter::processRelAccess(ACC_ID accessId,
-                                    const access_t& access,
-                                    const instruction_t& instruction,
-                                    const segment_t& segment,
-                                    const call_t& call,
-                                    const reference_t& reference) {
+int DBInterpreter::processRelease(const instruction_t& ins) {
 
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
-    ShadowLock *lock = lockMgr_->getLock(reference.id);
-    ReleaseInfo info(lock);
-    ReleaseEvent event( thread, &info );
-    _eventService->publish( &event );
-
-    return 0;
+  auto callIt = callTable.find(getCallID(ins));
+  if (callIt != callTable.end()) {
+    const call_t& call = callIt->second;
+    for (auto accIt : accessTable) {
+      const access_t& access = accIt.second;
+      if (access.instruction_id == ins.instruction_id) {
+        auto refIt = referenceTable.find(access.reference_id);
+        ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
+        if (lock != nullptr) {
+          ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+          ReleaseInfo info(lock, call.start_time);
+          ReleaseEvent event( thread, &info );
+          _eventService->publish( &event );
+          return IN_OK;
+        }
+      }
+    }
+  }
+  return IN_NO_ENTRY;
 }
 
 int DBInterpreter::processFork(const thread_t& thread) {

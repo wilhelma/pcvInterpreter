@@ -137,18 +137,8 @@ private:
                        const segment_t& segment,
                        const call_t& call,
                        const reference_t& reference);
-  int processAcqAccess(ACC_ID accessID,
-                       const access_t& access,
-                       const instruction_t& instruction,
-                       const segment_t& segment,
-                       const call_t& call,
-                       const reference_t& reference);
-  int processRelAccess(ACC_ID accessID,
-                       const access_t& access,
-                       const instruction_t& instruction,
-                       const segment_t& segment,
-                       const call_t& call,
-                       const reference_t& reference);
+  int processAcquire(const instruction_t& instruction);
+  int processRelease(const instruction_t& instruction);
   int processJoin(const instruction_t& instruction,
                   const segment_t& segment,
                   const call_t& call,

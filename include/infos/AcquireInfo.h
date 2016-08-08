@@ -14,11 +14,14 @@
 
 #include "fwd/ShadowLock.h"
 
-struct AcquireInfo {
-	ShadowLock *lock;
+#include "Types.h"
 
-	explicit AcquireInfo(ShadowLock *lock) noexcept
-		: lock(lock) {}
+struct AcquireInfo {
+  ShadowLock *lock;
+  TIME acquireTime;
+
+  explicit AcquireInfo(ShadowLock *lock, TIME acquireTime) noexcept
+    : lock(lock), acquireTime(acquireTime) {}
 };
 
 #endif

@@ -14,10 +14,14 @@
 
 #include "fwd/ShadowLock.h"
 
+#include "Types.h"
+
 struct ReleaseInfo {
-	ShadowLock *lock;
-	explicit ReleaseInfo(ShadowLock* lock) noexcept
-		: lock(lock) {}
+  ShadowLock *lock;
+  TIME releaseTime;
+
+  explicit ReleaseInfo(ShadowLock* lock, TIME releaseTime) noexcept
+    : lock(lock), releaseTime(releaseTime) {}
 };
 
 #endif

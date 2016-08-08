@@ -40,9 +40,9 @@ void DebugTool::Access(const AccessEvent* event) {
 }
 
 void DebugTool::Acquire(const AcquireEvent* event) {
-//	const AcquireInfo& ai = *(event->getAcquireInfo());
+  const AcquireInfo& ai = *(event->getAcquireInfo());
 	BOOST_LOG_TRIVIAL(debug) 
-		<< "AcquireEvent:";
+    << "AcquireEvent:" << ai.acquireTime << std::endl;
 }
 
 void DebugTool::Call(const CallEvent* event) {
@@ -75,9 +75,9 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 }
 
 void DebugTool::Release(const ReleaseEvent* event) {
-//	const ReleaseInfo& ri = *(event->getReleaseInfo());
+  const ReleaseInfo& ri = *(event->getReleaseInfo());
 	BOOST_LOG_TRIVIAL(debug) 
-		<< "ReleaseEvent:";
+    << "ReleaseEvent:" << ri.releaseTime << std::endl;
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
