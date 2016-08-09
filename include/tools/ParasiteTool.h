@@ -26,6 +26,7 @@
 #include "CallSiteSpanProfile.h"
 #include "CallSiteWorkHashtable.h"
 #include "CallSiteWorkProfile.h"
+#include "DAG.h"
 #include "Event.h"
 #include "Interpreter.h"
 #include "JoinEvent.h"
@@ -85,7 +86,13 @@ class ParasiteTool : public Tool {
 	*/
 	void printCallSiteProfiles();
 
+	void printGraphInformation(); 
+
 	void writeJson();
+
+	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
+
+	void add_join_edges(vertex_descr_type start);
 	
 	/**
 	*    @var main_stack
@@ -108,6 +115,7 @@ class ParasiteTool : public Tool {
 	*/
 	std::unordered_map<unsigned int, int> lock_hashtable;
 
+	DAG thread_graph;
 
 	/**
 	*    @var last_function_call_time
@@ -168,6 +176,11 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the time of the last thread event
+	*/
+	TIME last_thread_event_time;
 
  private:
 	// prevent generated functions --------------------------------------------

@@ -16,6 +16,7 @@
 #include <vector> 
 
 #include "CallSiteSpanHashtable.h"
+#include "DAG.h"
 #include "Types.h"
 
 /**
@@ -71,6 +72,13 @@ struct thread_frame_t {
 	TIME longest_child_lock_span;
 
 
+	TIME thread_start_time;
+
+	vertex_descr_type first_vertex;
+	vertex_descr_type last_vertex;
+
+	std::list<vertex_descr_type> join_vertex_list;
+
 	/**
 	*    @var prefix_table
 	*    @brief Prefix data for each call site in this thread.
@@ -95,6 +103,7 @@ struct thread_frame_t {
 					 lock_span(0), 
 					 longest_child_span(0),
 					 longest_child_lock_span(0), 
+					 thread_start_time(0),
 					 prefix_table(CallSiteSpanHashtable()), 
 					 longest_child_table(CallSiteSpanHashtable()),
 					 continuation_table(CallSiteSpanHashtable()) {}
@@ -112,7 +121,9 @@ class ThreadStack {
 		*    @brief Initializes a thread frame with index thread_index in the 
 					thread stack, and head function index head_function_index.
 		*/
-		void init_frame(int thread_index, int head_function_index, TRD_ID thread);
+		void init_frame(int thread_index, int head_function_index, 
+										  TRD_ID thread,
+										  vertex_descr_type first_vertex);
 
 		/**
 		*    @fn push()
@@ -120,7 +131,8 @@ class ThreadStack {
 					vector.
 		*/
 		std::shared_ptr<thread_frame_t> push(int head_function_index,
-											 TRD_ID thread_id);
+											 TRD_ID thread_id,
+											 vertex_descr_type first_vertex);
 
 		/**
 		*    @fn pop()

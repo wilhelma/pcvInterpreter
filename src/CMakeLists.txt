@@ -9,6 +9,7 @@ include_directories(${INCLUDE_DIRECTORIES})
 
 set(SRC_LIST ${SRC_LIST}
 	DBInterpreter.cpp
+	DAG.cpp
 	EventService.cpp
 	FunctionStack.cpp
 	Interpreter.cpp
