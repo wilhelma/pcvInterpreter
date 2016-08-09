@@ -64,6 +64,8 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
+	void getOverallProfile();
+
 	/**
 	*    @fn printProfile()
 	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
@@ -153,21 +155,6 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_thread_start_time;
 
-
-	/**
-	*    @var last_lock_end_time
-	*    @brief Tracks the last lock end time, for calculation of 
-				lock span. 
-	*/
-	TIME lock_span_end_time;
-
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the last lock start time, for calculation of 
-				lock span. 
-	*/
-	TIME lock_span_start_time;
-
 	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
@@ -179,6 +166,10 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last thread event
 	*/
 	TIME last_thread_event_time;
+
+	TIME last_lock_start_time;
+
+	int lock_count; 
 
  private:
 	// prevent generated functions --------------------------------------------
