@@ -16,9 +16,10 @@
 class ShadowLock {
 public:
 
+	TIME last_acquire_time;
 	typedef unsigned int LockId;
 	ShadowLock(LockId lockId)
-		: lockId(lockId)
+		: last_acquire_time(0), lockId(lockId) 
 	{};
 	
 	const LockId lockId;

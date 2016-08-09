@@ -23,6 +23,7 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 	prof->call_site = work_profile->call_site;
 	prof->function_signature = work_profile->function_signature;
 	prof->work = work_profile->work;
+	prof->lock_span = span_profile->lock_span;
 	prof->span = span_profile->span;
 	prof->count = work_profile->count;
 	if (prof->work == 0)
@@ -37,7 +38,10 @@ void CallSiteProfile::print() {
 	printf("CALL SITE %d \n", static_cast<int>(prof->call_site));
 	printf("FUNCTION SIGNATURE is %s \n", prof->function_signature.c_str());
 	printf("WORK is %llu \n", static_cast<unsigned long long>(prof->work));
+	printf("LOCK SPAN is %llu \n", static_cast<unsigned long long>(prof->lock_span));
 	printf("SPAN is %llu \n", static_cast<unsigned long long>(prof->span));
+	printf("LOCK SPAN IS %f of SPAN \n", static_cast<double>(prof->lock_span) / 
+									     static_cast<double>(prof->span));
 	printf("COUNT is %d \n", prof->count);
 	printf("PARALLELISM is %f \n", static_cast<double>(prof->work)/static_cast<double>(prof->span));
 	printf("================\n");

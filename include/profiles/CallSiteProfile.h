@@ -56,6 +56,12 @@ struct call_site_profile_t {
 
 
     /**
+    *    @var lock_span
+    *    @brief Lock span of callsite. 
+    */
+    TIME lock_span;
+
+    /**
     *    @var span
     *    @brief Span of callsite. 
     */
@@ -67,7 +73,8 @@ struct call_site_profile_t {
     */
     TIME work;
 
-    call_site_profile_t() : call_site(0),  count(0), parallelism(0), span(0), work(0) {}  
+    call_site_profile_t() : call_site(0),  count(0), parallelism(0),
+                            lock_span(0), span(0), work(0) {}  
 };
 
 class CallSiteProfile {
@@ -82,18 +89,6 @@ class CallSiteProfile {
     ~CallSiteProfile();
 
     void print();
-
-    /**
-    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add)
-    *    @brief Add the entries in profile_to_add to prof
-    */
-    void add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add);
-
-    /**
-    *    @fn init_callsite_profile(...)
-    *    @brief Initialize prof with the information provided in function parameters
-    */
-    void init_callsite_profile(CALLSITE call_site, TIME work, TIME span);
     
     /**
     *    @var prof

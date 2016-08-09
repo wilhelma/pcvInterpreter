@@ -35,7 +35,14 @@ struct call_site_span_profile_t {
     */
     TIME span;
 
-    call_site_span_profile_t() : call_site(0), span(0) {}  
+
+    /**
+    *    @var span
+    *    @brief Lock span of callsite. 
+    */
+    TIME lock_span;
+
+    call_site_span_profile_t() : call_site(0), span(0), lock_span(0) {}  
 };
 
 class CallSiteSpanProfile {
@@ -56,7 +63,9 @@ class CallSiteSpanProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_span_profile(CALLSITE call_site, TIME span);
+    void init_callsite_span_profile(CALLSITE call_site, 
+                                    TIME span,
+                                    TIME lock_span);
     
     /**
     *    @var prof

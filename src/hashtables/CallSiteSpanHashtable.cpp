@@ -55,15 +55,18 @@ void CallSiteSpanHashtable::add(CallSiteSpanHashtable* hashtable_object) {
 	}
 }
 
-void CallSiteSpanHashtable::add_span(CALLSITE call_site, TIME span) {
+void CallSiteSpanHashtable::add_span(CALLSITE call_site,
+								     TIME span,
+								     TIME lock_span) {
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;
+  		profile.prof->lock_span += lock_span;
 	} else {
 
 		std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
 		CallSiteSpanProfile new_profile(new_ptr);
-		new_profile.init_callsite_span_profile(call_site, span);
+		new_profile.init_callsite_span_profile(call_site, span, lock_span);
 		std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
                                         newPair(call_site, new_profile.prof);
 		hashtable->insert(newPair);

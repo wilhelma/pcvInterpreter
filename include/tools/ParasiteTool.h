@@ -86,8 +86,6 @@ class ParasiteTool : public Tool {
 	*/
 	void printCallSiteProfiles();
 
-	void printGraphInformation(); 
-
 	void writeJson();
 
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
