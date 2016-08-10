@@ -17,6 +17,7 @@
 
 #include "CallSiteSpanHashtable.h"
 #include "DAG.h"
+#include "IntervalTree.h"
 #include "Types.h"
 
 /**
@@ -141,12 +142,17 @@ class ThreadStack {
 		*/
 		void pop();
 
+		void get_thread_lock_span(std::shared_ptr<thread_frame_t> thread);
+
   		/**
 		*    @var thread_stack
 		*    @brief Thread stack that tracks bottom function in simulator,
 				    implemented as a vector of std::shared_ptr<thread_frame_t>.
 		*/
   		std::vector< std::shared_ptr<thread_frame_t> > stack;
+
+  		vector<Interval<unsigned int>> lock_intervals;
+  		IntervalTree<T> lock_interval_tree;
 
  	private:
 

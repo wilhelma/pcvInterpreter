@@ -29,6 +29,7 @@
 #include "DAG.h"
 #include "Event.h"
 #include "Interpreter.h"
+#include "IntervalTree.h"
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
 #include "ParasiteJsonWriter.h"
@@ -166,10 +167,6 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last thread event
 	*/
 	TIME last_thread_event_time;
-
-	TIME last_lock_start_time;
-
-	int lock_count; 
 
  private:
 	// prevent generated functions --------------------------------------------

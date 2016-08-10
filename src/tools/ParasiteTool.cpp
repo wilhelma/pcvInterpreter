@@ -62,7 +62,7 @@ void ParasiteTool::getOverallProfile() {
 	std::shared_ptr<thread_frame_t> bottom_thread_frame = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function_frame = stacks->bottomFunction();
 
-	parasite_profile->lock_span = static_cast<TIME>(bottom_function_frame->lock_span);
+	parasite_profile->lock_span = bottom_function_frame->lock_span;
 
 	// Calculate span for entire program 
 	parasite_profile->span =  static_cast<TIME> (bottom_thread_frame->prefix_span +
@@ -244,11 +244,6 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		// F.p += F.l
 		bottom_thread_frame->prefix_span += bottom_thread_frame->longest_child_span;
-		bottom_thread_frame->prefix_span += bottom_thread_frame->lock_span;
-		assert(bottom_thread_frame->prefix_span > bottom_thread_frame->
-		                                          longest_child_lock_span);
-		bottom_thread_frame->prefix_span -= bottom_thread_frame->
-		                                    longest_child_lock_span;
 		CallSiteSpanHashtable prefix_table(bottom_thread_frame->prefix_table);
 		prefix_table.add(&(bottom_thread_frame->longest_child_table));
 		//local_span does not increase, because critical path goes 
@@ -267,7 +262,6 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	// reset longest child variables
 	// F.l = 0
 	bottom_thread_frame->longest_child_span = static_cast<TIME>(0);
-	bottom_thread_frame->longest_child_lock_span = static_cast<TIME>(0);
 
 	printf("JOIN END \n");
 	printf("================ \n");
@@ -401,6 +395,9 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		parent_thread_frame->continuation_span = static_cast<TIME>(0);
 	}
 
+	ending_thread_frame->lock_interval_tree = 
+						   IntervalTree<T>(ending_thread_frame->lock_intervals);
+
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
 	stacks->thread_pop();
@@ -423,7 +420,6 @@ void ParasiteTool::Acquire(const AcquireEvent* e) {
 		std::pair<unsigned int, int> newPair(lockId, stacks->bottomFunctionIndex());
 		lock_hashtable.insert(newPair);
 	}
-
 }
 
 void ParasiteTool::Release(const ReleaseEvent* e) {
@@ -434,15 +430,17 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 						   static_cast<double>(_info->lock->last_acquire_time));
 	TIME lock_span = static_cast<TIME>(release_time - 
 												_info->lock->last_acquire_time);
+	
 	unsigned int lockId = _info->lock->lockId;
+	stacks->bottomThread()->lock_intervals.push_back(Interval<unsigned int>
+							 (_info->lock->last_acquire_time, 
+							  release_time, 
+							  lockId));
 
 	int unlocked_function_index = lock_hashtable.at(lockId);
 	std::shared_ptr<function_frame_t> unlocked_function_frame
 								(stacks->functionAt(unlocked_function_index));
 	unlocked_function_frame->lock_span += lock_span;
-	if (lock_count == 1)
-		stacks->bottomThread()->lock_span += release_time - last_lock_start_time;
-	lock_count -= 1;
 }
 
 void ParasiteTool::Access(const AccessEvent* e) {
