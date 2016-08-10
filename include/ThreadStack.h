@@ -98,6 +98,9 @@ struct thread_frame_t {
 	*/
 	CallSiteSpanHashtable continuation_table;
 
+	std::vector<Interval<unsigned int>> lock_intervals;
+  	IntervalTree<unsigned int> lock_interval_tree;
+
 	thread_frame_t():thread(0),
 					 continuation_span(0),
 					 prefix_span(0), 
@@ -150,9 +153,6 @@ class ThreadStack {
 				    implemented as a vector of std::shared_ptr<thread_frame_t>.
 		*/
   		std::vector< std::shared_ptr<thread_frame_t> > stack;
-
-  		vector<Interval<unsigned int>> lock_intervals;
-  		IntervalTree<T> lock_interval_tree;
 
  	private:
 
