@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
 
 #include "Types.h"
 
@@ -12,7 +13,8 @@ class LockInterval {
  public:
     TIME start;
     TIME stop;
-    TIME span(); 
+    TIME span();
+    void shift(TIME offset); 
 
     LockInterval(TIME s, TIME e)
         : start(s)
@@ -22,7 +24,9 @@ class LockInterval {
 
 class LockIntervals {
  public:
- 	void add(TIME start, TIME end, unsigned int lock_id);
+ 	void add(LockIntervals childIntervals);
+ 	void addInterval(TIME start, TIME end, unsigned int lock_id);
+ 	void clear();
  	void shift(TIME offset);
     TIME span();
  private:

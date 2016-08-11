@@ -19,14 +19,50 @@ struct {
     }   
 } compareLockIntervalStarts;
 
-void LockIntervals::add(TIME start, TIME end, unsigned int lock_id) {
+
+void LockIntervals::add(LockIntervals childIntervals) {
+
+    intervals.insert(intervals.end(),
+                     childIntervals.intervals.begin(),
+                     childIntervals.intervals.end());
+
+    for(auto it : childIntervals.interval_map) {
+        unsigned int k = it.first;
+        if (!interval_map.count(k)) {
+            std::vector<LockInterval> newVector;
+            interval_map.insert(std::pair<unsigned int, std::vector<LockInterval>>
+                                (k, newVector));
+        }
+
+        interval_map.at(k).insert(interval_map.at(k).end(),
+                                  childIntervals.interval_map.at(k).begin(),
+                                  childIntervals.interval_map.at(k).end());
+    }
+}
+
+
+void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
 
     LockInterval newLockInterval(start, end);
     intervals.push_back(newLockInterval);
-    if ()
-        interval_map.insert(lock_id, newLockInterval);
-    else 
+    if (interval_map.count(lock_id))
+        interval_map.at(lock_id).push_back(newLockInterval);
+    else {
+        std::vector<LockInterval> newVector;
+        newVector.push_back(newLockInterval);
+        interval_map.insert(std::pair<unsigned int, std::vector<LockInterval>>
+                            (lock_id, newVector));
+    }
 }
+
+
+void LockIntervals::clear() {
+    intervals.clear();
+    for (auto it : interval_map) {
+        it.second.clear();
+    }
+}
+
 
 void LockInterval::shift(TIME offset) {
     start += offset;

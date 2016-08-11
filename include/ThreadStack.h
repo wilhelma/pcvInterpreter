@@ -17,7 +17,7 @@
 
 #include "CallSiteSpanHashtable.h"
 #include "DAG.h"
-#include "Intervals.h"
+#include "LockIntervals.h"
 #include "Types.h"
 
 /**
@@ -52,26 +52,19 @@ struct thread_frame_t {
 	*/
 	TIME prefix_span;
 
-	Intervals child_lock_intervals;
-	Intervals lock_intervals;
+	LockIntervals child_lock_intervals;
+	LockIntervals lock_intervals;
 
 	TIME lock_span() {
 		return lock_intervals.span();
 	}
 
 	void absorb_child_locks() {
-		lock_intervals.insert(lock_intervals.end(),
-							  child_lock_intervals.begin(),
-				 		      child_lock_intervals.end());
+		lock_intervals.add(child_lock_intervals);
 	}
 
 	void add_child_locks(thread_frame_t child_thread) {
-
-		TIME offset = child_thread->start_time;
-		child_thread->make_lock_interval_times_concurrent();
-		child_lock_intervals.insert(child_lock_intervals.end(),
-									child_thread->lock_intervals.begin(),
-						 		    child_thread->lock_intervals.end());
+		child_lock_intervals.add(child_thread.lock_intervals);
 	}
 
 	/**
@@ -87,6 +80,8 @@ struct thread_frame_t {
 	TIME longest_child_lock_span;
 
 	TIME thread_start_time;
+
+	TIME concurrency_offset;
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -117,6 +112,7 @@ struct thread_frame_t {
 					 longest_child_span(0),
 					 longest_child_lock_span(0), 
 					 thread_start_time(0),
+					 concurrency_offset(0),
 					 prefix_table(CallSiteSpanHashtable()), 
 					 longest_child_table(CallSiteSpanHashtable()),
 					 continuation_table(CallSiteSpanHashtable()) {}

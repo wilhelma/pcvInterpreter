@@ -329,7 +329,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	// F.w += G.w
 	parent_function->running_work += running_work;
 
-	parent_function->lock_span += lock_span;
+	parent_function->lock_span += returned_function->lock_span;
 	work_table->add_work(parent_function->call_site,
 	                     parent_function->function_signature,
 	                     running_work);
@@ -372,6 +372,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	std::shared_ptr<thread_frame_t> ending_thread(stacks->bottomThread());
 	std::shared_ptr<thread_frame_t> parent_thread(stacks->bottomParentThread());
+	parent_thread->concurrency_offset += last_thread_runtime;
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function->call_site, 
 										ending_thread->prefix_span,
@@ -404,7 +405,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		parent_thread->continuation_span = static_cast<TIME>(0);
 	}
 
-	parent_thread->add_child_locks(ending_thread);
+	parent_thread->add_child_locks(*ending_thread);
     
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
@@ -440,9 +441,11 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 												_info->lock->last_acquire_time);
 	
 	unsigned int lockId = _info->lock->lockId;
-	stacks->bottomThread()->lock_intervals.add(_info->lock->last_acquire_time, 
-							  				   release_time, lockId);
-
+	TIME offset = stacks->bottomParentThread()->concurrency_offset;
+	stacks->bottomThread()->
+		lock_intervals.addInterval(
+					 static_cast<TIME>(_info->lock->last_acquire_time - offset), 
+					 static_cast<TIME>(release_time - offset), lockId);
 	int unlocked_function_index = lock_hashtable.at(lockId);
 	std::shared_ptr<function_frame_t> unlocked_function
 								(stacks->functionAt(unlocked_function_index));
