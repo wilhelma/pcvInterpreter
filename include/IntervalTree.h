@@ -153,9 +153,9 @@ public:
     }
 
     intervalVector findOverlapping(K start, K stop) const {
-	intervalVector ov;
-	this->findOverlapping(start, stop, ov);
-	return ov;
+    	intervalVector ov;
+    	this->findOverlapping(start, stop, ov);
+    	return ov;
     }
 
     void findOverlapping(K start, K stop, intervalVector& overlapping) const {
@@ -179,9 +179,9 @@ public:
     }
 
     intervalVector findContained(K start, K stop) const {
-	intervalVector contained;
-	this->findContained(start, stop, contained);
-	return contained;
+    	intervalVector contained;
+    	this->findContained(start, stop, contained);
+    	return contained;
     }
 
     void findContained(K start, K stop, intervalVector& contained) const {
@@ -201,8 +201,55 @@ public:
         if (right && stop >= center) {
             right->findContained(start, stop, contained);
         }
-
     }
+
+    // sort using a custom function object
+    struct {
+        bool operator()(Interval<T> a, Interval<T> b)
+        {   
+            return a.start > b.start;
+        }   
+    } compareIntervalStarts;
+
+    void mergeIntervals(std::vector<Interval<unsigned int>> intervals)
+    {
+        // Sort Intervals in decreasing order of
+        // start time
+        std::sort(intervals.begin(), intervals.end(), compareIntervalStarts);
+
+        int index = 0; // Stores index of last element
+        // in output intervalsay (modified intervals[])
+
+        // Traverse all input Intervals
+        for (int i=0; i<intervals.size(); i++)
+        {
+            // If this is not first Interval and overlaps
+            // with the previous one
+            if (index != 0 && intervals.at(index-1).start <= intervals.at(i).stop)
+            {
+                while (index != 0 && intervals.at(index-1).start <= intervals.at(i).stop)
+                {
+                    // Merge previous and current Intervals
+                    intervals.at(index-1).stop = std::max(intervals.at(index-1).stop, intervals.at(i).stop);
+                    intervals.at(index-1).start = std::min(intervals.at(index-1).start, intervals.at(i).start);
+                    index--;
+                }
+            }
+            else // Doesn't overlap with previous, add to
+                // solution
+                intervals.at(index) = intervals.at(i);
+
+            index++;
+        }
+
+        // // Now intervals[0..index-1] stores the merged Intervals
+        // cout << "\n The Merged Intervals are: ";
+        // for (int i = 0; i < index; i++)
+        //     cout << "[" << intervals.at(i).start << ", " << intervals.at(i).stop << "] ";
+    }
+
+
+
 
     ~IntervalTree(void) = default;
 
