@@ -17,7 +17,7 @@
 
 #include "CallSiteSpanHashtable.h"
 #include "DAG.h"
-#include "IntervalTree.h"
+#include "Intervals.h"
 #include "Types.h"
 
 /**
@@ -52,13 +52,27 @@ struct thread_frame_t {
 	*/
 	TIME prefix_span;
 
+	Intervals child_lock_intervals;
+	Intervals lock_intervals;
 
-	/**
-	*    @var lock_span
-	*    @brief Lock span of this thread. 
-	*/
-	TIME lock_span;
+	TIME lock_span() {
+		return lock_intervals.span();
+	}
 
+	void absorb_child_locks() {
+		lock_intervals.insert(lock_intervals.end(),
+							  child_lock_intervals.begin(),
+				 		      child_lock_intervals.end());
+	}
+
+	void add_child_locks(thread_frame_t child_thread) {
+
+		TIME offset = child_thread->start_time;
+		child_thread->make_lock_interval_times_concurrent();
+		child_lock_intervals.insert(child_lock_intervals.end(),
+									child_thread->lock_intervals.begin(),
+						 		    child_thread->lock_intervals.end());
+	}
 
 	/**
 	*    @var lock_span
@@ -71,7 +85,6 @@ struct thread_frame_t {
 	*    @brief Lock span of the longest spawned child of this thread.
 	*/
 	TIME longest_child_lock_span;
-
 
 	TIME thread_start_time;
 
@@ -98,13 +111,9 @@ struct thread_frame_t {
 	*/
 	CallSiteSpanHashtable continuation_table;
 
-	std::vector<Interval<unsigned int>> lock_intervals;
-  	IntervalTree<unsigned int> lock_interval_tree;
-
 	thread_frame_t():thread(0),
 					 continuation_span(0),
 					 prefix_span(0), 
-					 lock_span(0), 
 					 longest_child_span(0),
 					 longest_child_lock_span(0), 
 					 thread_start_time(0),
@@ -144,8 +153,6 @@ class ThreadStack {
 					vector.
 		*/
 		void pop();
-
-		void get_thread_lock_span(std::shared_ptr<thread_frame_t> thread);
 
   		/**
 		*    @var thread_stack

@@ -29,7 +29,7 @@
 #include "DAG.h"
 #include "Event.h"
 #include "Interpreter.h"
-#include "IntervalTree.h"
+#include "Intervals.h"
 #include "JoinEvent.h"
 #include "NewThreadEvent.h"
 #include "ParasiteJsonWriter.h"

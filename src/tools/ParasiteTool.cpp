@@ -242,6 +242,10 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		// F.p += F.l
 		bottom_thread->prefix_span += bottom_thread->longest_child_span;
+		bottom_thread->absorb_child_locks();
+		bottom_thread->prefix_span += bottom_thread->child_lock_intervals.span();
+		bottom_thread->prefix_span -= bottom_thread->longest_child_lock_span;
+		bottom_thread->child_lock_intervals.clear();
 		CallSiteSpanHashtable prefix_table(bottom_thread->prefix_table);
 		prefix_table.add(&(bottom_thread->longest_child_table));
 		//local_span does not increase, because critical path goes 
@@ -251,6 +255,15 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		// F.p += F.c 
 		bottom_thread->prefix_span += bottom_thread->continuation_span;
+		TIME lock_span_excluding_children = bottom_thread->lock_span();
+		bottom_thread->absorb_child_locks();
+		TIME lock_span_including_children = bottom_thread->lock_span();
+		TIME lock_span_on_continuation = static_cast<TIME>
+								   		(lock_span_including_children - 
+								   		lock_span_excluding_children);
+		bottom_thread->prefix_span += bottom_thread->child_lock_intervals.span();
+		bottom_thread->prefix_span -= lock_span_on_continuation;
+
 		// Critical path goes through continuation, which is local. Add
 		// continuation_span to local_span.
 		CallSiteSpanHashtable prefix_table(bottom_thread->prefix_table);
@@ -291,7 +304,6 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	TIME running_work = static_cast<TIME>(returned_function->running_work 
 		                                                          + local_work);
-	TIME lock_span = returned_function->lock_span;
 
 	CallSiteSpanHashtable bottom_thread_continuation_table(stacks->
 														   bottomThread()->
@@ -309,7 +321,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	// F.c += G.p
 	bottom_thread_continuation_table.add_span(returning_call_site, 
 									          running_work,
-									          lock_span);
+									          returned_function->
+									          	lock_span);
 
 	std::shared_ptr<function_frame_t> parent_function = 
 	 											stacks->bottomParentFunction();
@@ -349,7 +362,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	stacks->bottomThread()->continuation_table.
 								add_span(stacks->bottomFunction()->call_site,
 									    local_work,
-									    stacks->bottomFunction()->lock_span);
+									    static_cast<TIME>(0));
 
 	if (stacks->bottomThreadIndex() == 0)
 		return;
@@ -362,12 +375,12 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function->call_site, 
 										ending_thread->prefix_span,
-										ending_thread->lock_span);
+										static_cast<TIME>(0));
 
 	// if the ending thread is the longest child encountered so far
 	// F is parent thread, G is ending thread
 	if (ending_thread->prefix_span + parent_thread->continuation_span 
-																			 > parent_thread->longest_child_span) {
+			                             > parent_thread->longest_child_span) {
 
 		printf("ending thread is longest child encountered so far \n");
 
@@ -376,9 +389,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		// F.l = G.p
 		ending_thread->prefix_span += local_work;
 		parent_thread->longest_child_span = ending_thread->prefix_span;
-		printf("longest child span of frame %d is now %llu \n",
-						stacks->bottomThreadIndex() - 1, 
-						(unsigned long long) ending_thread->prefix_span);  
+		parent_thread->longest_child_lock_span = ending_thread->lock_span(); 
 		parent_thread->longest_child_table.clear();
 		ending_thread->prefix_table.add(&(ending_thread->continuation_table));
 		parent_thread->longest_child_table.add(&(ending_thread->prefix_table));
@@ -393,9 +404,8 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		parent_thread->continuation_span = static_cast<TIME>(0);
 	}
 
-	ending_thread->lock_interval_tree = 
-						   IntervalTree<unsigned int>(ending_thread->lock_intervals);
-
+	parent_thread->add_child_locks(ending_thread);
+    
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
 	stacks->thread_pop();
@@ -430,10 +440,8 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 												_info->lock->last_acquire_time);
 	
 	unsigned int lockId = _info->lock->lockId;
-	stacks->bottomThread()->lock_intervals.push_back(Interval<unsigned int>
-							 (_info->lock->last_acquire_time, 
-							  release_time, 
-							  lockId));
+	stacks->bottomThread()->lock_intervals.add(_info->lock->last_acquire_time, 
+							  				   release_time, lockId);
 
 	int unlocked_function_index = lock_hashtable.at(lockId);
 	std::shared_ptr<function_frame_t> unlocked_function

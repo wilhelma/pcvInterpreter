@@ -13,6 +13,7 @@ set(SRC_LIST ${SRC_LIST}
 	EventService.cpp
 	FunctionStack.cpp
 	Interpreter.cpp
+	Intervals.cpp
 	LockMgr.cpp
 	main.cpp
 	ParasiteJsonWriter.cpp
