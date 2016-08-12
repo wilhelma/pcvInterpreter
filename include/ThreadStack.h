@@ -55,9 +55,7 @@ struct thread_frame_t {
 	LockIntervals child_lock_intervals;
 	LockIntervals lock_intervals;
 
-	TIME lock_span() {
-		return lock_intervals.span();
-	}
+	TIME lock_wait_time;
 
 	void absorb_child_locks() {
 		lock_intervals.add(child_lock_intervals);
@@ -67,21 +65,27 @@ struct thread_frame_t {
 		child_lock_intervals.add(child_thread.lock_intervals);
 	}
 
+	void updateLockWaitTime() {
+		lock_wait_time = lock_intervals.waitTime();
+	}
+
 	/**
-	*    @var lock_span
+	*    @var lock_wait_time
 	*    @brief Span of the longest spawned child of this thread.
 	*/
 	TIME longest_child_span;
 
 	/**
-	*    @var longest_child_lock_span
+	*    @var longest_child_lock_wait_time
 	*    @brief Lock span of the longest spawned child of this thread.
 	*/
-	TIME longest_child_lock_span;
+	TIME longest_child_lock_wait_time;
 
 	TIME thread_start_time;
 
 	TIME concurrency_offset;
+
+
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -110,9 +114,10 @@ struct thread_frame_t {
 					 continuation_span(0),
 					 prefix_span(0), 
 					 longest_child_span(0),
-					 longest_child_lock_span(0), 
+					 longest_child_lock_wait_time(0), 
 					 thread_start_time(0),
 					 concurrency_offset(0),
+					 lock_wait_time(0),
 					 prefix_table(CallSiteSpanHashtable()), 
 					 longest_child_table(CallSiteSpanHashtable()),
 					 continuation_table(CallSiteSpanHashtable()) {}

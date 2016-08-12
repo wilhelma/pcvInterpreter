@@ -51,8 +51,8 @@ void ParasiteJsonWriter::writeOverallProfile(std::shared_ptr<parasite_profile_t>
 	rapidjson::Writer<rapidjson::FileWriteStream> writer(output_stream);
 
     writer.StartObject();
-    writer.Key("lock_span");
-    writer.Uint64(static_cast<uint64_t>(prof->lock_span));
+    writer.Key("lock_wait_time");
+    writer.Uint64(static_cast<uint64_t>(prof->lock_wait_time));
     writer.Key("parallelism");
     writer.Double(prof->parallelism);
     writer.Key("span");

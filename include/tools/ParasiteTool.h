@@ -109,13 +109,6 @@ class ParasiteTool : public Tool {
 
 	std::shared_ptr<CallSiteWorkHashtable> work_table;
 
-	/**
-	*    @var lock_hashtable
-	*    @brief Maps lock IDs to the index of their respective functions in the 
-				function stack. 
-	*/
-	std::unordered_map<unsigned int, int> lock_hashtable;
-
 	DAG thread_graph;
 
 	/**
@@ -123,7 +116,6 @@ class ParasiteTool : public Tool {
 	*    @brief Time stamp for the most recent function call in the simulator. 
 	*/
 	TIME last_function_call_time;
-
 
 	/**
 	*    @var last_function_return_time

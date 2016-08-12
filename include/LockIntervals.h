@@ -29,6 +29,7 @@ class LockIntervals {
  	void clear();
  	void shift(TIME offset);
     TIME span();
+    TIME waitTime();
  private:
  	void removeOverlaps();
  	std::unordered_map<unsigned int, std::vector<LockInterval>> interval_map;

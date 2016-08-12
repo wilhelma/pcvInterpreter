@@ -1,3 +1,5 @@
+
+
 /**
  *
  *    @file  LockIntervals.cpp
@@ -9,6 +11,8 @@
  *
  */
 
+ // https://en.wikipedia.org/wiki/Lamport%27s_bakery_algorithm
+
  #include "LockIntervals.h"
 
 // sort using a custom function object
@@ -18,6 +22,15 @@ struct {
         return a.start > b.start;
     }   
 } compareLockIntervalStarts;
+
+
+TIME LockIntervals::waitTime() {
+
+    TIME span_with_overlaps = span();
+    removeOverlaps();
+    TIME span_without_overlaps = span();
+    return static_cast<TIME>(span_with_overlaps- span_without_overlaps);
+}
 
 
 void LockIntervals::add(LockIntervals childIntervals) {
@@ -119,8 +132,6 @@ void LockIntervals::removeOverlaps() {
 }
 
 TIME LockIntervals::span() {
-
-    removeOverlaps();
     TIME sum = static_cast<TIME>(0);
     for (int i=0; i<intervals.size(); i++) {
         sum += intervals.at(i).span();

@@ -11,13 +11,7 @@
 */
 struct parasite_profile_t {
 
-	/**
-	*    @var lock_span
-	*    @brief The total lock span (the total runtime, scaled, on the criical
-				path, spent while at least one lock is engaged) of all 
-				instructions executed in the program.
-	*/
-	TIME lock_span;
+	TIME lock_wait_time;
 
 	/**
 	*    @var parallelism
@@ -42,7 +36,7 @@ struct parasite_profile_t {
 	*/
 	TIME work;
 
-	parasite_profile_t(): lock_span(0), parallelism(0), span(0), work(0) {}
+	parasite_profile_t(): lock_wait_time(0), parallelism(0), span(0), work(0) {}
 };
 
 #endif /* PARASITE_PROFILE_H_ */

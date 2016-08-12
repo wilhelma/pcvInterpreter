@@ -14,6 +14,7 @@
 #define FunctionStack_H_
 
 #include <vector> 
+#include "LockIntervals.h"
 #include "Types.h"
 
 /**
@@ -42,10 +43,10 @@ struct function_frame_t {
 	TIME local_work;
 
 	/**
-	*    @var local_lock_span
-	*    @brief The lock span of the function.
+	*    @var local_lock_wait_time
+	*    @brief The lock wait time of the function.
 	*/
-	TIME lock_span;
+	TIME lock_wait_time;
 
 	/**
 	*    @var running_work
@@ -54,7 +55,9 @@ struct function_frame_t {
 	*/
 	TIME running_work;
 
-	function_frame_t() : call_site(0), local_work(0), lock_span(0), 
+	LockIntervals lock_intervals;
+
+	function_frame_t() : call_site(0), local_work(0), lock_wait_time(0), 
 						 running_work(0)
 	{}
 };
