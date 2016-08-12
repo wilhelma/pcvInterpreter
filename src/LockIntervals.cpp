@@ -24,11 +24,58 @@ struct {
 } compareLockIntervalStarts;
 
 
+TIME span(std::vector<LockInterval> intervls) {
+    TIME sum = static_cast<TIME>(0);
+    for (int i=0; i<intervls.size(); i++) {
+        sum += intervls.at(i).span();
+    }
+    return sum;
+}
+
+std::vector<LockInterval> removeOverlaps(std::vector<LockInterval> intervls) {
+    // Sort LockIntervals in decreasing order of
+    // start time
+    std::sort(intervls.begin(), intervls.end(), compareLockIntervalStarts);
+
+    int index = 0; // Stores index of last element
+    // in output intervalsay (modified intervals[])
+
+    // Traverse all input LockIntervals
+    for (int i=0; i<intervls.size(); i++)
+    {
+        // If this is not first LockInterval and overlaps
+        // with the previous one
+        if (index != 0 && intervls.at(index-1).start <= intervls.at(i).stop)
+        {
+            while (index != 0 && 
+                   intervls.at(index-1).start <= intervls.at(i).stop)
+            {
+                // Merge previous and current LockIntervals
+                intervls.at(index-1).stop = 
+                    std::max(intervls.at(index-1).stop, intervls.at(i).stop);
+                intervls.at(index-1).start = 
+                 std::min(intervls.at(index-1).start, intervls.at(i).start);
+                index--;
+            }
+        }
+        else // Doesn't overlap with previous, add to
+            // solution
+            intervls.at(index) = intervls.at(i);
+
+        index++;
+    }
+  
+    return intervls;
+}
+
+
+
 TIME LockIntervals::waitTime() {
 
-    TIME span_with_overlaps = span();
-    removeOverlaps();
-    TIME span_without_overlaps = span();
+    TIME span_with_overlaps = span(intervals);
+    TIME span_without_overlaps = span(removeOverlaps(intervals));
+    printf("waitTime is %llu \n", (unsigned long long) 
+                            (span_with_overlaps- span_without_overlaps));
     return static_cast<TIME>(span_with_overlaps- span_without_overlaps);
 }
 
@@ -53,6 +100,9 @@ void LockIntervals::add(LockIntervals childIntervals) {
     }
 }
 
+void LockInterval::print() {
+    std::cout << "AIN NEW INTERVA " << start << " " << stop << std::endl;
+}
 
 void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
 
@@ -66,6 +116,7 @@ void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
         interval_map.insert(std::pair<unsigned int, std::vector<LockInterval>>
                             (lock_id, newVector));
     }
+    newLockInterval.print();
 }
 
 
@@ -75,7 +126,6 @@ void LockIntervals::clear() {
         it.second.clear();
     }
 }
-
 
 void LockInterval::shift(TIME offset) {
     start += offset;
@@ -92,50 +142,6 @@ TIME LockInterval::span() {
     return static_cast<TIME>(stop - start);
 }
 
-void LockIntervals::removeOverlaps() {
-    // Sort LockIntervals in decreasing order of
-    // start time
-    std::sort(intervals.begin(), intervals.end(), compareLockIntervalStarts);
 
-    int index = 0; // Stores index of last element
-    // in output intervalsay (modified intervals[])
 
-    // Traverse all input LockIntervals
-    for (int i=0; i<intervals.size(); i++)
-    {
-        // If this is not first LockInterval and overlaps
-        // with the previous one
-        if (index != 0 && intervals.at(index-1).start <= intervals.at(i).stop)
-        {
-            while (index != 0 && 
-                   intervals.at(index-1).start <= intervals.at(i).stop)
-            {
-                // Merge previous and current LockIntervals
-                intervals.at(index-1).stop = 
-                    std::max(intervals.at(index-1).stop, intervals.at(i).stop);
-                intervals.at(index-1).start = 
-                 std::min(intervals.at(index-1).start, intervals.at(i).start);
-                index--;
-            }
-        }
-        else // Doesn't overlap with previous, add to
-            // solution
-            intervals.at(index) = intervals.at(i);
-
-        index++;
-    }
-
-    // // Now intervals[0..index-1] stores the merged LockIntervals
-    // cout << "\n The Merged LockIntervals are: ";
-    // for (int i = 0; i < index; i++)
-    //     cout << "[" << intervals.at(i).start << ", " << intervals.at(i).stop << "] ";
-}
-
-TIME LockIntervals::span() {
-    TIME sum = static_cast<TIME>(0);
-    for (int i=0; i<intervals.size(); i++) {
-        sum += intervals.at(i).span();
-    }
-    return sum;
-}
 

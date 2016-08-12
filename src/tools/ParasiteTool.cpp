@@ -9,6 +9,8 @@
  *
  */
 
+ // TODO: fix concurrency offset
+
 #define COMMAND_LINE_OUTPUT 1
 #define JSON_OUTPUT 1
 #define GRAPH_OUTPUT 1
@@ -83,8 +85,8 @@ void ParasiteTool::printOverallProfile() {
 	printf("PARALLELISM IS %f \n", parasite_profile->parallelism);
 	printf("WORK IS %llu \n", (unsigned long long) parasite_profile->work);
 	printf("SPAN IS %llu \n", (unsigned long long) parasite_profile->span);
-	printf("LOCK SPAN IS %llu \n", (unsigned long long) parasite_profile->lock_wait_time);
-	printf("LOCK SPAN IS %f OF SPAN \n", 
+	printf("LOCK WAIT TIME IS %llu \n", (unsigned long long) parasite_profile->lock_wait_time);
+	printf("LOCK WAIT TIME IS %f OF SPAN \n", 
 							static_cast<double>(parasite_profile->lock_wait_time) /
 							static_cast<double>(parasite_profile->span));
 }
@@ -215,6 +217,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 		std::shared_ptr<thread_frame_t> new_thread = 
 				stacks->thread_push(stacks->bottomFunctionIndex(), newThreadID,
 									thread_start_vertex);
+		stacks->bottomThread()->thread_start_time = last_thread_start_time;
 	}
 
 	printf("NEW THREAD END \n");
@@ -343,8 +346,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	const ThreadEndInfo* _info(e->getThreadEndInfo());
 	last_thread_end_time = _info->endTime;
 	TIME last_thread_event_time = _info->endTime;
-	TIME this_thread_start_time = stacks->bottomThread()->thread_start_time;
-	last_thread_runtime = static_cast<TIME>(_info->endTime - this_thread_start_time);
+	last_thread_runtime = static_cast<TIME>(_info->endTime - last_thread_start_time);
 	TIME local_work = static_cast<TIME>(_info->endTime - last_event_time);
 	add_edge(local_work, "TE");
 	printf("local work in thread end is %llu \n", (unsigned long long) local_work);
@@ -371,6 +373,8 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	std::shared_ptr<thread_frame_t> ending_thread(stacks->bottomThread());
 	std::shared_ptr<thread_frame_t> parent_thread(stacks->bottomParentThread());
 	parent_thread->concurrency_offset += last_thread_runtime;
+	printf("concurrency_offset now %llu \n", 
+		   (unsigned long long) parent_thread->concurrency_offset);
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function->call_site, 
 										ending_thread->prefix_span,

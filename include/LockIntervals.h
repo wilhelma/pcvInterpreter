@@ -13,6 +13,7 @@ class LockInterval {
  public:
     TIME start;
     TIME stop;
+    void print();
     TIME span();
     void shift(TIME offset); 
 
@@ -28,10 +29,8 @@ class LockIntervals {
  	void addInterval(TIME start, TIME end, unsigned int lock_id);
  	void clear();
  	void shift(TIME offset);
-    TIME span();
     TIME waitTime();
  private:
- 	void removeOverlaps();
  	std::unordered_map<unsigned int, std::vector<LockInterval>> interval_map;
  	std::vector<LockInterval> intervals;
  };

@@ -81,11 +81,9 @@ struct thread_frame_t {
 	*/
 	TIME longest_child_lock_wait_time;
 
-	TIME thread_start_time;
-
 	TIME concurrency_offset;
 
-
+	TIME thread_start_time;
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -113,11 +111,11 @@ struct thread_frame_t {
 	thread_frame_t():thread(0),
 					 continuation_span(0),
 					 prefix_span(0), 
+					 lock_wait_time(0),
 					 longest_child_span(0),
 					 longest_child_lock_wait_time(0), 
-					 thread_start_time(0),
 					 concurrency_offset(0),
-					 lock_wait_time(0),
+					 thread_start_time(0),
 					 prefix_table(CallSiteSpanHashtable()), 
 					 longest_child_table(CallSiteSpanHashtable()),
 					 continuation_table(CallSiteSpanHashtable()) {}
