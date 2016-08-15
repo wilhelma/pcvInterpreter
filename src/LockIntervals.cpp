@@ -24,67 +24,55 @@ struct {
 } compareLockIntervalStarts;
 
 
-TIME span(std::vector<LockInterval> intervls) {
+TIME span(std::shared_ptr<std::vector<LockInterval>> intervls) {
     TIME sum = static_cast<TIME>(0);
-    for (int i=0; i<intervls.size(); i++) {
-        sum += intervls.at(i).span();
+    for (int i=0; i<intervls->size(); i++) {
+        sum += intervls->at(i).span();
     }
     return sum;
 }
 
-std::vector<LockInterval> removeOverlaps(std::vector<LockInterval> intervls) {
-    // Sort LockIntervals in decreasing order of
-    // start time
-    std::sort(intervls.begin(), intervls.end(), compareLockIntervalStarts);
 
-    int index = 0; // Stores index of last element
-    // in output intervalsay (modified intervals[])
-
-    // Traverse all input LockIntervals
-    for (int i=0; i<intervls.size(); i++)
-    {
-        // If this is not first LockInterval and overlaps
-        // with the previous one
-        if (index != 0 && intervls.at(index-1).start <= intervls.at(i).stop)
-        {
-            while (index != 0 && 
-                   intervls.at(index-1).start <= intervls.at(i).stop)
-            {
-                // Merge previous and current LockIntervals
-                intervls.at(index-1).stop = 
-                    std::max(intervls.at(index-1).stop, intervls.at(i).stop);
-                intervls.at(index-1).start = 
-                 std::min(intervls.at(index-1).start, intervls.at(i).start);
-                index--;
-            }
-        }
-        else // Doesn't overlap with previous, add to
-            // solution
-            intervls.at(index) = intervls.at(i);
-
-        index++;
-    }
-  
-    return intervls;
+LockIntervals::LockIntervals() {
+    intervals = std::shared_ptr<std::vector<LockInterval>>(new std::vector<LockInterval>());
+    ordered_intervals = std::shared_ptr<std::vector<LockInterval>>(new std::vector<LockInterval>());
 }
 
+void LockIntervals::order() {
 
+    ordered_intervals = intervals;
+    std::sort(ordered_intervals->begin(), ordered_intervals->end(), compareLockIntervalStarts);
+    TIME interval_strt = static_cast<TIME>(ordered_intervals->at(0).start - 1);
+
+    for (auto it: *ordered_intervals) {
+
+        it.shift(static_cast<TIME>(interval_strt - it.start));
+        interval_strt = static_cast<TIME>(it.stop + 1);
+    }
+}
 
 TIME LockIntervals::waitTime() {
 
-    TIME span_with_overlaps = span(intervals);
-    TIME span_without_overlaps = span(removeOverlaps(intervals));
-    printf("waitTime is %llu \n", (unsigned long long) 
-                            (span_with_overlaps- span_without_overlaps));
-    return static_cast<TIME>(span_with_overlaps- span_without_overlaps);
+    TIME unordered_span = span(intervals);
+    printf("unordered_span is %llu \n", (unsigned long long)
+                              static_cast<TIME>(unordered_span));
+    order();
+    print();
+    TIME ordered_span = static_cast<TIME>(ordered_intervals->at(0).stop - 
+                                          ordered_intervals->at(ordered_intervals->size() - 1).start);
+    printf("ordered_span is %llu \n", (unsigned long long)
+                        static_cast<TIME>(ordered_span));
+    printf("waitTime is %llu \n", (unsigned long long)
+                              static_cast<TIME>(ordered_span - unordered_span));
+    return static_cast<TIME>(ordered_span - unordered_span);;
 }
 
 
 void LockIntervals::add(LockIntervals childIntervals) {
 
-    intervals.insert(intervals.end(),
-                     childIntervals.intervals.begin(),
-                     childIntervals.intervals.end());
+    intervals->insert(intervals->end(),
+                     childIntervals.intervals->begin(),
+                     childIntervals.intervals->end());
 
     for(auto it : childIntervals.interval_map) {
         unsigned int k = it.first;
@@ -100,14 +88,28 @@ void LockIntervals::add(LockIntervals childIntervals) {
     }
 }
 
+void LockIntervals::print(std::shared_ptr<std::vector<LockInterval>> intervls) { 
+
+    for (auto it: *intervls) {
+        it.print();
+    }
+}
+
+void LockIntervals::print() {
+    printf("intervals are now \n");
+    print(intervals);
+    printf("ordered intervals are now \n");
+    print(ordered_intervals);
+}
+
 void LockInterval::print() {
-    std::cout << "AIN NEW INTERVA " << start << " " << stop << std::endl;
+    std::cout << "interval " << start << " " << stop << std::endl;
 }
 
 void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
 
     LockInterval newLockInterval(start, end);
-    intervals.push_back(newLockInterval);
+    intervals->push_back(newLockInterval);
     if (interval_map.count(lock_id))
         interval_map.at(lock_id).push_back(newLockInterval);
     else {
@@ -121,7 +123,7 @@ void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
 
 
 void LockIntervals::clear() {
-    intervals.clear();
+    intervals->clear();
     for (auto it : interval_map) {
         it.second.clear();
     }
@@ -132,11 +134,6 @@ void LockInterval::shift(TIME offset) {
     stop += offset;
 }
 
-void LockIntervals::shift(TIME offset) {
-    for (int i = 0; i < intervals.size(); i++) {
-        intervals.at(i).shift(offset);
-    }
-}
 
 TIME LockInterval::span() {
     return static_cast<TIME>(stop - start);
