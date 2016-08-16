@@ -18,7 +18,7 @@ void *BusyWork(void *t)
 }
 
 
-void *NestedBusyWork ()
+void *NestedBusyWork (void* dummy)
 {
 	pthread_t thread[NUM_THREADS];
 	int rc;

@@ -45,7 +45,6 @@ struct thread_frame_t {
 	*/
 	TIME continuation_span;
 
-
  	/**
 	*    @var prefix_span
 	*    @brief Prefix span of this thread. 
@@ -55,18 +54,16 @@ struct thread_frame_t {
 	LockIntervals child_lock_intervals;
 	LockIntervals lock_intervals;
 
-	TIME lock_wait_time;
+	TIME lock_wait_time(){
+		return lock_intervals.waitTime();
+	}
 
 	void absorb_child_locks() {
 		lock_intervals.add(child_lock_intervals);
 	}
 
-	void add_child_locks(thread_frame_t child_thread) {
-		child_lock_intervals.add(child_thread.lock_intervals);
-	}
-
-	void updateLockWaitTime() {
-		lock_wait_time = lock_intervals.waitTime();
+	void add_child_locks(std::shared_ptr<thread_frame_t> child_thread) {
+		child_lock_intervals.add(child_thread->lock_intervals);
 	}
 
 	/**
@@ -111,7 +108,6 @@ struct thread_frame_t {
 	thread_frame_t():thread(0),
 					 continuation_span(0),
 					 prefix_span(0), 
-					 lock_wait_time(0),
 					 longest_child_span(0),
 					 longest_child_lock_wait_time(0), 
 					 concurrency_offset(0),

@@ -2,6 +2,7 @@
 #define __LOCK_INTERVALS_H
 
 #include <vector>
+#include <assert.h>
 #include <algorithm>
 #include <iostream>
 #include <memory>

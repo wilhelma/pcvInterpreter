@@ -11,8 +11,6 @@
  *
  */
 
- // https://en.wikipedia.org/wiki/Lamport%27s_bakery_algorithm
-
  #include "LockIntervals.h"
 
 // sort using a custom function object
@@ -23,13 +21,33 @@ struct {
     }   
 } compareLockIntervalStarts;
 
+TIME getMinStart(std::shared_ptr<std::vector<LockInterval>> intervls) {
+
+    TIME min = static_cast<TIME>(0);
+    for (int i = 0; i < intervls->size(); i++) {
+        if (intervls->at(i).start < min)
+            min = intervls->at(i).start;
+    }
+    return min;
+};
+
+TIME getMaxStop(std::shared_ptr<std::vector<LockInterval>> intervls) {
+
+    TIME max = static_cast<TIME>(0);
+    for (int i = 0; i < intervls->size(); i++) {
+        if (intervls->at(i).stop > max)
+            max = intervls->at(i).stop;
+    }
+    return max;
+};
 
 TIME span(std::shared_ptr<std::vector<LockInterval>> intervls) {
-    TIME sum = static_cast<TIME>(0);
-    for (int i=0; i<intervls->size(); i++) {
-        sum += intervls->at(i).span();
-    }
-    return sum;
+
+    TIME start = getMinStart(intervls);
+    TIME stop =  getMaxStop(intervls);
+    assert(stop > start);
+    TIME span = static_cast<TIME>(stop - start);
+    return span;
 }
 
 
@@ -40,14 +58,17 @@ LockIntervals::LockIntervals() {
 
 void LockIntervals::order() {
 
-    ordered_intervals = intervals;
+    ordered_intervals = std::shared_ptr<std::vector<LockInterval>>(
+                             new std::vector<LockInterval>(*(intervals.get())));
     std::sort(ordered_intervals->begin(), ordered_intervals->end(), compareLockIntervalStarts);
-    TIME interval_strt = static_cast<TIME>(ordered_intervals->at(0).start - 1);
 
-    for (auto it: *ordered_intervals) {
+    for (int i = 0; i < ordered_intervals->size() - 1; i++) {
 
-        it.shift(static_cast<TIME>(interval_strt - it.start));
-        interval_strt = static_cast<TIME>(it.stop + 1);
+        if (ordered_intervals->at(i).stop > ordered_intervals->at(i+1).start) {
+            TIME right_shift = static_cast<TIME>(1 + ordered_intervals->at(i).stop - 
+                                                 ordered_intervals->at(i+1).start);
+            ordered_intervals->at(i+1).shift(right_shift);
+        }
     }
 }
 
@@ -57,9 +78,7 @@ TIME LockIntervals::waitTime() {
     printf("unordered_span is %llu \n", (unsigned long long)
                               static_cast<TIME>(unordered_span));
     order();
-    print();
-    TIME ordered_span = static_cast<TIME>(ordered_intervals->at(0).stop - 
-                                          ordered_intervals->at(ordered_intervals->size() - 1).start);
+    TIME ordered_span = span(ordered_intervals);
     printf("ordered_span is %llu \n", (unsigned long long)
                         static_cast<TIME>(ordered_span));
     printf("waitTime is %llu \n", (unsigned long long)
@@ -118,7 +137,6 @@ void LockIntervals::addInterval(TIME start, TIME end, unsigned int lock_id) {
         interval_map.insert(std::pair<unsigned int, std::vector<LockInterval>>
                             (lock_id, newVector));
     }
-    newLockInterval.print();
 }
 
 

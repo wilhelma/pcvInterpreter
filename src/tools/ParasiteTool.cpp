@@ -244,7 +244,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 		// F.p += F.l
 		bottom_thread->prefix_span += bottom_thread->longest_child_span;
 		bottom_thread->absorb_child_locks();
-		bottom_thread->prefix_span += bottom_thread->lock_wait_time;
+		bottom_thread->prefix_span += bottom_thread->lock_wait_time();
 		bottom_thread->prefix_span -= bottom_thread->longest_child_lock_wait_time;
 		bottom_thread->child_lock_intervals.clear();
 		CallSiteSpanHashtable prefix_table(bottom_thread->prefix_table);
@@ -256,13 +256,13 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		// F.p += F.c 
 		bottom_thread->prefix_span += bottom_thread->continuation_span;
-		TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time;
+		TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
 		bottom_thread->absorb_child_locks();
-		TIME lock_wait_time_including_children = bottom_thread->lock_wait_time;
+		TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
 		TIME lock_wait_time_on_continuation = static_cast<TIME>
 								   		(lock_wait_time_including_children - 
 								   		lock_wait_time_excluding_children);
-		bottom_thread->prefix_span += bottom_thread->lock_wait_time;
+		bottom_thread->prefix_span += bottom_thread->lock_wait_time();
 		bottom_thread->prefix_span -= lock_wait_time_on_continuation;
 
 		// Critical path goes through continuation, which is local. Add
@@ -392,8 +392,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		// F.l = G.p
 		ending_thread->prefix_span += local_work;
 		parent_thread->longest_child_span = ending_thread->prefix_span;
-		ending_thread->updateLockWaitTime();
-		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time; 
+		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time(); 
 		parent_thread->longest_child_table.clear();
 		ending_thread->prefix_table.add(&(ending_thread->continuation_table));
 		parent_thread->longest_child_table.add(&(ending_thread->prefix_table));
@@ -408,7 +407,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		parent_thread->continuation_span = static_cast<TIME>(0);
 	}
 
-	parent_thread->add_child_locks(*ending_thread);
+	parent_thread->add_child_locks(ending_thread);
     
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
