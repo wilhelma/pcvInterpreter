@@ -29,7 +29,8 @@ void FunctionStack::pop() {
 	assert(stack.size() > 1);
 	int bottom_index = stack.size() - 1;
 	stack.pop_back();
-	printf("popped off of function stack, index is now %d \n", bottom_index);
+	if (DEBUG_OUTPUT)
+		std::cout << "popped off of function stack, index is now " << bottom_index << std::endl;
 }
 
 void FunctionStack::init_frame(int index, 
@@ -45,7 +46,8 @@ std::shared_ptr<function_frame_t> FunctionStack::push(FUN_SG funSg,
 	stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
 	int bottom_index = stack.size() - 1;
 	init_frame(bottom_index, funSg, callsiteID);
-	printf("pushing on to function stack, index is now %d \n", bottom_index);
+	if (DEBUG_OUTPUT)
+		std::cout << "pushing on to function stack, index is now " << bottom_index << std::endl;
 	assert(bottom_index >= 0);
 	return stack.back();
 }

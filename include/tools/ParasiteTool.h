@@ -42,6 +42,7 @@
 #include "ShadowVar.h"
 #include "ThreadEndEvent.h"
 #include "Tool.h"
+#include "Utility.h"
 
 /**
 *

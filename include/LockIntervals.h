@@ -9,6 +9,7 @@
 #include <unordered_map>
 
 #include "Types.h"
+#include "Utility.h"
 
 class LockInterval {
  public:

@@ -37,12 +37,22 @@ struct StrongTypedef {
 	/// underlying type should be a primitive.
 	operator const T() const { return Value_; }
 
+  	T& operator +=(const T& rhs) {
+    	return Value_ + rhs;
+  	}
+
+  	T& operator -=(const T& rhs) {
+    	return Value_ - rhs;
+  	}
+
 	/// \brief This is called when operator++ is
 	/// called on the object.
 	operator T&() { return Value_; }
-private:
-	T Value_;
+
+	private: 
+	 T Value_;
 };
+
 
 // All others IDs should have the same type as ID
 using ID     = unsigned;
@@ -64,7 +74,7 @@ using POS   = StrongTypedef<unsigned, 11>;
 // MEM_ST  Already uses AccessState
 
 // Call Types
-using TIME     = StrongTypedef<uint64_t, 12>;
+using TIME     = uint64_t;
 using CALLSITE = StrongTypedef<size_t,  13>;
 
 // File Types

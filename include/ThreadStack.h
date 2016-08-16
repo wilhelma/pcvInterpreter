@@ -19,6 +19,7 @@
 #include "DAG.h"
 #include "LockIntervals.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *    @struct thread_frame_t
