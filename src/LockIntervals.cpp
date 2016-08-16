@@ -45,7 +45,7 @@ TIME span(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
     TIME start = getMinStart(intervls);
     TIME stop =  getMaxStop(intervls);
-    assert(stop > start);
+    assert(stop >= start);
     TIME span = static_cast<TIME>(stop - start);
     return span;
 }
@@ -60,6 +60,9 @@ void LockIntervals::order() {
 
     ordered_intervals = std::shared_ptr<std::vector<LockInterval>>(
                              new std::vector<LockInterval>(*(intervals.get())));
+    if (ordered_intervals->size() == 0)
+        return;
+
     std::sort(ordered_intervals->begin(), ordered_intervals->end(), compareLockIntervalStarts);
 
     for (int i = 0; i < ordered_intervals->size() - 1; i++) {
@@ -73,6 +76,9 @@ void LockIntervals::order() {
 }
 
 TIME LockIntervals::waitTime() {
+
+    if (intervals->size() <= 1)
+        return static_cast<TIME>(0);
 
     TIME unordered_span = span(intervals);
     printf("unordered_span is %llu \n", (unsigned long long)

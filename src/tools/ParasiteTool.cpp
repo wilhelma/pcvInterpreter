@@ -236,16 +236,23 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	add_join_edges(bottom_thread->join_vertex_list.front());
 	bottom_thread->join_vertex_list.pop_front();
 
-	 // If critical path goes through spawned child
 
+	TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
+	bottom_thread->absorb_child_locks();
+	TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
+	TIME lock_wait_time_on_continuation = static_cast<TIME>
+								   		(lock_wait_time_including_children - 
+								   		lock_wait_time_excluding_children);
+
+	 // If critical path goes through spawned child
 	// If F.l > F.c
 	if (bottom_thread->longest_child_span > bottom_thread->continuation_span) {
 
 		// F.p += F.l
 		bottom_thread->prefix_span += bottom_thread->longest_child_span;
-		bottom_thread->absorb_child_locks();
-		bottom_thread->prefix_span += bottom_thread->lock_wait_time();
 		bottom_thread->prefix_span -= bottom_thread->longest_child_lock_wait_time;
+		printf("longest_child_lock_wait_time is %llu \n",
+				(unsigned long long) bottom_thread->longest_child_lock_wait_time);
 		bottom_thread->child_lock_intervals.clear();
 		CallSiteSpanHashtable prefix_table(bottom_thread->prefix_table);
 		prefix_table.add(&(bottom_thread->longest_child_table));
@@ -256,14 +263,9 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		// F.p += F.c 
 		bottom_thread->prefix_span += bottom_thread->continuation_span;
-		TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
-		bottom_thread->absorb_child_locks();
-		TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
-		TIME lock_wait_time_on_continuation = static_cast<TIME>
-								   		(lock_wait_time_including_children - 
-								   		lock_wait_time_excluding_children);
-		bottom_thread->prefix_span += bottom_thread->lock_wait_time();
 		bottom_thread->prefix_span -= lock_wait_time_on_continuation;
+		printf("lock_wait_time_on_continuation is %llu \n",
+				(unsigned long long) lock_wait_time_on_continuation);
 
 		// Critical path goes through continuation, which is local. Add
 		// continuation_span to local_span.
@@ -358,19 +360,22 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	work_table->add_work(current_function->call_site,
 						 current_function->function_signature, 
 						 local_work);
-	stacks->bottomThread()->continuation_span += local_work;
-	stacks->bottomThread()->continuation_table.
+
+	std::shared_ptr<thread_frame_t> ending_thread(stacks->bottomThread());
+	ending_thread->continuation_span += local_work;
+	ending_thread->continuation_table.
 								add_span(stacks->bottomFunction()->call_site,
 									    local_work,
 									    static_cast<TIME>(0));
 
+	ending_thread->prefix_span += ending_thread->lock_wait_time();
+	current_function->local_work += ending_thread->lock_wait_time();
 	if (stacks->bottomThreadIndex() == 0)
 		return;
 
 	stacks->bottomParentThread()->
 			   join_vertex_list.push_back(stacks->bottomThread()->last_vertex);
 
-	std::shared_ptr<thread_frame_t> ending_thread(stacks->bottomThread());
 	std::shared_ptr<thread_frame_t> parent_thread(stacks->bottomParentThread());
 	parent_thread->concurrency_offset += last_thread_runtime;
 	printf("concurrency_offset now %llu \n", 
@@ -408,7 +413,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	}
 
 	parent_thread->add_child_locks(ending_thread);
-    
+
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
 	stacks->thread_pop();
