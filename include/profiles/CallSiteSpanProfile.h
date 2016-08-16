@@ -37,12 +37,12 @@ struct call_site_span_profile_t {
 
 
     /**
-    *    @var span
-    *    @brief Lock span of callsite. 
+    *    @var lock_wait_time
+    *    @brief Lock wait time of callsite. 
     */
-    TIME lock_span;
+    TIME lock_wait_time;
 
-    call_site_span_profile_t() : call_site(0), span(0), lock_span(0) {}  
+    call_site_span_profile_t() : call_site(0), span(0), lock_wait_time(0) {}  
 };
 
 class CallSiteSpanProfile {
@@ -57,16 +57,15 @@ class CallSiteSpanProfile {
     *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add)
     *    @brief Add the entries in profile_to_add to prof
     */
-    void add_in_callsite_span_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add);
+    void add_in_callsite_span
+               (const std::shared_ptr<call_site_span_profile_t> profile_to_add);
 
     /**
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_span_profile(CALLSITE call_site, 
-                                    TIME span,
-                                    TIME lock_span);
-    
+    void init_callsite_span(CALLSITE call_site, TIME span);
+
     /**
     *    @var prof
     *    @brief The call_site_span_profile_t that the profile's methods act on. 

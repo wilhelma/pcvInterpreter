@@ -46,7 +46,9 @@ void CallSiteSpanHashtable::add(CallSiteSpanHashtable* hashtable_object) {
 		// if call site profile being added exists in both hashtables, combine them
 		if (hashtable->count(key)) {
 			CallSiteSpanProfile existingProfile(hashtable->at(key));
-		    existingProfile.add_in_callsite_span_profile_entries(hashtable_object->hashtable->at(key));
+		    existingProfile.add_in_callsite_span(hashtable_object->hashtable->at(key));
+		    existingProfile.prof->lock_wait_time = 
+		    				hashtable_object->hashtable->at(key)->lock_wait_time;
 		} else  {
 			std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t> > 
                                        newPair(key, hashtable_object->hashtable->at(key));
@@ -55,18 +57,35 @@ void CallSiteSpanHashtable::add(CallSiteSpanHashtable* hashtable_object) {
 	}
 }
 
+void CallSiteSpanHashtable::set_lock_wait_time(CALLSITE call_site,
+											   TIME lock_wait_time) {
+
+
+	if (hashtable->count(call_site)) {
+		CallSiteSpanProfile profile(hashtable->at(call_site));
+  	    profile.prof->lock_wait_time = lock_wait_time;
+	} else {
+	    std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
+		CallSiteSpanProfile new_profile(new_ptr);
+		new_profile.init_callsite_span(call_site, static_cast<TIME>(0));
+	    new_profile.prof->lock_wait_time = lock_wait_time;
+		std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
+                                        newPair(call_site, new_profile.prof);
+		hashtable->insert(newPair);
+	}
+}
+
+
 void CallSiteSpanHashtable::add_span(CALLSITE call_site,
-								     TIME span,
-								     TIME lock_span) {
+								     TIME span) {
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;
-  		profile.prof->lock_span += lock_span;
 	} else {
 
 		std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
 		CallSiteSpanProfile new_profile(new_ptr);
-		new_profile.init_callsite_span_profile(call_site, span, lock_span);
+		new_profile.init_callsite_span(call_site, span);
 		std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
                                         newPair(call_site, new_profile.prof);
 		hashtable->insert(newPair);

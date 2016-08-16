@@ -81,7 +81,6 @@ class ParasiteTool : public Tool {
 	*/
 	void printOverallProfile();
 
-
 	/**
 	*    @fn printCallSiteProfiles()
 	*    @brief Prints call ite profile information, in a format to be decided. 

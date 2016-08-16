@@ -56,10 +56,10 @@ struct call_site_profile_t {
 
 
     /**
-    *    @var lock_span
-    *    @brief Lock span of callsite. 
+    *    @var lock_wait_time
+    *    @brief Lock wait time of callsite. 
     */
-    TIME lock_span;
+    TIME lock_wait_time;
 
     /**
     *    @var span
@@ -74,7 +74,7 @@ struct call_site_profile_t {
     TIME work;
 
     call_site_profile_t() : call_site(0),  count(0), parallelism(0),
-                            lock_span(0), span(0), work(0) {}  
+                            lock_wait_time(0), span(0), work(0) {}  
 };
 
 class CallSiteProfile {

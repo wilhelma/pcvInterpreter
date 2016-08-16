@@ -65,7 +65,9 @@ class CallSiteSpanHashtable {
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_span(CALLSITE call_site, TIME span, TIME lock_span);
+	void add_span(CALLSITE call_site, TIME span);
+
+	void set_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
 
 	/**
 	*    @var hashtable

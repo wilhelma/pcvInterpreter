@@ -60,7 +60,7 @@ void ParasiteTool::getOverallProfile() {
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
 
-	parasite_profile->lock_wait_time = bottom_function->lock_wait_time;
+	parasite_profile->lock_wait_time = bottom_function->lock_wait_time();
 
 	// Calculate span for entire program 
 	parasite_profile->span =  static_cast<TIME> (bottom_thread->prefix_span +
@@ -198,8 +198,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 		assert(local_work >= 0);
 		bottom_thread->continuation_span += local_work;
 		bottom_thread->continuation_table.add_span(stacks->bottomFunction()->call_site, 
-														 local_work,
-														 static_cast<TIME>(0));
+														 local_work);
 		std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
 		bottom_function->local_work += local_work;
 		work_table->add_work(bottom_function->call_site, bottom_function->function_signature, local_work);
@@ -298,7 +297,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	std::shared_ptr<function_frame_t> returned_function(stacks->bottomFunction());
 	CALLSITE returning_call_site = returned_function->call_site;
 	returned_function->local_work += local_work;
-
+	TIME returned_lock_wait_time = returned_function->lock_wait_time();
+	returned_function->local_work += returned_lock_wait_time;
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	bottom_thread->prefix_span += local_work;
 	work_table->add_work(returning_call_site, 
@@ -312,27 +312,26 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 														   bottomThread()->
 														   continuation_table);
 
+	bottom_thread_continuation_table.
+							 set_lock_wait_time(returning_call_site, 
+									            returned_lock_wait_time);
 
 	if (stacks->bottomFunctionIndex() == 0) {
 		bottom_thread_continuation_table.add_span(returning_call_site, 
-												  local_work,
-												  returned_function->
-												  			lock_wait_time);
+															local_work);
+
 		return;
 	}
 
 	// F.c += G.p
 	bottom_thread_continuation_table.add_span(returning_call_site, 
-									          running_work,
-									          returned_function->
-									          	lock_wait_time);
-
+									          running_work);
 	std::shared_ptr<function_frame_t> parent_function = 
 	 											stacks->bottomParentFunction();
 	// F.w += G.w
 	parent_function->running_work += running_work;
+	parent_function->add_locks(returned_function);
 
-	parent_function->lock_wait_time += returned_function->lock_wait_time;
 	work_table->add_work(parent_function->call_site,
 	                     parent_function->function_signature,
 	                     running_work);
@@ -364,14 +363,17 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	std::shared_ptr<thread_frame_t> ending_thread(stacks->bottomThread());
 	ending_thread->continuation_span += local_work;
 	ending_thread->continuation_table.
-								add_span(stacks->bottomFunction()->call_site,
-									    local_work,
-									    static_cast<TIME>(0));
+								add_span(current_function->call_site,
+									    local_work);
+	ending_thread->continuation_table.
+						 set_lock_wait_time(current_function->call_site,
+						 				    current_function->lock_wait_time());
 
 	ending_thread->prefix_span += ending_thread->lock_wait_time();
-	current_function->local_work += ending_thread->lock_wait_time();
-	if (stacks->bottomThreadIndex() == 0)
+
+	if (stacks->bottomThreadIndex() == 0) {
 		return;
+	}
 
 	stacks->bottomParentThread()->
 			   join_vertex_list.push_back(stacks->bottomThread()->last_vertex);
@@ -382,8 +384,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		   (unsigned long long) parent_thread->concurrency_offset);
 	CallSiteSpanHashtable parent_thread_prefix_table(stacks->bottomThread()->prefix_table);
 	parent_thread_prefix_table.add_span(current_function->call_site, 
-										ending_thread->prefix_span,
-										static_cast<TIME>(0));
+										ending_thread->prefix_span);
 
 	// if the ending thread is the longest child encountered so far
 	// F is parent thread, G is ending thread
