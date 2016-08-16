@@ -8,9 +8,8 @@
 #ifndef FILTER_H_
 #define FILTER_H_
 
-/******************************************************************************
- * Filter
- *****************************************************************************/
+/// Filter.
+/// @todo Implement and document this!
 class Filter {
 public:
 	Filter() {}
