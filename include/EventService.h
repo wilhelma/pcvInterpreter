@@ -26,8 +26,19 @@
 /// \class EventService (observable)
 class EventService {
 public:
-	/// (Default) constructor.
-	EventService() {};
+	/// _Default_ constructor.
+	explicit EventService() noexcept  = default;
+	/// _Default_ destructor.
+	~EventService()                   = default;
+
+	/// _Deleted_ copy constructor.
+	EventService(const EventService&)            = delete;
+	/// _Deleted_ move constructor.
+	EventService(EventService&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	EventService& operator=(const EventService&) = delete;
+	/// _Deleted_ move assignment operator.
+	EventService& operator=(EventService&)       = delete;
 
 	/// @brief Puiblish an `AccessEvent` to the registered tools.
 	/// @param event The event to publish.
@@ -85,10 +96,6 @@ private:
 	/// Maps every registered tool to its filter and the events
 	/// it subscribed for.
 	std::map<Tool* const, const Observer> Observers_;
-
-	// prevent generated functions
-	EventService(const EventService&);
-	EventService& operator=(const EventService&);
 };
 
 
