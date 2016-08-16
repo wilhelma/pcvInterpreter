@@ -26,12 +26,14 @@ int main(int argc, char* argv[]) {
 
 	// create interpreter, event service, and saap runner
     std::shared_ptr<EventService> service(new EventService());
-    std::shared_ptr<LockMgr>      lockMgr(new LockMgr());
-    std::shared_ptr<ThreadMgr>  threadMgr(new ThreadMgr());
-    std::shared_ptr<DBInterpreter> interpreter(
-		new DBInterpreter("SAAP.log", service.get(), lockMgr.get(), threadMgr.get()));
+//    std::shared_ptr<LockMgr>      lockMgr(new LockMgr());
+//    std::shared_ptr<ThreadMgr>  threadMgr(new ThreadMgr());
+//    std::shared_ptr<DBInterpreter> interpreter(
+//		new DBInterpreter("SAAP.log", service.get(), lockMgr.get(), threadMgr.get()));
 
-    std::unique_ptr<SAAPRunner> runner(new SAAPRunner(interpreter.get()));
+    std::unique_ptr<SAAPRunner> runner(
+			new SAAPRunner(
+				new DBInterpreter("SAAP.log", service.get(), new LockMgr(), new ThreadMgr())));
 
 	// create and register tools
     std::shared_ptr<DebugTool> debugTool(new DebugTool());

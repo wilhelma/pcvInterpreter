@@ -42,6 +42,7 @@
 #include "ThreadTable.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 #include "Types.h"
@@ -62,6 +63,17 @@ public:
 				  EventService *service,
 				  LockMgr *lockMgr,
 				  ThreadMgr *threadMgr);
+
+	/// _Deleted_ copy constructor.
+	DBInterpreter(const DBInterpreter&)            = delete;
+	/// _Deleted_ move constructor.
+	DBInterpreter(DBInterpreter&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	DBInterpreter& operator=(const DBInterpreter&) = delete;
+	/// _Deleted_ move assignment operator.
+	DBInterpreter& operator=(DBInterpreter&&)      = delete;
+    /// _Default_ destructor.
+    ~DBInterpreter()                               = default;
 
 	/// @brief Processes the database.
 	/// @details After importing the database entries, starts looping
@@ -114,8 +126,8 @@ private:
 	EventService*   EventService_;
 	shadowVarMap_t _shadowVarMap;
 
-	LockMgr*   lockMgr_;
-	ThreadMgr* threadMgr_;
+    std::unique_ptr<LockMgr>   lockMgr_;
+    std::unique_ptr<ThreadMgr> threadMgr_;
 
 	// private methods---------------------------------------------------------
 
@@ -179,10 +191,6 @@ private:
   /// or `IN_NO_ENTRY` otherwise.
   /// @todo Properly implement error handling.
   const CAL_ID getCallID(const instruction_t& ins) const;
-
-	// prevent generated functions
-	DBInterpreter(const DBInterpreter&);
-	DBInterpreter& operator=(const DBInterpreter&);
 };
 
 

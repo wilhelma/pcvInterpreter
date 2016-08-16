@@ -61,14 +61,16 @@ const TIME timeStringToTime(const TIME_STRING& t) {
 class Event {
 public:
 	Event(const ShadowThread *thread) :
-		_thread(thread) {};
-	virtual ~Event() {};
+		Thread_(thread) {};
 
-	const ShadowThread* const getThread() const { return _thread; };
+	/// _Default_ destructor.
+	virtual ~Event() = default;
+
+	const ShadowThread* const getThread() const { return Thread_; };
 	virtual Events getEventType() const = 0;
 
 private:
-	const ShadowThread* const _thread;
+	const ShadowThread* const Thread_;
 };
 
 #endif /* EVENT_H_ */

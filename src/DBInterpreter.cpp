@@ -72,7 +72,7 @@ DBInterpreter::DBInterpreter(const std::string& logFile, EventService *service, 
 	EventService_(service), lockMgr_(lockMgr), threadMgr_(threadMgr)
 {
 	initialize_logger(logFile);
-	CallStack_.push(call_t::MAIN);
+//	CallStack_.push(call_t::MAIN);
 };
 
 
@@ -171,8 +171,9 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 }
 
 ErrorCode DBInterpreter::processReturn(const instruction_t& ins) {
+	// Search for the instruction segment in the SegmentTable_.
 	auto search = SegmentTable_.find(ins.segment_id);
-	if (search == SegmentTable_.end()) {
+	if (search == SegmentTable_.cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id << "not found";
 		return ErrorCode::NO_ENTRY;
 	}
