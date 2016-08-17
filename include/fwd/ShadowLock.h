@@ -12,6 +12,6 @@
 #ifndef  FWD_SHADOW_LOCK_H_
 #define  FWD_SHADOW_LOCK_H_
 
-class ShadowLock;
+struct ShadowLock;
 
 #endif
