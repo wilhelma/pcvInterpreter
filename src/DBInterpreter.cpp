@@ -187,7 +187,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins) {
 			// parent ID scope, so the "parent" call has returned
 			auto parent_call = CallTable_.find(parent_call_id);
 			ReturnInfo info(parent_call_id, parent_call->second.end_time);
-			ShadowThread* thread = threadMgr_->getThread(parent_call->second.thread_id);
+			auto thread = threadMgr_->getThread(parent_call->second.thread_id);
 			ReturnEvent event(thread, &info);
 			getEventService()->publish(&event);
 		}
@@ -330,7 +330,7 @@ ErrorCode DBInterpreter::processCall(CAL_ID callId,
 						(FIL_PT)searchFile->second.file_name,
 						(FIL_PT)searchFile->second.file_path);
 
-				ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+				auto thread = threadMgr_->getThread(call.thread_id);
 				CallEvent event(thread, &info);
 				getEventService()->publish(&event);
 				break;
@@ -379,7 +379,7 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
         _shadowVarMap[reference.id] = var;
     }
 
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+    auto thread = threadMgr_->getThread(call.thread_id);
     AccessInfo info( access.access_type,
                      var,
                      instruction.id);
@@ -396,7 +396,7 @@ ErrorCode DBInterpreter::processAcqAccess(ACC_ID accessId,
                                     const call_t& call,
                                     const reference_t& reference) {
 
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+    auto thread = threadMgr_->getThread(call.thread_id);
     ShadowLock *lock = lockMgr_->getLock(reference.id);
     AcquireInfo info(lock);
     AcquireEvent event( thread, &info );
@@ -412,7 +412,7 @@ ErrorCode DBInterpreter::processRelAccess(ACC_ID accessId,
                                     const call_t& call,
                                     const reference_t& reference) {
 
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+    auto thread = threadMgr_->getThread(call.thread_id);
     ShadowLock *lock = lockMgr_->getLock(reference.id);
     ReleaseInfo info(lock);
     ReleaseEvent event( thread, &info );
@@ -425,8 +425,8 @@ ErrorCode DBInterpreter::processFork(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
-    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.id);
+    auto pT = threadMgr_->getThread(thread.parent_thread_id);
+    auto cT = threadMgr_->getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.num_cycles, thread.start_time);
     NewThreadEvent event( pT, &info );
     getEventService()->publish( &event );
@@ -443,8 +443,8 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
                                const call_t& call,
                                const thread_t& thread) {
 
-    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.id);
+    auto pT = threadMgr_->getThread(thread.parent_thread_id);
+    auto cT = threadMgr_->getThread(thread.id);
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );

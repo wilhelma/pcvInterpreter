@@ -41,7 +41,7 @@ RaceDetectionTool::~RaceDetectionTool() {
 
 void RaceDetectionTool::NewThread(const NewThreadEvent* event) {
 
-   	ShadowThread* childThread = event->getNewThreadInfo()->childThread;
+   	auto childThread = event->getNewThreadInfo()->childThread;
 
 	if (threadVC_.find(childThread->threadId) == threadVC_.end()) {
 		threadVC_[childThread->threadId].fill(0);

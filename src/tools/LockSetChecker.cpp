@@ -39,7 +39,7 @@ LockSetChecker::~LockSetChecker() {
 }
 
 void LockSetChecker::NewThread(const NewThreadEvent* event) {
-   	ShadowThread* childThread = event->getNewThreadInfo()->childThread;
+   	auto childThread = event->getNewThreadInfo()->childThread;
 	// LockSet_u = set of all possible locks
 	lockSet_[childThread] =  lockSet_[event->getThread()];
 }
