@@ -91,6 +91,6 @@ using REF_NAME = std::string;
 // Thread Types
 using PID = StrongTypedef<unsigned, 16>;
 using TIME_STRING = std::string;
-using NUM_CYCLES = StrongTypedef<unsigned, 16>;
+using NUM_CYCLES = StrongTypedef<unsigned, 17>;
 
 #endif /* TYPES_H_ */
