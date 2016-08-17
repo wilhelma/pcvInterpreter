@@ -12,6 +12,6 @@
 #ifndef  FWD_SHADOW_VAR_H_
 #define  FWD_SHADOW_VAR_H_
 
-class ShadowVar;
+struct ShadowVar;
 
 #endif
