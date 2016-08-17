@@ -1,6 +1,6 @@
 #include "ThreadMgr.h"
 													   
-ShadowThread::ThreadId ThreadMgr::currentThreadId_ = (TRD_ID) 0;
+TRD_ID ThreadMgr::currentThreadId_(0);
 
 ShadowThread* ThreadMgr::getThread(TRD_ID threadId) {
 	

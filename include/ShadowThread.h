@@ -5,35 +5,49 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOWTHREAD_H_
-#define SHADOWTHREAD_H_
+#ifndef SHADOW_THREAD_H_
+#define SHADOW_THREAD_H_
 
-#include "Event.h"
 #include "Types.h"
 
-/******************************************************************************
- * ShadowThread
- *****************************************************************************/
-class ShadowThread {
-public:
-	typedef TRD_ID ThreadId;
-
-	ShadowThread(ThreadId threadId)
-		: threadId(threadId)
-	{};
-
-	const ThreadId threadId;
-
+/// @todo Document this!
+/// @todo Complete implementation: it doesn't make sense to
+/// define comparison operators if threadId is publicly accessible!
+struct ShadowThread {
+	const TRD_ID threadId;
 //	CALLSITE currentCallSiteID;
 //	FUN_SG currentFunctionSignature; 
 
-	bool operator < (const ShadowThread& other) const { return threadId < other.threadId; };
+	/// Constructor.
+	explicit ShadowThread(TRD_ID threadId) noexcept
+		: threadId(threadId)
+	{};
+	/// _Default_ destructor.
+	~ShadowThread() = default;
 
-private:
+	/// _Deleted_ copy constructor.
+	ShadowThread(const ShadowThread&)            = delete;
+	/// _Deleted_ move constructor.
+	ShadowThread(ShadowThread&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	ShadowThread& operator=(const ShadowThread&) = delete;
+	/// _Deleted_ move assignment operator.
+	ShadowThread& operator=(ShadowThread&&)      = delete;
 
-	// prevent generated functions
-	ShadowThread(const ShadowThread&);
-	ShadowThread& operator=(const ShadowThread&);
+	/// @brief Less-than operator.
+	/// @details Compares the `ThreadId_`s.
+	friend const bool operator<(const ShadowThread& lhs, const ShadowThread& rhs)
+	{ return lhs.threadId < rhs.threadId; };
+
+	/// @brief Equality operator.
+	/// @details Compares the `ThreadId_`s.
+	friend const bool operator==(const ShadowThread& lhs, const ShadowThread& rhs)
+	{ return lhs.threadId == rhs.threadId; };
 };
+
+/// @brief Equal-or-greater-than operator.
+/// @return Negation of operator `ShadowThread::operator<()`.
+inline const bool operator>=(const ShadowThread& lhs, const ShadowThread& rhs)
+{ return !(lhs < rhs); }
 
 #endif /* SHADOWTHREAD_H_ */

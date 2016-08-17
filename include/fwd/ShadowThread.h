@@ -12,6 +12,6 @@
 #ifndef  FWD_SHADOW_THREAD_H_
 #define  FWD_SHADOW_THREAD_H_
 
-class ShadowThread;
+struct ShadowThread;
 
 #endif
