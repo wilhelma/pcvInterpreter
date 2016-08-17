@@ -66,7 +66,7 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
-	void getOverallProfile();
+	void endProfileCalculations();
 
 	/**
 	*    @fn printProfile()
@@ -110,24 +110,6 @@ class ParasiteTool : public Tool {
 	std::shared_ptr<CallSiteWorkHashtable> work_table;
 
 	DAG thread_graph;
-
-	/**
-	*    @var last_function_call_time
-	*    @brief Time stamp for the most recent function call in the simulator. 
-	*/
-	TIME last_function_call_time;
-
-	/**
-	*    @var last_function_return_time
-	*    @brief Time stamp for the most recent function return in the simulator.
-	*/
-	TIME last_function_return_time;
-
-	/**
-	*    @var last_function_runtime
-	*    @brief Duration of the last function that was called. 
-	*/
-	TIME last_function_runtime;
 
 	/**
 	*    @var last_thread_end_time

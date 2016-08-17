@@ -9,8 +9,6 @@
  *
  */
 
- // TODO: fix concurrency offset
-
 #define COMMAND_LINE_OUTPUT 1
 #define JSON_OUTPUT 1
 #define GRAPH_OUTPUT 1
@@ -23,10 +21,7 @@
 #include <climits>
 #include "ParasiteTool.h"
 
-ParasiteTool::ParasiteTool():last_function_call_time(0), 
-							 last_function_return_time(0),
-							 last_function_runtime(0), 
-							 last_thread_end_time(0), 
+ParasiteTool::ParasiteTool():last_thread_end_time(0), 
 							 last_thread_runtime(0),
 							 last_thread_start_time(0),
 							 last_event_time(0) {
@@ -42,7 +37,6 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 	vertex_descr_type new_vertex = 
 		thread_graph.add_edge(stacks->bottomThread()->last_vertex, length,
 							  end_vertex_label);
-
 	stacks->bottomThread()->last_vertex = new_vertex;
 	return new_vertex;
 }
@@ -50,16 +44,16 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 void ParasiteTool::add_join_edges(vertex_descr_type start) {
 
 	add_edge(0, "J");
-	thread_graph.add_join_edges(start, stacks->bottomThread()->last_vertex);
+	thread_graph.add_join_edge(start, stacks->bottomThread()->last_vertex);
 }
 
-void ParasiteTool::getOverallProfile() {
+void ParasiteTool::endProfileCalculations() {
 
 	assert(stacks->bottomThreadIndex() == 0);
 	assert(stacks->bottomFunctionIndex() == 0);
+
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
-
 	parasite_profile->lock_wait_time = bottom_function->lock_wait_time();
 
 	// Calculate span for entire program 
@@ -77,6 +71,10 @@ void ParasiteTool::getOverallProfile() {
 	// Calculate parallelism for entire program                     
 	parasite_profile->parallelism =  static_cast<double> (parasite_profile->work)
 				                   / static_cast<double> (parasite_profile->span);
+
+	// bottom prefix table contains spans for all call sites at program end
+    CallSiteSpanHashtable bottom_prefix_table(bottom_thread->prefix_table);
+	bottom_prefix_table.add(&(bottom_thread->continuation_table));
 }
 
 
@@ -87,20 +85,16 @@ void ParasiteTool::printOverallProfile() {
 	print_time("SPAN",  parasite_profile->span);
 	print_time("LOCK WAIT TIME",  parasite_profile->lock_wait_time);
 	std::cout << "LOCK WAIT TIME IS " << 
-						 static_cast<double>(parasite_profile->lock_wait_time) /
-						 static_cast<double>(parasite_profile->span) <<
-							                             " OF SPAN" << std::endl;
+						static_cast<double>(parasite_profile->lock_wait_time) /
+						static_cast<double>(parasite_profile->span) <<
+							                            " OF SPAN" << std::endl;
 }
 
 void ParasiteTool::printCallSiteProfiles() {
 
-	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
-
-	// Print out information for each call site
-    CallSiteSpanHashtable bottom_prefix_table(bottom_thread->prefix_table);
-	bottom_prefix_table.add(&(bottom_thread->continuation_table));
+	// bottom prefix table contains spans for all call sites at program end
+    CallSiteSpanHashtable bottom_prefix_table(stacks->bottomThread()->prefix_table);
 	std::shared_ptr<call_site_work_hashtable_t> wrk_table = work_table->hashtable;
-
 	for (auto const &it : *wrk_table) {
 		CALLSITE key = it.first;
 		CallSiteProfile currentProfile(bottom_prefix_table.hashtable->at(key), 
@@ -113,10 +107,8 @@ void ParasiteTool::printProfile() {
 
 	std::cout << "================ \n" << std::endl;
 	std::cout << "PRINT BEGIN \n" << std::endl;
-
 	printCallSiteProfiles();
 	printOverallProfile();
-
 	std::cout << "PRINT END" << std::endl;
 	std::cout << "================" << std::endl;
 }
@@ -148,15 +140,11 @@ ParasiteTool::~ParasiteTool() {
 
 	std::cout << "Calling destructor" << std::endl;
 	thread_graph.sink = thread_graph.last_vertex;
-
-	getOverallProfile();
-
+	endProfileCalculations();
 	if (COMMAND_LINE_OUTPUT) 
 		printProfile();
-
 	if (JSON_OUTPUT) 
 		writeJson();
-
 	if (GRAPH_OUTPUT)
 		thread_graph.write_dot_file();
 }
@@ -168,8 +156,6 @@ void ParasiteTool::Call(const CallEvent* e) {
 	const CallInfo* _info(e->getCallInfo());
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	CALLSITE callsiteID = _info->siteId;
-	last_function_runtime = _info->runtime;
-	last_function_call_time = _info->callTime;
 	last_event_time = _info->callTime;
 	std::cout << "starting call Event with signature" <<
 				      calledFunctionSignature.c_str() << std::endl;
@@ -185,38 +171,34 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	std::cout << "NEW THREAD BEGIN " << std::endl;
 	const NewThreadInfo* const _info = e->getNewThreadInfo();
 	const TRD_ID newThreadID = _info->childThread->threadId;
+	vertex_descr_type thread_start_vertex;
 
 	// get information about the thread's head function
 	TIME create_time = _info->startTime;
-	last_thread_start_time = _info->startTime;
+	last_event_time = create_time;
+	last_thread_start_time = create_time;
 
 	if (stacks->bottomThreadIndex() != -1) {
-		std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
+		std::shared_ptr<thread_frame_t> parent_thread = stacks->bottomThread();
 		TIME local_work = create_time - last_event_time;
-		vertex_descr_type thread_start_vertex = add_edge(local_work, "TS");
 		assert(local_work >= 0);
-		bottom_thread->continuation_span += local_work;
-		bottom_thread->continuation_table.add_span(stacks->bottomFunction()->call_site, 
-														 local_work);
+		thread_start_vertex = add_edge(local_work, "TS");
+		parent_thread->continuation_span += local_work;
 		std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
+		parent_thread->continuation_table.add_span(bottom_function->call_site, 
+												   local_work);
 		bottom_function->local_work += local_work;
-		work_table->add_work(bottom_function->call_site, bottom_function->function_signature, local_work);
-
-		last_event_time = create_time;
-		std::shared_ptr<thread_frame_t> new_thread = 
-				stacks->thread_push(stacks->bottomFunctionIndex(), newThreadID,
-									thread_start_vertex);
+		work_table->add_work(bottom_function->call_site,
+							 bottom_function->function_signature, 
+							 local_work);
+	} else {
+		thread_start_vertex = thread_graph.last_vertex;
 	}
 
-	else {
-
-		vertex_descr_type thread_start_vertex = thread_graph.last_vertex;
-		last_event_time = create_time;
-		std::shared_ptr<thread_frame_t> new_thread = 
-				stacks->thread_push(stacks->bottomFunctionIndex(), newThreadID,
-									thread_start_vertex);
-		stacks->bottomThread()->thread_start_time = last_thread_start_time;
-	}
+	stacks->thread_push(stacks->bottomFunctionIndex(),     
+		                newThreadID, 
+		                thread_start_vertex);
+	stacks->bottomThread()->thread_start_time = last_thread_start_time;
 
 	std::cout << "NEW THREAD END " << std::endl;
 	std::cout << "=============== " << std::endl;
@@ -229,7 +211,6 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	std::shared_ptr<thread_frame_t> bottom_thread(stacks->bottomThread());
 	print_time("IN JOIN: longest child span",  bottom_thread->longest_child_span);
 	print_time("IN JOIN: local continuation",  bottom_thread->continuation_span);
-
 
 	add_join_edges(bottom_thread->join_vertex_list.front());
 	bottom_thread->join_vertex_list.pop_front();
@@ -289,7 +270,6 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	add_edge(local_work, "R");
 	last_event_time = returnTime;
 	print_time("last event time is now",  last_event_time);
-	last_function_return_time = returnTime;
 	print_time("performing return operations for local work",  local_work);
 
 	std::shared_ptr<function_frame_t> returned_function(stacks->bottomFunction());
@@ -413,24 +393,38 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	// pop the thread off the stack last, 
 	// because the pop operation destroys the frame
 	stacks->thread_pop();
-	std::cout << "THREAD END END " << std::endl;
+	std::cout << "THREAD END EVENT END " << std::endl;
 	std::cout << "=============== " << std::endl;
 }
 
 void ParasiteTool::Acquire(const AcquireEvent* e) {
+
+	std::cout << "=============== " << std::endl;
+	std::cout << "ACQUIRE EVENT BEGIN " << std::endl;
+
 	const AcquireInfo* _info(e->getAcquireInfo());
 	TIME acquire_time = _info->acquireTime;
 	_info->lock->last_acquire_time = acquire_time;
+
+	std::cout << "ACQUIRE EVENT END " << std::endl;
+    std::cout << "=============== " << std::endl;
 }
 
 void ParasiteTool::Release(const ReleaseEvent* e) {
+
+	std::cout << "=============== " << std::endl;
+	std::cout << "RELEASE EVENT BEGIN " << std::endl;
+
 	const ReleaseInfo* _info(e->getReleaseInfo());
 	TIME release_time = _info->releaseTime;
 	assert(static_cast<double>(release_time) >
 		   static_cast<double>(_info->lock->last_acquire_time));
 	
 	unsigned int lockId = _info->lock->lockId;
-	TIME offset = stacks->bottomParentThread()->concurrency_offset;
+	TIME offset = 0;
+	if (stacks->bottomThreadIndex() > 0)
+		offset = stacks->bottomParentThread()->concurrency_offset;
+
 	stacks->bottomThread()->
 		lock_intervals.addInterval(
 					 _info->lock->last_acquire_time - offset, 
@@ -439,6 +433,9 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 		lock_intervals.addInterval(
 					 _info->lock->last_acquire_time - offset, 
 					 release_time - offset, lockId);
+
+	std::cout << "RELEASE EVENT END " << std::endl;
+    std::cout << "=============== " << std::endl;
 }
 
 void ParasiteTool::Access(const AccessEvent* e) {

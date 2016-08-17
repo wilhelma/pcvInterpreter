@@ -30,7 +30,7 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 	end_vertex_label = "_" + end_vertex_label;
 	end_vertex_label = std::to_string(vertex_count) + end_vertex_label;
 	vertex_descr_type end = bgl::add_vertex(VertexNameProp(end_vertex_label),
-																		*dag);
+																		*dag); 
 	double lngth = static_cast<double>(length) / 
 				   static_cast<double>(SCALING_FACTOR);
 	bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
@@ -38,7 +38,7 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 	return end;
 }
 
-void DAG::add_join_edges(vertex_descr_type start, vertex_descr_type end) {
+void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {
 
 	bgl::add_edge(start, end, EdgeWeightProp(0), *dag);
 }

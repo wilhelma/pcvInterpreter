@@ -1,7 +1,7 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
-#define DEBUG_OUTPUT 0
+#define DEBUG_OUTPUT 1
 
 static inline void print_time(std::string str, TIME time) {
 

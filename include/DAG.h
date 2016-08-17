@@ -50,7 +50,7 @@ class DAG {
 	~DAG();
 	vertex_descr_type add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label);
-	void add_join_edges(vertex_descr_type start, vertex_descr_type end);
+	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
 
 	void write_dot_file();
 
