@@ -61,6 +61,7 @@ struct thread_frame_t {
 
 	void absorb_child_locks() {
 		lock_intervals.add(child_lock_intervals);
+		child_lock_intervals.clear();
 	}
 
 	void add_child_locks(std::shared_ptr<thread_frame_t> child_thread) {
