@@ -17,16 +17,23 @@ Work::Work() {
 
 	std::shared_ptr<call_site_work_hashtable_t> hshtable(new call_site_work_hashtable_t());
 	hashtable = hshtable;
+	total = 0;
 }
 
 Work::Work(Work const& hashtable_object) {
 	hashtable = std::move(hashtable_object.hashtable);
+	total = hashtable_object.total;
 }
 
 
 Work::~Work() {
 
 }
+
+TIME Work::operator()(){
+	return total;
+}
+
 
 void Work::print() {
 
@@ -59,8 +66,10 @@ void Work::increment_count(CALLSITE call_site,
 
 void Work::add_to_call_site(CALLSITE call_site, 
 									 FUN_SG function_signature,
-									 TIME work) {
-	total += work;
+									 TIME work,
+									 bool is_local) {
+	if (is_local)
+		total += work;
 	if (hashtable->count(call_site)) {
 		CallSiteWorkProfile profile(hashtable->at(call_site));
   		profile.prof->work += work;

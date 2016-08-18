@@ -35,8 +35,6 @@ class Span {
  public:
 	Span();
 	explicit Span(Span const& hshtable);
-	
-	Span* operator=(const Span& rhs);
 	~Span();
 
 	void print();

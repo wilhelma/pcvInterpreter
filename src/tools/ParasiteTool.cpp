@@ -72,9 +72,9 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
 	work->add_to_call_site(bottom_function->call_site,
 						   bottom_function->function_signature, 
-						   local_work);
+						   local_work, 1);
 	bottom_thread->continuation.add_to_call_site(bottom_function->call_site,
-									    	    local_work);
+									    	     local_work);
 	print_time("local work", local_work);
 	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);
@@ -93,9 +93,10 @@ void ParasiteTool::endProfileCalculations() {
 
 	// Calculate span for entire program 
 	bottom_thread->prefix.add(&(bottom_thread->continuation));
+	parasite_profile->span = bottom_thread->prefix();
 
 	// Calculate work for entire program
-	parasite_profile->work = bottom_function->running_work + bottom_function->local_work;
+	parasite_profile->work = (*work)();
 
 	// Calculate parallelism for entire program                     
 	parasite_profile->parallelism =  static_cast<double> (parasite_profile->work)
@@ -276,7 +277,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	parent_function->running_work += running_work;
 	work->add_to_call_site(parent_function->call_site,
 	                       parent_function->function_signature,
-	                       running_work);
+	                       running_work, 0);
 	parent_function->add_locks(returned_function);
 
 	stacks->function_pop();
@@ -360,13 +361,3 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 					 release_time - offset, lockId);
 	print_event_end("RELEASE");
 }
-
-void ParasiteTool::Access(const AccessEvent* e) {
-	std::cout << "ERROR: Parasite Tool does not implement access event"
-																   << std::endl;
-	return;
-}
-
-
-
-

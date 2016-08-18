@@ -15,6 +15,7 @@
 
 Span::Span() {
 	hashtable = std::shared_ptr<call_site_span_hashtable_t>(new call_site_span_hashtable_t);
+	total = 0;
 }
 
 Span::Span(Span const& other_span) {
@@ -91,7 +92,6 @@ void Span::set_lock_wait_time(CALLSITE call_site,
 void Span::add_to_call_site(CALLSITE call_site,
 								     TIME span) {
 
-	total += span;
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;
