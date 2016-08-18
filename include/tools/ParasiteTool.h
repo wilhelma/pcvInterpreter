@@ -57,6 +57,7 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
+	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
     void Call(const CallEvent* e) override;
 	void Join(const JoinEvent* e) override;

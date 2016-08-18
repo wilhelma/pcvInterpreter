@@ -34,6 +34,12 @@ TIME Work::operator()(){
 	return total;
 }
 
+bool Work::contains(CALLSITE call_site) {
+	if (hashtable->count(call_site))
+		return true;
+	else 
+		return false;
+}
 
 void Work::print() {
 
@@ -50,7 +56,7 @@ void Work::clear() {
 
 void Work::increment_count(CALLSITE call_site,
 											FUN_SG function_signature) {
-	if (hashtable->count(call_site)) {
+	if (contains(call_site)) {
 		CallSiteWorkProfile profile(hashtable->at(call_site));
   		profile.prof->count += 1;
 	} else {
@@ -70,7 +76,7 @@ void Work::add_to_call_site(CALLSITE call_site,
 									 bool is_local) {
 	if (is_local)
 		total += work;
-	if (hashtable->count(call_site)) {
+	if (contains(call_site)) {
 		CallSiteWorkProfile profile(hashtable->at(call_site));
   		profile.prof->work += work;
 	} else {
@@ -82,14 +88,6 @@ void Work::add_to_call_site(CALLSITE call_site,
 		hashtable->insert(newPair);
 	}
 }
-
-bool Work::contains(CALLSITE call_site) {
-	if (hashtable->count(call_site))
-		return true;
-	else 
-		return false;
-}
-
 
 
 

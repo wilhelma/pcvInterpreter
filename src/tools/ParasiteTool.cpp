@@ -92,7 +92,7 @@ void ParasiteTool::endProfileCalculations() {
 	parasite_profile->lock_wait_time = bottom_function->lock_wait_time();
 
 	// Calculate span for entire program 
-	bottom_thread->prefix.add(&(bottom_thread->continuation));
+	// bottom_thread->prefix.add(&(bottom_thread->continuation));
 	parasite_profile->span = bottom_thread->prefix();
 
 	// Calculate work for entire program
@@ -361,3 +361,5 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 					 release_time - offset, lockId);
 	print_event_end("RELEASE");
 }
+
+void ParasiteTool::Access(const AccessEvent* e) {}

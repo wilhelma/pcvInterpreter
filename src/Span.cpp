@@ -92,6 +92,7 @@ void Span::set_lock_wait_time(CALLSITE call_site,
 void Span::add_to_call_site(CALLSITE call_site,
 								     TIME span) {
 
+	total += span;
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;
