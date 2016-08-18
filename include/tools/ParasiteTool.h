@@ -65,6 +65,9 @@ class ParasiteTool : public Tool {
 	void Release(const ReleaseEvent* e) override;
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
+	
+	vertex_descr_type add_local_work(TIME strand_end_time, 
+	  				   				 std::string end_vertex_label);
 
 	void endProfileCalculations();
 
@@ -112,19 +115,6 @@ class ParasiteTool : public Tool {
 	DAG thread_graph;
 
 	/**
-	*    @var last_thread_end_time
-	*    @brief Time stamp for the last thread that has ended in the simulator.
-	*/
-	TIME last_thread_end_time;
-
-
-	/**
-	*    @var last_thread_runtime
-	*    @brief Duration of the last function that was called. 
-	*/
-	TIME last_thread_runtime;
-
-	/**
 	*    @var last_thread_start_time
 	*    @brief Time stamp for the start of the most recent thread in the simulator.
 	*/
@@ -135,12 +125,6 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the time of the last thread event
-	*/
-	TIME last_thread_event_time;
 
  private:
 	// prevent generated functions --------------------------------------------
