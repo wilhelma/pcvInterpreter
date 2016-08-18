@@ -24,7 +24,7 @@
 #include "CallEvent.h"
 #include "CallSiteProfile.h"
 #include "CallSiteSpanProfile.h"
-#include "CallSiteWorkHashtable.h"
+#include "Work.h"
 #include "CallSiteWorkProfile.h"
 #include "DAG.h"
 #include "Event.h"
@@ -71,12 +71,8 @@ class ParasiteTool : public Tool {
 
 	void endProfileCalculations();
 
-	/**
-	*    @fn printProfile()
-	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
-		 @todo Decide on format to print out profile information.
-	*/
-	void printProfile();
+	void print_event_end(std::string event_name);
+	void print_event_start(std::string event_name);
 
 	/**
 	*    @fn printOverallProfile()
@@ -110,7 +106,7 @@ class ParasiteTool : public Tool {
 	*/
 	std::shared_ptr<parasite_profile_t> parasite_profile;
 
-	std::shared_ptr<CallSiteWorkHashtable> work_table;
+	std::shared_ptr<Work> work;
 
 	DAG thread_graph;
 

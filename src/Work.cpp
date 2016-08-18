@@ -1,7 +1,7 @@
 /**
  *
- *    @file  CallSiteWorkHashtable.cpp
- *   @brief  Implementation file for the class `CallSiteWorkHashtable`
+ *    @file  Work.cpp
+ *   @brief  Implementation file for the class `Work`
  *
  *    @date  06/17/16
  *  @author  Nathaniel Knapp (github.com/deknapp),
@@ -11,24 +11,24 @@
 
 #include <cassert>
 #include <utility>
-#include "CallSiteWorkHashtable.h"
+#include "Work.h"
 
-CallSiteWorkHashtable::CallSiteWorkHashtable() {
+Work::Work() {
 
 	std::shared_ptr<call_site_work_hashtable_t> hshtable(new call_site_work_hashtable_t());
 	hashtable = hshtable;
 }
 
-CallSiteWorkHashtable::CallSiteWorkHashtable(CallSiteWorkHashtable const& hashtable_object) {
+Work::Work(Work const& hashtable_object) {
 	hashtable = std::move(hashtable_object.hashtable);
 }
 
 
-CallSiteWorkHashtable::~CallSiteWorkHashtable() {
+Work::~Work() {
 
 }
 
-void CallSiteWorkHashtable::print() {
+void Work::print() {
 
 	for (auto const &it : *hashtable) {
 		CALLSITE key = it.first;
@@ -37,11 +37,11 @@ void CallSiteWorkHashtable::print() {
 	}
 }
 
-void CallSiteWorkHashtable::clear() {
+void Work::clear() {
 	hashtable->clear();
 }
 
-void CallSiteWorkHashtable::increment_count(CALLSITE call_site,
+void Work::increment_count(CALLSITE call_site,
 											FUN_SG function_signature) {
 	if (hashtable->count(call_site)) {
 		CallSiteWorkProfile profile(hashtable->at(call_site));
@@ -57,9 +57,10 @@ void CallSiteWorkHashtable::increment_count(CALLSITE call_site,
 }
 
 
-void CallSiteWorkHashtable::add_work(CALLSITE call_site, 
+void Work::add_to_call_site(CALLSITE call_site, 
 									 FUN_SG function_signature,
 									 TIME work) {
+	total += work;
 	if (hashtable->count(call_site)) {
 		CallSiteWorkProfile profile(hashtable->at(call_site));
   		profile.prof->work += work;
@@ -73,7 +74,7 @@ void CallSiteWorkHashtable::add_work(CALLSITE call_site,
 	}
 }
 
-bool CallSiteWorkHashtable::contains(CALLSITE call_site) {
+bool Work::contains(CALLSITE call_site) {
 	if (hashtable->count(call_site))
 		return true;
 	else 

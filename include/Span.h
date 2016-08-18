@@ -1,7 +1,7 @@
 /**
  *
- *    @file  CallSiteSpanHashtable.h
- *   @brief  Declarations for the class `CallSiteSpanHashtable`
+ *    @file  Span.h
+ *   @brief  Declarations for the class `Span`
  *
  *    @date  06/17/16
  *  @author  Nathaniel Knapp (github.com/deknapp),
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef CALL_SITE_SPAN_HASHTABLE_H_
-#define CALL_SITE_SPAN_HASHTABLE_H_
+#ifndef SPAN
+#define SPAN
 
 #include <stdbool.h>
 #include <iostream>
@@ -30,14 +30,14 @@
 */
 typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_span_profile_t>, CallSiteHash, CallSiteEqual> call_site_span_hashtable_t;
 
-class CallSiteSpanHashtable {
+class Span {
 
  public:
-	CallSiteSpanHashtable();
-	explicit CallSiteSpanHashtable(CallSiteSpanHashtable const& hshtable);
+	Span();
+	explicit Span(Span const& hshtable);
 	
-	CallSiteSpanHashtable* operator=(const CallSiteSpanHashtable& rhs);
-	~CallSiteSpanHashtable();
+	Span* operator=(const Span& rhs);
+	~Span();
 
 	void print();
 
@@ -54,20 +54,26 @@ class CallSiteSpanHashtable {
 	*/
 	void clear();
 
+	void set(Span* other_span);
+
 	/**
 	*    @fn add_in_hashtable(...)
 	*    @brief Adds in added_hashtable into the class's hashtable.
 	*/
-	void add(CallSiteSpanHashtable* hashtable_object);
+	void add(Span* hashtable_object);
 
 	/**
 	*    @fn add_data(...)
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_span(CALLSITE call_site, TIME span);
+	void add_to_call_site(CALLSITE call_site, TIME span);
 
 	void set_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
+
+	TIME operator()();
+
+	TIME total;
 
 	/**
 	*    @var hashtable
@@ -78,6 +84,6 @@ class CallSiteSpanHashtable {
 	
 };
 
-#endif  // CALL_SITE_SPAN_HASHTABLE_H_
+#endif  // SPAN
 
 

@@ -15,7 +15,7 @@
 
 #include <vector> 
 
-#include "CallSiteSpanHashtable.h"
+#include "Span.h"
 #include "DAG.h"
 #include "LockIntervals.h"
 #include "Types.h"
@@ -40,18 +40,6 @@ struct thread_frame_t {
 	*/
 	int head_function_index;
 
-	/**
-	*    @var continuation_span
-	*    @brief Continuation span of this thread. 
-	*/
-	TIME continuation_span;
-
- 	/**
-	*    @var prefix_span
-	*    @brief Prefix span of this thread. 
-	*/
-	TIME prefix_span;
-
 	LockIntervals child_lock_intervals;
 	LockIntervals lock_intervals;
 
@@ -68,11 +56,10 @@ struct thread_frame_t {
 		child_lock_intervals.add(child_thread->lock_intervals);
 	}
 
-	/**
-	*    @var lock_wait_time
-	*    @brief Span of the longest spawned child of this thread.
-	*/
-	TIME longest_child_span;
+	void correct_prefix(TIME correction) {
+		prefix.total -= correction;
+		print_time("subtracting lock wait time from prefix", correction);
+	}
 
 	/**
 	*    @var longest_child_lock_wait_time
@@ -90,33 +77,30 @@ struct thread_frame_t {
 	std::list<vertex_descr_type> join_vertex_list;
 
 	/**
-	*    @var prefix_table
+	*    @var prefix
 	*    @brief Prefix data for each call site in this thread.
 	*/
-	CallSiteSpanHashtable prefix_table;
+	Span prefix;
 
 	/**
-	*    @var longest_child_table
+	*    @var longest_child
 	*    @brief Longest child data for each call site in this thread. 
 	*/
-	CallSiteSpanHashtable longest_child_table;
+	Span longest_child;
 
 	/**
-	*    @var continuation_table
+	*    @var continuation
 	*    @brief Continuation data for each call site in this thread.
 	*/
-	CallSiteSpanHashtable continuation_table;
+	Span continuation;
 
 	thread_frame_t():thread(0),
-					 continuation_span(0),
-					 prefix_span(0), 
-					 longest_child_span(0),
 					 longest_child_lock_wait_time(0), 
 					 concurrency_offset(0),
 					 thread_start_time(0),
-					 prefix_table(CallSiteSpanHashtable()), 
-					 longest_child_table(CallSiteSpanHashtable()),
-					 continuation_table(CallSiteSpanHashtable()) {}
+					 prefix(Span()), 
+					 longest_child(Span()),
+					 continuation(Span()) {}
 };
 
 class ThreadStack {

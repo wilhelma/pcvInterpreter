@@ -19,12 +19,11 @@ set(SRC_LIST ${SRC_LIST}
 	ParasiteJsonWriter.cpp
 	ParasiteTracker.cpp
 	SAAPRunner.cpp
+	Span.cpp
 	ThreadMgr.cpp
-	ThreadStack.cpp)
+	ThreadStack.cpp
+	Work.cpp)
 
-set(SRC_LIST ${SRC_LIST}
-	hashtables/CallSiteSpanHashtable.cpp
-	hashtables/CallSiteWorkHashtable.cpp)
 
 set(SRC_LIST ${SRC_LIST}
 	profiles/CallSiteProfile.cpp

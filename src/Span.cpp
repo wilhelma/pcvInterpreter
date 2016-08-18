@@ -1,7 +1,7 @@
 /**
  *
- *    @file  CallSiteSpanHashtable.cpp
- *   @brief  Implementation file for the class `CallSiteSpanHashtable`
+ *    @file  Span.cpp
+ *   @brief  Implementation file for the class `Span`
  *
  *    @date  06/17/16
  *  @author  Nathaniel Knapp (github.com/deknapp),
@@ -11,22 +11,26 @@
 
 #include <cassert>
 #include <utility>
-#include "CallSiteSpanHashtable.h"
+#include "Span.h"
 
-CallSiteSpanHashtable::CallSiteSpanHashtable() {
+Span::Span() {
 	hashtable = std::shared_ptr<call_site_span_hashtable_t>(new call_site_span_hashtable_t);
 }
 
-CallSiteSpanHashtable::CallSiteSpanHashtable(CallSiteSpanHashtable const& hashtable_object) {
-	hashtable = std::move(hashtable_object.hashtable);
+Span::Span(Span const& other_span) {
+	hashtable = std::move(other_span.hashtable);
+	total = other_span.total;
 }
 
-
-CallSiteSpanHashtable::~CallSiteSpanHashtable() {
+Span::~Span() {
 
 }
 
-void CallSiteSpanHashtable::print() {
+TIME Span::operator()() {
+	return total;
+}
+
+void Span::print() {
 
 	for (auto const &it : *hashtable) {
 		CALLSITE key = it.first;
@@ -35,31 +39,39 @@ void CallSiteSpanHashtable::print() {
 	}
 }
 
-void CallSiteSpanHashtable::clear() {
+void Span::clear() {
 	hashtable->clear();
+	total = 0;
 }
 
-void CallSiteSpanHashtable::add(CallSiteSpanHashtable* hashtable_object) {
-	for (auto const &it : *(hashtable_object->hashtable)) {
+void Span::set(Span* other_span) {
+	clear();
+	hashtable = std::move(other_span->hashtable);
+	total = other_span->total;
+}
+
+void Span::add(Span* other_span) {
+
+	total += other_span->total;
+	for (auto const &it : *(other_span->hashtable)) {
 		CALLSITE key = it.first;
 
 		// if call site profile being added exists in both hashtables, combine them
 		if (hashtable->count(key)) {
 			CallSiteSpanProfile existingProfile(hashtable->at(key));
-		    existingProfile.add_in_callsite_span(hashtable_object->hashtable->at(key));
+		    existingProfile.add_in_callsite_span(other_span->hashtable->at(key));
 		    existingProfile.prof->lock_wait_time = 
-		    				hashtable_object->hashtable->at(key)->lock_wait_time;
+		    				other_span->hashtable->at(key)->lock_wait_time;
 		} else  {
 			std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t> > 
-                                       newPair(key, hashtable_object->hashtable->at(key));
+                                       newPair(key, other_span->hashtable->at(key));
 			hashtable->insert(newPair);
 		}
 	}
 }
 
-void CallSiteSpanHashtable::set_lock_wait_time(CALLSITE call_site,
-											   TIME lock_wait_time) {
-
+void Span::set_lock_wait_time(CALLSITE call_site,
+							  TIME lock_wait_time) {
 
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
@@ -76,13 +88,14 @@ void CallSiteSpanHashtable::set_lock_wait_time(CALLSITE call_site,
 }
 
 
-void CallSiteSpanHashtable::add_span(CALLSITE call_site,
+void Span::add_to_call_site(CALLSITE call_site,
 								     TIME span) {
+
+	total += span;
 	if (hashtable->count(call_site)) {
 		CallSiteSpanProfile profile(hashtable->at(call_site));
   		profile.prof->span += span;
 	} else {
-
 		std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
 		CallSiteSpanProfile new_profile(new_ptr);
 		new_profile.init_callsite_span(call_site, span);
@@ -92,13 +105,12 @@ void CallSiteSpanHashtable::add_span(CALLSITE call_site,
 	}
 }
 
-bool CallSiteSpanHashtable::contains(CALLSITE call_site) {
+bool Span::contains(CALLSITE call_site) {
 	if (hashtable->count(call_site))
 		return true;
 	else 
 		return false;
 }
-
 
 
 

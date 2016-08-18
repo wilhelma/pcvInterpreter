@@ -15,10 +15,10 @@
 
 #include <vector> 
 
-#include "CallSiteWorkHashtable.h"
 #include "FunctionStack.h"
 #include "ThreadStack.h"
 #include "Types.h"
+#include "Work.h"
 
 class ParasiteTracker {
 

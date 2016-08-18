@@ -1,7 +1,7 @@
 /**
  *
- *    @file  CallSiteWorkHashtable.h
- *   @brief  Declarations for the class `CallSiteWorkHashtable`
+ *    @file  Work.h
+ *   @brief  Declarations for the class `Work`
  *
  *    @date  06/17/16
  *  @author  Nathaniel Knapp (github.com/deknapp),
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef CALL_SITE_WORK_HASHTABLE_H_
-#define CALL_SITE_WORK_HASHTABLE_H_
+#ifndef WORK
+#define WORK
 
 #include <stdbool.h>
 #include <iostream>
@@ -30,14 +30,14 @@
 */
 typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_work_profile_t>, CallSiteHash, CallSiteEqual> call_site_work_hashtable_t;
 
-class CallSiteWorkHashtable {
+class Work {
 
  public:
-	CallSiteWorkHashtable();
-	explicit CallSiteWorkHashtable(CallSiteWorkHashtable const& hshtable);
+	Work();
+	explicit Work(Work const& hshtable);
 	
-	CallSiteWorkHashtable* operator=(const CallSiteWorkHashtable& rhs);
-	~CallSiteWorkHashtable();
+	Work* operator=(const Work& rhs);
+	~Work();
 
 	void print();
 
@@ -46,7 +46,6 @@ class CallSiteWorkHashtable {
 	*    @brief Returns true if the hashtable contains a profile for call_site.
 	*/
 	bool contains(CALLSITE call_site);
-
 
 	/**
 	*    @fn clear()
@@ -61,7 +60,9 @@ class CallSiteWorkHashtable {
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_work(CALLSITE call_site, FUN_SG function_signature, TIME work);
+	void add_to_call_site(CALLSITE call_site, FUN_SG function_signature, TIME work);
+
+	TIME total;
 
 	/**
 	*    @var hashtable
@@ -72,6 +73,6 @@ class CallSiteWorkHashtable {
 	
 };
 
-#endif  // CALL_SITE_WORK_HASHTABLE_H_
+#endif  // WORK
 
 

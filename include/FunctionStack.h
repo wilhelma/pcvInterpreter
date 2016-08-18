@@ -57,7 +57,9 @@ struct function_frame_t {
 	}
 
 	TIME lock_wait_time(){
-		return lock_intervals.waitTime();
+		TIME wait_time = lock_intervals.waitTime();
+		print_time("calculated lock wait time as", wait_time);
+		return wait_time;
 	}
 
 	function_frame_t() : call_site(0), local_work(0), running_work(0)
