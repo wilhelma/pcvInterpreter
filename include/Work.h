@@ -57,8 +57,8 @@ class Work {
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
-						  TIME work, bool is_local);
+	void add_to_call_site(CALLSITE call_site, FUN_SG function_signature, 
+						  TIME work);
 
 	TIME total;
 

@@ -69,6 +69,9 @@ class ParasiteTool : public Tool {
 	vertex_descr_type add_local_work(TIME strand_end_time, 
 	  				   				 std::string end_vertex_label);
 
+
+	void add_to_call_sites(TIME local_work, TIME strand_end_time);
+
 	void endProfileCalculations();
 
 	void print_event_end(std::string event_name);

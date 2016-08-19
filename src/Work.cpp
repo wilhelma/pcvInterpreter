@@ -63,10 +63,9 @@ void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 
 
 void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
-						    TIME work, bool is_local) {
+						    TIME work) {
 
-	if (is_local)
-		total += work;
+	total += work;
 	if (!hashtable->count(call_site)) {}
 		init_call_site(call_site, function_signature);
 	CallSiteWorkProfile profile(hashtable->at(call_site));

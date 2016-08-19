@@ -60,6 +60,18 @@ void ParasiteTool::print_event_end(std::string event_name) {
 	}
 }
 
+void ParasiteTool::add_to_call_sites(TIME local_work, TIME strand_end_time) {
+
+	for (int i = 0; i <= stacks->bottomFunctionIndex(); i++) {
+		work->add_to_call_site(stacks->functionAt(i)->call_site,
+						  	   stacks->functionAt(i)->function_signature,
+						  	   local_work);
+		stacks->bottomThread()->continuation.add_to_call_site(
+				 stacks->functionAt(i)->call_site, local_work, strand_end_time);
+	}
+
+}
+
 
 vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time, 
 	  						                   std::string end_vertex_label) {
@@ -70,10 +82,7 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	assert(local_work >= 0);
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
-	work->add_to_call_site(bottom_function->call_site,
-						   bottom_function->function_signature, local_work, 1);
-	bottom_thread->continuation.add_to_call_site(bottom_function->call_site,
-									    	     local_work, strand_end_time);
+	add_to_call_sites(local_work, strand_end_time);
 	print_time("local work", local_work);
 	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);
@@ -264,23 +273,13 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	bottom_thread->continuation.set_lock_wait_time(returned_function->call_site, 
 									               returned_lock_wait_time);
 
-	TIME running_work = returned_function->running_work + 
-					    returned_function->local_work;
-
 	if (stacks->bottomFunctionIndex() == 0) {
-		work->add_to_call_site(returned_function->call_site,
-							   returned_function->function_signature,
-							   running_work, 0);
 		return;
 	}
 
 	std::shared_ptr<function_frame_t> parent_function = 
 	 										     stacks->bottomParentFunction();
-	// F.w += G.w
-	parent_function->running_work += running_work;
-	work->add_to_call_site(parent_function->call_site, 
-						   parent_function->function_signature,
-						   running_work, 0);
+
 	parent_function->add_locks(returned_function);
 
 	stacks->function_pop();
