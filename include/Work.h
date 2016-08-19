@@ -22,6 +22,7 @@
 #include "CallSiteHashtable.h"
 #include "CallSiteProfile.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *    @typedef call_site_work_hashtable_t
@@ -42,26 +43,21 @@ class Work {
 	void print();
 
 	/**
-	*    @fn contains()
-	*    @brief Returns true if the hashtable contains a profile for call_site.
-	*/
-	bool contains(CALLSITE call_site);
-
-	/**
 	*    @fn clear()
 	*    @brief Clears the unordered_map / hashtable. 
 	*/
 	void clear();
 
-	void increment_count(CALLSITE call_site,  FUN_SG function_signature);
+	std::shared_ptr<call_site_work_profile_t>  getProfile(CALLSITE call_site);
+
+	void record_call_site(CALLSITE call_site, FUN_SG function_signature);
 
 	/**
-	*    @fn add_data(...)
+	*    @fn add_to_call_site(CALLSITE call_site, TIME work, bool is_local)
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
-						  TIME work, bool is_local);
+	void add_to_call_site(CALLSITE call_site, TIME work, bool is_local);
 
 	TIME total;
 

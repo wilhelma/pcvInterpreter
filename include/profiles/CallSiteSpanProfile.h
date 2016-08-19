@@ -29,12 +29,14 @@ struct call_site_span_profile_t {
     */
     CALLSITE call_site;
 
+    TIME start;
+    TIME stop;
+
     /**
     *    @var span
     *    @brief Span of callsite. 
     */
     TIME span;
-
 
     /**
     *    @var lock_wait_time
@@ -42,7 +44,8 @@ struct call_site_span_profile_t {
     */
     TIME lock_wait_time;
 
-    call_site_span_profile_t() : call_site(0), span(0), lock_wait_time(0) {}  
+    call_site_span_profile_t() : call_site(0), start(0), stop(0), span(0),
+                                 lock_wait_time(0) {}  
 };
 
 class CallSiteSpanProfile {
@@ -64,7 +67,7 @@ class CallSiteSpanProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_span(CALLSITE call_site, TIME span);
+    void init(CALLSITE call_site);
 
     /**
     *    @var prof

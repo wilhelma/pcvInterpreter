@@ -70,7 +70,7 @@ class CallSiteWorkProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_profile(CALLSITE call_site, FUN_SG function_signature, TIME work);
+    void init_callsite_profile(CALLSITE call_site, FUN_SG function_signature);
     
     /**
     *    @var prof

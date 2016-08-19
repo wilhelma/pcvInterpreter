@@ -22,6 +22,7 @@
 #include "CallSiteHashtable.h"
 #include "CallSiteProfile.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *    @typedef call_site_span_hashtable_t
@@ -40,19 +41,14 @@ class Span {
 	void print();
 
 	/**
-	*    @fn contains()
-	*    @brief Returns true if the hashtable contains a profile for call_site.
-	*/
-	bool contains(CALLSITE call_site);
-
-
-	/**
 	*    @fn clear()
 	*    @brief Clears the unordered_map / hashtable. 
 	*/
 	void clear();
 
 	void set(Span* other_span);
+
+	std::shared_ptr<call_site_span_profile_t> getProfile(CALLSITE call_site);
 
 	/**
 	*    @fn add_in_hashtable(...)
@@ -65,7 +61,9 @@ class Span {
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_to_call_site(CALLSITE call_site, TIME span);
+	void add_to_call_site(CALLSITE call_site, TIME span, TIME end_time);
+
+	void init_call_site(CALLSITE call_site, TIME start_time);
 
 	void set_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
 

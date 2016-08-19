@@ -20,11 +20,12 @@ CallSiteSpanProfile::CallSiteSpanProfile(std::shared_ptr<call_site_span_profile_
 void CallSiteSpanProfile::add_in_callsite_span
 			  (const std::shared_ptr<call_site_span_profile_t> profile_to_add) {
 	prof->span += profile_to_add->span;
+	prof->start = std::min(prof->start, profile_to_add->start);
+	prof->stop = std::max(prof->stop, profile_to_add->stop);
 }
 
-void CallSiteSpanProfile::init_callsite_span(CALLSITE call_site, TIME span) {
+void CallSiteSpanProfile::init(CALLSITE call_site) {
 	prof->call_site = call_site;
-	prof->span = span;
 }
 
 void CallSiteSpanProfile::print() {

@@ -22,10 +22,10 @@ void CallSiteWorkProfile::add_in_callsite_profile_entries(const std::shared_ptr<
 	prof->count += (profile_to_add->count - 1);
 }
 
-void CallSiteWorkProfile::init_callsite_profile(CALLSITE call_site, FUN_SG function_signature, TIME work) {
+void CallSiteWorkProfile::init_callsite_profile(CALLSITE call_site, FUN_SG function_signature) {
 	prof->call_site = call_site;
 	prof->function_signature = function_signature;
-	prof->work = work;
+	prof->work = 0;
 	prof->count = 1;
 }
 

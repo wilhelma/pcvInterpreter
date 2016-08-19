@@ -31,18 +31,70 @@ TIME Span::operator()() {
 	return total;
 }
 
-void Span::print() {
+void Span::add(Span* other_span) {
 
-	for (auto const &it : *hashtable) {
-		CALLSITE key = it.first;
-		CallSiteSpanProfile currentProfile(hashtable->at(key));
-		currentProfile.print();
+	total += other_span->total;
+	for (auto const &it : *(other_span->hashtable)) {
+		CALLSITE call_site = it.first;
+		if (hashtable->count(call_site)) {
+			CallSiteSpanProfile existingProfile(hashtable->at(call_site));
+		    existingProfile.add_in_callsite_span(other_span->hashtable->at(call_site));
+		    existingProfile.prof->lock_wait_time = 
+		    				other_span->hashtable->at(call_site)->lock_wait_time;
+		} else  {
+			std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t> > 
+                                  newPair(call_site, other_span->hashtable->at(call_site));
+			hashtable->insert(newPair);
+		}
 	}
+}
+
+
+std::shared_ptr<call_site_span_profile_t> Span::getProfile(CALLSITE call_site) {
+
+	try {
+		if (hashtable->count(call_site)) {
+			return hashtable->at(call_site);
+		} else {
+			throw CallsiteNotInitializedException();
+		}
+	}
+	catch(CallsiteNotInitializedException& e) {
+		std::cout << "span " << e.what() << std::endl;
+	}
+}
+
+void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
+
+		CallSiteSpanProfile profile(getProfile(call_site));
+  		profile.prof->span += span;
+  		profile.prof->stop = std::max(profile.prof->stop, end_time);
 }
 
 void Span::clear() {
 	hashtable->clear();
 	total = 0;
+}
+
+
+void Span::init_call_site(CALLSITE call_site, TIME start_time) {
+
+	std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
+	CallSiteSpanProfile new_profile(new_ptr);
+	new_profile.init(call_site);
+	std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
+                                    newPair(call_site, new_profile.prof);
+	hashtable->insert(newPair);
+}
+
+
+void Span::print() {
+
+	for (auto const &it : *hashtable) {
+		CALLSITE call_site = it.first;
+		CallSiteSpanProfile currentProfile(hashtable->at(call_site));
+		currentProfile.print();
+	}
 }
 
 void Span::set(Span* other_span) {
@@ -51,67 +103,13 @@ void Span::set(Span* other_span) {
 	total = other_span->total;
 }
 
-void Span::add(Span* other_span) {
-
-	total += other_span->total;
-	for (auto const &it : *(other_span->hashtable)) {
-		CALLSITE key = it.first;
-
-		// if call site profile being added exists in both hashtables, combine them
-		if (hashtable->count(key)) {
-			CallSiteSpanProfile existingProfile(hashtable->at(key));
-		    existingProfile.add_in_callsite_span(other_span->hashtable->at(key));
-		    existingProfile.prof->lock_wait_time = 
-		    				other_span->hashtable->at(key)->lock_wait_time;
-		} else  {
-			std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t> > 
-                                       newPair(key, other_span->hashtable->at(key));
-			hashtable->insert(newPair);
-		}
-	}
-}
-
 void Span::set_lock_wait_time(CALLSITE call_site,
 							  TIME lock_wait_time) {
 
-	if (hashtable->count(call_site)) {
-		CallSiteSpanProfile profile(hashtable->at(call_site));
-  	    profile.prof->lock_wait_time = lock_wait_time;
-	} else {
-	    std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
-		CallSiteSpanProfile new_profile(new_ptr);
-		new_profile.init_callsite_span(call_site, static_cast<TIME>(0));
-	    new_profile.prof->lock_wait_time = lock_wait_time;
-		std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
-                                        newPair(call_site, new_profile.prof);
-		hashtable->insert(newPair);
-	}
+	CallSiteSpanProfile profile(getProfile(call_site));
+	profile.prof->lock_wait_time = lock_wait_time;
 }
 
-
-void Span::add_to_call_site(CALLSITE call_site,
-								     TIME span) {
-
-	total += span;
-	if (hashtable->count(call_site)) {
-		CallSiteSpanProfile profile(hashtable->at(call_site));
-  		profile.prof->span += span;
-	} else {
-		std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
-		CallSiteSpanProfile new_profile(new_ptr);
-		new_profile.init_callsite_span(call_site, span);
-		std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
-                                        newPair(call_site, new_profile.prof);
-		hashtable->insert(newPair);
-	}
-}
-
-bool Span::contains(CALLSITE call_site) {
-	if (hashtable->count(call_site))
-		return true;
-	else 
-		return false;
-}
 
 
 
