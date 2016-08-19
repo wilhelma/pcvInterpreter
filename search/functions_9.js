@@ -2,9 +2,12 @@ var searchData=
 [
   ['i32toa',['i32toa',['../namespacerapidjson_1_1internal.html#af2da6e17b77cf999be3b84d06e652d14',1,'rapidjson::internal']]],
   ['i64toa',['i64toa',['../namespacerapidjson_1_1internal.html#a676fae3f0a9bc9a5e7646e31097a6f34',1,'rapidjson::internal']]],
-  ['if',['if',['../CMakeLists_8txt.html#af06fe411d23e5572210ccf62cc39105e',1,'CMakeLists.txt']]],
   ['imaxdiv',['imaxdiv',['../inttypes_8h.html#a8cb1de760b0fde0bae9eb5e070f0bce7',1,'inttypes.h']]],
   ['importdb',['importDB',['../classDBInterpreter.html#a0fb40d2433663aff0b810e90ea5840f4',1,'DBInterpreter']]],
+  ['increment_5fcount',['increment_count',['../classCallSiteWorkHashtable.html#a6a8f770c74088d6b7a7eb23a5b484071',1,'CallSiteWorkHashtable']]],
+  ['init_5fcallsite_5fprofile',['init_callsite_profile',['../classCallSiteProfile.html#a024bb682626827176eb3fe2fe74d61f4',1,'CallSiteProfile::init_callsite_profile()'],['../classCallSiteWorkProfile.html#adc53aba926f51006ad87a8f578b66525',1,'CallSiteWorkProfile::init_callsite_profile()']]],
+  ['init_5fcallsite_5fspan_5fprofile',['init_callsite_span_profile',['../classCallSiteSpanProfile.html#aaa975096bd2524925cc8646bc50703dc',1,'CallSiteSpanProfile']]],
+  ['init_5fframe',['init_frame',['../classFunctionStack.html#ad1cabb545fb8594ea0bffc97ce233110',1,'FunctionStack::init_frame()'],['../classThreadStack.html#a9f508b416d5a61587720a72b6a61bdff',1,'ThreadStack::init_frame()']]],
   ['initlogger',['initLogger',['../classInterpreter.html#af8d6242ff57678a53d43e2864851bd9e',1,'Interpreter']]],
   ['insert',['insert',['../classDBTable.html#a6babc41d25dc49bfd7842d7a270c98a0',1,'DBTable']]],
   ['instruction_5ft',['instruction_t',['../structinstruction__t.html#aefeb254328e121dbfbc1f89b1a919fd5',1,'instruction_t']]],
@@ -13,7 +16,7 @@ var searchData=
   ['interpret',['interpret',['../classSAAPRunner.html#a4eff95ce24f6fcb300e3ab95e1646509',1,'SAAPRunner']]],
   ['interpreter',['Interpreter',['../classInterpreter.html#a2d8c65a79a2160f2f6901ae11fd196e6',1,'Interpreter']]],
   ['iscomplete',['IsComplete',['../classrapidjson_1_1Writer.html#ad70218827efbda426bbc8620a9339c3e',1,'rapidjson::Writer']]],
-  ['isempty',['isEmpty',['../classStack.html#a03db75ad439e8cb32bffcf45b8c3722e',1,'Stack']]],
+  ['isempty',['isEmpty',['../classCallStack.html#a7449ea527983653eb738c670e768d0be',1,'CallStack']]],
   ['iserror',['IsError',['../structrapidjson_1_1ParseResult.html#a5ab5548c7a7776f4da20eac09fe57c1b',1,'rapidjson::ParseResult']]],
   ['iterativeparse',['IterativeParse',['../classrapidjson_1_1GenericReader.html#ad133a9a441857a1beaac20802b83abe5',1,'rapidjson::GenericReader']]]
 ];

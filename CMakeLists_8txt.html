@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>PCV Interpreter: CMakeLists.txt File Reference</title>
+<title>PCV Interpreter: src/CMakeLists.txt File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -86,65 +86,30 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">CMakeLists.txt File Reference</div>  </div>
+<div class="title">src/CMakeLists.txt File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a61386c3408a82ad1392f421231c9be12"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a61386c3408a82ad1392f421231c9be12">project</a> (SAAPFramework) cmake_minimum_required(VERSION 2.8) find_path(BOOST_PATH NAMES boost/log/trivial.hpp PATHS $ENV</td></tr>
-<tr class="separator:a61386c3408a82ad1392f421231c9be12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af06fe411d23e5572210ccf62cc39105e"><td class="memItemLeft" align="right" valign="top">DOC Boost directory&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#af06fe411d23e5572210ccf62cc39105e">if</a> (NOT BOOST_PATH) <a class="el" href="CMakeLists_8txt.html#ae5bbc130fe315af95e13feed0ed991aa">message</a>(FATAL_ERROR&quot;\nBOOST directory not found!\n&quot;&quot;Please <a class="el" href="src_2CMakeLists_8txt.html#af235bf3864d5eb51258ada25d2de4f41">set</a> the environment variable BOOST_PATH to the base directory&quot;) endif(NOT BOOST_PATH) <a class="el" href="src_2CMakeLists_8txt.html#af235bf3864d5eb51258ada25d2de4f41">set</a>(Boost_USE_STATIC_LIBS ON) find_package(Boost COMPONENTS log log_setup thread date_time filesystem system REQUIRED) <a class="el" href="CMakeLists_8txt.html#ae5bbc130fe315af95e13feed0ed991aa">message</a>(STATUS&quot;Boost Include Directory</td></tr>
-<tr class="separator:af06fe411d23e5572210ccf62cc39105e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6657d81e82ecaf3800065f406679b79a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a6657d81e82ecaf3800065f406679b79a">message</a> (STATUS&quot;Boost  Library Directory: ${Boost_LIBRARY_DIR}&quot;) include_directories($</td></tr>
-<tr class="separator:a6657d81e82ecaf3800065f406679b79a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5946e8b61be462d9f5d26929806631d2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a5946e8b61be462d9f5d26929806631d2">link_directories</a> (${Boost_LIBRARY_DIR}) find_path(SQLITE_PATH NAMES sqlite3.h PATHS $ENV</td></tr>
-<tr class="separator:a5946e8b61be462d9f5d26929806631d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5bbc130fe315af95e13feed0ed991aa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#ae5bbc130fe315af95e13feed0ed991aa">message</a> (STATUS&quot;SQLite Library Directory: ${SQLITE_LIBRARY_DIR}&quot;) include_directories($</td></tr>
-<tr class="separator:ae5bbc130fe315af95e13feed0ed991aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a37556f94d6ae4106d575c35157f5da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a2a37556f94d6ae4106d575c35157f5da">set</a> (INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/${pcv_SOURCE_DIR}/include/events/${pcv_SOURCE_DIR}/include/hashtables/${pcv_SOURCE_DIR}/include/infos/${pcv_SOURCE_DIR}/include/profiles/${pcv_SOURCE_DIR}/include/tables/${pcv_SOURCE_DIR}/include/tools/) include_directories($</td></tr>
+<tr class="separator:a2a37556f94d6ae4106d575c35157f5da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8f5d913a51e32aeb9b203c2432547b0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#ac8f5d913a51e32aeb9b203c2432547b0">set</a> (SRC_LIST ${SRC_LIST}DBInterpreter.cpp DAG.cpp EventService.cpp FunctionStack.cpp Interpreter.cpp LockMgr.cpp main.cpp ParasiteJsonWriter.cpp ParasiteTracker.cpp SAAPRunner.cpp ThreadMgr.cpp ThreadStack.cpp) set(SRC_LIST $</td></tr>
+<tr class="separator:ac8f5d913a51e32aeb9b203c2432547b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4007e963cc204b627b4d3c2d80a7b9a3"><td class="memItemLeft" align="right" valign="top">hashtables <a class="el" href="classCallSiteSpanHashtable.html">CallSiteSpanHashtable</a> cpp hashtables <a class="el" href="classCallSiteWorkHashtable.html">CallSiteWorkHashtable</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a4007e963cc204b627b4d3c2d80a7b9a3">set</a> (SRC_LIST ${SRC_LIST}profiles/CallSiteProfile.cpp profiles/CallSiteSpanProfile.cpp profiles/CallSiteWorkProfile.cpp) set(SRC_LIST $</td></tr>
+<tr class="separator:a4007e963cc204b627b4d3c2d80a7b9a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff9508f1416e5a82e3a559874b0ea842"><td class="memItemLeft" align="right" valign="top">tools <a class="el" href="classDebugTool.html">DebugTool</a> cpp tools <a class="el" href="classFunctionTrackerTool.html">FunctionTrackerTool</a> cpp tools <a class="el" href="classLockSetChecker.html">LockSetChecker</a> cpp tools <a class="el" href="classParasiteTool.html">ParasiteTool</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#aff9508f1416e5a82e3a559874b0ea842">set</a> (SRC_LIST ${SRC_LIST}tables/AccessTable.cpp tables/Call.cpp tables/CallTable.cpp tables/FileTable.cpp tables/FunctionTable.cpp tables/InstructionTable.cpp tables/LoopExecutionTable.cpp tables/LoopIterationTable.cpp tables/LoopTable.cpp tables/ReferenceTable.cpp tables/SegmentTable.cpp tables/ThreadTable.cpp) add_executable($</td></tr>
+<tr class="separator:aff9508f1416e5a82e3a559874b0ea842"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="af06fe411d23e5572210ccf62cc39105e"></a>
+<a class="anchor" id="a2a37556f94d6ae4106d575c35157f5da"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">DOC SQLite s inc directory if </td>
+          <td class="memname">set </td>
           <td>(</td>
-          <td class="paramtype">NOT&#160;</td>
-          <td class="paramname"><em>BOOST_PATH</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a5946e8b61be462d9f5d26929806631d2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">link_directories </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>${Boost_LIBRARY_DIR}</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=1 -pedantic -Wall -Wno-unknown-pragmas -<a class="code" href="namespacestd.html">std</a>=c++11 -march=native<span class="stringliteral">&quot;)</span></div><div class="line"><span class="stringliteral"></span></div><div class="line"><span class="stringliteral">set(CMAKE_SHARED_LINKER_FLAGS &quot;</span>-Wl</div><div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace. </div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a class="anchor" id="a6657d81e82ecaf3800065f406679b79a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">message </td>
-          <td>(</td>
-          <td class="paramtype">STATUS&quot;Boost Library Directory: ${Boost_LIBRARY_DIR}&quot;&#160;</td>
+          <td class="paramtype">INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/${pcv_SOURCE_DIR}/include/events/${pcv_SOURCE_DIR}/include/hashtables/${pcv_SOURCE_DIR}/include/infos/${pcv_SOURCE_DIR}/include/profiles/${pcv_SOURCE_DIR}/include/tables/${pcv_SOURCE_DIR}/include/tools/&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -153,15 +118,15 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae5bbc130fe315af95e13feed0ed991aa"></a>
+<a class="anchor" id="ac8f5d913a51e32aeb9b203c2432547b0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">message </td>
+          <td class="memname">set </td>
           <td>(</td>
-          <td class="paramtype">STATUS&quot;SQLite Library Directory: ${SQLITE_LIBRARY_DIR}&quot;&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">SRC_LIST ${SRC_LIST}DBInterpreter.cpp DAG.cpp EventService.cpp FunctionStack.cpp Interpreter.cpp LockMgr.cpp main.cpp ParasiteJsonWriter.cpp ParasiteTracker.cpp SAAPRunner.cpp ThreadMgr.cpp ThreadStack.&#160;</td>
+          <td class="paramname"><em>cpp</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -169,15 +134,31 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a61386c3408a82ad1392f421231c9be12"></a>
+<a class="anchor" id="a4007e963cc204b627b4d3c2d80a7b9a3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">project </td>
+          <td class="memname">hashtables <a class="el" href="classCallSiteSpanHashtable.html">CallSiteSpanHashtable</a> cpp hashtables <a class="el" href="classCallSiteWorkHashtable.html">CallSiteWorkHashtable</a> cpp set </td>
           <td>(</td>
-          <td class="paramtype">SAAPFramework&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">SRC_LIST ${SRC_LIST}profiles/CallSiteProfile.cpp profiles/CallSiteSpanProfile.cpp profiles/CallSiteWorkProfile.&#160;</td>
+          <td class="paramname"><em>cpp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aff9508f1416e5a82e3a559874b0ea842"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tools <a class="el" href="classDebugTool.html">DebugTool</a> cpp tools <a class="el" href="classFunctionTrackerTool.html">FunctionTrackerTool</a> cpp tools <a class="el" href="classLockSetChecker.html">LockSetChecker</a> cpp tools <a class="el" href="classParasiteTool.html">ParasiteTool</a> cpp set </td>
+          <td>(</td>
+          <td class="paramtype">SRC_LIST ${SRC_LIST}tables/AccessTable.cpp tables/Call.cpp tables/CallTable.cpp tables/FileTable.cpp tables/FunctionTable.cpp tables/InstructionTable.cpp tables/LoopExecutionTable.cpp tables/LoopIterationTable.cpp tables/LoopTable.cpp tables/ReferenceTable.cpp tables/SegmentTable.cpp tables/ThreadTable.&#160;</td>
+          <td class="paramname"><em>cpp</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

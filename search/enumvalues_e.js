@@ -1,9 +1,12 @@
 var searchData=
 [
-  ['signal_5fbroadcast',['SIGNAL_BROADCAST',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341aa6b425fd9138b8ddf78e60e2253403a8',1,'Function.h']]],
-  ['signal_5fsingle',['SIGNAL_SINGLE',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a7e6a20720d926c6557775dd843a04aac',1,'Function.h']]],
-  ['stack',['STACK',['../Reference_8h.html#aa298d9663bceef9c2ac2880c5bae3327a0fac686d86aba414411b58f6bce53a76',1,'Reference.h']]],
-  ['staticvar',['STATICVAR',['../Reference_8h.html#aa298d9663bceef9c2ac2880c5bae3327a85d2c181a3c83c13e1da58ead400fde9',1,'Reference.h']]],
-  ['stringtoken',['StringToken',['../classrapidjson_1_1GenericReader.html#a3fc870df419c60425cea2a15d36790d1a07a7a78738f0936e4f64238d9294e412',1,'rapidjson::GenericReader']]],
-  ['supportunicode',['supportUnicode',['../structrapidjson_1_1UTF8.html#a162ec39d1feea956ac7c82ee21bbe037a821cba43661b67d78115cc9366e91b32',1,'rapidjson::UTF8::supportUnicode()'],['../structrapidjson_1_1UTF16.html#a439e1dc4701cc7ae34d257ce76f5dc37a5a09bf086fb94e4d6fb106da7c3f01ea',1,'rapidjson::UTF16::supportUnicode()'],['../structrapidjson_1_1UTF32.html#a65443b00cba1bb95baf55025108d6a54a4b93019e2b1729a70b35ba10b581ab9e',1,'rapidjson::UTF32::supportUnicode()'],['../structrapidjson_1_1ASCII.html#a598bb5f32c9f0c851529a9ded73db5eba7c8190ea4c25af669f952bfe200afeee',1,'rapidjson::ASCII::supportUnicode()'],['../structrapidjson_1_1AutoUTF.html#aa9095b9e85767361f9a0ae5527dba101a15b55b712f9e34d146fb236e5a89e06e',1,'rapidjson::AutoUTF::supportUnicode()']]]
+  ['read',['READ',['../Access_8h.html#ad8aff9e545a5f496a179a16667431478a3466fab4975481651940ed328aa990e4',1,'Access.h']]],
+  ['read_5fshared',['READ_SHARED',['../Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8ca6cdd845c4ecc7a9b6c3ddf1efc865b1c',1,'Access.h']]],
+  ['read_5fwrite',['READ_WRITE',['../classLockSetChecker.html#a95791c0139845ee9a91182bccd2b5f87a20cfa53456c06dfc201509ccb3f883b2',1,'LockSetChecker::READ_WRITE()'],['../classRaceDetectionTool.html#ac71d766dae03bfd04317935f6525b665a2f01c0b5d3b22a645fee187976cbe3a9',1,'RaceDetectionTool::READ_WRITE()']]],
+  ['read_5fwrite_5fshared',['READ_WRITE_SHARED',['../Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8ca2916a304e72eaf23903bbccdfa4c65ac',1,'Access.h']]],
+  ['region',['REGION',['../Segment_8h.html#a2062ac0939fa9eb5a13e7041de1bd58fa69aede266809f89b89fe70681f6a129f',1,'Segment.h']]],
+  ['release',['RELEASE',['../Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cda7d649ef069df9885e382417c79f3d5cd',1,'RELEASE():&#160;Event.h'],['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a7d649ef069df9885e382417c79f3d5cd',1,'RELEASE():&#160;Function.h'],['../Instruction_8h.html#a89ee1c4e5e5a33c60d0e6dc126ed2c0da7d649ef069df9885e382417c79f3d5cd',1,'RELEASE():&#160;Instruction.h']]],
+  ['return',['RETURN',['../Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cdaa2bec276a54439fe011eb523b845dac5',1,'Event.h']]],
+  ['rightbrackettoken',['RightBracketToken',['../classrapidjson_1_1GenericReader.html#a3fc870df419c60425cea2a15d36790d1ad38960254baebca685d6b2f0cd79fdb2',1,'rapidjson::GenericReader']]],
+  ['rightcurlybrackettoken',['RightCurlyBracketToken',['../classrapidjson_1_1GenericReader.html#a3fc870df419c60425cea2a15d36790d1acc332c6302ea4b16f1d3a0402ab0e108',1,'rapidjson::GenericReader']]]
 ];

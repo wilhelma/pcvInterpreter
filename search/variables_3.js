@@ -1,19 +1,25 @@
 var searchData=
 [
   ['call',['call',['../structReturnInfo.html#aa0148933591f7fcc640c8dcd4413f9f0',1,'ReturnInfo']]],
-  ['call_5fid',['call_id',['../structsegment__t.html#ac28911e6c5c679227ff8d74dc2c33b28',1,'segment_t']]],
+  ['call_5fid',['call_id',['../structsegment__t.html#ac28911e6c5c679227ff8d74dc2c33b28',1,'segment_t::call_id()'],['../structthread__t.html#a5396927acd1e16480b5d45195a4d2c92',1,'thread_t::call_id()']]],
+  ['call_5fsite',['call_site',['../structfunction__frame__t.html#ae21c5f86b38271c93211ba1b29fab97a',1,'function_frame_t::call_site()'],['../structcall__site__profile__t.html#a1b000eb8804fec8154393dae54d22fbb',1,'call_site_profile_t::call_site()'],['../structcall__site__span__profile__t.html#a2573bf54b09c2d9f8337ad7f1c28088f',1,'call_site_span_profile_t::call_site()'],['../structcall__site__work__profile__t.html#ac4e760db622199ba936a31418a6855cd',1,'call_site_work_profile_t::call_site()']]],
   ['calls',['calls',['../classFunctionTrackerTool.html#ab422efecc7519d0bde172befebaf171e',1,'FunctionTrackerTool']]],
   ['callstack_5f',['callStack_',['../classDBInterpreter.html#a20bc84496f9740a92396d7868d2520c3',1,'DBInterpreter']]],
   ['calltable',['callTable',['../classDBInterpreter.html#a2ad4e7cd7c0daeacb1e5cb0dae535468',1,'DBInterpreter']]],
+  ['calltime',['callTime',['../structCallInfo.html#a4512b6435c4578b66f06609327928b79',1,'CallInfo']]],
   ['capacity',['capacity',['../structrapidjson_1_1MemoryPoolAllocator_1_1ChunkHeader.html#a2bce5ae3d208e501af06b36fe34411cf',1,'rapidjson::MemoryPoolAllocator::ChunkHeader::capacity()'],['../structrapidjson_1_1GenericValue_1_1Object.html#a2a5ace3d4f97485ff14b5e34684f11aa',1,'rapidjson::GenericValue::Object::capacity()'],['../structrapidjson_1_1GenericValue_1_1Array.html#aa2e8776f840798dea3d86640bbaa03fe',1,'rapidjson::GenericValue::Array::capacity()']]],
   ['childthread',['childThread',['../structJoinInfo.html#adc20541bf1bd4de860548f84025dea42',1,'JoinInfo::childThread()'],['../structNewThreadInfo.html#adbb4667d8a95833b2fe42e0b777af8fa',1,'NewThreadInfo::childThread()']]],
   ['chunk_5fcapacity_5f',['chunk_capacity_',['../classrapidjson_1_1MemoryPoolAllocator.html#a5de12903a376ea7128e65890a287050c',1,'rapidjson::MemoryPoolAllocator']]],
   ['chunkhead_5f',['chunkHead_',['../classrapidjson_1_1MemoryPoolAllocator.html#a64acbd6f74dd8757baa2a9f6b5841400',1,'rapidjson::MemoryPoolAllocator']]],
   ['clock',['clock',['../structRaceDetectionTool_1_1Epoch__.html#a10de0f499d48b3566fd4cb9a94f3a6a8',1,'RaceDetectionTool::Epoch_']]],
   ['code_5f',['code_',['../structrapidjson_1_1ParseResult.html#aa8a4a0331c0b50ce9f28be8449cb91e1',1,'rapidjson::ParseResult']]],
+  ['continuation_5fspan',['continuation_span',['../structthread__frame__t.html#aefddcf0d5e35ae5444faffa03b8d6f54',1,'thread_frame_t']]],
+  ['continuation_5ftable',['continuation_table',['../structthread__frame__t.html#ad363f936fa8d5d7defe72bf520d6b884',1,'thread_frame_t']]],
+  ['count',['count',['../structcall__site__profile__t.html#a53ee5048aa78253003addbe07bbbf4d8',1,'call_site_profile_t::count()'],['../structcall__site__work__profile__t.html#a506796ae6cbd4738ac893bb4e47b7c62',1,'call_site_work_profile_t::count()']]],
   ['count_5f',['count_',['../classrapidjson_1_1FileReadStream.html#aa9f5c84ba27299caf94ef0022f8d9464',1,'rapidjson::FileReadStream::count_()'],['../classrapidjson_1_1FileStream.html#ad19362adf52a3788700c4f69f81a3f0e',1,'rapidjson::FileStream::count_()']]],
+  ['counter',['counter',['../lock__example_8c.html#a617a47c70795bcff659815ad0efd2266',1,'lock_example.c']]],
   ['create_5finstruction_5fid',['create_instruction_id',['../structthread__t.html#af37b97c47062cf774a3e92568eaacccc',1,'thread_t']]],
   ['current_5f',['current_',['../classrapidjson_1_1EncodedInputStream.html#a87c63969234cad5b4a9a594f4add3a2a',1,'rapidjson::EncodedInputStream::current_()'],['../classrapidjson_1_1AutoUTFInputStream.html#a7852a25c4948cc8488046b01fc373967',1,'rapidjson::AutoUTFInputStream::current_()'],['../classrapidjson_1_1FileReadStream.html#a2677bd57c31c6488e2b1b8559240a105',1,'rapidjson::FileReadStream::current_()'],['../classrapidjson_1_1FileStream.html#a8ccd0a9411f8e345f49ae296f7b402a1',1,'rapidjson::FileStream::current_()'],['../classrapidjson_1_1FileWriteStream.html#a250f94025fad330db98c97da9d3967a6',1,'rapidjson::FileWriteStream::current_()']]],
   ['currentlockid_5f',['currentLockId_',['../classLockMgr.html#a4b3dfbaf2b45f65fc13650432f5d48ea',1,'LockMgr']]],
-  ['currentthreadid_5f',['currentThreadId_',['../classThreadMgr.html#a2ca5a366da5bb71161e500d4e832ade6',1,'ThreadMgr']]]
+  ['currentthreadid_5f',['currentThreadId_',['../classThreadMgr.html#a8a2dbc63ab2d2df4d10a91a239ce04db',1,'ThreadMgr']]]
 ];

@@ -6,6 +6,9 @@ var searchData=
   ['readvarset_5f',['readVarSet_',['../classLockSetChecker.html#a025fc7e5433e5435365c8c781e3dac97',1,'LockSetChecker::readVarSet_()'],['../classRaceDetectionTool.html#a4d1d17c44fc023e8ce50876c6e8e1bc6',1,'RaceDetectionTool::readVarSet_()']]],
   ['reference_5fid',['reference_id',['../structaccess__t.html#a28e51c1c13ebd8eeb4eae107641158f9',1,'access_t']]],
   ['referencetable',['referenceTable',['../classDBInterpreter.html#a5a68f12f4c2daf0c67d82efecf4bac7a',1,'DBInterpreter']]],
+  ['releasetime',['releaseTime',['../structReleaseInfo.html#aa60f7db019cdb64f92f14de13d3da210',1,'ReleaseInfo']]],
   ['rem',['rem',['../structimaxdiv__t.html#a6c9701ad10bff81edae7ff679cae7850',1,'imaxdiv_t']]],
-  ['runtime',['runtime',['../structCallInfo.html#aaf6afed850ba9f2b4141324d6eef6928',1,'CallInfo::runtime()'],['../structNewThreadInfo.html#a228be4cd01aed365d40c550ef95bdf7c',1,'NewThreadInfo::runtime()']]]
+  ['running_5flock_5fspan',['running_lock_span',['../structfunction__frame__t.html#a553492d1f6c9d70ffe984bfbe2e9edbf',1,'function_frame_t']]],
+  ['running_5fwork',['running_work',['../structfunction__frame__t.html#adc00a51e5e14f61cb63d9c514687826e',1,'function_frame_t']]],
+  ['runtime',['runTime',['../structNewThreadInfo.html#ae822d27ba668a88d35828217b235b327',1,'NewThreadInfo::runTime()'],['../structCallInfo.html#aaf6afed850ba9f2b4141324d6eef6928',1,'CallInfo::runtime()']]]
 ];
