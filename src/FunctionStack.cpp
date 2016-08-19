@@ -19,16 +19,14 @@ FunctionStack::FunctionStack() {
 	stack = fxn_stack;
 }
 
-FunctionStack::~FunctionStack() {
-
-}
+FunctionStack::~FunctionStack() {}
 
 void FunctionStack::pop() {
 
 	// the last function frame must stay on the stack to get the end profile
 	assert(stack.size() > 1);
-	int bottom_index = stack.size() - 1;
 	stack.pop_back();
+	int bottom_index = stack.size() - 1;
 	if (DEBUG_OUTPUT)
 		std::cout << "popped off of function stack, index is now " << bottom_index << std::endl;
 }

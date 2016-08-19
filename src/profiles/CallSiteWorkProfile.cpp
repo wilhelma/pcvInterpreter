@@ -26,7 +26,7 @@ void CallSiteWorkProfile::init_callsite_profile(CALLSITE call_site, FUN_SG funct
 	prof->call_site = call_site;
 	prof->function_signature = function_signature;
 	prof->work = 0;
-	prof->count = 1;
+	prof->count = 0;
 }
 
 void CallSiteWorkProfile::print() {

@@ -62,7 +62,7 @@ void ParasiteTool::print_event_end(std::string event_name) {
 
 
 vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time, 
-	  						      std::string end_vertex_label) {
+	  						                   std::string end_vertex_label) {
 
 	print_event_start(end_vertex_label);
 	TIME local_work = strand_end_time - last_event_time;
@@ -70,7 +70,8 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	assert(local_work >= 0);
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
-	work->add_to_call_site(bottom_function->call_site, local_work, 1);
+	work->add_to_call_site(bottom_function->call_site,
+						   bottom_function->function_signature, local_work, 1);
 	bottom_thread->continuation.add_to_call_site(bottom_function->call_site,
 									    	     local_work, strand_end_time);
 	print_time("local work", local_work);
@@ -84,7 +85,6 @@ void ParasiteTool::endProfileCalculations() {
 
 	assert(stacks->bottomThreadIndex() == 0);
 	assert(stacks->bottomFunctionIndex() == 0);
-
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks->bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks->bottomFunction();
 	parasite_profile->lock_wait_time = bottom_function->lock_wait_time();
@@ -253,6 +253,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getReturnInfo());
 	add_local_work(_info->endTime, "R");
+	std::cout << "starting return Event with signature " <<
+		stacks->bottomFunction()->function_signature.c_str() << std::endl;
 
 	std::shared_ptr<function_frame_t> returned_function(stacks->bottomFunction());
 	TIME returned_lock_wait_time = returned_function->lock_wait_time();
@@ -266,7 +268,9 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 					    returned_function->local_work;
 
 	if (stacks->bottomFunctionIndex() == 0) {
-		work->add_to_call_site(returned_function->call_site, running_work, 0);
+		work->add_to_call_site(returned_function->call_site,
+							   returned_function->function_signature,
+							   running_work, 0);
 		return;
 	}
 
@@ -274,7 +278,9 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	 										     stacks->bottomParentFunction();
 	// F.w += G.w
 	parent_function->running_work += running_work;
-	work->add_to_call_site(parent_function->call_site, running_work, 0);
+	work->add_to_call_site(parent_function->call_site, 
+						   parent_function->function_signature,
+						   running_work, 0);
 	parent_function->add_locks(returned_function);
 
 	stacks->function_pop();

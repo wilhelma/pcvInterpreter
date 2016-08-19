@@ -49,26 +49,15 @@ void Span::add(Span* other_span) {
 	}
 }
 
-
-std::shared_ptr<call_site_span_profile_t> Span::getProfile(CALLSITE call_site) {
-
-	try {
-		if (hashtable->count(call_site)) {
-			return hashtable->at(call_site);
-		} else {
-			throw CallsiteNotInitializedException();
-		}
-	}
-	catch(CallsiteNotInitializedException& e) {
-		std::cout << "span " << e.what() << std::endl;
-	}
-}
-
 void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
 
-		CallSiteSpanProfile profile(getProfile(call_site));
-  		profile.prof->span += span;
-  		profile.prof->stop = std::max(profile.prof->stop, end_time);
+	total += span;
+	if (!hashtable->count(call_site))
+		init_call_site(call_site, end_time);
+	CallSiteSpanProfile profile(hashtable->at(call_site));
+	profile.prof->span += span;
+	profile.prof->start = std::min(profile.prof->start, end_time);
+	profile.prof->stop = std::max(profile.prof->stop, end_time);
 }
 
 void Span::clear() {
@@ -106,7 +95,7 @@ void Span::set(Span* other_span) {
 void Span::set_lock_wait_time(CALLSITE call_site,
 							  TIME lock_wait_time) {
 
-	CallSiteSpanProfile profile(getProfile(call_site));
+	CallSiteSpanProfile profile(hashtable->at(call_site));
 	profile.prof->lock_wait_time = lock_wait_time;
 }
 

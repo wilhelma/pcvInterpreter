@@ -48,8 +48,6 @@ class Span {
 
 	void set(Span* other_span);
 
-	std::shared_ptr<call_site_span_profile_t> getProfile(CALLSITE call_site);
-
 	/**
 	*    @fn add_in_hashtable(...)
 	*    @brief Adds in added_hashtable into the class's hashtable.

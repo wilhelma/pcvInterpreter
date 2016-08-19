@@ -51,35 +51,7 @@ void Work::clear() {
 	hashtable->clear();
 }
 
-std::shared_ptr<call_site_work_profile_t>  Work::getProfile(CALLSITE call_site) {
-
-	try {
-		if (hashtable->count(call_site)) {
-			return hashtable->at(call_site);
-		} else {
-			throw CallsiteNotInitializedException();
-		}
-	}
-	catch(CallsiteNotInitializedException& e) {
-		std::cout << "work " << e.what() << std::endl;
-	}
-}
-
-void Work::add_to_call_site(CALLSITE call_site, TIME work, bool is_local) {
-
-	if (is_local)
-		total += work;
-	CallSiteWorkProfile profile(getProfile(call_site));
-	profile.prof->work += work;
-}
-
-void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
-
-	if (hashtable->count(call_site)) {
-		CallSiteWorkProfile profile(hashtable->at(call_site));
-		profile.prof->count += 1;
-		return;
-	}
+void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 
 	std::shared_ptr<call_site_work_profile_t> new_ptr(new call_site_work_profile_t());
 	CallSiteWorkProfile new_profile(new_ptr);
@@ -87,6 +59,30 @@ void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
 	std::pair<CALLSITE, std::shared_ptr<call_site_work_profile_t>> 
                                     newPair(call_site, new_profile.prof);
 	hashtable->insert(newPair);
+}
+
+
+void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
+						    TIME work, bool is_local) {
+
+	if (is_local)
+		total += work;
+	if (!hashtable->count(call_site)) {}
+		init_call_site(call_site, function_signature);
+	CallSiteWorkProfile profile(hashtable->at(call_site));
+	profile.prof->work += work;
+}
+
+
+
+void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
+
+	if (!hashtable->count(call_site)) {
+		init_call_site(call_site, function_signature);
+	}
+
+	CallSiteWorkProfile profile(hashtable->at(call_site));
+	profile.prof->count += 1;
 }
 
 
