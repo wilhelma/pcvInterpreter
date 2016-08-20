@@ -62,14 +62,22 @@ void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 }
 
 
+void Work::add(TIME local_work) {
+	total += local_work;
+}
+
+
 void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 						    TIME work) {
-
-	total += work;
 	if (!hashtable->count(call_site)) {}
 		init_call_site(call_site, function_signature);
 	CallSiteWorkProfile profile(hashtable->at(call_site));
 	profile.prof->work += work;
+}
+
+TIME Work::at_call_site(CALLSITE call_site) {
+	CallSiteWorkProfile profile(hashtable->at(call_site));
+	return profile.prof->work;
 }
 
 

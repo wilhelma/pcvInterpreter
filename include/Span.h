@@ -53,6 +53,7 @@ class Span {
 	*    @brief Adds in added_hashtable into the class's hashtable.
 	*/
 	void add(Span* hashtable_object);
+	void add(TIME local_work);
 
 	/**
 	*    @fn add_data(...)

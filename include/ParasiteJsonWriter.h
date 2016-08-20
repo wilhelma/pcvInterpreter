@@ -29,7 +29,7 @@ class ParasiteJsonWriter {
 	ParasiteJsonWriter();
 	~ParasiteJsonWriter();
 	void writeCallSite(std::shared_ptr<CallSiteProfile> profile);
-	void writeOverallProfile(std::shared_ptr<parasite_profile_t> prof);
+	void writeOverallProfile(parasite_profile_t prof);
 
 	FILE* file_pointer;
 };

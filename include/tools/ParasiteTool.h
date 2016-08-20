@@ -65,6 +65,8 @@ class ParasiteTool : public Tool {
 	void Release(const ReleaseEvent* e) override;
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
+
+	void add_down_stack(TIME local_work, TIME strand_end_time);
 	
 	vertex_descr_type add_local_work(TIME strand_end_time, 
 	  				   				 std::string end_vertex_label);
@@ -101,15 +103,15 @@ class ParasiteTool : public Tool {
 	*    @var main_stack
 	*    @brief Contains a thread stack and a function stack to track events. 
 	*/
-	std::unique_ptr<ParasiteTracker> stacks;
+	ParasiteTracker stacks;
 
 	/**
 	*    @var parasite_profile
 	*    @brief Contains parallelism, work, and span after simulator finishes.
 	*/
-	std::shared_ptr<parasite_profile_t> parasite_profile;
+	parasite_profile_t parasite_profile;
 
-	std::shared_ptr<Work> work;
+	Work work;
 
 	DAG thread_graph;
 

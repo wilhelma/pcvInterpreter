@@ -31,6 +31,11 @@ TIME Span::operator()() {
 	return total;
 }
 
+
+void Span::add(TIME local_work) {
+	total += local_work;
+}
+
 void Span::add(Span* other_span) {
 
 	total += other_span->total;
@@ -50,8 +55,6 @@ void Span::add(Span* other_span) {
 }
 
 void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
-
-	total += span;
 	if (!hashtable->count(call_site))
 		init_call_site(call_site, end_time);
 	CallSiteSpanProfile profile(hashtable->at(call_site));

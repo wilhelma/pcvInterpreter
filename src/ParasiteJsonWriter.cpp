@@ -43,8 +43,7 @@ void ParasiteJsonWriter::writeCallSite(std::shared_ptr<CallSiteProfile> profile)
     writer.EndObject();
 }
 
-void ParasiteJsonWriter::writeOverallProfile(std::shared_ptr<parasite_profile_t> 
-															  prof) {
+void ParasiteJsonWriter::writeOverallProfile(parasite_profile_t prof) {
 
 	char writeBuffer[65536];
 	rapidjson::FileWriteStream output_stream(file_pointer, writeBuffer, sizeof(writeBuffer));
@@ -52,12 +51,12 @@ void ParasiteJsonWriter::writeOverallProfile(std::shared_ptr<parasite_profile_t>
 
     writer.StartObject();
     writer.Key("lock_wait_time");
-    writer.Uint64(static_cast<uint64_t>(prof->lock_wait_time));
+    writer.Uint64(static_cast<uint64_t>(prof.lock_wait_time));
     writer.Key("parallelism");
-    writer.Double(prof->parallelism);
+    writer.Double(prof.parallelism);
     writer.Key("span");
-    writer.Uint64(static_cast<uint64_t>(prof->span));
+    writer.Uint64(static_cast<uint64_t>(prof.span));
     writer.Key("work");
-    writer.Uint64(static_cast<uint64_t>(prof->work));
+    writer.Uint64(static_cast<uint64_t>(prof.work));
     writer.EndObject();
 }

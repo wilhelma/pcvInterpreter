@@ -59,6 +59,9 @@ class Work {
 	*/
 	void add_to_call_site(CALLSITE call_site, FUN_SG function_signature, 
 						  TIME work);
+	void add(TIME local_work);
+
+	TIME at_call_site(CALLSITE call_site);
 
 	TIME total;
 
