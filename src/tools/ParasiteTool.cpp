@@ -21,6 +21,10 @@
 #include <climits>
 #include "ParasiteTool.h"
 
+// TODO:
+// check call site start and end times
+// add graph of parallelism over program execution time!!!
+
 ParasiteTool::ParasiteTool():last_thread_start_time(0), last_event_time(0) {}
 
 vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
@@ -91,7 +95,6 @@ void ParasiteTool::endProfileCalculations() {
 	parasite_profile.lock_wait_time = bottom_function->lock_wait_time();
 
 	// Calculate span for entire program 
-	// bottom_thread->prefix.add(&(bottom_thread->continuation));
 	parasite_profile.span = bottom_thread->prefix();
 
 	// Calculate work for entire program
@@ -175,7 +178,6 @@ void ParasiteTool::Call(const CallEvent* e) {
 	last_event_time = _info->callTime;
 	std::cout << "starting call Event with signature " <<
 				      _info->fnSignature.c_str() << std::endl;
-
     stacks.bottomThread()->continuation.init_call_site(_info->siteId, _info->callTime);
     work.record_call_site(_info->siteId, _info->fnSignature);
 	stacks.function_push(_info->fnSignature, _info->siteId);
@@ -214,38 +216,19 @@ void ParasiteTool::Join(const JoinEvent* e) {
 								   		  lock_wait_time_excluding_children;
 
 	// If critical path goes through spawned child
-	// If F.l > F.c
 	if (bottom_thread->longest_child() > bottom_thread->continuation()) {
-
-		// F.p += F.l
 		bottom_thread->prefix.add(&(bottom_thread->longest_child));
-
 		// avoid double counting of lock wait time
 		bottom_thread->
 					correct_prefix(bottom_thread->longest_child_lock_wait_time);
-
-		// local() does not increase, because critical path goes 
-		// through spawned child.
-
-	} // F.c > F.l
-		else {
-
-		// Critical path goes through continuation, which is local. Add
-		// continuation span to prefix span
-		// F.p += F.c 
+	} else { 
 		bottom_thread->prefix.add(&(bottom_thread->continuation));
-
 		// avoid double counting of lock wait time
 		bottom_thread->correct_prefix(lock_wait_time_on_continuation);
 	}
 
-	// reset longest child variables
-	// F.c = 0
 	bottom_thread->continuation.clear();
-
-	// F.l = 0
 	bottom_thread->longest_child.clear();
-
 	print_event_end("JOIN");
 }
 
@@ -275,8 +258,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	add_local_work(_info->endTime, "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->continuation.add(ending_thread->lock_wait_time());
-
-	// G.p += G.c
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
 	if (stacks.bottomThreadIndex() == 0)
@@ -288,29 +269,17 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	print_time("concurrency_offset now", parent_thread->concurrency_offset);
 
 	// if the ending thread is the longest child encountered so far
-	// F is parent thread, G is ending thread
 	if (ending_thread->prefix() + parent_thread->continuation() 
 			                       > parent_thread->longest_child()) {
 
 		std::cout << "ending thread is longest child encountered so far " << std::endl;
-
-		// Save old bottom thread frame tables in 
-		// parent frame's longest child variable.
-		// F.l = G.p
 		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time(); 
 		parent_thread->longest_child.set(&(ending_thread->prefix));
-
-		// F.p += F.c
 		parent_thread->prefix.add(&(parent_thread->continuation));
-	
-		// F.c = 0
 		parent_thread->continuation.clear();
 	}
 
 	parent_thread->add_child_locks(ending_thread);
-
-	// pop the thread off the stack last, 
-	// because the pop operation destroys the frame
 	stacks.thread_pop();
 	print_event_end("THREAD END");
 }
