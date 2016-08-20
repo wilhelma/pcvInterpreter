@@ -63,7 +63,6 @@ void ParasiteTool::add_down_stack(TIME local_work, TIME strand_end_time) {
 		stacks.bottomThread()->continuation.add_to_call_site(
 				 stacks.functionAt(i)->call_site, local_work, strand_end_time);
 	}
-
 }
 
 vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time, 
@@ -259,22 +258,13 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 		stacks.bottomFunction()->function_signature.c_str() << std::endl;
 
 	std::shared_ptr<function_frame_t> returned_function(stacks.bottomFunction());
-	TIME returned_lock_wait_time = returned_function->lock_wait_time();
-
-	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
-	returned_function->local_work += returned_lock_wait_time;
-	bottom_thread->continuation.set_lock_wait_time(returned_function->call_site, 
-									               returned_lock_wait_time);
-
-	if (stacks.bottomFunctionIndex() == 0) {
+	stacks.bottomThread()->continuation.
+						    add_lock_wait_time(returned_function->call_site, 
+									           returned_function->lock_wait_time());
+	if (stacks.bottomFunctionIndex() == 0) 
 		return;
-	}
-
-	std::shared_ptr<function_frame_t> parent_function = 
-	 										     stacks.bottomParentFunction();
-
-	parent_function->add_locks(returned_function);
-
+								
+	stacks.bottomParentFunction()->add_locks(returned_function);
 	stacks.function_pop();
 	print_event_end("RETURN");
 }
@@ -284,6 +274,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	const ThreadEndInfo* _info(e->getThreadEndInfo());
 	add_local_work(_info->endTime, "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
+	ending_thread->continuation.add(ending_thread->lock_wait_time());
 
 	// G.p += G.c
 	ending_thread->prefix.add(&(ending_thread->continuation));

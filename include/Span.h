@@ -64,7 +64,7 @@ class Span {
 
 	void init_call_site(CALLSITE call_site, TIME start_time);
 
-	void set_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
+	void add_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
 
 	TIME operator()();
 

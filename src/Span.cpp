@@ -95,11 +95,11 @@ void Span::set(Span* other_span) {
 	total = other_span->total;
 }
 
-void Span::set_lock_wait_time(CALLSITE call_site,
+void Span::add_lock_wait_time(CALLSITE call_site,
 							  TIME lock_wait_time) {
 
 	CallSiteSpanProfile profile(hashtable->at(call_site));
-	profile.prof->lock_wait_time = lock_wait_time;
+	profile.prof->lock_wait_time += lock_wait_time;
 }
 
 

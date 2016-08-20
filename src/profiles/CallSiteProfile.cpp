@@ -23,7 +23,7 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 	prof->call_site = work_profile->call_site;
 	prof->function_signature = work_profile->function_signature;
 	prof->lock_wait_time = span_profile->lock_wait_time;
-	prof->work = static_cast<TIME>(work_profile->work + prof->lock_wait_time);
+	prof->work = static_cast<TIME>(work_profile->work);
 	prof->span = static_cast<TIME>(span_profile->span + prof->lock_wait_time);
 	prof->count = work_profile->count;
 	if (prof->work == 0)
