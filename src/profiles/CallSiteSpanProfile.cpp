@@ -24,7 +24,9 @@ void CallSiteSpanProfile::add_in_callsite_span
 	prof->stop = std::max(prof->stop, profile_to_add->stop);
 }
 
-void CallSiteSpanProfile::init(CALLSITE call_site) {
+void CallSiteSpanProfile::init(CALLSITE call_site, TIME start_time)
+ {
+ 	prof->start = start_time;
 	prof->call_site = call_site;
 }
 

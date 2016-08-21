@@ -73,7 +73,7 @@ void Span::init_call_site(CALLSITE call_site, TIME start_time) {
 
 	std::shared_ptr<call_site_span_profile_t> new_ptr(new call_site_span_profile_t());
 	CallSiteSpanProfile new_profile(new_ptr);
-	new_profile.init(call_site);
+	new_profile.init(call_site, start_time);
 	std::pair<CALLSITE, std::shared_ptr<call_site_span_profile_t>> 
                                     newPair(call_site, new_profile.prof);
 	hashtable->insert(newPair);

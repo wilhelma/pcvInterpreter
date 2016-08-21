@@ -12,6 +12,7 @@
 #ifndef CALL_SITE_PROFILE_H_
 #define CALL_SITE_PROFILE_H_
 
+#include <limits>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -73,8 +74,12 @@ struct call_site_profile_t {
     */
     TIME work;
 
+    TIME start;
+    TIME stop;
+
     call_site_profile_t() : call_site(0),  count(0), parallelism(0),
-                            lock_wait_time(0), span(0), work(0) {}  
+                            lock_wait_time(0), span(0), work(0), start(std::numeric_limits<int>::max()),
+                            stop(0) {}  
 };
 
 class CallSiteProfile {

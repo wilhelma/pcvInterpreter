@@ -23,6 +23,8 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 	prof->call_site = work_profile->call_site;
 	prof->function_signature = work_profile->function_signature;
 	prof->lock_wait_time = span_profile->lock_wait_time;
+	prof->start = span_profile->start;
+	prof->stop = span_profile->stop;
 	prof->work = static_cast<TIME>(work_profile->work);
 	prof->span = static_cast<TIME>(span_profile->span + prof->lock_wait_time);
 	prof->count = work_profile->count;
@@ -30,7 +32,8 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 		printf("ERROR in call site profile initialization: work cannot be zero \n");
 	if (prof->span == 0)
 		printf("ERROR in call site profile initialization: span cannot be zero \n");
-	prof->parallelism = prof->work / prof->span;
+	prof->parallelism = static_cast<double>(prof->work) /
+						static_cast<double>(prof->span);
 }
 
 void CallSiteProfile::print() {

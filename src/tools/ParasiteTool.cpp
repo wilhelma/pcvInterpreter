@@ -58,14 +58,14 @@ void ParasiteTool::print_event_end(std::string event_name) {
 	}
 }
 
-void ParasiteTool::add_down_stack(TIME local_work, TIME strand_end_time) {
+void ParasiteTool::add_down_stack(TIME local_work, TIME parallel_time) {
 
 	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
 		work.add_to_call_site(stacks.functionAt(i)->call_site,
 						  	   stacks.functionAt(i)->function_signature,
 						  	   local_work);
 		stacks.bottomThread()->continuation.add_to_call_site(
-				 stacks.functionAt(i)->call_site, local_work, strand_end_time);
+				 stacks.functionAt(i)->call_site, local_work, parallel_time);
 	}
 }
 
@@ -78,7 +78,11 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
-	add_down_stack(local_work, strand_end_time);
+	print_time("concurrency_offset", stacks.bottomThread()->concurrency_offset);
+	TIME offset = 0;
+	if (stacks.bottomThreadIndex() >= 1)
+		offset = stacks.bottomParentThread()->concurrency_offset;
+	add_down_stack(local_work, strand_end_time - offset);
 	print_time("local work", local_work);
 	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);

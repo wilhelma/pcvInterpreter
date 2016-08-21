@@ -72,7 +72,7 @@ class ParasiteTool : public Tool {
 	  				   				 std::string end_vertex_label);
 
 
-	void add_to_call_sites(TIME local_work, TIME strand_end_time);
+	void add_to_call_sites(TIME local_work, TIME parallel_time);
 
 	void endProfileCalculations();
 
