@@ -21,10 +21,6 @@
 #include <climits>
 #include "ParasiteTool.h"
 
-// TODO:
-// check call site start and end times
-// add graph of parallelism over program execution time!!!
-
 ParasiteTool::ParasiteTool():last_thread_start_time(0), last_event_time(0) {}
 
 vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
@@ -58,6 +54,11 @@ void ParasiteTool::print_event_end(std::string event_name) {
 	}
 }
 
+
+void ParasiteTool::add_concurrency_offset(TIME offset) {
+	stacks.bottomParentThread()->concurrency_offset += offset;
+}
+
 void ParasiteTool::add_down_stack(TIME local_work, TIME parallel_time) {
 
 	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
@@ -73,12 +74,11 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	  						                   std::string end_vertex_label) {
 
 	print_event_start(end_vertex_label);
+	assert(strand_end_time > last_event_time);
 	TIME local_work = strand_end_time - last_event_time;
-	assert(local_work >= 0);
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
-	print_time("concurrency_offset", stacks.bottomThread()->concurrency_offset);
 	TIME offset = 0;
 	if (stacks.bottomThreadIndex() >= 1)
 		offset = stacks.bottomParentThread()->concurrency_offset;
@@ -269,8 +269,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
 	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
-	parent_thread->concurrency_offset += _info->endTime - last_thread_start_time;
-	print_time("concurrency_offset now", parent_thread->concurrency_offset);
+	add_concurrency_offset(_info->endTime - last_thread_start_time);
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 

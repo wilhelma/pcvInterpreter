@@ -42,7 +42,8 @@ void ParasiteJsonWriter::writeCallSite(std::shared_ptr<CallSiteProfile> profile)
     object.AddMember("span", static_cast<uint64_t>(prof->span), allocator);
     object.AddMember("work", static_cast<uint64_t>(prof->work), allocator);
     object.AddMember("start", static_cast<uint64_t>(prof->start), allocator);
-    object.AddMember("stop", static_cast<uint64_t>(prof->stop), allocator);
+    object.AddMember("stop", static_cast<uint64_t>(prof->start +
+                                                   prof->stop), allocator);
     object.AddMember("lock_wait_time", 
                      static_cast<uint64_t>(prof->lock_wait_time), allocator);
     callSiteArray.PushBack(object, allocator);

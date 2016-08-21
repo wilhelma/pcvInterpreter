@@ -66,16 +66,14 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
+	void add_concurrency_offset(TIME offset);
 	void add_down_stack(TIME local_work, TIME strand_end_time);
 	
 	vertex_descr_type add_local_work(TIME strand_end_time, 
 	  				   				 std::string end_vertex_label);
 
-
 	void add_to_call_sites(TIME local_work, TIME parallel_time);
-
 	void endProfileCalculations();
-
 	void print_event_end(std::string event_name);
 	void print_event_start(std::string event_name);
 
@@ -126,6 +124,8 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
+
+	TIME concurrency_offset;
 
  private:
 	// prevent generated functions --------------------------------------------
