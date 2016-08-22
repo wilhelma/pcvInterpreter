@@ -1,17 +1,17 @@
 /**
  *
- *    @file  ShadowVar.h
+ *    @file  Event.h
  *   @brief  Forward header.
  *
- *    @date  07/06/16
+ *    @date  08/16/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
  *           <p.digiglio91@gmail.com>
  *
  */
 
-#ifndef  FWD_SHADOW_VAR_H_
-#define  FWD_SHADOW_VAR_H_
+#ifndef  FWD_EVENT_H_
+#define  FWD_EVENT_H_
 
-class ShadowVar;
+class Event;
 
 #endif

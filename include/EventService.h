@@ -26,38 +26,76 @@
 /// \class EventService (observable)
 class EventService {
 public:
-	EventService() {}
+	/// _Default_ constructor.
+	explicit EventService() noexcept  = default;
+	/// _Default_ destructor.
+	~EventService()                   = default;
+
+	/// _Deleted_ copy constructor.
+	EventService(const EventService&)            = delete;
+	/// _Deleted_ move constructor.
+	EventService(EventService&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	EventService& operator=(const EventService&) = delete;
+	/// _Deleted_ move assignment operator.
+	EventService& operator=(EventService&)       = delete;
+
+	/// @brief Puiblish an `AccessEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const AccessEvent *event) const;
+
+	/// @brief Puiblish an `AcquireEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const AcquireEvent *event) const;
+
+	/// @brief Puiblish an `CallEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const CallEvent *event) const;
+
+	/// @brief Puiblish an `JoinEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const JoinEvent *event) const;
+
+	/// @brief Puiblish an `NewThreadEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const NewThreadEvent *event) const;
+
+	/// @brief Puiblish an `ReleaseEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ReleaseEvent *event) const;
+
+	/// @brief Puiblish an `ReturnEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ReturnEvent *event) const;
+
+	/// @brief Puiblish an `ThreadEndEvent` to the registered tools.
+	/// @param event The event to publish.
 	bool publish(const ThreadEndEvent *event) const;
-	bool subscribe(Tool* tool, const Filter* const filter, Events events);
-	bool unsubscribe(Tool* tool);
+
+	/// @brief Subscribes a tool to the `EventService`.
+	bool subscribe(Tool* const tool, const Filter* const filter, Events events) {
+		return Observers_.insert( std::map<Tool* const, const Observer>::value_type(
+					tool, Observer(filter, events))).second; }
+
+	/// @brief Unsubscribes a tool to the `EventService`.
+	bool unsubscribe(Tool* const tool)
+	{ return (Observers_.erase(tool) > 0); }
+		
 
 private:
 	// structures
-	struct _observer {
+	struct Observer {
 		const Filter* const filter;
 		Events events;
 
-		explicit _observer(const Filter* const f, Events e) noexcept
+		explicit Observer(const Filter* const f, Events e) noexcept
 			: filter(f), events(e)
 		{}
 	};
 
-	// types
-	typedef std::map<Tool*, const _observer> _observers_t;
-
-	// private members
-	_observers_t _observers;
-
-	// prevent generated functions
-	EventService(const EventService&);
-	EventService& operator=(const EventService&);
+	/// Maps every registered tool to its filter and the events
+	/// it subscribed for.
+	std::map<Tool* const, const Observer> Observers_;
 };
 
 

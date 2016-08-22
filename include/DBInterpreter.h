@@ -10,6 +10,7 @@
 
 // Tables
 #include "fwd/Access.h"
+#include "fwd/Call.h"
 #include "fwd/File.h"
 #include "fwd/Function.h"
 #include "fwd/Instruction.h"
@@ -19,15 +20,14 @@
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
 #include "fwd/Thread.h"
-#include "Call.h"
 
 #include "fwd/EventService.h"
 #include "fwd/LockMgr.h"
 #include "fwd/ThreadMgr.h"
 
-#include "DBTable.h"
 #include "CallStack.h"
-#include "Interpreter.h"
+
+#include "DBTable.h"
 #include "ShadowVar.h"
 #include "AccessTable.h"
 #include "CallTable.h"
@@ -41,124 +41,144 @@
 #include "SegmentTable.h"
 #include "ThreadTable.h"
 
-#include <sqlite3.h>
 #include <map>
-#include <vector>
-#include <string.h>
+#include <memory>
+#include <string>
 
 #include "Types.h"
 
-/******************************************************************************
- * Database Interpreter
- *****************************************************************************/
-class DBInterpreter : public Interpreter {
+/// Error codes.
+enum class ErrorCode {
+	OK           = 0, ///< @brief Okay.
+	NO_ENTRY     = 1, ///< @brief No entry found.
+	ENTRY_EXISTS = 2, ///< @brief Entry already exists.
+	ABORT        = 3  ///< @brief Operation aborted.
+};
+
+/// Database Interpreter.
+class DBInterpreter {
 public:
-  DBInterpreter(const char* DBPath,
-                const char* logFile,
-                EventService *service,
-                LockMgr *lockMgr,
-                ThreadMgr *threadMgr)
-    : Interpreter(lockMgr, threadMgr, logFile), _dbPath(DBPath),
-      _logFile(logFile), _eventService(service)
-  {
-    callStack_.push(call_t::MAIN);
-  }
+	/// Constructor.
+	DBInterpreter(const std::string& logFile, 
+				  EventService *service,
+				  LockMgr *lockMgr,
+				  ThreadMgr *threadMgr);
 
-  virtual ~DBInterpreter() override final {}
+	/// _Deleted_ copy constructor.
+	DBInterpreter(const DBInterpreter&)            = delete;
+	/// _Deleted_ move constructor.
+	DBInterpreter(DBInterpreter&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	DBInterpreter& operator=(const DBInterpreter&) = delete;
+	/// _Deleted_ move assignment operator.
+	DBInterpreter& operator=(DBInterpreter&&)      = delete;
+    /// _Default_ destructor.
+    ~DBInterpreter()                               = default;
 
-  virtual int process() override final;
-  virtual EventService* getEventService() override final { return _eventService; }
+	/// @brief Processes the database.
+	/// @details After importing the database entries, starts looping
+	/// over the `InstructionTable_`.
+	/// @param DBPath The database to process.
+	ErrorCode process(const std::string& DBPath);
+
+	/// Returns a pointer to `EventService_`.
+	EventService* const getEventService() { return EventService_; };
 
 private:
 
-  // types-------------------------------------------------------------------
-  typedef int (DBInterpreter::*fillFunc_t)(sqlite3_stmt*);
-  typedef int (DBInterpreter::*processAccess_t)(ACC_ID accessID,
-                                                const access_t& access,
-                                                const instruction_t& instruction,
-                                                const segment_t& segment,
-                                                const call_t& call,
-                                                const reference_t& reference);
+	// types-------------------------------------------------------------------
+	typedef ErrorCode (DBInterpreter::*processAccess_t)(ACC_ID accessID,
+												  const access_t& access,
+												  const instruction_t& instruction,
+												  const segment_t& segment,
+												  const call_t& call,
+												  const reference_t& reference);
 
-  typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
+	typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
-  // members-----------------------------------------------------------------
-  AccessTable        accessTable;
-  CallTable          callTable;
-  FileTable          fileTable;
-  FunctionTable      functionTable;
-  InstructionTable   instructionTable;
-  LoopTable          loopTable;
-  LoopExecutionTable loopExecutionTable;
-  LoopIterationTable loopIterationTable;
-  ReferenceTable     referenceTable;
-  SegmentTable       segmentTable;
-  ThreadTable        threadTable;
+	// members-----------------------------------------------------------------
+	/// Map from the Access IDs to the Access-table rows imported from the DB.
+	AccessTable        AccessTable_;
+	/// Map from the Call IDs to the Call-table rows imported from the DB.
+	CallTable          CallTable_;
+	/// Map from the File IDs to the File-table rows imported from the DB.
+	FileTable          FileTable_;
+	/// Map from the Function IDs to the Function-table rows imported from the DB.
+	FunctionTable      FunctionTable_;
+	/// Map from the Instruction IDs to the Instruction-table rows imported from the DB.
+	InstructionTable   InstructionTable_;
+	/// Map from the Loop IDs to the Loop-table rows imported from the DB.
+	LoopTable          LoopTable_;
+	/// Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.
+	LoopExecutionTable LoopExecutionTable_;
+	/// Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.
+	LoopIterationTable LoopIterationTable_;
+	/// Map from the Reference IDs to the Reference-table rows imported from the DB.
+	ReferenceTable     ReferenceTable_;
+	/// Map from the Segment IDs to the Segment-table rows imported from the DB.
+	SegmentTable       SegmentTable_;
+	/// Map from the Thread IDs to the Thread-table rows imported from the DB.
+	ThreadTable        ThreadTable_;
 
-  CallStack callStack_;
+	/// Stack of call IDs.
+	CallStack CallStack_;
   
-  const char* _dbPath;
-  const char* _logFile;
-  EventService *_eventService;
-  shadowVarMap_t _shadowVarMap;
+	EventService*   EventService_;
+	shadowVarMap_t _shadowVarMap;
 
-  // private methods---------------------------------------------------------
-  static InstructionType transformInstrType(const instruction_t& ins);
-  static ReferenceType getVarType(ReferenceType memType);
+    std::unique_ptr<LockMgr>   lockMgr_;
+    std::unique_ptr<ThreadMgr> threadMgr_;
 
-  int loadDB(const char* path, sqlite3 **db) const;
-  int importDB(sqlite3 **db);
-  int closeDB(sqlite3 **db) const;
+	// private methods---------------------------------------------------------
+	static InstructionType transformInstrType(const instruction_t& ins);
+	static ReferenceType getVarType(ReferenceType memType);
 
-  template<typename IdT, typename T>
-  int fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table);
+	/// @brief Imports the database in the tables.
+	/// @param DBPath The name of the database to import.
+	void importDB(const std::string& DBPath);
 
-  int processReturn(const instruction_t& ins,
-                    const call_t& call);
+	ErrorCode processAccess(const instruction_t& instruction,
+			const segment_t& segment,
+			const call_t& call,
+			processAccess_t accessFunc);
 
-  int processInstruction(const instruction_t& instruction);
-  int processStart();
-  int processEnd();
-  int processCall(const instruction_t& instruction);
-  int processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
-  int processAccessGeneric(ACC_ID accessId,
-                           const access_t& access,
-                           const instruction_t& instruction,
-                           const segment_t& segment,
-                           const call_t& call,
-                           processAccess_t func);
-  int processAccess(const instruction_t& instruction,
-                    const segment_t& segment,
-                    const call_t& call,
-                    processAccess_t accessFunc);
-  int processMemAccess(ACC_ID accessId,
-                       const access_t& access,
-                       const instruction_t& instruction,
-                       const segment_t& segment,
-                       const call_t& call,
-                       const reference_t& reference);
-  int processAcquire(const instruction_t& instruction);
-  int processRelease(const instruction_t& instruction);
-  int processJoin(const instruction_t& instruction,
-                  const segment_t& segment,
-                  const call_t& call,
-                  const thread_t& thread);
-  int processFork(const thread_t& thread);
 
-  size_t getHash(unsigned funId, unsigned lineNo) const;
+	ErrorCode processReturn(const instruction_t& ins, const call_t& call);
+    ErrorCode processStart();
+    ErrorCode processEnd();
+	ErrorCode processInstruction(const instruction_t& instruction);
+	ErrorCode processCall(const instruction_t& instruction);
+    ErrorCode processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
+	ErrorCode processAccessGeneric(ACC_ID accessId,
+							 const access_t& access,
+							 const instruction_t& instruction,
+							 const segment_t& segment,
+							 const call_t& call,
+							 processAccess_t func);
+	ErrorCode processMemAccess(ACC_ID accessId,
+						 const access_t& access,
+						 const instruction_t& instruction,
+						 const segment_t& segment,
+						 const call_t& call,
+						 const reference_t& reference);
+    ErrorCode processAcquire(const instruction_t& instruction);
+    ErrorCode processRelease(const instruction_t& instruction);
+	ErrorCode processJoin(const instruction_t& instruction,
+			const segment_t& segment,
+			const call_t& call,
+			const thread_t& thread);
+    ErrorCode processFork(const thread_t& thread);
 
   /// Parent call ID of an instruction
   /// @return The call ID, if it's found in `segmentT_`
   /// or `IN_NO_ENTRY` otherwise.
+  /// @todo Properly implement error handling.
   const CAL_ID getCallerID(const instruction_t& ins) const;
   /// Call ID of a call instruction
   /// @return The call ID, if it's found in `callT_`
   /// or `IN_NO_ENTRY` otherwise.
+  /// @todo Properly implement error handling.
   const CAL_ID getCallID(const instruction_t& ins) const;
-
-  // prevent generated functions
-  DBInterpreter(const DBInterpreter&);
-  DBInterpreter& operator=(const DBInterpreter&);
 };
 
 

@@ -17,11 +17,16 @@
 #include "Access.h"
 #include "Types.h"
 
+/// @struct AccessInfo
 struct AccessInfo {
+	/// Type of access.
 	AccessType type;
+	/// ID of the accessing instruction.
 	INS_ID instructionID;
+	/// @todo Document this!
 	const ShadowVar *var;
 
+	/// Constructor.
 	explicit
 	AccessInfo(AccessType Type, const ShadowVar *Var, const INS_ID& instructionID) noexcept
 		: type(Type), instructionID(instructionID), var(Var) {}

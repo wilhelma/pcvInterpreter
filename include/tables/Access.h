@@ -29,7 +29,7 @@ enum class AccessState {
 };
 
 struct access_t {
-    ACC_ID sql_id;
+    ACC_ID id;
     INS_ID instruction_id;
     POS position;
     REF_ID reference_id;
@@ -43,7 +43,7 @@ struct access_t {
              REF_ID referenceID,
              AccessType accessType,
              AccessState memoryState) noexcept
-        : sql_id(sqlID), instruction_id(instructionID), position(pos),
+        : id(sqlID), instruction_id(instructionID), position(pos),
           reference_id(referenceID), access_type(accessType),
           memory_state(memoryState)
     {

@@ -5,33 +5,49 @@
  *      Author: wilhelma
  */
 
-#ifndef THREADMGR_H_
-#define THREADMGR_H_
+#ifndef THREAD_MGR_H_
+#define THREAD_MGR_H_
 
 #include <map>
 #include "ShadowThread.h"
 #include "Types.h"
 
-/******************************************************************************
- * ThreadMgr
- *****************************************************************************/
+/// @todo Document this!
 class ThreadMgr {
 public:
-	ThreadMgr() {}
-	~ThreadMgr() {}
+	/// _Default_ constructor.
+	explicit ThreadMgr() noexcept  = default;
+	/// _Default_ destructor.
+	~ThreadMgr()                   = default;
 
-	ShadowThread* getThread(TRD_ID threadId);
-	void threadJoined(TRD_ID threadId);
+	/// _Deleted_ copy constructor.
+	ThreadMgr(const ThreadMgr&)            = delete;
+	/// _Deleted_ move constructor.
+	ThreadMgr(ThreadMgr&&)                 = delete;
+	/// _Deleted_ copy assignment operator.
+	ThreadMgr& operator=(const ThreadMgr&) = delete;
+	/// _Deleted_ move assignment operator.
+	ThreadMgr& operator=(ThreadMgr&&)      = delete;
+
+	/// @brief Get a pointer to the `ShadowThread` associated with `threadId`.
+	/// @details Looks for `threadId` in the map. If it's found, returns
+	/// the `ShadowThread` associated with it; otherwise makes a new entry
+	/// in the maps and increments `currentThreadId_`.
+	const ShadowThread* const getThread(const TRD_ID& threadId);
+
+	/// @brief `delete`s the `ShadowThread` associated with the `threadId`
+	/// and deletes the entry from the map.
+	void threadJoined(const TRD_ID& threadId);
 
 private:
+	/// @todo Document this!
 	static TRD_ID currentThreadId_;
-	typedef std::map<TRD_ID, ShadowThread*> TIdThreadMap_;
-	
-	TIdThreadMap_ tIdThreadMap_;
 
-	// prevent generated functions
-	ThreadMgr(const ThreadMgr&);
-	ThreadMgr& operator=(const ThreadMgr&);
+	/// @typedef TIdThreadMap.
+	/// A map from the thread ID to the corresponding
+	/// `ShadowThread` pointer.
+	using TIdThreadMap_ = std::map<TRD_ID, const ShadowThread* const>;
+	TIdThreadMap_ tIdThreadMap_;
 };
 
 

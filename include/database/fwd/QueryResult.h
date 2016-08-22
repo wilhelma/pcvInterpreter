@@ -1,17 +1,17 @@
 /**
  *
- *    @file  ShadowLock.h
+ *    @file  QueryResult.h
  *   @brief  Forward header.
  *
- *    @date  07/06/16
+ *    @date  07/21/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
  *           <p.digiglio91@gmail.com>
  *
  */
 
-#ifndef  FWD_SHADOW_LOCK_H_
-#define  FWD_SHADOW_LOCK_H_
+#ifndef  FWD_QUERY_RESULT_H_
+#define  FWD_QUERY_RESULT_H_
 
-class ShadowLock;
+class QueryResult;
 
 #endif

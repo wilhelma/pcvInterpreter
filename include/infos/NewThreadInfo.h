@@ -17,17 +17,17 @@
 #include "Types.h"
 
 struct NewThreadInfo {
-	ShadowThread* childThread;
-  	ShadowThread* parentThread;
+	const ShadowThread* const childThread;
+	const ShadowThread* const parentThread;
 	TIME startTime;
-  	TIME runTime;
+	TIME runTime;
 
-	explicit NewThreadInfo(ShadowThread* childThread,
-	                         ShadowThread* parentThread,
-	                         const TIME& startTime,
-	                         const TIME& runTime) noexcept
-	    : childThread(childThread), parentThread(parentThread),
-	      startTime(startTime), runTime(runTime) {}
+	explicit NewThreadInfo(const ShadowThread* const childThread,
+			const ShadowThread* const parentThread,
+			const TIME& startTime,
+			const TIME& runTime) noexcept
+		: childThread(childThread), parentThread(parentThread),
+		 startTime(startTime), runTime(runTime) {}
 };
 
 #endif

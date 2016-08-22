@@ -16,6 +16,7 @@
 
 #include "Types.h"
 
+/// @struct AcquireInfo
 struct AcquireInfo {
   ShadowLock *lock;
   TIME acquireTime;

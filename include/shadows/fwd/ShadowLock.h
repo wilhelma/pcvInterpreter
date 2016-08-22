@@ -1,6 +1,6 @@
 /**
  *
- *    @file  Segment.h
+ *    @file  ShadowLock.h
  *   @brief  Forward header.
  *
  *    @date  07/06/16
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_SEGMENT_H_
-#define  FWD_SEGMENT_H_
+#ifndef  FWD_SHADOW_LOCK_H_
+#define  FWD_SHADOW_LOCK_H_
 
-struct segment_t;
+struct ShadowLock;
 
 #endif

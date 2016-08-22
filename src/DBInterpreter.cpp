@@ -14,10 +14,10 @@
 #include <string>
 #include <functional>
 
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
+#include "SQLStatementIterator.h"
 
 #include "DBTable.h"
+#include "DBManager.h"
 
 #include "LockMgr.h"
 #include "ThreadMgr.h"
@@ -42,111 +42,112 @@
 #include "EventService.h"
 #include "AccessInfo.h"
 
-#include "DBTable.h"
-#include "Types.h"
+// logging system
+#include <boost/log/core.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 
-int DBInterpreter::loadDB(const char* path, sqlite3 **db) const {
-    if (sqlite3_open_v2(path, db,
-            SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL) != SQLITE_OK) {
-        BOOST_LOG_TRIVIAL(fatal) << "Can't open " << path << " - error: "
-                                 << sqlite3_errmsg(*db);
-        sqlite3_close(*db);
-        return IN_ABORT;
-    } else {
-        BOOST_LOG_TRIVIAL(trace) << "successfully opened " << path;
-        return IN_OK;
-    }
+// Helper function to initialize the log.
+void initialize_logger(const std::string& logFileName) {
+	namespace logging = boost::log;
+	namespace expr    = boost::log::expressions;
+
+	logging::add_file_log(
+			logging::keywords::file_name = logFileName,
+			logging::keywords::format = (
+				expr::stream
+				<< expr::attr< unsigned int >("LineID")
+				<< ": <" << logging::trivial::severity
+				<< "> " << expr::smessage
+				)	
+			);
+
+	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
+	logging::add_common_attributes();
 }
 
-int DBInterpreter::importDB(sqlite3 **db) {
+DBInterpreter::DBInterpreter(const std::string& logFile, EventService *service, LockMgr *lockMgr, ThreadMgr *threadMgr) :
+	EventService_(service), lockMgr_(lockMgr), threadMgr_(threadMgr)
+{
+	initialize_logger(logFile);
+	CallStack_.push(call_t::MAIN);
+};
 
-    int rc;
+
+template<typename IdT, typename T>
+inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
+	std::copy(SQLStatementIterator<T>(db.query(query_string)),
+			  SQLStatementIterator<T>::end(), inserter(table));
+}
+
+void DBInterpreter::importDB(const std::string& DBPath) { 
+	// try to open the database
+	DBManager db;
+	try {
+		db.open(DBPath);
+	} catch (const SQLException& e) {
+		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		std::abort();
+	}
 
     // Read from all the tables in the database
-    if ((rc = fillGeneric("SELECT * from Access;",
-                          db, &accessTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Call;",
-                          db, &callTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from File;",
-                          db, &fileTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Function;",
-                          db, &functionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Instruction;",
-                          db, &instructionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Loop;",
-                          db, &loopTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopExecution;",
-                          db, &loopExecutionTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from LoopIteration;",
-                          db, &loopIterationTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Reference;",
-                          db, &referenceTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Segment;",
-                          db, &segmentTable)) != 0) return rc;
-    if ((rc = fillGeneric("SELECT * from Thread;",
-                          db, &threadTable)) != 0) return rc;
+    fill("SELECT * from Access;",        db, AccessTable_);
+    fill("SELECT * from Call;",          db, CallTable_);
+    fill("SELECT * from File;",          db, FileTable_);
+    fill("SELECT * from Function;",      db, FunctionTable_);
+    fill("SELECT * from Instruction;",   db, InstructionTable_);
+    fill("SELECT * from Loop;",          db, LoopTable_);
+    fill("SELECT * from LoopExecution;", db, LoopExecutionTable_);
+    fill("SELECT * from LoopIteration;", db, LoopIterationTable_);
+    fill("SELECT * from Reference;",     db, ReferenceTable_);
+    fill("SELECT * from Segment;",       db, SegmentTable_);
+    fill("SELECT * from Thread;",        db, ThreadTable_);
 
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << accessTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << callTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << fileTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << functionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << instructionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << loopTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << loopExecutionTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << loopIterationTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << referenceTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << segmentTable.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << threadTable.size();
-    return 0;
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << AccessTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << CallTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << FileTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << FunctionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << InstructionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << LoopTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << LoopExecutionTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << LoopIterationTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << ReferenceTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << SegmentTable_.size();
+    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << ThreadTable_.size();
 }
 
-int DBInterpreter::closeDB(sqlite3 **db) const {
-
-    if ( sqlite3_close(*db) != SQLITE_OK)
-        BOOST_LOG_TRIVIAL(fatal) <<  "Can't close database - error: "
-                                 <<  sqlite3_errmsg(*db);
-
-    return IN_OK;
-}
-
-/// The main process routine. Loops over instructions.
-int DBInterpreter::process() {
-
-    sqlite3 *db;
-
-    // open the database
-    if ( loadDB(_dbPath, &db) != IN_OK ) {
-        return IN_ABORT;
-    }
-
-    // fill the internal maps with database entries
-    int rc = importDB(&db);
-    if ( rc != IN_OK) {
-        BOOST_LOG_TRIVIAL(error) << "Can't fill internal structures."
-                                 << " Error code: " << rc;
-        return IN_ABORT;
-    }
+ErrorCode DBInterpreter::process(const std::string& DBPath) {
+	// fill internal tables with the database entries
+	try {
+		importDB(DBPath);
+	} catch (const SQLException& e) {
+		// this should only happen if the database can't be closed
+		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		std::abort();
+	}
 
     // handle start of main routine
     processStart();
 
     // process database entries
-    for (const auto& instruction : instructionTable)
+    for (const auto& instruction : InstructionTable_)
         processInstruction(instruction.second);
 
     // handle end of main routine
     processEnd();
 
-    closeDB(&db);
-    return 0;
+    return ErrorCode::OK;
 }
 
+
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = segmentTable.find(ins.segment_id);
-	if (search == segmentTable.cend()) {
+	auto search = SegmentTable_.find(ins.segment_id);
+	if (search == SegmentTable_.cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
-			<< " not found in segmentTable";
-		return static_cast<CAL_ID>(IN_NO_ENTRY);
+			<< " not found in SegmentTable_";
+		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 	return search->second.call_id;
 }
@@ -155,11 +156,11 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// look for the call id of the instruction
 	CAL_ID call_id(0);
 	bool found = false;
-	for (const auto& it : callTable) {
+	for (const auto& it : CallTable_) {
 		// if there's a call whose instruction id is the same as
-		// ins.instruction_id, get its id
-		if (it.second.instruction_id == ins.instruction_id) {
-			call_id = it.second.sql_id;
+		// ins.id, get its id
+		if (it.second.id == ins.id) {
+			call_id = it.second.id;
 			found = true;
 			break;
 		}
@@ -168,68 +169,66 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	// if the iterator reached the end, no entry has been found in callT_
 	if (!found) {
 		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
-			<< ins.instruction_id;
-		return static_cast<CAL_ID>(IN_NO_ENTRY);
+			<< ins.id;
+		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 
+//	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
 	return call_id;
 }
 
 
-int DBInterpreter::processReturn(const instruction_t& ins,
+ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
                                  const call_t& call) {
 
-  while (!callStack_.isEmpty() &&
-         call.sql_id != callStack_.top()) {
-    const CAL_ID topCallId = callStack_.top();
+  while (!CallStack_.isEmpty() &&
+         call.id != CallStack_.top()) {
+    const CAL_ID topCallId = CallStack_.top();
 
-    auto callIt = callTable.find(topCallId);
-    if (callIt != callTable.end()) {
+    auto callIt = CallTable_.find(topCallId);
+    if (callIt == CallTable_.end()) {
 
       // publish a return call event in case of mismatching call id's
       const call_t& topCall = callIt->second;
       ReturnInfo info(topCallId, topCall.end_time);
-      ShadowThread* sThread = threadMgr_->getThread(topCall.thread_id);
+      auto sThread = threadMgr_->getThread(topCall.thread_id);
       ReturnEvent event(sThread, &info);
-      _eventService->publish(&event);
+      getEventService()->publish(&event);
 
       // publish a thread end event in case of mismatching thread id's
       if (call.thread_id != topCall.thread_id) {
-          auto threadIt = threadTable.find(topCall.thread_id);
-          if (threadIt != threadTable.end()) {
+          auto threadIt = ThreadTable_.find(topCall.thread_id);
+          if (threadIt != ThreadTable_.end()) {
               const thread_t& thread = threadIt->second;
               ThreadEndInfo  end_info(static_cast<TIME>(
                                         thread.start_cycle + thread.num_cycles),
                                       sThread->threadId);
               ThreadEndEvent end_event(sThread, &end_info);
-              _eventService->publish(&end_event);
+              getEventService()->publish(&end_event);
           }
       }
-      callStack_.pop();
+      CallStack_.pop();
     } else {
-      return IN_NO_ENTRY;
+      return ErrorCode::NO_ENTRY;
     }
   }
 
-	return IN_OK;
+	return ErrorCode::OK;
 }
 
-
-int DBInterpreter::processAccess(const instruction_t& instruction,
+ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
                                  const segment_t& segment,
                                  const call_t& call,
                                  processAccess_t accessFunc) {
   // loop over all memory accesses of the instruction
-  const AccessTable::insAccessMap_t& insAccessMap = accessTable.getInsAccessMap();
-  const auto& avIt = insAccessMap.find(instruction.instruction_id);
+  const AccessTable::insAccessMap_t& insAccessMap = AccessTable_.getInsAccessMap();
+  const auto& avIt = insAccessMap.find(instruction.id);
   if (avIt != insAccessMap.end()) {
     for (const auto& it : avIt->second) {
-
-      auto accessIt = accessTable.find(it);
-      if (accessIt != accessTable.end()) {
+      auto accessIt = AccessTable_.find(it);
+      if (accessIt != AccessTable_.end()) {
         const access_t& access = accessIt->second;
-
-        processAccessGeneric(access.sql_id,
+        processAccessGeneric(access.id,
                              access,
                              instruction,
                              segment,
@@ -237,69 +236,69 @@ int DBInterpreter::processAccess(const instruction_t& instruction,
                              accessFunc);
       } else {
         BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
-        return IN_NO_ENTRY;
+        return ErrorCode::NO_ENTRY;
       }
     }
   }
-  return IN_OK;
+  return ErrorCode::OK;
 }
 
-int DBInterpreter::processStart() {
-  int ret = IN_NO_ENTRY;
+ErrorCode DBInterpreter::processStart() {
+  auto ret = ErrorCode::NO_ENTRY;
 
-  auto callIt = callTable.find(call_t::MAIN);
-  if (callIt != callTable.end()) {
+  auto callIt = CallTable_.find(call_t::MAIN);
+  if (callIt != CallTable_.end()) {
     const call_t& call = callIt->second;
-    auto threadIt = threadTable.find(call.thread_id);
-    if (threadIt != threadTable.end()) {
+    auto threadIt = ThreadTable_.find(call.thread_id);
+    if (threadIt != ThreadTable_.end()) {
       const thread_t& thread = threadIt->second;
       processFork(thread);
       processCall(call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));
-      ret = IN_OK;
+      ret = ErrorCode::OK;
     }
   }
 
   return ret;
 }
 
-int DBInterpreter::processEnd() {
-  int ret = IN_NO_ENTRY;
+ErrorCode DBInterpreter::processEnd() {
+  auto ret = ErrorCode::NO_ENTRY;
 
-  auto callIt = callTable.find(call_t::MAIN);
-  if (callIt != callTable.end()) {
+  auto callIt = CallTable_.find(call_t::MAIN);
+  if (callIt != CallTable_.end()) {
     const call_t& call = callIt->second;
-    auto threadIt = threadTable.find(call.thread_id);
-    if (threadIt != threadTable.end()) {
+    auto threadIt = ThreadTable_.find(call.thread_id);
+    if (threadIt != ThreadTable_.end()) {
       const thread_t& thread = threadIt->second;
 
       // publish a return call event for main
-      ShadowThread* sThread = threadMgr_->getThread(call.thread_id);
-      ReturnInfo info(call.sql_id, call.end_time);
+      auto sThread = threadMgr_->getThread(call.thread_id);
+      ReturnInfo info(call.id, call.end_time);
       ReturnEvent event(sThread, &info);
-      _eventService->publish(&event);
+      getEventService()->publish(&event);
 
       // publish a thread end event for the main thread
       ThreadEndInfo  end_info(static_cast<TIME>(
                                   thread.start_cycle + thread.num_cycles),
                               sThread->threadId);
       ThreadEndEvent end_event(sThread, &end_info);
-      _eventService->publish(&end_event);
-      ret = IN_OK;
+      getEventService()->publish(&end_event);
+      ret = ErrorCode::OK;
     }
   }
 
   return ret;
 }
 
-int DBInterpreter::processInstruction(const instruction_t& ins) {
-  int ret = IN_NO_ENTRY;
+ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
+  auto ret = ErrorCode::NO_ENTRY;
 
-  auto segmentIt = segmentTable.find(ins.segment_id);
-  if (segmentIt != segmentTable.end()) {
+  auto segmentIt = SegmentTable_.find(ins.segment_id);
+  if (segmentIt != SegmentTable_.end()) {
     const segment_t& segment = segmentIt->second;
     
-    auto callIt = callTable.find(segment.call_id);
-    if (callIt != callTable.end()) {
+    auto callIt = CallTable_.find(segment.call_id);
+    if (callIt != CallTable_.end()) {
       const call_t& call = callIt->second;
 
       // handle call/thread stack returns
@@ -319,23 +318,23 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
         ret = processRelease(ins);
         break;
       case InstructionType::FORK:
-        for (const auto& it : threadTable) {
+        for (const auto& it : ThreadTable_) {
           const thread_t& thread = it.second;
-          if (ins.instruction_id == thread.create_instruction_id) {
+          if (ins.id == thread.create_instruction_id) {
             ret = processFork(thread);
           }
         }
         break;
       case InstructionType::JOIN:
-        for (const auto& it : threadTable) {
+        for (const auto& it : ThreadTable_) {
           const thread_t& thread = it.second;
-          if (ins.instruction_id == thread.join_instruction_id) {
+          if (ins.id == thread.join_instruction_id) {
               ret = processJoin(ins, segment, call, thread);
           }
         }
         break;
       default:
-        ret = IN_NO_ENTRY;
+        ret = ErrorCode::NO_ENTRY;
       }
     }
   }
@@ -343,17 +342,33 @@ int DBInterpreter::processInstruction(const instruction_t& ins) {
   return ret;
 }
 
-size_t DBInterpreter::getHash(unsigned funId, unsigned lineNo) const {
+size_t getHash(unsigned funId, unsigned lineNo) {
     size_t h1 = std::hash<unsigned>()(funId);
     size_t h2 = std::hash<unsigned>()(lineNo);
     return h1 ^ (h2 << 1);
 }
 
-int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
-  int ret = IN_NO_ENTRY;
+//int DBInterpreter::processSegment(SEG_ID segmentId,
+//                                  const segment_t& seg,
+//                                  const instruction_t& ins) {
+//
+//    auto search = CallTable_.find(seg.call_id);
+//    if (search != CallTable_.end()) {
+//        if (!processCall(seg.call_id, search->second, seg, ins))
+//            return 1;
+//    } else {
+//        BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
+//        return 1;
+//    }
+//
+//    return 0;
+//}
 
-  auto functionIt = functionTable.find(call.function_id);
-  if (functionIt != functionTable.end()) {
+ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
+  auto ret = ErrorCode::NO_ENTRY;
+
+  auto functionIt = FunctionTable_.find(call.function_id);
+  if (functionIt != FunctionTable_.end()) {
     const function_t& function = functionIt->second;
 
     switch(function.type) {
@@ -361,8 +376,8 @@ int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
     case FunctionType::METHOD:
     {
       // serch for the file where the call has happened from
-      auto fileIt = fileTable.find(function.file_id);
-      if (fileIt != fileTable.end()) {
+      auto fileIt = FileTable_.find(function.file_id);
+      if (fileIt != FileTable_.end()) {
         const file_t& file = fileIt->second;
 
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
@@ -374,13 +389,13 @@ int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
                        file.file_name,
                        file.file_path);
 
-        ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+        auto thread = threadMgr_->getThread(call.thread_id);
         CallEvent event(thread, &info);
-        _eventService->publish(&event);
-        callStack_.push(call.sql_id);
-        ret = IN_OK;
-        break;
+        getEventService()->publish(&event);
+        CallStack_.push(call.id);
+        ret = ErrorCode::OK;
       }
+      break;
     }
     default:
       break;
@@ -390,12 +405,11 @@ int DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
   return ret;
 }
 
-int DBInterpreter::processCall(const instruction_t& ins) {
+ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
+  auto ret = ErrorCode::NO_ENTRY;
 
-  int ret = IN_NO_ENTRY;
-
-  auto callIt = callTable.find(getCallID(ins));
-  if (callIt != callTable.end()) {
+  auto callIt = CallTable_.find(getCallID(ins));
+  if (callIt != CallTable_.end()) {
     const call_t& call = callIt->second;
     ret = processCall(call, ins.line_number, ins.segment_id);
   }
@@ -403,32 +417,25 @@ int DBInterpreter::processCall(const instruction_t& ins) {
   return ret;
 }
 
-int DBInterpreter::processAccessGeneric(ACC_ID accessId,
+ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
                                         const access_t& access,
                                         const instruction_t& instruction,
                                         const segment_t& segment,
                                         const call_t& call,
                                         processAccess_t func) {
 
-//  std::string refId = std::string(access.reference_id);
-//  auto search = referenceTable.find(_refNoIdMap[refId]);
     REF_ID refId = access.reference_id;
-    auto search = referenceTable.find(refId);
-    if ( search != referenceTable.end() ) {
-
-        (this->* func)(accessId, access, instruction, segment,
-                       call, search->second);
-
-    } else {
+    auto search = ReferenceTable_.find(refId);
+    if ( search == ReferenceTable_.end() ) {
         BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
+        return ErrorCode::NO_ENTRY;
+	}
 
-        return IN_NO_ENTRY;
-    }
-
-    return IN_OK;
+    return (this->* func)(accessId, access, instruction, segment,
+                       call, search->second);
 }
 
-int DBInterpreter::processMemAccess(ACC_ID accessId,
+ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
                                     const access_t& access,
                                     const instruction_t& instruction,
                                     const segment_t& segment,
@@ -447,112 +454,83 @@ int DBInterpreter::processMemAccess(ACC_ID accessId,
         _shadowVarMap[reference.id] = var;
     }
 
-    ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+    auto thread = threadMgr_->getThread(call.thread_id);
     AccessInfo info( access.access_type,
                      var,
-                     instruction.instruction_id);
+                     instruction.id);
     AccessEvent event( thread, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processAcquire(const instruction_t& ins) {
-    auto callIt = callTable.find(getCallID(ins));
-    if (callIt != callTable.end()) {
+/// @todo Code duplication! Candidate for template!
+ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
+    auto callIt = CallTable_.find(getCallID(ins));
+    if (callIt != CallTable_.end()) {
       const call_t& call = callIt->second;
-      for (auto accIt : accessTable) {
+      for (auto accIt : AccessTable_) {
         const access_t& access = accIt.second;
-        if (access.instruction_id == ins.instruction_id) {
-          auto refIt = referenceTable.find(access.reference_id);
+        if (access.instruction_id == ins.id) {
+          auto refIt = ReferenceTable_.find(access.reference_id);
           ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
           if (lock != nullptr) {
-            ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+            auto thread = threadMgr_->getThread(call.thread_id);
             AcquireInfo info(lock, call.start_time);
             AcquireEvent event( thread, &info );
-            _eventService->publish( &event );
-            return IN_OK;
+            getEventService()->publish( &event );
+            return ErrorCode::OK;
           }
         }
       }
     }
-    return IN_NO_ENTRY;
+    return ErrorCode::NO_ENTRY;
 }
 
-int DBInterpreter::processRelease(const instruction_t& ins) {
-
-  auto callIt = callTable.find(getCallID(ins));
-  if (callIt != callTable.end()) {
+/// @todo Code duplication! Candidate for template!
+ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
+  auto callIt = CallTable_.find(getCallID(ins));
+  if (callIt != CallTable_.end()) {
     const call_t& call = callIt->second;
-    for (auto accIt : accessTable) {
+    for (auto accIt : AccessTable_) {
       const access_t& access = accIt.second;
-      if (access.instruction_id == ins.instruction_id) {
-        auto refIt = referenceTable.find(access.reference_id);
+      if (access.instruction_id == ins.id) {
+        auto refIt = ReferenceTable_.find(access.reference_id);
         ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
         if (lock != nullptr) {
-          ShadowThread* thread = threadMgr_->getThread(call.thread_id);
+          auto thread = threadMgr_->getThread(call.thread_id);
           ReleaseInfo info(lock, call.start_time);
           ReleaseEvent event( thread, &info );
-          _eventService->publish( &event );
-          return IN_OK;
+          getEventService()->publish( &event );
+          return ErrorCode::OK;
         }
       }
     }
   }
-  return IN_NO_ENTRY;
+  return ErrorCode::NO_ENTRY;
 }
 
-int DBInterpreter::processFork(const thread_t& thread) {
-
-    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.id);
+/// @todo Code duplication! Candidate for template!
+ErrorCode DBInterpreter::processFork(const thread_t& thread) {
+    auto pT = threadMgr_->getThread(thread.parent_thread_id);
+    auto cT = threadMgr_->getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.start_cycle, thread.num_cycles);
     NewThreadEvent event( pT, &info );
-    _eventService->publish( &event );
-    return 0;
+    getEventService()->publish( &event );
+    return ErrorCode::OK;
 }
 
-int DBInterpreter::processJoin(const instruction_t& instruction,
+/// @todo Code duplication! Candidate for template!
+ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
                                const segment_t& segment,
                                const call_t& call,
                                const thread_t& thread) {
 
-    ShadowThread *pT = threadMgr_->getThread(thread.parent_thread_id);
-    ShadowThread *cT = threadMgr_->getThread(thread.id);
-
+    auto pT = threadMgr_->getThread(thread.parent_thread_id);
+    auto cT = threadMgr_->getThread(thread.id);
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
-    _eventService->publish( &event );
+    getEventService()->publish( &event );
 
-    return 0;
-}
-
-template<typename IdT, typename T>
-int DBInterpreter::fillGeneric(const char *sql, sqlite3 **db, DBTable<IdT, T>* table) {
-    sqlite3_stmt *sqlstmt = 0;
-
-   /* Execute SQL statement */
-   if (sqlite3_prepare_v2(*db, sql, strlen(sql), &sqlstmt, NULL) != SQLITE_OK) {
-       BOOST_LOG_TRIVIAL(error) << "Error preparing db: " << sqlite3_errmsg(*db);
-       return 1;
-   }
-
-   // cycles through the entries till the database is over
-   bool reading = true;
-   while (reading) {
-       switch(sqlite3_step(sqlstmt)) {
-       case SQLITE_ROW:
-           // process the statement with the function passed as argument
-           table->fill(sqlstmt);
-           break;
-       case SQLITE_DONE:
-           reading = false;
-           break;
-       default:
-           BOOST_LOG_TRIVIAL(trace) << "Iterating db failed!";
-           return 2;
-       }
-   }
-
-   return 0;
+    return ErrorCode::OK;
 }

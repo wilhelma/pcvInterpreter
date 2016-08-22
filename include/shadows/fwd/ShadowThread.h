@@ -1,7 +1,7 @@
 /**
  *
- *    @file  Segment.h
- *   @brief  Forward header.
+ *    @file  ShadowThread.h
+ *   @brief  
  *
  *    @date  07/06/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_SEGMENT_H_
-#define  FWD_SEGMENT_H_
+#ifndef  FWD_SHADOW_THREAD_H_
+#define  FWD_SHADOW_THREAD_H_
 
-struct segment_t;
+struct ShadowThread;
 
 #endif
