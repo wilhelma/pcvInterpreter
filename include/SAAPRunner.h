@@ -21,8 +21,8 @@
 class SAAPRunner {
 public:
 	/// Constructor.
-	SAAPRunner(DBInterpreter *interpreter) :
-		DBInterpreter_(interpreter)
+	SAAPRunner(std::unique_ptr<DBInterpreter>&& interpreter) :
+		DBInterpreter_(std::move(interpreter))
 	{}
 
 	/// _Deleted_ copy constructor.

@@ -50,7 +50,7 @@
 #include <boost/log/expressions.hpp>
 
 // Helper function to initialize the log.
-void initialize_logger(const std::string& logFileName) {
+void initialize_logger(std::string&& logFileName) {
 	namespace logging = boost::log;
 	namespace expr    = boost::log::expressions;
 
@@ -68,10 +68,13 @@ void initialize_logger(const std::string& logFileName) {
 	logging::add_common_attributes();
 }
 
-DBInterpreter::DBInterpreter(const std::string& logFile, EventService *service, LockMgr *lockMgr, ThreadMgr *threadMgr) :
-	EventService_(service), lockMgr_(lockMgr), threadMgr_(threadMgr)
+DBInterpreter::DBInterpreter(std::string&& logFile,
+                             std::shared_ptr<EventService> service,
+							 std::unique_ptr<LockMgr>&&   lockMgr,
+							 std::unique_ptr<ThreadMgr>&& threadMgr) :
+	EventService_(service), lockMgr_(std::move(lockMgr)), threadMgr_(std::move(threadMgr))
 {
-	initialize_logger(logFile);
+	initialize_logger(std::move(logFile));
 	CallStack_.push(call_t::MAIN);
 };
 

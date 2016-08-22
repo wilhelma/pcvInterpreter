@@ -59,10 +59,10 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
 	/// Constructor.
-	DBInterpreter(const std::string& logFile, 
-				  EventService *service,
-				  LockMgr *lockMgr,
-				  ThreadMgr *threadMgr);
+	DBInterpreter(std::string&& logFile, 
+				  std::shared_ptr<EventService> service,
+				  std::unique_ptr<LockMgr>&&   lockMgr,
+				  std::unique_ptr<ThreadMgr>&& threadMgr);
 
 	/// _Deleted_ copy constructor.
 	DBInterpreter(const DBInterpreter&)            = delete;
@@ -82,7 +82,8 @@ public:
 	ErrorCode process(const std::string& DBPath);
 
 	/// Returns a pointer to `EventService_`.
-	EventService* const getEventService() { return EventService_; };
+	/// @todo Bad interface design! This pointer shouldn't be accessible outside!
+	decltype(auto) getEventService() { return EventService_; };
 
 private:
 
@@ -123,7 +124,7 @@ private:
 	/// Stack of call IDs.
 	CallStack CallStack_;
   
-	EventService*   EventService_;
+	std::shared_ptr<EventService> EventService_;
 	shadowVarMap_t _shadowVarMap;
 
     std::unique_ptr<LockMgr>   lockMgr_;
