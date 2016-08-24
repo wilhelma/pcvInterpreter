@@ -74,7 +74,7 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	  						                   std::string end_vertex_label) {
 
 	print_event_start(end_vertex_label);
-	assert(strand_end_time > last_event_time);
+	assert(strand_end_time >= last_event_time);
 	TIME local_work = strand_end_time - last_event_time;
 	last_event_time = strand_end_time;
 	work.add(local_work);
