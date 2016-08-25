@@ -113,6 +113,8 @@ class ParasiteTool : public Tool {
 
 	DAG thread_graph;
 
+	std::string name;
+
 	/**
 	*    @var last_thread_start_time
 	*    @brief Time stamp for the start of the most recent thread in the simulator.

@@ -27,7 +27,7 @@
 class ParasiteJsonWriter {
 
  public:
-	ParasiteJsonWriter();
+	ParasiteJsonWriter(std::string _name_);
 	~ParasiteJsonWriter();
 	void writeCallSite(std::shared_ptr<CallSiteProfile> profile);
 	void writeOverallProfile(parasite_profile_t prof);
@@ -38,6 +38,8 @@ class ParasiteJsonWriter {
     rapidjson::Document fromScratch;
 
     rapidjson::Value callSiteArray;
+
+    std::string name;
 
     char writeBuffer[65536];
 };

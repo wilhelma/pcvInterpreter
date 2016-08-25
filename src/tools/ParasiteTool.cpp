@@ -21,7 +21,10 @@
 #include <climits>
 #include "ParasiteTool.h"
 
-ParasiteTool::ParasiteTool():last_thread_start_time(0), last_event_time(0) {}
+ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
+							 last_thread_start_time(0), last_event_time(0) {
+	thread_graph.name = name;
+}
 
 vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
 
@@ -139,7 +142,7 @@ void ParasiteTool::printCallSiteProfiles() {
 
 void ParasiteTool::writeJson() {
 
-	std::shared_ptr<ParasiteJsonWriter> parasiteJsonWriter(new ParasiteJsonWriter());
+	std::shared_ptr<ParasiteJsonWriter> parasiteJsonWriter(new ParasiteJsonWriter(name));
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
 
 	// Output json information for whole profile

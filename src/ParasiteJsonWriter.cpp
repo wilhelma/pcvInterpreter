@@ -12,7 +12,8 @@
 
 #include "ParasiteJsonWriter.h"
 
-ParasiteJsonWriter::ParasiteJsonWriter() : callSiteArray(rapidjson::kArrayType) {
+ParasiteJsonWriter::ParasiteJsonWriter(std::string _name_) : callSiteArray(rapidjson::kArrayType),
+                                                             name(_name_) {
     fromScratch.SetObject();
 }
 
@@ -20,7 +21,9 @@ ParasiteJsonWriter::~ParasiteJsonWriter() {
 
     rapidjson::Document::AllocatorType& allocator = fromScratch.GetAllocator();
     fromScratch.AddMember("call_site_array", callSiteArray, allocator);
-    file_pointer = fopen("parasite_output.json", "w"); // non-Windows use "w"
+    std::string dir = "/Users/nathanielknapp/Desktop/thesis/python_code/";
+    std::string file_name = (dir + name) + ".json";
+    file_pointer = fopen(file_name.c_str(), "w"); // non-Windows use "w"
     rapidjson::FileWriteStream output_stream(file_pointer,
                                              writeBuffer, 
                                              sizeof(writeBuffer));
