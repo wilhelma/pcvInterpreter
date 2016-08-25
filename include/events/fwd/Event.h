@@ -12,6 +12,7 @@
 #ifndef  FWD_EVENT_H_
 #define  FWD_EVENT_H_
 
+template <typename InfoType>
 class Event;
 
 #endif

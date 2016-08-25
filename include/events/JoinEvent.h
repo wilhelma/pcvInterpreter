@@ -12,26 +12,23 @@
 #ifndef  JOIN_EVENT_H_
 #define  JOIN_EVENT_H_
 
-#include "JoinInfo.h"
+#include "fwd/JoinInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"
 
-class JoinEvent : public Event {
+/// Event for joining threads.
+class JoinEvent final : public Event<JoinInfo> {
 public:
-	JoinEvent(const ShadowThread *thread,
-			  const JoinInfo *info) :
-		Event(thread), _info(info) {};
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The join event information.
+	JoinEvent(const ShadowThread* thread, const JoinInfo* info) :
+		Event(thread, info) {};
 
-	virtual Events getEventType() const override final { return Events::JOIN; };
-	const JoinInfo* const getJoinInfo() const { return _info; };
-
-private:
-	const JoinInfo* const _info;
-
-	// prevent generated functions
-	JoinEvent(const JoinEvent&);
-	JoinEvent& operator=(const JoinEvent&);
+    /// Returns the event type.
+	virtual Events getEventType() const override
+    { return Events::JOIN; };
 };
 
 #endif

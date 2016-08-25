@@ -12,27 +12,23 @@
 #ifndef  NEW_THREAD_EVENT_H_
 #define  NEW_THREAD_EVENT_H_
 
-#include "NewThreadInfo.h"
+#include "fwd/NewThreadInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"
 
-class NewThreadEvent : public Event {
-  
+/// Event for a new thread creation.
+class NewThreadEvent final : public Event<NewThreadInfo> {
 public:
-	NewThreadEvent(const ShadowThread *thread,
-				   const NewThreadInfo* const info) :
-		Event(thread), _info(info) {};
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The new thread event information.
+	NewThreadEvent(const ShadowThread* thread, const NewThreadInfo* info) :
+		Event(thread, info) {};
 
-	virtual Events getEventType() const override final { return Events::NEWTHREAD; };
-	const NewThreadInfo* const getNewThreadInfo() const { return _info; };
-
-private:
-	const NewThreadInfo* const _info;
-
-	// prevent generated functions
-  NewThreadEvent(const NewThreadEvent&);
-	NewThreadEvent& operator=(const NewThreadEvent&);
+    /// Returns the event type.
+	virtual Events getEventType() const override
+    { return Events::NEWTHREAD; };
 };
 
 #endif

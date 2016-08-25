@@ -91,23 +91,47 @@ const bool operator!=(T lhs, Events rhs) noexcept {
 //	return static_cast<TIME>(atoi(t.substr(found + 1).c_str()));
 //}
 
-/// @brief Abstract Event.
+/// @brief Abstract event.
 /// @details Base class for all the `*Event` classes.
+/// @attention Event is not copyable nor moveable! So its inherited classes will be.
+template <typename InfoType>
 class Event {
 public:
 	/// Constructor.
-	explicit Event(const ShadowThread *thread) noexcept :
-		Thread_(thread) {};
+    /// @param  thread The thread the event was triggered from.
+    /// @tparam info   The event information.
+	Event(const ShadowThread* thread, const InfoType* info) :
+		Thread_(thread), Info_(info) {};
 
 	/// _Default_ destructor.
 	virtual ~Event() = default;
 
-	const ShadowThread* const getThread() const { return Thread_; };
+    /// _Deleted_ copy constructor.
+    Event(const Event&)            = delete;
+    /// _Deleted_ move constructor.
+    Event(Event&&)                 = delete;
+    /// _Deleted_ copy assignment operator.
+    Event& operator=(const Event&) = delete;
+    /// _Deleted_ move assignment operator.
+    Event& operator=(Event&&)      = delete;
+
+    /// Acesses the thread information.
+	decltype(auto) getThread() const
+    { return Thread_; };
+
+    /// Access the event information.
+    decltype(auto) getInfo() const
+    { return Info_; };
+
+    /// Returns the event type.
 	virtual Events getEventType() const = 0;
 
 private:
 	/// @todo Should this be a `unique_ptr`?
 	const ShadowThread* const Thread_;
+
+    /// The event information.
+    const InfoType* const Info_;
 };
 
 #endif /* EVENT_H_ */

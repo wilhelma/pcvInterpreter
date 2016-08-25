@@ -162,7 +162,7 @@ void ParasiteTool::Call(const CallEvent* e) {
 
 	printf("================ \n");
 	printf("CALL BEGIN \n");
-	const CallInfo* _info(e->getCallInfo());
+	const CallInfo* _info(e->getInfo());
 	FUN_SG calledFunctionSignature = _info->fnSignature;
 	CALLSITE callsiteID = _info->siteId;
 	last_function_runtime = _info->runtime;
@@ -179,7 +179,7 @@ void ParasiteTool::Call(const CallEvent* e) {
 void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	printf("================ \n");
 	printf("NEW THREAD BEGIN \n");
-	const NewThreadInfo* const _info = e->getNewThreadInfo();
+	const NewThreadInfo* const _info = e->getInfo();
 	const TRD_ID newThreadID = _info->childThread->threadId;
 
 	// get information about the thread's head function
@@ -274,7 +274,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 void ParasiteTool::Return(const ReturnEvent* e) {
 	printf("================ \n");
 	printf("RETURN START \n");
-	const ReturnInfo* _info(e->getReturnInfo());
+	const ReturnInfo* _info(e->getInfo());
 	TIME returnTime = _info->endTime;
 	assert(returnTime >= last_event_time);
 	TIME local_work = static_cast<TIME> (returnTime - last_event_time);
@@ -323,7 +323,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	printf("================ \n");
 	printf("THREAD END BEGIN \n");
-	const ThreadEndInfo* _info(e->getThreadEndInfo());
+	const ThreadEndInfo* _info(e->getInfo());
 	last_thread_end_time = _info->endTime;
 	TIME last_thread_event_time = _info->endTime;
 	TIME this_thread_start_time = stacks->bottomThread()->thread_start_time;
@@ -392,7 +392,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 void ParasiteTool::Acquire(const AcquireEvent* e) {
 
-	const AcquireInfo* _info(e->getAcquireInfo());
+	const AcquireInfo* _info(e->getInfo());
 	std::shared_ptr<ShadowLock> acquiredLock(_info->lock);
 
 	// TIME acquireTime = e->acquireTime;
@@ -421,7 +421,7 @@ void ParasiteTool::Acquire(const AcquireEvent* e) {
 
 void ParasiteTool::Release(const ReleaseEvent* e) {
 
-	const ReleaseInfo* _info(e->getReleaseInfo());
+	const ReleaseInfo* _info(e->getInfo());
 	std::shared_ptr<ShadowLock> releasedLock(_info->lock);
 	// release_time = e->releaseTime;
 

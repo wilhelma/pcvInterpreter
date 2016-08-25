@@ -17,21 +17,18 @@
 
 #include "Event.h"
 
-class ReleaseEvent : public Event {
+/// Event for a resource lock release.
+class ReleaseEvent final : public Event<ReleaseInfo> {
 public:
-	ReleaseEvent(const ShadowThread *thread,
-			     const ReleaseInfo *info) :
-		Event(thread), _info(info) {};
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The release event information.
+	ReleaseEvent(const ShadowThread* thread, const ReleaseInfo* info) :
+		Event(thread, info) {};
 
-	virtual Events getEventType() const override final { return Events::RELEASE; }; 
-	const ReleaseInfo* const getReleaseInfo() const { return _info; };
-
-private:
-	const ReleaseInfo* const _info;
-
-	// prevent generated functions
-	ReleaseEvent(const ReleaseEvent&);
-	ReleaseEvent& operator=(const ReleaseEvent&);
+    /// Returns the event type.
+	virtual Events getEventType() const override
+    { return Events::RELEASE; }; 
 };
 
 #endif

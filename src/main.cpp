@@ -8,24 +8,15 @@
 
 #include "DBInterpreter.h"
 #include "DebugTool.h"
-#include "EventService.h"
+//#include "EventService.h"
 #include "ParasiteTool.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
-#include "LockMgr.h"
+//#include "LockMgr.h"
 #include "SAAPRunner.h"
-#include "ThreadMgr.h"
+//#include "ThreadMgr.h"
 #include <boost/log/trivial.hpp>
-
-/// @brief Helper function to create a `DBInterpreter`.
-/// @param logFileName The name of the log file.
-/// @return A `std::unique_ptr` to a `DBInterpreter`.
-inline decltype(auto) make_DBInterpreter(std::string&& logFileName) {
-	return std::make_unique<DBInterpreter>(
-			std::move(logFileName), std::make_shared<EventService>(),
-			std::make_unique<LockMgr>(), std::make_unique<ThreadMgr>());
-}
 
 /// @brief The main routine.
 /// @attention The file name of the database to interpret is ___mandatory!___

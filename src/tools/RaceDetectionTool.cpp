@@ -41,7 +41,7 @@ RaceDetectionTool::~RaceDetectionTool() {
 
 void RaceDetectionTool::NewThread(const NewThreadEvent* event) {
 
-   	auto childThread = event->getNewThreadInfo()->childThread;
+   	auto childThread = event->getInfo()->childThread;
 
 	if (threadVC_.find(childThread->threadId) == threadVC_.end()) {
 		threadVC_[childThread->threadId].fill(0);
@@ -63,22 +63,22 @@ void RaceDetectionTool::Join(const JoinEvent* event) {
 
 	// VC_t = VC_t # VC_u
 	vcMerge( threadVC_[event->getThread()->threadId],
-		threadVC_[event->getJoinInfo()->childThread->threadId] );
+		threadVC_[event->getInfo()->childThread->threadId] );
 
 	// VC_u[u] = VC_u[u] + 1
-	TRD_ID id = event->getJoinInfo()->childThread->threadId;
+	TRD_ID id = event->getInfo()->childThread->threadId;
 	threadVC_[id][id]++;
 }
 
 void RaceDetectionTool::Acquire(const AcquireEvent* event) {
 	// LockSet_t = LockSet_t + {lock}	
-	lockSet_[event->getThread()].insert(event->getAcquireInfo()->lock);
+	lockSet_[event->getThread()].insert(event->getInfo()->lock);
 }
 
 void RaceDetectionTool::Release(const ReleaseEvent* event) {
 	// LockSet_t = LockSet_t - {lock}
-//	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
-	auto lock = event->getReleaseInfo()->lock;
+//	auto lock = ((AcquireEvent*)e)->getInfo()->lock;
+	auto lock = event->getInfo()->lock;
 	lockSet_[event->getThread()].erase(lock); 
 
 	// VC_t[t] = VC_t[t] + 1
@@ -86,15 +86,15 @@ void RaceDetectionTool::Release(const ReleaseEvent* event) {
 }
 
 void RaceDetectionTool::Access(const AccessEvent* event) {
-	const REF_ID ref = event->getAccessInfo()->var->id;
+	const REF_ID ref = event->getInfo()->var->id;
 	Epoch_ epoch(event->getThread()->threadId,
 				 threadVC_[event->getThread()->threadId][event->getThread()->threadId]);
 	const TRD_ID threadId = event->getThread()->threadId;
 
-	if (event->getAccessInfo()->var->type == ReferenceType::STACK)
+	if (event->getInfo()->var->type == ReferenceType::STACK)
 		return;
 
-	switch(event->getAccessInfo()->type) {
+	switch(event->getInfo()->type) {
 	case AccessType::READ:
 		{
 			
@@ -122,7 +122,7 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 			// R_x[t].epoch = epoch(t)
 			readVarSet_[ref][threadId].epoch = epoch;
 			readVarSet_[ref][threadId].instruction = 
-				event->getAccessInfo()->instructionID;
+				event->getInfo()->instructionID;
 
 			// R_x[t].lockset = LockSet_t
 			readVarSet_[ref][threadId].lockset = lockSet_[event->getThread()];
@@ -136,7 +136,7 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
 									WRITE_READ,
 									writeVarSet_[ref].instruction,
-									event->getAccessInfo()->instructionID,
+									event->getInfo()->instructionID,
 									ref)
 							));
 					std::cout << "race detected..1" << std::endl;
@@ -164,7 +164,7 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 						std::unique_ptr<RaceEntry_>(new RaceEntry_(
 								WRITE_WRITE,
 								writeVarSet_[ref].instruction,
-								event->getAccessInfo()->instructionID,
+								event->getInfo()->instructionID,
 								ref)
 						));
 				std::cout << "race detected..2" << std::endl;
@@ -178,7 +178,7 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 
 		// W_x.epoch = epoch(t)
 		writeVarSet_[ref].epoch = epoch;
-		writeVarSet_[ref].instruction = event->getAccessInfo()->instructionID;
+		writeVarSet_[ref].instruction = event->getInfo()->instructionID;
 
 		// forall threads t' in read map R_x do
 		for (auto tp : readVarSet_[ref]) {
@@ -193,7 +193,7 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
 									READ_WRITE,
 									tp.second.instruction,
-									event->getAccessInfo()->instructionID,
+									event->getInfo()->instructionID,
 									ref)
 							));
 					std::cout << "race detected..3" << std::endl;
@@ -210,11 +210,11 @@ void RaceDetectionTool::Access(const AccessEvent* event) {
 	}
 
 
-	//LockSet_* ls = (LockSet_*)((const AccessEvent*)e)->getAccessInfo()->var->ptr;
+	//LockSet_* ls = (LockSet_*)((const AccessEvent*)e)->getInfo()->var->ptr;
 
 	//if (ls == nullptr) {
 	//	ls = new LockSet_();
-	//	((const AccessEvent*)e)->getAccessInfo()->var->ptr = (void*)ls;
+	//	((const AccessEvent*)e)->getInfo()->var->ptr = (void*)ls;
 	//}
 
 	//LockSet_ result;

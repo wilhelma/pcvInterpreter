@@ -39,35 +39,35 @@ LockSetChecker::~LockSetChecker() {
 }
 
 void LockSetChecker::NewThread(const NewThreadEvent* event) {
-   	auto childThread = event->getNewThreadInfo()->childThread;
+   	auto childThread = event->getInfo()->childThread;
 	// LockSet_u = set of all possible locks
 	lockSet_[childThread] =  lockSet_[event->getThread()];
 }
 
 void LockSetChecker::Acquire(const AcquireEvent* event) {
 	// LockSet_t = LockSet_t + {lock}	
-	lockSet_[event->getThread()].insert(event->getAcquireInfo()->lock);
+	lockSet_[event->getThread()].insert(event->getInfo()->lock);
 }
 
 void LockSetChecker::Release(const ReleaseEvent* event) {
 	// LockSet_t = LockSet_t - {lock}
-//	auto lock = ((AcquireEvent*)e)->getAcquireInfo()->lock;
-	auto lock = event->getReleaseInfo()->lock;
+//	auto lock = ((AcquireEvent*)e)->getInfo()->lock;
+	auto lock = event->getInfo()->lock;
 	lockSet_[event->getThread()].erase(lock); 
 }
 
 void LockSetChecker::Access(const AccessEvent* event) {
-	const REF_ID ref = event->getAccessInfo()->var->id;
+	const REF_ID ref = event->getInfo()->var->id;
 	const TRD_ID threadId = event->getThread()->threadId;
 
-	if (event->getAccessInfo()->var->type == ReferenceType::STACK)
+	if (event->getInfo()->var->type == ReferenceType::STACK)
 		return;
 
-	switch(event->getAccessInfo()->type) {
+	switch(event->getInfo()->type) {
 	case AccessType::READ:
 		{
 			readVarSet_[ref][threadId].instruction = 
-				event->getAccessInfo()->instructionID;
+				event->getInfo()->instructionID;
 
 			// R_x[t].lockset = LockSet_t
 			readVarSet_[ref][threadId].lockset = lockSet_[event->getThread()];
@@ -79,7 +79,7 @@ void LockSetChecker::Access(const AccessEvent* event) {
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
 									WRITE_READ,
 									writeVarSet_[ref].instruction,
-									event->getAccessInfo()->instructionID,
+									event->getInfo()->instructionID,
 									ref)
 							));
 					std::cout << "race detected..1" << std::endl;
@@ -99,7 +99,7 @@ void LockSetChecker::Access(const AccessEvent* event) {
 						std::unique_ptr<RaceEntry_>(new RaceEntry_(
 								WRITE_WRITE,
 								writeVarSet_[ref].instruction,
-								event->getAccessInfo()->instructionID,
+								event->getInfo()->instructionID,
 								ref)
 						));
 				std::cout << "race detected..2" << std::endl;

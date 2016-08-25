@@ -22,8 +22,8 @@
 #include "fwd/Thread.h"
 
 #include "fwd/EventService.h"
-#include "fwd/LockMgr.h"
-#include "fwd/ThreadMgr.h"
+#include "LockMgr.h"
+#include "ThreadMgr.h"
 
 #include "CallStack.h"
 
@@ -128,7 +128,18 @@ private:
 	shadowVarMap_t _shadowVarMap;
 
     std::unique_ptr<LockMgr>   lockMgr_;
+	/// @brief Helper function to hide `lockMgr_` name in the source file.
+	/// @param reference_id The reference ID.
+	/// @return The `ShadowLock` pointer associated to the reference ID.
+	decltype(auto) getLock(const REF_ID& reference_id)
+	{ return lockMgr_->getLock(reference_id); }
+
     std::unique_ptr<ThreadMgr> threadMgr_;
+	/// @brief Helper function to hide `threadMgr_` name in the source file.
+	/// @param thread_id The thread ID.
+	/// @return The `ShadowThread` pointer associated to the `thread_id`.
+	decltype(auto) getThread(const TRD_ID& thread_id)
+	{ return threadMgr_->getThread(thread_id); }
 
 	// private methods---------------------------------------------------------
 	static InstructionType transformInstrType(const instruction_t& ins);
@@ -182,5 +193,9 @@ private:
   const CAL_ID getCallID(const instruction_t& ins) const;
 };
 
+/// @brief Helper function to create a `DBInterpreter`.
+/// @param logFileName The name of the log file.
+/// @return A `std::unique_ptr` to a `DBInterpreter`.
+std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName);
 
 #endif /* DBINTERPRETER_H_ */

@@ -12,21 +12,23 @@
 #ifndef  RETURN_EVENT_H_
 #define  RETURN_EVENT_H_
 
-#include "ReturnInfo.h"
+#include "fwd/ReturnInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"
 
-class ReturnEvent : public Event {
-	public:
-		ReturnEvent(const ShadowThread *thread,
-				    const ReturnInfo *info) :
-			Event(thread), _info(info) {}
+/// Event for function returns.
+class ReturnEvent final : public Event<ReturnInfo> {
+public:
+	/// Constructor.
+    /// @param  thread The thread the event was triggered from.
+    /// @tparam info   The return event information.
+	ReturnEvent(const ShadowThread* thread, const ReturnInfo* info) :
+		Event(thread, info) {};
 
-		virtual Events getEventType() const override final { return Events::RETURN; }
-		const ReturnInfo* const getReturnInfo() const { return _info; };
-	private:
-		const ReturnInfo* const _info;
+    /// Returns the event type.
+    virtual Events getEventType() const override
+    { return Events::RETURN; }
 };
 
 #endif

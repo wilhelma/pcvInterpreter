@@ -42,6 +42,8 @@
 #include "EventService.h"
 #include "AccessInfo.h"
 
+#include <memory>
+
 // logging system
 #include <boost/log/core.hpp>
 #include <boost/log/utility/setup/file.hpp>
@@ -194,7 +196,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
       // publish a return call event in case of mismatching call id's
       const call_t& topCall = callIt->second;
       ReturnInfo info(topCallId, topCall.end_time);
-      auto sThread = threadMgr_->getThread(topCall.thread_id);
+      auto sThread = getThread(topCall.thread_id);
       ReturnEvent event(sThread, &info);
       getEventService()->publish(&event);
 
@@ -275,7 +277,7 @@ ErrorCode DBInterpreter::processEnd() {
       const thread_t& thread = threadIt->second;
 
       // publish a return call event for main
-      auto sThread = threadMgr_->getThread(call.thread_id);
+      auto sThread = getThread(call.thread_id);
       ReturnInfo info(call.id, call.end_time);
       ReturnEvent event(sThread, &info);
       getEventService()->publish(&event);
@@ -392,7 +394,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                        file.file_name,
                        file.file_path);
 
-        auto thread = threadMgr_->getThread(call.thread_id);
+        auto thread = getThread(call.thread_id);
         CallEvent event(thread, &info);
         getEventService()->publish(&event);
         CallStack_.push(call.id);
@@ -457,7 +459,7 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
         _shadowVarMap[reference.id] = var;
     }
 
-    auto thread = threadMgr_->getThread(call.thread_id);
+    auto thread = getThread(call.thread_id);
     AccessInfo info( access.access_type,
                      var,
                      instruction.id);
@@ -476,9 +478,9 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
           auto refIt = ReferenceTable_.find(access.reference_id);
-          ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
+          auto lock = getLock(refIt->second.id);
           if (lock != nullptr) {
-            auto thread = threadMgr_->getThread(call.thread_id);
+            auto thread = getThread(call.thread_id);
             AcquireInfo info(lock, call.start_time);
             AcquireEvent event( thread, &info );
             getEventService()->publish( &event );
@@ -499,9 +501,9 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
       const access_t& access = accIt.second;
       if (access.instruction_id == ins.id) {
         auto refIt = ReferenceTable_.find(access.reference_id);
-        ShadowLock *lock = lockMgr_->getLock(refIt->second.id);
+        auto lock = getLock(refIt->second.id);
         if (lock != nullptr) {
-          auto thread = threadMgr_->getThread(call.thread_id);
+          auto thread = getThread(call.thread_id);
           ReleaseInfo info(lock, call.start_time);
           ReleaseEvent event( thread, &info );
           getEventService()->publish( &event );
@@ -515,8 +517,8 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
-    auto pT = threadMgr_->getThread(thread.parent_thread_id);
-    auto cT = threadMgr_->getThread(thread.id);
+    auto pT = getThread(thread.parent_thread_id);
+    auto cT = getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.start_cycle, thread.num_cycles);
     NewThreadEvent event( pT, &info );
     getEventService()->publish( &event );
@@ -529,11 +531,17 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
                                const call_t& call,
                                const thread_t& thread) {
 
-    auto pT = threadMgr_->getThread(thread.parent_thread_id);
-    auto cT = threadMgr_->getThread(thread.id);
+    auto pT = getThread(thread.parent_thread_id);
+    auto cT = getThread(thread.id);
     JoinInfo info(cT, pT);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );
 
     return ErrorCode::OK;
+}
+
+std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName) {
+	return std::make_unique<DBInterpreter>(
+			std::move(logFileName), std::make_shared<EventService>(),
+			std::make_unique<LockMgr>(), std::make_unique<ThreadMgr>());
 }
