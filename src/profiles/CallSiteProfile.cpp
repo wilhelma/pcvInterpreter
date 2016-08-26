@@ -37,17 +37,17 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 }
 
 void CallSiteProfile::print() {
-	printf(" ================ \n");
+	printf(" ======================================================== \n");
 	printf("CALL SITE %d \n", static_cast<int>(prof->call_site));
 	printf("FUNCTION SIGNATURE is %s \n", prof->function_signature.c_str());
 	printf("WORK is %llu \n", static_cast<unsigned long long>(prof->work));
 	printf("LOCK WAIT TIME is %llu \n", static_cast<unsigned long long>(prof->lock_wait_time));
 	printf("SPAN is %llu \n", static_cast<unsigned long long>(prof->span));
 	printf("LOCK WAIT TIME IS %f of SPAN \n", static_cast<double>(prof->lock_wait_time) / 
-									     static_cast<double>(prof->span));
+									     	  static_cast<double>(prof->span));
 	printf("COUNT is %d \n", prof->count);
 	printf("PARALLELISM is %f \n", static_cast<double>(prof->work)/static_cast<double>(prof->span));
-	printf("================\n");
+	printf(" ======================================================== \n");
 }
 
 

@@ -69,7 +69,7 @@ void Work::add(TIME local_work) {
 
 void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 						    TIME work) {
-	if (!hashtable->count(call_site)) {}
+	if (!hashtable->count(call_site))
 		init_call_site(call_site, function_signature);
 	CallSiteWorkProfile profile(hashtable->at(call_site));
 	profile.prof->work += work;

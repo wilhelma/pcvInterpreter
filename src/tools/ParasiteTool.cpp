@@ -41,22 +41,6 @@ void ParasiteTool::add_join_edges(vertex_descr_type start) {
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
-void ParasiteTool::print_event_start(std::string event_name) {
-
-	if (DEBUG_OUTPUT) {
-		std::cout << "==================" << std::endl;
-		std::cout << event_name << " BEGIN" << std::endl;
-	}
-}
-
-void ParasiteTool::print_event_end(std::string event_name) {
-
-	if (DEBUG_OUTPUT) {
-		std::cout << event_name << " END" << std::endl;
-		std::cout << "==================" << std::endl;
-	}
-}
-
 
 void ParasiteTool::add_concurrency_offset(TIME offset) {
 	stacks.bottomParentThread()->concurrency_offset += offset;
