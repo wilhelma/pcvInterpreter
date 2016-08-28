@@ -89,7 +89,7 @@ void ParasiteTool::endProfileCalculations() {
 	parasite_profile.span = bottom_thread->prefix();
 
 	// Calculate work for entire program
-	parasite_profile.work = work();
+	parasite_profile.work = work() + parasite_profile.lock_wait_time;
 
 	// Calculate parallelism for entire program                     
 	parasite_profile.parallelism =  static_cast<double> (parasite_profile.work)
