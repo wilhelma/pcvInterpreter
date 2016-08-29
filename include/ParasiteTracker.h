@@ -83,8 +83,7 @@ class ParasiteTracker {
 
 		std::shared_ptr<thread_frame_t> thread_push(int head_function_index,
 													TRD_ID thread_id,
-													vertex_descr_type first_vertex,
-													TIME start_time);
+													vertex_descr_type first_vertex);
 		void thread_pop();
 
  	private:

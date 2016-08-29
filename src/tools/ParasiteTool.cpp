@@ -182,8 +182,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
-		                thread_start_vertex,
-		                _info->startTime);
+		                thread_start_vertex);
 
 	print_event_end("NEW THREAD");
 }
@@ -252,7 +251,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
 	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
-	parent_thread->concurrency_offset += _info->endTime - ending_thread->start_time;
+	parent_thread->concurrency_offset += ending_thread->prefix();
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 

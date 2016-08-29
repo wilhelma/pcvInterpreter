@@ -32,9 +32,8 @@ void ParasiteTracker::function_pop(){
 
 std::shared_ptr<thread_frame_t> ParasiteTracker::thread_push(int head_function_index,
 															 TRD_ID thread_id,
-															 vertex_descr_type first_vertex,
-															 TIME start_time) {
-	return thread_stack->push(head_function_index, thread_id, first_vertex, start_time);
+															 vertex_descr_type first_vertex) {
+	return thread_stack->push(head_function_index, thread_id, first_vertex);
 }
 
 void ParasiteTracker::thread_pop(){
