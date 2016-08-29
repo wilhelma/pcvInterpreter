@@ -60,7 +60,6 @@ void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
 	CallSiteSpanProfile profile(hashtable->at(call_site));
 	profile.prof->span += span;
 	profile.prof->start = std::min(profile.prof->start, end_time);
-	profile.prof->stop = std::max(profile.prof->stop, end_time);
 }
 
 void Span::clear() {

@@ -66,7 +66,6 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
-	void add_concurrency_offset(TIME offset);
 	void add_down_stack(TIME local_work, TIME strand_end_time);
 	
 	vertex_descr_type add_local_work(TIME strand_end_time, 
@@ -93,6 +92,8 @@ class ParasiteTool : public Tool {
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
 	void add_join_edges(vertex_descr_type start);
+
+	TIME concur(TIME serial_time);
 	
 	/**
 	*    @var main_stack
@@ -113,18 +114,10 @@ class ParasiteTool : public Tool {
 	std::string name;
 
 	/**
-	*    @var last_thread_start_time
-	*    @brief Time stamp for the start of the most recent thread in the simulator.
-	*/
-	TIME last_thread_start_time;
-
-	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
-	TIME concurrency_offset;
 
  private:
 	// prevent generated functions --------------------------------------------

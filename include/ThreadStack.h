@@ -67,9 +67,7 @@ struct thread_frame_t {
 	*/
 	TIME longest_child_lock_wait_time;
 
-	TIME concurrency_offset;
-
-	TIME thread_start_time;
+	TIME start_time;
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -94,13 +92,15 @@ struct thread_frame_t {
 	*/
 	Span continuation;
 
+	TIME concurrency_offset;
+
 	thread_frame_t():thread(0),
 					 longest_child_lock_wait_time(0), 
-					 concurrency_offset(0),
-					 thread_start_time(0),
+					 start_time(0),
 					 prefix(Span()), 
 					 longest_child(Span()),
-					 continuation(Span()) {}
+					 continuation(Span()),
+					 concurrency_offset(0) {}
 };
 
 class ThreadStack {
@@ -117,7 +117,8 @@ class ThreadStack {
 		*/
 		void init_frame(int thread_index, int head_function_index, 
 										  TRD_ID thread,
-										  vertex_descr_type first_vertex);
+										  vertex_descr_type first_vertex,
+										  TIME start_time);
 
 		/**
 		*    @fn push()
@@ -126,7 +127,8 @@ class ThreadStack {
 		*/
 		std::shared_ptr<thread_frame_t> push(int head_function_index,
 											 TRD_ID thread_id,
-											 vertex_descr_type first_vertex);
+											 vertex_descr_type first_vertex,
+											 TIME start_time);
 
 		/**
 		*    @fn pop()

@@ -22,7 +22,7 @@
 #include "ParasiteTool.h"
 
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
-							 last_thread_start_time(0), last_event_time(0) {
+							 last_event_time(0) {
 	thread_graph.name = name;
 }
 
@@ -41,11 +41,6 @@ void ParasiteTool::add_join_edges(vertex_descr_type start) {
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
-
-void ParasiteTool::add_concurrency_offset(TIME offset) {
-	stacks.bottomParentThread()->concurrency_offset += offset;
-}
-
 void ParasiteTool::add_down_stack(TIME local_work, TIME parallel_time) {
 
 	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
@@ -57,6 +52,10 @@ void ParasiteTool::add_down_stack(TIME local_work, TIME parallel_time) {
 	}
 }
 
+TIME ParasiteTool::concur(TIME serial_time) {
+	return serial_time - stacks.bottomThread()->concurrency_offset;
+}
+
 vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time, 
 	  						                   std::string end_vertex_label) {
 
@@ -66,16 +65,11 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
-	TIME offset = 0;
-	if (stacks.bottomThreadIndex() >= 1)
-		offset = stacks.bottomParentThread()->concurrency_offset;
-	add_down_stack(local_work, strand_end_time - offset);
+	add_down_stack(local_work, concur(strand_end_time));
 	print_time("local work", local_work);
 	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);
 }
-
-
 
 void ParasiteTool::endProfileCalculations() {
 
@@ -169,7 +163,8 @@ void ParasiteTool::Call(const CallEvent* e) {
 	last_event_time = _info->callTime;
 	std::cout << "starting call Event with signature " <<
 				      _info->fnSignature.c_str() << std::endl;
-    stacks.bottomThread()->continuation.init_call_site(_info->siteId, _info->callTime);
+    stacks.bottomThread()->continuation.init_call_site(_info->siteId, 
+    												   concur(_info->callTime));
     work.record_call_site(_info->siteId, _info->fnSignature);
 	stacks.function_push(_info->fnSignature, _info->siteId);
 	print_event_end("CALL");
@@ -187,8 +182,8 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
-		                thread_start_vertex);
-	stacks.bottomThread()->thread_start_time = _info->startTime;
+		                thread_start_vertex,
+		                _info->startTime);
 
 	print_event_end("NEW THREAD");
 }
@@ -251,12 +246,13 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	ending_thread->continuation.add(ending_thread->lock_wait_time());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
-	if (stacks.bottomThreadIndex() == 0)
+	if (stacks.bottomThreadIndex() == 0) {
 		return;
+	}
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
 	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
-	add_concurrency_offset(_info->endTime - last_thread_start_time);
+	parent_thread->concurrency_offset += _info->endTime - ending_thread->start_time;
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 
@@ -292,18 +288,15 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 		   static_cast<double>(_info->lock->last_acquire_time));
 	
 	unsigned int lockId = _info->lock->lockId;
-	TIME offset = 0;
-	if (stacks.bottomThreadIndex() > 0)
-		offset = stacks.bottomParentThread()->concurrency_offset;
 
 	stacks.bottomThread()->
 		lock_intervals.addInterval(
-					 _info->lock->last_acquire_time - offset, 
-					 release_time - offset, lockId);
+					 concur(_info->lock->last_acquire_time), 
+					 concur(release_time), lockId);
 	stacks.bottomFunction()->
 		lock_intervals.addInterval(
-					 _info->lock->last_acquire_time - offset, 
-					 release_time - offset, lockId);
+					 concur(_info->lock->last_acquire_time), 
+					 concur(release_time), lockId);
 	print_event_end("RELEASE");
 }
 

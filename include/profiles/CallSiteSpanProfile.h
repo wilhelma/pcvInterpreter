@@ -30,7 +30,6 @@ struct call_site_span_profile_t {
     CALLSITE call_site;
 
     TIME start;
-    TIME stop;
 
     /**
     *    @var span
@@ -44,7 +43,7 @@ struct call_site_span_profile_t {
     */
     TIME lock_wait_time;
 
-    call_site_span_profile_t() : call_site(0), start(std::numeric_limits<int>::max()), stop(0), span(0),
+    call_site_span_profile_t() : call_site(0), start(std::numeric_limits<int>::max()), span(0),
                                  lock_wait_time(0) {}  
 };
 

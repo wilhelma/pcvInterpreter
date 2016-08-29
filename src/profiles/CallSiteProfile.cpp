@@ -9,6 +9,8 @@
  *
  */
 
+// TODO: add offset to START TIME ALSO!!
+
 #include "CallSiteProfile.h"
 
 CallSiteProfile::~CallSiteProfile() {}
@@ -24,9 +26,9 @@ CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
 	prof->function_signature = work_profile->function_signature;
 	prof->lock_wait_time = span_profile->lock_wait_time;
 	prof->start = span_profile->start;
-	prof->stop = span_profile->stop;
-	prof->work = static_cast<TIME>(work_profile->work + prof->lock_wait_time);
-	prof->span = static_cast<TIME>(span_profile->span + prof->lock_wait_time);
+	prof->work = work_profile->work + prof->lock_wait_time;
+	prof->span = span_profile->span + prof->lock_wait_time;
+	prof->stop = span_profile->start + span_profile->span;
 	prof->count = work_profile->count;
 	if (prof->work == 0)
 		printf("ERROR in call site profile initialization: work cannot be zero \n");
@@ -46,6 +48,7 @@ void CallSiteProfile::print() {
 	printf("LOCK WAIT TIME IS %f of SPAN \n", static_cast<double>(prof->lock_wait_time) / 
 									     	  static_cast<double>(prof->span));
 	printf("COUNT is %d \n", prof->count);
+	printf("START TIME is %d \n", prof->start);
 	printf("PARALLELISM is %f \n", static_cast<double>(prof->work)/static_cast<double>(prof->span));
 	printf(" ======================================================== \n");
 }
