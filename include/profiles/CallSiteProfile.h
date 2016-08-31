@@ -26,7 +26,19 @@
 *   @brief Work and span information describing a call site in the program.
 */
 
-struct call_site_profile_t {
+class CallSiteProfile {
+    
+ public:
+    explicit CallSiteProfile(std::shared_ptr<CallSiteSpanProfile>
+                                                                 span_profile,
+                             std::shared_ptr<CallSiteWorkProfile> 
+                                                                 work_profile);
+
+    CallSiteProfile();
+    ~CallSiteProfile();
+
+    void print();
+    
 
     /**
     *    @var call_site
@@ -76,30 +88,6 @@ struct call_site_profile_t {
 
     TIME start;
     TIME stop;
-
-    call_site_profile_t() : call_site(0),  count(0), parallelism(0),
-                            lock_wait_time(0), span(0), work(0), start(std::numeric_limits<int>::max()),
-                            stop(0) {}  
-};
-
-class CallSiteProfile {
-    
- public:
-    explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
-    explicit CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
-                                                                 span_profile,
-                             std::shared_ptr<call_site_work_profile_t> 
-                                                                 work_profile);
-
-    ~CallSiteProfile();
-
-    void print();
-    
-    /**
-    *    @var prof
-    *    @brief The call_site_profile_t that the profile's methods act on. 
-    */
-    std::shared_ptr<call_site_profile_t> prof;
 
  private:
     CallSiteProfile(const CallSiteProfile&);

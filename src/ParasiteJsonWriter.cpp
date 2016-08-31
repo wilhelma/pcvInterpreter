@@ -35,20 +35,19 @@ ParasiteJsonWriter::~ParasiteJsonWriter() {
 void ParasiteJsonWriter::writeCallSite(std::shared_ptr<CallSiteProfile> profile) {
 
     rapidjson::Document::AllocatorType& allocator = fromScratch.GetAllocator();
-    std::shared_ptr<call_site_profile_t> prof = profile->prof;
     rapidjson::Value object(rapidjson::kObjectType);
-    object.AddMember("call_site", static_cast<int>(prof->call_site), allocator);
-    object.AddMember("count", prof->count, allocator);
-    rapidjson::Value fun_sg((prof->function_signature).c_str(), allocator);
+    object.AddMember("call_site", static_cast<int>(profile->call_site), allocator);
+    object.AddMember("count", profile->count, allocator);
+    rapidjson::Value fun_sg((profile->function_signature).c_str(), allocator);
     object.AddMember("function_signature", fun_sg.Move(), allocator);
-    object.AddMember("parallelism", prof->parallelism, allocator);
-    object.AddMember("span", static_cast<uint64_t>(prof->span), allocator);
-    object.AddMember("work", static_cast<uint64_t>(prof->work), allocator);
-    object.AddMember("start", static_cast<uint64_t>(prof->start), allocator);
-    object.AddMember("stop", static_cast<uint64_t>(prof->start +
-                                                   prof->span), allocator);
+    object.AddMember("parallelism", profile->parallelism, allocator);
+    object.AddMember("span", static_cast<uint64_t>(profile->span), allocator);
+    object.AddMember("work", static_cast<uint64_t>(profile->work), allocator);
+    object.AddMember("start", static_cast<uint64_t>(profile->start), allocator);
+    object.AddMember("stop", static_cast<uint64_t>(profile->start +
+                                                   profile->span), allocator);
     object.AddMember("lock_wait_time", 
-                     static_cast<uint64_t>(prof->lock_wait_time), allocator);
+                     static_cast<uint64_t>(profile->lock_wait_time), allocator);
     callSiteArray.PushBack(object, allocator);
 }
 

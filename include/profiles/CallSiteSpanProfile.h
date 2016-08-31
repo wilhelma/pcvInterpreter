@@ -21,7 +21,27 @@
 *   @brief Span information describing a call site in the program.
 */
 
-struct call_site_span_profile_t {
+class CallSiteSpanProfile {
+    
+ public:
+
+    CallSiteSpanProfile();
+    ~CallSiteSpanProfile();
+
+    void print();
+
+    /**
+    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add)
+    *    @brief Add the entries in profile_to_add to prof
+    */
+    void add_in_callsite_span (const std::shared_ptr<CallSiteSpanProfile> 
+                                      profile_to_add);
+
+    /**
+    *    @fn init_callsite_profile(...)
+    *    @brief Initialize prof with the information provided in function parameters
+    */
+    void init(CALLSITE call_site, TIME start_time);
 
     /**
     *    @var call_site
@@ -42,37 +62,6 @@ struct call_site_span_profile_t {
     *    @brief Lock wait time of callsite. 
     */
     TIME lock_wait_time;
-
-    call_site_span_profile_t() : call_site(0), start(std::numeric_limits<int>::max()), span(0),
-                                 lock_wait_time(0) {}  
-};
-
-class CallSiteSpanProfile {
-    
- public:
-    explicit CallSiteSpanProfile(std::shared_ptr<call_site_span_profile_t> profile);
-    ~CallSiteSpanProfile();
-
-    void print();
-
-    /**
-    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add)
-    *    @brief Add the entries in profile_to_add to prof
-    */
-    void add_in_callsite_span
-               (const std::shared_ptr<call_site_span_profile_t> profile_to_add);
-
-    /**
-    *    @fn init_callsite_profile(...)
-    *    @brief Initialize prof with the information provided in function parameters
-    */
-    void init(CALLSITE call_site, TIME start_time);
-
-    /**
-    *    @var prof
-    *    @brief The call_site_span_profile_t that the profile's methods act on. 
-    */
-    std::shared_ptr<call_site_span_profile_t> prof;
 
  private:
     CallSiteSpanProfile(const CallSiteSpanProfile&);

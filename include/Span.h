@@ -27,9 +27,9 @@
 /**
 *    @typedef call_site_span_hashtable_t
 *    @brief std::unordered_map used as a hashtable for matching CALLSITE keys
-			to call_site_span_profile_t values. 
+			to CallSiteSpanProfile values. 
 */
-typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_span_profile_t>, CallSiteHash, CallSiteEqual> call_site_span_hashtable_t;
+typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteSpanProfile>, CallSiteHash, CallSiteEqual> call_site_span_hashtable_t;
 
 class Span {
 
@@ -68,12 +68,14 @@ class Span {
 
 	TIME operator()();
 
+	std::shared_ptr<CallSiteSpanProfile> profileAt(CALLSITE call_site);
+
 	TIME total;
 
 	/**
 	*    @var hashtable
 	*    @brief A std::shared_ptr to a call_site_span_hashtable_t that maps
-				CALLSITE keys to call_site_span_profile_t values. 
+				CALLSITE keys to CallSiteSpanProfile values. 
 	*/
 	std::shared_ptr<call_site_span_hashtable_t> hashtable;
 	

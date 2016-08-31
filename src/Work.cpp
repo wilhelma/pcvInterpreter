@@ -38,12 +38,21 @@ TIME Work::operator()(){
 	return total;
 }
 
+std::shared_ptr<CallSiteWorkProfile>  Work::profileAt(CALLSITE call_site) {
+
+	if (!hashtable->count(call_site)) {
+		std::cout << "WORK PROFILE NOT INITIALIZED CORRECTLY at call site " <<
+			call_site << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+	return hashtable->at(call_site);
+}
+
 void Work::print() {
 
 	for (auto const &it : *hashtable) {
 		CALLSITE key = it.first;
-		CallSiteWorkProfile currentProfile(hashtable->at(key));
-		currentProfile.print();
+		profileAt(key)->print();
 	}
 }
 
@@ -53,11 +62,10 @@ void Work::clear() {
 
 void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 
-	std::shared_ptr<call_site_work_profile_t> new_ptr(new call_site_work_profile_t());
-	CallSiteWorkProfile new_profile(new_ptr);
-	new_profile.init_callsite_profile(call_site, function_signature);
-	std::pair<CALLSITE, std::shared_ptr<call_site_work_profile_t>> 
-                                    newPair(call_site, new_profile.prof);
+	std::shared_ptr<CallSiteWorkProfile> new_ptr(new CallSiteWorkProfile());
+	new_ptr->init_callsite_profile(call_site, function_signature);
+	std::pair<CALLSITE, std::shared_ptr<CallSiteWorkProfile>> 
+                                    newPair(call_site, new_ptr);
 	hashtable->insert(newPair);
 }
 
@@ -71,13 +79,11 @@ void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 						    TIME work) {
 	if (!hashtable->count(call_site))
 		init_call_site(call_site, function_signature);
-	CallSiteWorkProfile profile(hashtable->at(call_site));
-	profile.prof->work += work;
+	profileAt(call_site)->work += work;
 }
 
 TIME Work::at_call_site(CALLSITE call_site) {
-	CallSiteWorkProfile profile(hashtable->at(call_site));
-	return profile.prof->work;
+	return profileAt(call_site)->work;
 }
 
 
@@ -88,8 +94,7 @@ void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
 		init_call_site(call_site, function_signature);
 	}
 
-	CallSiteWorkProfile profile(hashtable->at(call_site));
-	profile.prof->count += 1;
+	profileAt(call_site)->count += 1;
 }
 
 

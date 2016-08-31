@@ -9,21 +9,34 @@
  *
  */
 
-#ifndef call_site_work_profile_H_
-#define call_site_work_profile_H_
+#ifndef CALL_SITE_WORK_PROFILE_H_
+#define CALL_SITE_WORK_PROFILE_H_
 
 #include <unordered_map>
 #include <memory>
 #include "Types.h"
 
-/**
-*   @struct call_site_work_profile_t
-*   @brief Work and span information describing a call site in the program.
-*/
 
-struct call_site_work_profile_t {
+class CallSiteWorkProfile {
+    
+ public:
+
+    CallSiteWorkProfile();
+    ~CallSiteWorkProfile();
+    void print();
 
     /**
+    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<CALL_SITE_WORK_PROFILE_H_t> profile_to_add)
+    *    @brief Add the entries in profile_to_add to prof
+    */
+    void add_in_callsite_profile_entries(const std::shared_ptr<CallSiteWorkProfile> profile_to_add);
+
+    /**
+    *    @fn init_callsite_profile(...)
+    *    @brief Initialize prof with the information provided in function parameters
+    */
+    void init_callsite_profile(CALLSITE call_site, FUN_SG function_signature);
+        /**
     *    @var call_site
     *    @brief The call site whose data is contained in the profile. 
     */
@@ -49,35 +62,6 @@ struct call_site_work_profile_t {
     */
     int count;
 
-    call_site_work_profile_t() : call_site(0), work(0), count(0) {}  
-};
-
-class CallSiteWorkProfile {
-    
- public:
-    explicit CallSiteWorkProfile(std::shared_ptr<call_site_work_profile_t> profile);
-    ~CallSiteWorkProfile();
-
-    void print();
-
-    /**
-    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_work_profile_t> profile_to_add)
-    *    @brief Add the entries in profile_to_add to prof
-    */
-    void add_in_callsite_profile_entries(const std::shared_ptr<call_site_work_profile_t> profile_to_add);
-
-    /**
-    *    @fn init_callsite_profile(...)
-    *    @brief Initialize prof with the information provided in function parameters
-    */
-    void init_callsite_profile(CALLSITE call_site, FUN_SG function_signature);
-    
-    /**
-    *    @var prof
-    *    @brief The call_site_work_profile_t that the profile's methods act on. 
-    */
-    std::shared_ptr<call_site_work_profile_t> prof;
-
  private:
     CallSiteWorkProfile(const CallSiteWorkProfile&);
     CallSiteWorkProfile& operator=(const CallSiteWorkProfile&);
@@ -85,4 +69,4 @@ class CallSiteWorkProfile {
 
 
 
-#endif  // call_site_work_profile_H_
+#endif  // CALL_SITE_WORK_PROFILE_H_

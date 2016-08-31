@@ -27,9 +27,9 @@
 /**
 *    @typedef call_site_work_hashtable_t
 *    @brief std::unordered_map used as a hashtable for matching CALLSITE keys
-			to call_site_work_profile_t values. 
+			to CallSiteWorkProfile values. 
 */
-typedef std::unordered_map<CALLSITE, std::shared_ptr<call_site_work_profile_t>, CallSiteHash, CallSiteEqual> call_site_work_hashtable_t;
+typedef std::unordered_map<CALLSITE, std::shared_ptr<CallSiteWorkProfile>, CallSiteHash, CallSiteEqual> call_site_work_hashtable_t;
 
 class Work {
 
@@ -67,10 +67,12 @@ class Work {
 
 	TIME operator()();
 
+	std::shared_ptr<CallSiteWorkProfile> profileAt(CALLSITE call_site);
+
 	/**
 	*    @var hashtable
 	*    @brief A std::shared_ptr to a call_site_work_hashtable_t that maps
-				CALLSITE keys to call_site_work_profile_t values. 
+				CALLSITE keys to CallSiteWorkProfile values. 
 	*/
 	std::shared_ptr<call_site_work_hashtable_t> hashtable;
 	
