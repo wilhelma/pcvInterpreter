@@ -22,8 +22,9 @@
 #include "ParasiteTool.h"
 
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
-							 last_event_time(0) {
+							 jsonWriter(random_string(5)), last_event_time(0) {
 	thread_graph.name = name;
+	jsonWriter.name = name;
 }
 
 vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
@@ -103,30 +104,17 @@ void ParasiteTool::printOverallProfile() {
 							                            " OF SPAN" << std::endl;
 }
 
-void ParasiteTool::printCallSiteProfiles() {
+void ParasiteTool::outputOverallProfile() {
 
-	// bottom prefix table contains spans for all call sites at program end
-    Span bottom_prefix(stacks.bottomThread()->prefix);
-	std::shared_ptr<call_site_work_hashtable_t> wrk = work.hashtable;
-	for (auto const &it : *wrk) {
-		CALLSITE key = it.first;
-		if (bottom_prefix.hashtable->count(key)) {
-			CallSiteProfile currentProfile(bottom_prefix.hashtable->at(key), 
-									       wrk->at(key));
-			currentProfile.print();
-		}
-	}
+	if (COMMAND_LINE_OUTPUT)
+		printOverallProfile();
+	if (JSON_OUTPUT)
+		jsonWriter.writeOverallProfile(parasite_profile);
 }
 
-void ParasiteTool::writeJson() {
+void ParasiteTool::outputCallSites() {
 
-	std::shared_ptr<ParasiteJsonWriter> parasiteJsonWriter(new ParasiteJsonWriter(name));
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
-
-	// Output json information for whole profile
-	parasiteJsonWriter->writeOverallProfile(parasite_profile);
-
-	// Output json information for each call site
     Span bottom_prefix(bottom_thread->prefix);
 	std::shared_ptr<call_site_work_hashtable_t> wrk = work.hashtable;
 
@@ -136,7 +124,10 @@ void ParasiteTool::writeJson() {
 			std::shared_ptr<CallSiteProfile> currentProfile
 					(new CallSiteProfile(bottom_prefix.hashtable->at(key),
 										 wrk->at(key)));
-			parasiteJsonWriter->writeCallSite(currentProfile);
+			if (JSON_OUTPUT)
+				jsonWriter.writeCallSite(currentProfile);
+			if (COMMAND_LINE_OUTPUT)
+				currentProfile->print();
 		}
 	}
 }
@@ -146,12 +137,8 @@ ParasiteTool::~ParasiteTool() {
 	std::cout << "Calling destructor" << std::endl;
 	thread_graph.sink = thread_graph.last_vertex;
 	endProfileCalculations();
-	if (COMMAND_LINE_OUTPUT) {
-		printCallSiteProfiles();
-		printOverallProfile();
-	}
-	if (JSON_OUTPUT) 
-		writeJson();
+	outputCallSites();
+	outputOverallProfile();
 	if (GRAPH_OUTPUT)
 		thread_graph.write_dot_file();
 }

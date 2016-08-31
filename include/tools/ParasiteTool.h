@@ -80,20 +80,16 @@ class ParasiteTool : public Tool {
 	*/
 	void printOverallProfile();
 
-	/**
-	*    @fn printCallSiteProfiles()
-	*    @brief Prints call ite profile information, in a format to be decided. 
-		 @todo Decide on format to print out profile information.
-	*/
-	void printCallSiteProfiles();
-
-	void writeJson();
 
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
 	void add_join_edges(vertex_descr_type start);
 
 	TIME concur(TIME serial_time);
+
+	void outputCallSites();
+
+	void outputOverallProfile();
 	
 	/**
 	*    @var main_stack
@@ -112,6 +108,8 @@ class ParasiteTool : public Tool {
 	DAG thread_graph;
 
 	std::string name;
+
+	ParasiteJsonWriter jsonWriter;
 
 	/**
 	*    @var last_lock_start_time
