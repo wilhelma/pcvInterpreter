@@ -65,6 +65,13 @@ using POS   = StrongTypedef<unsigned, 11>;
 
 // Call Types
 using TIME     = StrongTypedef<uint64_t, 12>;
+
+/// Addition operator among `TIME` variables.
+/// @param lhs The left-hand side.
+/// @param lhs The right-hand side.
+inline TIME operator+(const TIME& lhs, const TIME& rhs)
+{ return static_cast<TIME>(static_cast<uint64_t>(lhs) + rhs); }
+
 using CALLSITE = StrongTypedef<size_t,  13>;
 
 // File Types
