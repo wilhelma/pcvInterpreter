@@ -161,6 +161,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	const NewThreadInfo* const _info = e->getNewThreadInfo();
 	vertex_descr_type thread_start_vertex;
+	stacks.bottomThread()->spawned_children_count += 1;
 
 	if (stacks.bottomThreadIndex() != -1) 
 		thread_start_vertex = add_local_work(_info->startTime, "TS");
@@ -175,32 +176,37 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 }
 
 void ParasiteTool::Join(const JoinEvent* e) {
-	 
+
 	print_event_start("JOIN");
-	std::shared_ptr<thread_frame_t> bottom_thread(stacks.bottomThread());
+	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
+	bottom_thread->spawned_children_count -= 1;
 	add_join_edges(bottom_thread->join_vertex_list.front());
 	bottom_thread->join_vertex_list.pop_front();
 
-	TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
-	bottom_thread->absorb_child_locks();
-	TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
-	TIME lock_wait_time_on_continuation = lock_wait_time_including_children - 
-								   		  lock_wait_time_excluding_children;
+	if (bottom_thread->spawned_children_count == 0) {
+	 
+		print_event_start("SYNC");
+		TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
+		bottom_thread->absorb_child_locks();
+		TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
+		TIME lock_wait_time_on_continuation = lock_wait_time_including_children - 
+									   		  lock_wait_time_excluding_children;
 
-	// If critical path goes through spawned child
-	if (bottom_thread->longest_child() > bottom_thread->continuation()) {
-		bottom_thread->prefix.add(&(bottom_thread->longest_child));
-		// avoid double counting of lock wait time
-		bottom_thread->
-					correct_prefix(bottom_thread->longest_child_lock_wait_time);
-	} else { 
-		bottom_thread->prefix.add(&(bottom_thread->continuation));
-		// avoid double counting of lock wait time
-		bottom_thread->correct_prefix(lock_wait_time_on_continuation);
+		// If critical path goes through spawned child
+		if (bottom_thread->longest_child() > bottom_thread->continuation()) {
+			bottom_thread->prefix.add(&(bottom_thread->longest_child));
+			// avoid double counting of lock wait time
+			bottom_thread->correct_prefix(bottom_thread->longest_child_lock_wait_time);
+		} else { 
+			bottom_thread->prefix.add(&(bottom_thread->continuation));
+			// avoid double counting of lock wait time
+			bottom_thread->correct_prefix(lock_wait_time_on_continuation);
+		}
+
+		bottom_thread->continuation.clear();
+		bottom_thread->longest_child.clear();
+		print_event_end("SYNC");
 	}
-
-	bottom_thread->continuation.clear();
-	bottom_thread->longest_child.clear();
 	print_event_end("JOIN");
 }
 

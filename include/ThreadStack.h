@@ -92,6 +92,8 @@ struct thread_frame_t {
 
 	TIME concurrency_offset;
 
+	int spawned_children_count;
+
 	thread_frame_t():thread(0),
 					 longest_child_lock_wait_time(0), 
 					 prefix(Span()), 
