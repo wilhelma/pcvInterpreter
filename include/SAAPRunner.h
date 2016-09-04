@@ -15,12 +15,14 @@
 #include "EventService.h"
 #include "DBInterpreter.h"
 
+#include <list>
 #include <string>
 #include <memory>
 
 class SAAPRunner {
 public:
 	/// Constructor.
+    /// @param interpreter Pointer to the database interpreter.
 	SAAPRunner(std::unique_ptr<DBInterpreter>&& interpreter) :
 		DBInterpreter_(std::move(interpreter))
 	{}
@@ -36,17 +38,27 @@ public:
 	/// _Default_ destructor.
 	~SAAPRunner()                            = default;
 
-	/// @brief Subscribes the tool to the event service.
-	/// @param tool   Ptr to the tool to register.
-	/// @param filter Ptr to the filter.
+	/// @brief Subscribes the tool to the EventService.
+	/// @param tool   Pointer to the Tool to register.
+	/// @param filter Pointer to the Filter.
 	/// @param events Events the tool subscribes to.
-	bool registerTool(Tool* tool, const Filter* filter, Events events)
-	{ return DBInterpreter_->getEventService()->subscribe(tool, filter, events); }
+    /// @return An iterator to the element that has been
+    /// subscribed to the EventService.
+    /// @attention The returned iterator will be used to
+    /// unsubscribe the tool (via `SAAPRunner::removeTool`).
+    /// __That's the only chance to get it, so make sure to store it!__
+    decltype(auto) registerTool(std::unique_ptr<Tool>&& tool,
+                                std::unique_ptr<Filter>&& filter,
+                                Events&& events)
+    { return DBInterpreter_->getEventService()->subscribe(
+            std::move(tool), std::move(filter), std::move(events)); }
 
-	/// @brief Unsubscribes the tool from the event service.
-	/// @param tool Ptr to the tool to unregister.
-	bool removeTool(Tool* tool)
-	{ return DBInterpreter_->getEventService()->unsubscribe(tool); }
+    /// @brief Unsubscribes the Tool from the events and deletes it.
+    /// @param tool Iterator to the Tool to remove.
+    /// @attention The Tool iterator is given when registering
+    /// the Tool to the SAAPRunner.
+    void removeTool(std::list<Observer>::const_iterator tool)
+	{ DBInterpreter_->getEventService()->unsubscribe(tool); }
 
 	/// @brief Interprets the database.
 	/// @details Calls `Interpreter::process`.
@@ -55,10 +67,8 @@ public:
 	{ DBInterpreter_->process(DBPath); };
 
 private:
-	/// Private unique pointer to the `Interpreter`.
+	/// Pointer to the database interpreter.
 	std::unique_ptr<DBInterpreter> DBInterpreter_;
-
-//	DBInterpreter* DBInterpreter_;
 };
 
 #endif /* SAAPRUNNER_H_ */

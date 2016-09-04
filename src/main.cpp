@@ -33,20 +33,17 @@ int main(int argc, char* argv[]) {
 	// Create a SAAPRunner
 	auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter("SAAP.log")));
 
-  //std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
-  //runner->registerTool(parasiteTool.get(), NULL, Events::ALL);
-
-    auto debugTool(std::make_shared<DebugTool>());
-	/// @todo Do in such a way that you don't need the tool address
-	/// again to remove it. In this way the runner can have a unique_ptr
-	/// to the tool!
-	runner->registerTool(debugTool.get(), NULL, Events::ALL);
+    // Create and register the tool
+	const auto& tool_it = runner->registerTool(
+            std::make_unique<DebugTool>(),
+            std::unique_ptr<Filter>(nullptr),
+            Events::ALL);
 
 	// Start interpretation of the database
 	runner->interpret(static_cast<std::string>(argv[1]));
 
-	// unregister
-  //unner->removeTool(parasiteTool.get());
-	runner->removeTool(debugTool.get());
+	// Unregister the tool
+	runner->removeTool(tool_it);
+
 	return 0;
 }
