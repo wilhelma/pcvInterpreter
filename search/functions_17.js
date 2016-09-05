@@ -21,6 +21,7 @@ var searchData=
   ['_7elocksetchecker',['~LockSetChecker',['../classLockSetChecker.html#af1380eea4e1806c892f8e3e83a29b519',1,'LockSetChecker']]],
   ['_7elogger',['~Logger',['../classLogger.html#a81414467aac1f8740c5bd13624f3aa0b',1,'Logger']]],
   ['_7ememorypoolallocator',['~MemoryPoolAllocator',['../classrapidjson_1_1MemoryPoolAllocator.html#aa1d5b36c67611937e8ad6b2be53a483e',1,'rapidjson::MemoryPoolAllocator']]],
+  ['_7eobserver',['~Observer',['../structObserver.html#a942cffd2e1599366cad569a526fc85c0',1,'Observer']]],
   ['_7eparasitejsonwriter',['~ParasiteJsonWriter',['../classParasiteJsonWriter.html#aa8bc5663e543f3d72661b2ae440c5513',1,'ParasiteJsonWriter']]],
   ['_7eparasitetool',['~ParasiteTool',['../classParasiteTool.html#a75d2c72d81d39c25a6f74f187b16538c',1,'ParasiteTool']]],
   ['_7eparasitetracker',['~ParasiteTracker',['../classParasiteTracker.html#afd179ae03fe6f3b63e058983e020e31d',1,'ParasiteTracker']]],

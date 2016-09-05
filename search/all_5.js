@@ -42,7 +42,7 @@ var searchData=
   ['event_3c_20releaseinfo_20_3e',['Event&lt; ReleaseInfo &gt;',['../classEvent.html',1,'']]],
   ['event_3c_20returninfo_20_3e',['Event&lt; ReturnInfo &gt;',['../classEvent.html',1,'']]],
   ['event_3c_20threadendinfo_20_3e',['Event&lt; ThreadEndInfo &gt;',['../classEvent.html',1,'']]],
-  ['events',['events',['../structEventService_1_1Observer.html#a575f8623c18b4a8e0f38228560e4c639',1,'EventService::Observer::events()'],['../Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd',1,'Events():&#160;Event.h']]],
+  ['events',['events',['../structObserver.html#a85e27631224e023bcdf6ce9af35e90fc',1,'Observer::events()'],['../Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd',1,'Events():&#160;Event.h']]],
   ['eventservice',['EventService',['../classEventService.html',1,'EventService'],['../classEventService.html#a375fbe452bd3158f38a4dbaf29bb63e8',1,'EventService::EventService() noexcept=default'],['../classEventService.html#a6fb70ee4ce806c75c2840e7bd171aef0',1,'EventService::EventService(const EventService &amp;)=delete'],['../classEventService.html#a40958c5bb63ef7fb569501d05c7c4393',1,'EventService::EventService(EventService &amp;&amp;)=delete']]],
   ['eventservice_2ecpp',['EventService.cpp',['../EventService_8cpp.html',1,'']]],
   ['eventservice_2eh',['EventService.h',['../EventService_8h.html',1,'']]],

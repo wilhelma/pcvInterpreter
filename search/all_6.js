@@ -27,7 +27,7 @@ var searchData=
   ['filewritestream',['FileWriteStream',['../classrapidjson_1_1FileWriteStream.html',1,'rapidjson']]],
   ['filewritestream_2eh',['filewritestream.h',['../filewritestream_8h.html',1,'']]],
   ['fill',['fill',['../DBInterpreter_8cpp.html#ac45644dd3e905ccfb1a9ef9aca388a3d',1,'DBInterpreter.cpp']]],
-  ['filter',['Filter',['../classFilter.html',1,'Filter'],['../structEventService_1_1Observer.html#a22a079beae0d9b3968f3432a43fe2583',1,'EventService::Observer::filter()'],['../classFilter.html#ad15994c30d497afd567a6445446a249e',1,'Filter::Filter()'],['../classFilter.html#af91d6e92b501b55ac43a47e9c12b416e',1,'Filter::Filter(const Filter &amp;)']]],
+  ['filter',['Filter',['../classFilter.html',1,'Filter'],['../structObserver.html#a25dc983dbfcec11ce00a6b7fba024e84',1,'Observer::filter()'],['../classFilter.html#ad15994c30d497afd567a6445446a249e',1,'Filter::Filter()'],['../classFilter.html#af91d6e92b501b55ac43a47e9c12b416e',1,'Filter::Filter(const Filter &amp;)']]],
   ['filter_2eh',['Filter.h',['../Filter_8h.html',1,'']]],
   ['filter_2eh',['Filter.h',['../fwd_2Filter_8h.html',1,'']]],
   ['finalize',['finalize',['../classQueryResult.html#a07a559b1bf4bea3742cf6ea434f767d3',1,'QueryResult']]],
