@@ -82,8 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="functions_func.html#index__"><span>_</span></a></li>
-      <li><a href="functions_func_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_func.html#index_a"><span>a</span></a></li>
       <li><a href="functions_func_b.html#index_b"><span>b</span></a></li>
       <li><a href="functions_func_c.html#index_c"><span>c</span></a></li>
       <li><a href="functions_func_d.html#index_d"><span>d</span></a></li>
@@ -99,6 +98,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_func_n.html#index_n"><span>n</span></a></li>
       <li><a href="functions_func_o.html#index_o"><span>o</span></a></li>
       <li><a href="functions_func_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_func_q.html#index_q"><span>q</span></a></li>
       <li><a href="functions_func_r.html#index_r"><span>r</span></a></li>
       <li><a href="functions_func_s.html#index_s"><span>s</span></a></li>
       <li><a href="functions_func_t.html#index_t"><span>t</span></a></li>
@@ -154,11 +154,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>GenericValue()
 : <a class="el" href="classrapidjson_1_1GenericValue.html#ac423236e77125622f67072332bb72dc3">rapidjson::GenericValue&lt; Encoding, Allocator &gt;</a>
 </li>
-<li>getAccessInfo()
-: <a class="el" href="classAccessEvent.html#a479000078173028f6fad03845366e66d">AccessEvent</a>
-</li>
-<li>getAcquireInfo()
-: <a class="el" href="classAcquireEvent.html#aac1d7938a6b5455fadcb4c02a4606bcd">AcquireEvent</a>
+<li>get()
+: <a class="el" href="classQueryResult.html#a72f262e0c1d119bee12e569c7b953073">QueryResult</a>
 </li>
 <li>GetAllocator()
 : <a class="el" href="classrapidjson_1_1GenericDocument.html#ad92c6cd025d411258d1f2ad890e2ee3f">rapidjson::GenericDocument&lt; Encoding, Allocator, StackAllocator &gt;</a>
@@ -173,9 +170,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>getCallID()
 : <a class="el" href="classDBInterpreter.html#a1249abc621c741418be36e36fa2d9693">DBInterpreter</a>
 </li>
-<li>getCallInfo()
-: <a class="el" href="classCallEvent.html#a8556181605beedeeee652d135a4e8f31">CallEvent</a>
-</li>
 <li>getCalls()
 : <a class="el" href="classFunctionTrackerTool.html#a10c65c47e1c035a45d740fc6f17c16f8">FunctionTrackerTool</a>
 </li>
@@ -187,37 +181,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classrapidjson_1_1GenericReader.html#ab907a36c410e96154c99797a6a0ce16d">rapidjson::GenericReader&lt; SourceEncoding, TargetEncoding, StackAllocator &gt;</a>
 </li>
 <li>getEventService()
-: <a class="el" href="classDBInterpreter.html#aa9914745a980a0a2c978d89f50461b7c">DBInterpreter</a>
-, <a class="el" href="classInterpreter.html#a3ed8591c2c7e5490b009d01206d19571">Interpreter</a>
+: <a class="el" href="classDBInterpreter.html#af0a6ebdeb9b82904aec4ddcddfae173e">DBInterpreter</a>
 </li>
 <li>getEventType()
-: <a class="el" href="classAccessEvent.html#a51dda6a7b720fa0c38723f47471784fa">AccessEvent</a>
-, <a class="el" href="classAcquireEvent.html#ae05bb3800cbe820941d4ef4d8a88ee24">AcquireEvent</a>
-, <a class="el" href="classCallEvent.html#ae9d81a58aa26d5757306fd1bc0fcd4b7">CallEvent</a>
-, <a class="el" href="classEvent.html#a57f82a8731bacc198a3198f0781c05c9">Event</a>
-, <a class="el" href="classJoinEvent.html#a70bd0da6b8b02825a05203d8b4a11a72">JoinEvent</a>
-, <a class="el" href="classNewThreadEvent.html#a32ea3296e10aec6c02d8bf95842080e2">NewThreadEvent</a>
-, <a class="el" href="classReleaseEvent.html#a498b4228b2c27423ec8cf8685d28025d">ReleaseEvent</a>
-, <a class="el" href="classReturnEvent.html#a299802ab08651170494da39355cb0edd">ReturnEvent</a>
-, <a class="el" href="classThreadEndEvent.html#aa38dcdc5b10b6ba71bd04a5a1adf1dec">ThreadEndEvent</a>
+: <a class="el" href="classAccessEvent.html#aae62c01df7dcc460a7194e2a247293a9">AccessEvent</a>
+, <a class="el" href="classAcquireEvent.html#adc8818d6ab1b3d0aeba1cc69899d7279">AcquireEvent</a>
+, <a class="el" href="classCallEvent.html#af5361892d96a820260e088349836ed83">CallEvent</a>
+, <a class="el" href="classEvent.html#ad94173e90744533aff3a370566624ad2">Event&lt; InfoType &gt;</a>
+, <a class="el" href="classJoinEvent.html#a99d907fc4b55856cd7a1b6fe08175267">JoinEvent</a>
+, <a class="el" href="classNewThreadEvent.html#a5136bb386cf7a6c5ab42b669f1b9c6c7">NewThreadEvent</a>
+, <a class="el" href="classReleaseEvent.html#af37dc8b882e99af246e56943cab6e4e0">ReleaseEvent</a>
+, <a class="el" href="classReturnEvent.html#a3978f5d2177b7926962fff612b8790bd">ReturnEvent</a>
+, <a class="el" href="classThreadEndEvent.html#a2db5d5fee799b4bb0975a51ccb82bce4">ThreadEndEvent</a>
 </li>
-<li>getHash()
-: <a class="el" href="classDBInterpreter.html#a7d6bba9c801da2badcd99f7d943fd232">DBInterpreter</a>
+<li>getInfo()
+: <a class="el" href="classEvent.html#a8e1cef7b479193cbec3b55d1c3c4435c">Event&lt; InfoType &gt;</a>
 </li>
 <li>getInsAccessMap()
 : <a class="el" href="classAccessTable.html#af8b8001867819f8eb74ca2e31ac12879">AccessTable</a>
-</li>
-<li>getJoinInfo()
-: <a class="el" href="classJoinEvent.html#abe52c6613e2c84287f8858089f461079">JoinEvent</a>
 </li>
 <li>GetLength()
 : <a class="el" href="structrapidjson_1_1GenericValue_1_1ShortString.html#a1dfb164632febb2aebecb13e51052dea">rapidjson::GenericValue&lt; Encoding, Allocator &gt;::ShortString</a>
 </li>
 <li>getLock()
-: <a class="el" href="classLockMgr.html#ad5ed87960234bf28403f5155618df951">LockMgr</a>
-</li>
-<li>getNewThreadInfo()
-: <a class="el" href="classNewThreadEvent.html#a7553bd99bfb580cca7cfe824ac3c4c3c">NewThreadEvent</a>
+: <a class="el" href="classDBInterpreter.html#a668274580fc3b53a4c994511ade30bc5">DBInterpreter</a>
+, <a class="el" href="classLockMgr.html#ad5ed87960234bf28403f5155618df951">LockMgr</a>
 </li>
 <li>GetParseError()
 : <a class="el" href="classrapidjson_1_1GenericDocument.html#ad97e64c123ec1e07ea62ab0a9ce80c00">rapidjson::GenericDocument&lt; Encoding, Allocator, StackAllocator &gt;</a>
@@ -228,12 +216,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>GetRange()
 : <a class="el" href="structrapidjson_1_1UTF8.html#af3510e51d62eed8e64f5c162003d0c7e">rapidjson::UTF8&lt; CharType &gt;</a>
 </li>
-<li>getReleaseInfo()
-: <a class="el" href="classReleaseEvent.html#abd31b32def8ec2e29b8bab6bc0a8c679">ReleaseEvent</a>
-</li>
-<li>getReturnInfo()
-: <a class="el" href="classReturnEvent.html#ac1c79590ae386e88e6d180cc8ee85931">ReturnEvent</a>
-</li>
 <li>GetSize()
 : <a class="el" href="structrapidjson_1_1GenericMemoryBuffer.html#a917320efd5a6a8cf9cc4b6bd0eaf6b99">rapidjson::GenericMemoryBuffer&lt; Allocator &gt;</a>
 , <a class="el" href="structrapidjson_1_1GenericStringBuffer.html#a629cedcefa12a8057fad525df8548a88">rapidjson::GenericStringBuffer&lt; Encoding, Allocator &gt;</a>
@@ -242,15 +224,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>GetStackCapacity()
 : <a class="el" href="classrapidjson_1_1GenericDocument.html#ac785c064649dea6cfa67207b6bda748e">rapidjson::GenericDocument&lt; Encoding, Allocator, StackAllocator &gt;</a>
 </li>
+<li>getStartTime()
+: <a class="el" href="classLogger.html#a993cd320a6db897f7097bf64024c3189">Logger</a>
+</li>
 <li>GetString()
 : <a class="el" href="structrapidjson_1_1GenericStringBuffer.html#ace0bc8bee07187577116892b566a61d9">rapidjson::GenericStringBuffer&lt; Encoding, Allocator &gt;</a>
 </li>
 <li>getThread()
-: <a class="el" href="classEvent.html#af90345dd725e37df44b714ea895bbc65">Event</a>
-, <a class="el" href="classThreadMgr.html#aad40514619b9b7df091d8c72374062e3">ThreadMgr</a>
-</li>
-<li>getThreadEndInfo()
-: <a class="el" href="classThreadEndEvent.html#af1a577539e23ea073a69d207401c74ef">ThreadEndEvent</a>
+: <a class="el" href="classDBInterpreter.html#a05d80c7d8caafa20de1c03f8218d9bf0">DBInterpreter</a>
+, <a class="el" href="classEvent.html#a3236aa6460f7f847015d1e792407f139">Event&lt; InfoType &gt;</a>
+, <a class="el" href="classThreadMgr.html#ae5c0c8383f01aeaabf12c9ba0c11ca2e">ThreadMgr</a>
 </li>
 <li>GetType()
 : <a class="el" href="classrapidjson_1_1AutoUTFInputStream.html#aa7a839dd7b37ef7e09fce3288dd8a554">rapidjson::AutoUTFInputStream&lt; CharType, InputByteStream &gt;</a>

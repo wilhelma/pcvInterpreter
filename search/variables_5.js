@@ -7,5 +7,6 @@ var searchData=
   ['endtime',['endTime',['../structReturnInfo.html#aac3c65f0a613c54a1ce7fc12f5a9ff0b',1,'ReturnInfo::endTime()'],['../structThreadEndInfo.html#aca39d07e69154b74f3ca0703b31c99f6',1,'ThreadEndInfo::endTime()']]],
   ['eof_5f',['eof_',['../classrapidjson_1_1FileReadStream.html#adee210f3c66e6a05a61379b1e6835f09',1,'rapidjson::FileReadStream']]],
   ['epoch',['epoch',['../structRaceDetectionTool_1_1VarSet__.html#a5752ed73082a87725978bf723f079031',1,'RaceDetectionTool::VarSet_']]],
-  ['events',['events',['../structEventService_1_1__observer.html#a4e465263279624399ab01024209a67ab',1,'EventService::_observer']]]
+  ['events',['events',['../structEventService_1_1Observer.html#a575f8623c18b4a8e0f38228560e4c639',1,'EventService::Observer']]],
+  ['eventservice_5f',['EventService_',['../classDBInterpreter.html#abaa0263abc23715dd4d0286329255d40',1,'DBInterpreter']]]
 ];

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['wait2seconds',['wait2seconds',['../nested__test_8c.html#a3ff4345e3b5b0243950fc2351dca5021',1,'wait2seconds():&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a3ff4345e3b5b0243950fc2351dca5021',1,'wait2seconds():&#160;nested_test_with_calls.c']]],
-  ['wait500ms',['wait500ms',['../nested__test_8c.html#a58d3593c655cb563e293bfe05827d29a',1,'wait500ms():&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a58d3593c655cb563e293bfe05827d29a',1,'wait500ms():&#160;nested_test_with_calls.c']]],
+  ['what',['what',['../classSQLException.html#af9b03aeca6ccac78cf10673428ebf305',1,'SQLException']]],
   ['write_5fdot_5ffile',['write_dot_file',['../classDAG.html#a6748e89a445da6b645c7130d17ec5a4d',1,'DAG']]],
   ['writebool',['WriteBool',['../classrapidjson_1_1Writer.html#a13ab7c9e250448ec3405c6341eb0df9c',1,'rapidjson::Writer']]],
   ['writecallsite',['writeCallSite',['../classParasiteJsonWriter.html#a01e70e24ab6df013c95f1b4008b8fcac',1,'ParasiteJsonWriter']]],

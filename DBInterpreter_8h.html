@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>PCV Interpreter: include/DBInterpreter.h File Reference</title>
+<title>PCV Interpreter: /home/paolo/pcvInterpreter/include/DBInterpreter.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,12 +88,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">DBInterpreter.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="fwd_2Access_8h_source.html">fwd/Access.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="fwd_2Call_8h_source.html">fwd/Call.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2File_8h_source.html">fwd/File.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2Function_8h_source.html">fwd/Function.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2Instruction_8h_source.html">fwd/Instruction.h</a>&quot;</code><br />
@@ -103,14 +106,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &quot;<a class="el" href="fwd_2Reference_8h_source.html">fwd/Reference.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2Segment_8h_source.html">fwd/Segment.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2Thread_8h_source.html">fwd/Thread.h</a>&quot;</code><br />
-<code>#include &quot;Call.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="fwd_2EventService_8h_source.html">fwd/EventService.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fwd_2LockMgr_8h_source.html">fwd/LockMgr.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fwd_2ThreadMgr_8h_source.html">fwd/ThreadMgr.h</a>&quot;</code><br />
-<code>#include &quot;DBTable.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="LockMgr_8h_source.html">LockMgr.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ThreadMgr_8h_source.html">ThreadMgr.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CallStack_8h_source.html">CallStack.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Interpreter_8h_source.html">Interpreter.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ShadowVar_8h_source.html">ShadowVar.h</a>&quot;</code><br />
+<code>#include &quot;DBTable.h&quot;</code><br />
+<code>#include &quot;ShadowVar.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="AccessTable_8h_source.html">AccessTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CallTable_8h_source.html">CallTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FileTable_8h_source.html">FileTable.h</a>&quot;</code><br />
@@ -122,10 +123,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &quot;<a class="el" href="ReferenceTable_8h_source.html">ReferenceTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SegmentTable_8h_source.html">SegmentTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ThreadTable_8h_source.html">ThreadTable.h</a>&quot;</code><br />
-<code>#include &lt;sqlite3.h&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Types_8h_source.html">Types.h</a>&quot;</code><br />
 </div>
 <p><a href="DBInterpreter_8h_source.html">Go to the source code of this file.</a></p>
@@ -133,8 +133,88 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html">DBInterpreter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Database Interpreter.  <a href="classDBInterpreter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a59e56af19e754a6aa26a612ebf91d05f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> { <a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05fae0aa021e21dddbd6d8cecec71e9cf564">ErrorCode::OK</a> = 0, 
+<a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05fa1f60ae3892e15c97e8ed2812e5d13181">ErrorCode::NO_ENTRY</a> = 1, 
+<a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05fa8e953b320636f4719c936676d97049ff">ErrorCode::ENTRY_EXISTS</a> = 2, 
+<a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05fa8d12a2ca7e5a64036d7251a3eda51a38">ErrorCode::ABORT</a> = 3
+ }<tr class="memdesc:a59e56af19e754a6aa26a612ebf91d05f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error codes.  <a href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">More...</a><br /></td></tr>
+</td></tr>
+<tr class="separator:a59e56af19e754a6aa26a612ebf91d05f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a71875ae97e42bf4cad8d7ce8a16bca40"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classDBInterpreter.html">DBInterpreter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DBInterpreter_8h.html#a71875ae97e42bf4cad8d7ce8a16bca40">make_DBInterpreter</a> (std::string &amp;&amp;logFileName)</td></tr>
+<tr class="memdesc:a71875ae97e42bf4cad8d7ce8a16bca40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to create a <code><a class="el" href="classDBInterpreter.html" title="Database Interpreter. ">DBInterpreter</a></code>.  <a href="#a71875ae97e42bf4cad8d7ce8a16bca40">More...</a><br /></td></tr>
+<tr class="separator:a71875ae97e42bf4cad8d7ce8a16bca40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="a59e56af19e754a6aa26a612ebf91d05f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Error codes. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a59e56af19e754a6aa26a612ebf91d05fae0aa021e21dddbd6d8cecec71e9cf564"></a>OK&#160;</td><td class="fielddoc">
+<p>Okay. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a59e56af19e754a6aa26a612ebf91d05fa1f60ae3892e15c97e8ed2812e5d13181"></a>NO_ENTRY&#160;</td><td class="fielddoc">
+<p>No entry found. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a59e56af19e754a6aa26a612ebf91d05fa8e953b320636f4719c936676d97049ff"></a>ENTRY_EXISTS&#160;</td><td class="fielddoc">
+<p>Entry already exists. </p>
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a59e56af19e754a6aa26a612ebf91d05fa8d12a2ca7e5a64036d7251a3eda51a38"></a>ABORT&#160;</td><td class="fielddoc">
+<p>Operation aborted. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a71875ae97e42bf4cad8d7ce8a16bca40"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDBInterpreter.html">DBInterpreter</a>&gt; make_DBInterpreter </td>
+          <td>(</td>
+          <td class="paramtype">std::string &amp;&amp;&#160;</td>
+          <td class="paramname"><em>logFileName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Helper function to create a <code><a class="el" href="classDBInterpreter.html" title="Database Interpreter. ">DBInterpreter</a></code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logFileName</td><td>The name of the log file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <code>std::unique_ptr</code> to a <code><a class="el" href="classDBInterpreter.html" title="Database Interpreter. ">DBInterpreter</a></code>. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

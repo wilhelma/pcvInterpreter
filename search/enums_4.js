@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['okcode',['OkCode',['../Interpreter_8h.html#a6657699bd60a5267c40f45438dcbadda',1,'Interpreter.h']]]
+  ['logseverity',['LogSeverity',['../Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861',1,'Logger.h']]]
 ];

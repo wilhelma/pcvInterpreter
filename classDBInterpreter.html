@@ -97,92 +97,85 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
+<p>Database Interpreter.  
+ <a href="classDBInterpreter.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="DBInterpreter_8h_source.html">DBInterpreter.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for DBInterpreter:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classDBInterpreter.png" usemap="#DBInterpreter_map" alt=""/>
-  <map id="DBInterpreter_map" name="DBInterpreter_map">
-<area href="classInterpreter.html" alt="Interpreter" shape="rect" coords="0,0,88,24"/>
-</map>
- </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac59e041aa7c960450587531f17466a5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ac59e041aa7c960450587531f17466a5d">DBInterpreter</a> (const char *DBPath, const char *logFile, <a class="el" href="classEventService.html">EventService</a> *service, <a class="el" href="classLockMgr.html">LockMgr</a> *lockMgr, <a class="el" href="classThreadMgr.html">ThreadMgr</a> *threadMgr)</td></tr>
-<tr class="separator:ac59e041aa7c960450587531f17466a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21170f432459090ec962b68cc690f53a"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a21170f432459090ec962b68cc690f53a">~DBInterpreter</a> () overridefinal</td></tr>
-<tr class="separator:a21170f432459090ec962b68cc690f53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a235585ee4107a3e9e317e1ab98076193"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a235585ee4107a3e9e317e1ab98076193">process</a> () overridefinal</td></tr>
-<tr class="memdesc:a235585ee4107a3e9e317e1ab98076193"><td class="mdescLeft">&#160;</td><td class="mdescRight">The main process routine. Loops over instructions.  <a href="#a235585ee4107a3e9e317e1ab98076193">More...</a><br /></td></tr>
-<tr class="separator:a235585ee4107a3e9e317e1ab98076193"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9914745a980a0a2c978d89f50461b7c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classEventService.html">EventService</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aa9914745a980a0a2c978d89f50461b7c">getEventService</a> () overridefinal</td></tr>
-<tr class="separator:aa9914745a980a0a2c978d89f50461b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classInterpreter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classInterpreter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classInterpreter.html">Interpreter</a></td></tr>
-<tr class="memitem:a2d8c65a79a2160f2f6901ae11fd196e6 inherit pub_methods_classInterpreter"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInterpreter.html#a2d8c65a79a2160f2f6901ae11fd196e6">Interpreter</a> (<a class="el" href="classLockMgr.html">LockMgr</a> *lockMgr, <a class="el" href="classThreadMgr.html">ThreadMgr</a> *threadMgr, const char *logFile)</td></tr>
-<tr class="separator:a2d8c65a79a2160f2f6901ae11fd196e6 inherit pub_methods_classInterpreter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8d6242ff57678a53d43e2864851bd9e inherit pub_methods_classInterpreter"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInterpreter.html#af8d6242ff57678a53d43e2864851bd9e">initLogger</a> () const </td></tr>
-<tr class="separator:af8d6242ff57678a53d43e2864851bd9e inherit pub_methods_classInterpreter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a462a2467300903e0188ac6e4a6a612f6 inherit pub_methods_classInterpreter"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInterpreter.html#a462a2467300903e0188ac6e4a6a612f6">~Interpreter</a> ()</td></tr>
-<tr class="separator:a462a2467300903e0188ac6e4a6a612f6 inherit pub_methods_classInterpreter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7ae5856d320ca5259e945252b0c8aa5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af7ae5856d320ca5259e945252b0c8aa5">DBInterpreter</a> (std::string &amp;&amp;logFile, std::shared_ptr&lt; <a class="el" href="classEventService.html">EventService</a> &gt; service, std::unique_ptr&lt; <a class="el" href="classLockMgr.html">LockMgr</a> &gt; &amp;&amp;lockMgr, std::unique_ptr&lt; <a class="el" href="classThreadMgr.html">ThreadMgr</a> &gt; &amp;&amp;threadMgr)</td></tr>
+<tr class="memdesc:af7ae5856d320ca5259e945252b0c8aa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#af7ae5856d320ca5259e945252b0c8aa5">More...</a><br /></td></tr>
+<tr class="separator:af7ae5856d320ca5259e945252b0c8aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1aa4b9f0d073b1b8a9c577b86f8c84b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ab1aa4b9f0d073b1b8a9c577b86f8c84b">DBInterpreter</a> (const <a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;)=delete</td></tr>
+<tr class="memdesc:ab1aa4b9f0d073b1b8a9c577b86f8c84b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy constructor.  <a href="#ab1aa4b9f0d073b1b8a9c577b86f8c84b">More...</a><br /></td></tr>
+<tr class="separator:ab1aa4b9f0d073b1b8a9c577b86f8c84b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4de75ce925e033ef464c4c5131e6b0a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af4de75ce925e033ef464c4c5131e6b0a">DBInterpreter</a> (<a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:af4de75ce925e033ef464c4c5131e6b0a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move constructor.  <a href="#af4de75ce925e033ef464c4c5131e6b0a">More...</a><br /></td></tr>
+<tr class="separator:af4de75ce925e033ef464c4c5131e6b0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2e124603aad466477982989eb2df7e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af2e124603aad466477982989eb2df7e3">operator=</a> (const <a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;)=delete</td></tr>
+<tr class="memdesc:af2e124603aad466477982989eb2df7e3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy assignment operator.  <a href="#af2e124603aad466477982989eb2df7e3">More...</a><br /></td></tr>
+<tr class="separator:af2e124603aad466477982989eb2df7e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a257d372b35ef959578bcebe24b3e3c82"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a257d372b35ef959578bcebe24b3e3c82">operator=</a> (<a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a257d372b35ef959578bcebe24b3e3c82"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move assignment operator.  <a href="#a257d372b35ef959578bcebe24b3e3c82">More...</a><br /></td></tr>
+<tr class="separator:a257d372b35ef959578bcebe24b3e3c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accce09b755c7b414699b65efc61ea487"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#accce09b755c7b414699b65efc61ea487">~DBInterpreter</a> ()=default</td></tr>
+<tr class="memdesc:accce09b755c7b414699b65efc61ea487"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> destructor.  <a href="#accce09b755c7b414699b65efc61ea487">More...</a><br /></td></tr>
+<tr class="separator:accce09b755c7b414699b65efc61ea487"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef939ecdffa464f5b9231b174b2c0614"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aef939ecdffa464f5b9231b174b2c0614">process</a> (const std::string &amp;DBPath)</td></tr>
+<tr class="memdesc:aef939ecdffa464f5b9231b174b2c0614"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the database.  <a href="#aef939ecdffa464f5b9231b174b2c0614">More...</a><br /></td></tr>
+<tr class="separator:aef939ecdffa464f5b9231b174b2c0614"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0a6ebdeb9b82904aec4ddcddfae173e"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af0a6ebdeb9b82904aec4ddcddfae173e">getEventService</a> ()</td></tr>
+<tr class="separator:af0a6ebdeb9b82904aec4ddcddfae173e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
 Private Types</h2></td></tr>
-<tr class="memitem:a9482e4fdf8f2fe037d9bf15d01c507d6"><td class="memItemLeft" align="right" valign="top">typedef int(DBInterpreter::*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a9482e4fdf8f2fe037d9bf15d01c507d6">fillFunc_t</a>) (sqlite3_stmt *)</td></tr>
-<tr class="separator:a9482e4fdf8f2fe037d9bf15d01c507d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37323f312554e5788a72cdfeebd52ff8"><td class="memItemLeft" align="right" valign="top">typedef int(DBInterpreter::*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a37323f312554e5788a72cdfeebd52ff8">processAccess_t</a>) (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessID, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td></tr>
-<tr class="separator:a37323f312554e5788a72cdfeebd52ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0724e3e4ddef273730293bcf96a63ed7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; <a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a>, <a class="el" href="classShadowVar.html">ShadowVar</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0724e3e4ddef273730293bcf96a63ed7">shadowVarMap_t</a></td></tr>
+<tr class="memitem:a7ce0638690fb306407094bc2c128c68b"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>(DBInterpreter::*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a7ce0638690fb306407094bc2c128c68b">processAccess_t</a>) (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessID, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td></tr>
+<tr class="separator:a7ce0638690fb306407094bc2c128c68b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0724e3e4ddef273730293bcf96a63ed7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; <a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a>, <a class="el" href="structShadowVar.html">ShadowVar</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0724e3e4ddef273730293bcf96a63ed7">shadowVarMap_t</a></td></tr>
 <tr class="separator:a0724e3e4ddef273730293bcf96a63ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:af372e534027204020aae6fc1cd1d8dbc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af372e534027204020aae6fc1cd1d8dbc">loadDB</a> (const char *path, sqlite3 **db) const </td></tr>
-<tr class="separator:af372e534027204020aae6fc1cd1d8dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fb40d2433663aff0b810e90ea5840f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0fb40d2433663aff0b810e90ea5840f4">importDB</a> (sqlite3 **db)</td></tr>
-<tr class="separator:a0fb40d2433663aff0b810e90ea5840f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a367c7ad5212e296e86748ce158abdb98"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a367c7ad5212e296e86748ce158abdb98">closeDB</a> (sqlite3 **db) const </td></tr>
-<tr class="separator:a367c7ad5212e296e86748ce158abdb98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2237549d9fae083e3b8627b6ac9a5fb"><td class="memTemplParams" colspan="2">template&lt;typename IdT , typename T &gt; </td></tr>
-<tr class="memitem:af2237549d9fae083e3b8627b6ac9a5fb"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af2237549d9fae083e3b8627b6ac9a5fb">fillGeneric</a> (const char *sql, sqlite3 **db, <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt; *table)</td></tr>
-<tr class="separator:af2237549d9fae083e3b8627b6ac9a5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2b658ca6395400b2e157e97bc75e17a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ae2b658ca6395400b2e157e97bc75e17a">processReturn</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins, const <a class="el" href="structcall__t.html">call_t</a> &amp;call)</td></tr>
-<tr class="separator:ae2b658ca6395400b2e157e97bc75e17a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0415acf196077052dc4b377e319862a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af0415acf196077052dc4b377e319862a">processInstruction</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
-<tr class="separator:af0415acf196077052dc4b377e319862a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37c634717b8f984c99012b381bc27232"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a37c634717b8f984c99012b381bc27232">processStart</a> ()</td></tr>
-<tr class="separator:a37c634717b8f984c99012b381bc27232"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ea880bf818d482ed30949d01e1ddc7c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0ea880bf818d482ed30949d01e1ddc7c">processEnd</a> ()</td></tr>
-<tr class="separator:a0ea880bf818d482ed30949d01e1ddc7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e78ae1e5d06324377d3384b2aa23037"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1e78ae1e5d06324377d3384b2aa23037">processCall</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
-<tr class="separator:a1e78ae1e5d06324377d3384b2aa23037"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9fad50cba07aa3d8094199c1d9fa78a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ab9fad50cba07aa3d8094199c1d9fa78a">processCall</a> (const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a> callLine, <a class="el" href="Types_8h.html#a63f0cd130dcec3e0f4e0beea67c4475e">SEG_ID</a> segId)</td></tr>
-<tr class="separator:ab9fad50cba07aa3d8094199c1d9fa78a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ee25c68893939f9cc7acefbb811957b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a8ee25c68893939f9cc7acefbb811957b">processAccessGeneric</a> (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessId, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="classDBInterpreter.html#a37323f312554e5788a72cdfeebd52ff8">processAccess_t</a> func)</td></tr>
-<tr class="separator:a8ee25c68893939f9cc7acefbb811957b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f0a38fdb62c5d4fd036787e079a451d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a3f0a38fdb62c5d4fd036787e079a451d">processAccess</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="classDBInterpreter.html#a37323f312554e5788a72cdfeebd52ff8">processAccess_t</a> accessFunc)</td></tr>
-<tr class="separator:a3f0a38fdb62c5d4fd036787e079a451d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73992e2770807a5764b0e565bdd772fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a73992e2770807a5764b0e565bdd772fb">processMemAccess</a> (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessId, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td></tr>
-<tr class="separator:a73992e2770807a5764b0e565bdd772fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a5abf05fed712fbc5169cbe17979cff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0a5abf05fed712fbc5169cbe17979cff">processAcquire</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
-<tr class="separator:a0a5abf05fed712fbc5169cbe17979cff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae45f1f02c08ef58f52d9e5df3b52a056"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ae45f1f02c08ef58f52d9e5df3b52a056">processRelease</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
-<tr class="separator:ae45f1f02c08ef58f52d9e5df3b52a056"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af39fcb0a9d2735455a5db5a6f7b47fee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af39fcb0a9d2735455a5db5a6f7b47fee">processJoin</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</td></tr>
-<tr class="separator:af39fcb0a9d2735455a5db5a6f7b47fee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad4317a6952889b0ebcb459c621125a5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aad4317a6952889b0ebcb459c621125a5">processFork</a> (const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</td></tr>
-<tr class="separator:aad4317a6952889b0ebcb459c621125a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d6bba9c801da2badcd99f7d943fd232"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a7d6bba9c801da2badcd99f7d943fd232">getHash</a> (unsigned funId, unsigned lineNo) const </td></tr>
-<tr class="separator:a7d6bba9c801da2badcd99f7d943fd232"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a668274580fc3b53a4c994511ade30bc5"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a668274580fc3b53a4c994511ade30bc5">getLock</a> (const <a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a> &amp;reference_id)</td></tr>
+<tr class="memdesc:a668274580fc3b53a4c994511ade30bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to hide <code>lockMgr_</code> name in the source file.  <a href="#a668274580fc3b53a4c994511ade30bc5">More...</a><br /></td></tr>
+<tr class="separator:a668274580fc3b53a4c994511ade30bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05d80c7d8caafa20de1c03f8218d9bf0"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a05d80c7d8caafa20de1c03f8218d9bf0">getThread</a> (const <a class="el" href="Types_8h.html#af58a2151481051184c8869e5bf012e8b">TRD_ID</a> &amp;thread_id)</td></tr>
+<tr class="memdesc:a05d80c7d8caafa20de1c03f8218d9bf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function to hide <code>threadMgr_</code> name in the source file.  <a href="#a05d80c7d8caafa20de1c03f8218d9bf0">More...</a><br /></td></tr>
+<tr class="separator:a05d80c7d8caafa20de1c03f8218d9bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a541dd3664f387579d8d1edc869571958"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a541dd3664f387579d8d1edc869571958">importDB</a> (const std::string &amp;DBPath)</td></tr>
+<tr class="memdesc:a541dd3664f387579d8d1edc869571958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Imports the database in the tables.  <a href="#a541dd3664f387579d8d1edc869571958">More...</a><br /></td></tr>
+<tr class="separator:a541dd3664f387579d8d1edc869571958"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1f7f02a773a5768e11d4f17daa6c63b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aa1f7f02a773a5768e11d4f17daa6c63b">processAccess</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="classDBInterpreter.html#a7ce0638690fb306407094bc2c128c68b">processAccess_t</a> accessFunc)</td></tr>
+<tr class="separator:aa1f7f02a773a5768e11d4f17daa6c63b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9d3894eaa2e3f7340bac6c6b7f93fe1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ac9d3894eaa2e3f7340bac6c6b7f93fe1">processReturn</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins, const <a class="el" href="structcall__t.html">call_t</a> &amp;call)</td></tr>
+<tr class="separator:ac9d3894eaa2e3f7340bac6c6b7f93fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcd99fcf55ab5a34ffd0a76ffb9da3bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#afcd99fcf55ab5a34ffd0a76ffb9da3bb">processStart</a> ()</td></tr>
+<tr class="separator:afcd99fcf55ab5a34ffd0a76ffb9da3bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75b701435de0029496664bdbe0d6573c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a75b701435de0029496664bdbe0d6573c">processEnd</a> ()</td></tr>
+<tr class="separator:a75b701435de0029496664bdbe0d6573c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc93a63150c184f0c58dffee0018d522"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#abc93a63150c184f0c58dffee0018d522">processInstruction</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
+<tr class="separator:abc93a63150c184f0c58dffee0018d522"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15b4fde39edcafb03f157c9e4308f765"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a15b4fde39edcafb03f157c9e4308f765">processCall</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
+<tr class="separator:a15b4fde39edcafb03f157c9e4308f765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8f758f43dff4125d44b4fc9b2afb09b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ab8f758f43dff4125d44b4fc9b2afb09b">processCall</a> (const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a> callLine, <a class="el" href="Types_8h.html#a63f0cd130dcec3e0f4e0beea67c4475e">SEG_ID</a> segId)</td></tr>
+<tr class="separator:ab8f758f43dff4125d44b4fc9b2afb09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c20d7758989ab0c62372a0eec332d9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1c20d7758989ab0c62372a0eec332d9c">processAccessGeneric</a> (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessId, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, <a class="el" href="classDBInterpreter.html#a7ce0638690fb306407094bc2c128c68b">processAccess_t</a> func)</td></tr>
+<tr class="separator:a1c20d7758989ab0c62372a0eec332d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73faba9e5fff9f2c2dc3c2596afb755b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a73faba9e5fff9f2c2dc3c2596afb755b">processMemAccess</a> (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessId, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td></tr>
+<tr class="separator:a73faba9e5fff9f2c2dc3c2596afb755b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74f6ac39a03ce58d184e0b204273b7de"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a74f6ac39a03ce58d184e0b204273b7de">processAcquire</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
+<tr class="separator:a74f6ac39a03ce58d184e0b204273b7de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5753f63f4cd242ede580ea49c3af4c7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a5753f63f4cd242ede580ea49c3af4c7f">processRelease</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</td></tr>
+<tr class="separator:a5753f63f4cd242ede580ea49c3af4c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ef3f6d822e8ad74de25c38e9543294b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0ef3f6d822e8ad74de25c38e9543294b">processJoin</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</td></tr>
+<tr class="separator:a0ef3f6d822e8ad74de25c38e9543294b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46ce0d7b6cc29926993e34835c95539a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a46ce0d7b6cc29926993e34835c95539a">processFork</a> (const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</td></tr>
+<tr class="separator:a46ce0d7b6cc29926993e34835c95539a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8e6babba870bb46b83143fb1ee92b27"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ab8e6babba870bb46b83143fb1ee92b27">getCallerID</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins) const </td></tr>
 <tr class="separator:ab8e6babba870bb46b83143fb1ee92b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1249abc621c741418be36e36fa2d9693"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1249abc621c741418be36e36fa2d9693">getCallID</a> (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins) const </td></tr>
 <tr class="separator:a1249abc621c741418be36e36fa2d9693"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fb66ba5a80528c1a039e4d83ca07794"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a0fb66ba5a80528c1a039e4d83ca07794">DBInterpreter</a> (const <a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;)</td></tr>
-<tr class="separator:a0fb66ba5a80528c1a039e4d83ca07794"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09f0a49a761019d8798b53989d78cc49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a09f0a49a761019d8798b53989d78cc49">operator=</a> (const <a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;)</td></tr>
-<tr class="separator:a09f0a49a761019d8798b53989d78cc49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -193,49 +186,55 @@ Static Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a8092e5244ad346576f1088665f2587b3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessTable.html">AccessTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a8092e5244ad346576f1088665f2587b3">accessTable</a></td></tr>
-<tr class="separator:a8092e5244ad346576f1088665f2587b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ad4e7cd7c0daeacb1e5cb0dae535468"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallTable.html">CallTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a2ad4e7cd7c0daeacb1e5cb0dae535468">callTable</a></td></tr>
-<tr class="separator:a2ad4e7cd7c0daeacb1e5cb0dae535468"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0022eeb02640b9b803df3bbcc81228d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileTable.html">FileTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ab0022eeb02640b9b803df3bbcc81228d">fileTable</a></td></tr>
-<tr class="separator:ab0022eeb02640b9b803df3bbcc81228d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61f2c32afcbb0dc6a048c0131bb5871b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFunctionTable.html">FunctionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a61f2c32afcbb0dc6a048c0131bb5871b">functionTable</a></td></tr>
-<tr class="separator:a61f2c32afcbb0dc6a048c0131bb5871b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6503dc9f2c7923255907f6edc4334a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classInstructionTable.html">InstructionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a6503dc9f2c7923255907f6edc4334a74">instructionTable</a></td></tr>
-<tr class="separator:a6503dc9f2c7923255907f6edc4334a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55b9592f85349cde83b5c29422a2a7e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopTable.html">LoopTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a55b9592f85349cde83b5c29422a2a7e0">loopTable</a></td></tr>
-<tr class="separator:a55b9592f85349cde83b5c29422a2a7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1718dcfd0e2716584a618922895f9d6d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopExecutionTable.html">LoopExecutionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1718dcfd0e2716584a618922895f9d6d">loopExecutionTable</a></td></tr>
-<tr class="separator:a1718dcfd0e2716584a618922895f9d6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addc0473179078124b13ce1459e42f3f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopIterationTable.html">LoopIterationTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#addc0473179078124b13ce1459e42f3f5">loopIterationTable</a></td></tr>
-<tr class="separator:addc0473179078124b13ce1459e42f3f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a68f12f4c2daf0c67d82efecf4bac7a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classReferenceTable.html">ReferenceTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a5a68f12f4c2daf0c67d82efecf4bac7a">referenceTable</a></td></tr>
-<tr class="separator:a5a68f12f4c2daf0c67d82efecf4bac7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d146e186c34360c2eced5905236c1c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegmentTable.html">SegmentTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a3d146e186c34360c2eced5905236c1c4">segmentTable</a></td></tr>
-<tr class="separator:a3d146e186c34360c2eced5905236c1c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa018b27f3803459a219fbf25f509116"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classThreadTable.html">ThreadTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#afa018b27f3803459a219fbf25f509116">threadTable</a></td></tr>
-<tr class="separator:afa018b27f3803459a219fbf25f509116"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20bc84496f9740a92396d7868d2520c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallStack.html">CallStack</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a20bc84496f9740a92396d7868d2520c3">callStack_</a></td></tr>
-<tr class="separator:a20bc84496f9740a92396d7868d2520c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a6f928d43215da6e262b853fbbce339"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a6a6f928d43215da6e262b853fbbce339">_dbPath</a></td></tr>
-<tr class="separator:a6a6f928d43215da6e262b853fbbce339"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61a08129b6953d99624b8eb0c3e417be"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a61a08129b6953d99624b8eb0c3e417be">_logFile</a></td></tr>
-<tr class="separator:a61a08129b6953d99624b8eb0c3e417be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2311c85e4a8758cb7526bac91fe115a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEventService.html">EventService</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#af2311c85e4a8758cb7526bac91fe115a">_eventService</a></td></tr>
-<tr class="separator:af2311c85e4a8758cb7526bac91fe115a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2c2920a2aed780b13f0e882fb8ba2d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessTable.html">AccessTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aa2c2920a2aed780b13f0e882fb8ba2d7">AccessTable_</a></td></tr>
+<tr class="memdesc:aa2c2920a2aed780b13f0e882fb8ba2d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Access IDs to the Access-table rows imported from the DB.  <a href="#aa2c2920a2aed780b13f0e882fb8ba2d7">More...</a><br /></td></tr>
+<tr class="separator:aa2c2920a2aed780b13f0e882fb8ba2d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa415e2afa2a315e96572dc3720483710"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallTable.html">CallTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aa415e2afa2a315e96572dc3720483710">CallTable_</a></td></tr>
+<tr class="memdesc:aa415e2afa2a315e96572dc3720483710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Call IDs to the Call-table rows imported from the DB.  <a href="#aa415e2afa2a315e96572dc3720483710">More...</a><br /></td></tr>
+<tr class="separator:aa415e2afa2a315e96572dc3720483710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb651791f7748114115f14269407c738"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileTable.html">FileTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#adb651791f7748114115f14269407c738">FileTable_</a></td></tr>
+<tr class="memdesc:adb651791f7748114115f14269407c738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the File IDs to the File-table rows imported from the DB.  <a href="#adb651791f7748114115f14269407c738">More...</a><br /></td></tr>
+<tr class="separator:adb651791f7748114115f14269407c738"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac61519d3fc4398017534ab1a25196a00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFunctionTable.html">FunctionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ac61519d3fc4398017534ab1a25196a00">FunctionTable_</a></td></tr>
+<tr class="memdesc:ac61519d3fc4398017534ab1a25196a00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Function IDs to the Function-table rows imported from the DB.  <a href="#ac61519d3fc4398017534ab1a25196a00">More...</a><br /></td></tr>
+<tr class="separator:ac61519d3fc4398017534ab1a25196a00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb276d5e34434ae0014dca1ee9959cc8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classInstructionTable.html">InstructionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#abb276d5e34434ae0014dca1ee9959cc8">InstructionTable_</a></td></tr>
+<tr class="memdesc:abb276d5e34434ae0014dca1ee9959cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Instruction IDs to the Instruction-table rows imported from the DB.  <a href="#abb276d5e34434ae0014dca1ee9959cc8">More...</a><br /></td></tr>
+<tr class="separator:abb276d5e34434ae0014dca1ee9959cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b18675a54f065b296d325b20d58c8cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopTable.html">LoopTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1b18675a54f065b296d325b20d58c8cf">LoopTable_</a></td></tr>
+<tr class="memdesc:a1b18675a54f065b296d325b20d58c8cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Loop IDs to the Loop-table rows imported from the DB.  <a href="#a1b18675a54f065b296d325b20d58c8cf">More...</a><br /></td></tr>
+<tr class="separator:a1b18675a54f065b296d325b20d58c8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee477b5a293c91a77a97f8fcc1196aa3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopExecutionTable.html">LoopExecutionTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#aee477b5a293c91a77a97f8fcc1196aa3">LoopExecutionTable_</a></td></tr>
+<tr class="memdesc:aee477b5a293c91a77a97f8fcc1196aa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.  <a href="#aee477b5a293c91a77a97f8fcc1196aa3">More...</a><br /></td></tr>
+<tr class="separator:aee477b5a293c91a77a97f8fcc1196aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51b80e2038435c091a8b7b63c6985957"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLoopIterationTable.html">LoopIterationTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a51b80e2038435c091a8b7b63c6985957">LoopIterationTable_</a></td></tr>
+<tr class="memdesc:a51b80e2038435c091a8b7b63c6985957"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.  <a href="#a51b80e2038435c091a8b7b63c6985957">More...</a><br /></td></tr>
+<tr class="separator:a51b80e2038435c091a8b7b63c6985957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c065193dbdec4c57c476a033c3921a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classReferenceTable.html">ReferenceTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a1c065193dbdec4c57c476a033c3921a9">ReferenceTable_</a></td></tr>
+<tr class="memdesc:a1c065193dbdec4c57c476a033c3921a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Reference IDs to the Reference-table rows imported from the DB.  <a href="#a1c065193dbdec4c57c476a033c3921a9">More...</a><br /></td></tr>
+<tr class="separator:a1c065193dbdec4c57c476a033c3921a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92fd186555bdd1207531e260f961862d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegmentTable.html">SegmentTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a92fd186555bdd1207531e260f961862d">SegmentTable_</a></td></tr>
+<tr class="memdesc:a92fd186555bdd1207531e260f961862d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Segment IDs to the Segment-table rows imported from the DB.  <a href="#a92fd186555bdd1207531e260f961862d">More...</a><br /></td></tr>
+<tr class="separator:a92fd186555bdd1207531e260f961862d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11844c477f15e3340542185bf736fd38"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classThreadTable.html">ThreadTable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a11844c477f15e3340542185bf736fd38">ThreadTable_</a></td></tr>
+<tr class="memdesc:a11844c477f15e3340542185bf736fd38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map from the Thread IDs to the Thread-table rows imported from the DB.  <a href="#a11844c477f15e3340542185bf736fd38">More...</a><br /></td></tr>
+<tr class="separator:a11844c477f15e3340542185bf736fd38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a731ff366c58e8ae7abc296d89ac1733c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallStack.html">CallStack</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a731ff366c58e8ae7abc296d89ac1733c">CallStack_</a></td></tr>
+<tr class="memdesc:a731ff366c58e8ae7abc296d89ac1733c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stack of call IDs.  <a href="#a731ff366c58e8ae7abc296d89ac1733c">More...</a><br /></td></tr>
+<tr class="separator:a731ff366c58e8ae7abc296d89ac1733c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaa0263abc23715dd4d0286329255d40"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classEventService.html">EventService</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#abaa0263abc23715dd4d0286329255d40">EventService_</a></td></tr>
+<tr class="separator:abaa0263abc23715dd4d0286329255d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad87bf9c2f1be7bb8550e176e3c71325e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBInterpreter.html#a0724e3e4ddef273730293bcf96a63ed7">shadowVarMap_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#ad87bf9c2f1be7bb8550e176e3c71325e">_shadowVarMap</a></td></tr>
 <tr class="separator:ad87bf9c2f1be7bb8550e176e3c71325e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_attribs_classInterpreter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classInterpreter')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classInterpreter.html">Interpreter</a></td></tr>
-<tr class="memitem:a77340148d5bb00b351bb5be63758b7ce inherit pro_attribs_classInterpreter"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLockMgr.html">LockMgr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInterpreter.html#a77340148d5bb00b351bb5be63758b7ce">lockMgr_</a></td></tr>
-<tr class="separator:a77340148d5bb00b351bb5be63758b7ce inherit pro_attribs_classInterpreter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ce7d5cbfaca424d992ac1f1fa627d2b inherit pro_attribs_classInterpreter"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classThreadMgr.html">ThreadMgr</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInterpreter.html#a6ce7d5cbfaca424d992ac1f1fa627d2b">threadMgr_</a></td></tr>
-<tr class="separator:a6ce7d5cbfaca424d992ac1f1fa627d2b inherit pro_attribs_classInterpreter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c6f64628e1bfc68496ae5aad86e292a"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLockMgr.html">LockMgr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a2c6f64628e1bfc68496ae5aad86e292a">lockMgr_</a></td></tr>
+<tr class="separator:a2c6f64628e1bfc68496ae5aad86e292a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9afcd2f5a85c321fec7411fa056e1edf"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classThreadMgr.html">ThreadMgr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBInterpreter.html#a9afcd2f5a85c321fec7411fa056e1edf">threadMgr_</a></td></tr>
+<tr class="separator:a9afcd2f5a85c321fec7411fa056e1edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
-<a class="anchor" id="a9482e4fdf8f2fe037d9bf15d01c507d6"></a>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Database Interpreter. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="a7ce0638690fb306407094bc2c128c68b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -243,27 +242,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">typedef int(DBInterpreter::* DBInterpreter::fillFunc_t) (sqlite3_stmt *)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a37323f312554e5788a72cdfeebd52ff8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef int(DBInterpreter::* DBInterpreter::processAccess_t) (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessID, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td>
+          <td class="memname">typedef <a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a>(DBInterpreter::* DBInterpreter::processAccess_t) (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> accessID, const <a class="el" href="structaccess__t.html">access_t</a> &amp;access, const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structreference__t.html">reference_t</a> &amp;reference)</td>
         </tr>
       </table>
   </td>
@@ -283,7 +262,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::map&lt;<a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a>, <a class="el" href="classShadowVar.html">ShadowVar</a>*&gt; <a class="el" href="classDBInterpreter.html#a0724e3e4ddef273730293bcf96a63ed7">DBInterpreter::shadowVarMap_t</a></td>
+          <td class="memname">typedef std::map&lt;<a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a>, <a class="el" href="structShadowVar.html">ShadowVar</a>*&gt; <a class="el" href="classDBInterpreter.html#a0724e3e4ddef273730293bcf96a63ed7">DBInterpreter::shadowVarMap_t</a></td>
         </tr>
       </table>
   </td>
@@ -296,41 +275,32 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ac59e041aa7c960450587531f17466a5d"></a>
+<a class="anchor" id="af7ae5856d320ca5259e945252b0c8aa5"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">DBInterpreter::DBInterpreter </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>DBPath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">std::string &amp;&amp;&#160;</td>
           <td class="paramname"><em>logFile</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classEventService.html">EventService</a> *&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classEventService.html">EventService</a> &gt;&#160;</td>
           <td class="paramname"><em>service</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classLockMgr.html">LockMgr</a> *&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classLockMgr.html">LockMgr</a> &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>lockMgr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classThreadMgr.html">ThreadMgr</a> *&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classThreadMgr.html">ThreadMgr</a> &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>threadMgr</em>&#160;</td>
         </tr>
         <tr>
@@ -339,39 +309,13 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>Constructor. </p>
 
 </div>
 </div>
-<a class="anchor" id="a21170f432459090ec962b68cc690f53a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual DBInterpreter::~DBInterpreter </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">final</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0fb66ba5a80528c1a039e4d83ca07794"></a>
+<a class="anchor" id="ab1aa4b9f0d073b1b8a9c577b86f8c84b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -388,80 +332,67 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p><em>Deleted</em> copy constructor. </p>
+
+</div>
+</div>
+<a class="anchor" id="af4de75ce925e033ef464c4c5131e6b0a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DBInterpreter::DBInterpreter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Deleted</em> move constructor. </p>
+
+</div>
+</div>
+<a class="anchor" id="accce09b755c7b414699b65efc61ea487"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DBInterpreter::~DBInterpreter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Default</em> destructor. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a367c7ad5212e296e86748ce158abdb98"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int DBInterpreter::closeDB </td>
-          <td>(</td>
-          <td class="paramtype">sqlite3 **&#160;</td>
-          <td class="paramname"><em>db</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af2237549d9fae083e3b8627b6ac9a5fb"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename IdT , typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int DBInterpreter::fillGeneric </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>sql</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">sqlite3 **&#160;</td>
-          <td class="paramname"><em>db</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt; *&#160;</td>
-          <td class="paramname"><em>table</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a class="anchor" id="ab8e6babba870bb46b83143fb1ee92b27"></a>
 <div class="memitem">
 <div class="memproto">
@@ -484,6 +415,7 @@ template&lt;typename IdT , typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Parent call ID of an instruction </p><dl class="section return"><dt>Returns</dt><dd>The call ID, if it's found in <code>segmentT_</code> or <code>IN_NO_ENTRY</code> otherwise. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Properly implement error handling. </dd></dl>
 
 </div>
 </div>
@@ -509,10 +441,11 @@ template&lt;typename IdT , typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Call ID of a call instruction </p><dl class="section return"><dt>Returns</dt><dd>The call ID, if it's found in <code>callT_</code> or <code>IN_NO_ENTRY</code> otherwise. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>Properly implement error handling. </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="aa9914745a980a0a2c978d89f50461b7c"></a>
+<a class="anchor" id="af0a6ebdeb9b82904aec4ddcddfae173e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -520,7 +453,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classEventService.html">EventService</a>* DBInterpreter::getEventService </td>
+          <td class="memname">decltype(auto) DBInterpreter::getEventService </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -528,16 +461,15 @@ template&lt;typename IdT , typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">final</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Implements <a class="el" href="classInterpreter.html#a3ed8591c2c7e5490b009d01206d19571">Interpreter</a>.</p>
+<p>Returns a pointer to <code>EventService_</code>. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Bad interface design! This pointer shouldn't be accessible outside! </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a7d6bba9c801da2badcd99f7d943fd232"></a>
+<a class="anchor" id="a668274580fc3b53a4c994511ade30bc5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -545,29 +477,61 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t DBInterpreter::getHash </td>
+          <td class="memname">decltype(auto) DBInterpreter::getLock </td>
           <td>(</td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>funId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const <a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a> &amp;&#160;</td>
+          <td class="paramname"><em>reference_id</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>lineNo</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Helper function to hide <code>lockMgr_</code> name in the source file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">reference_id</td><td>The reference ID. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <code><a class="el" href="structShadowLock.html">ShadowLock</a></code> pointer associated to the reference ID. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a05d80c7d8caafa20de1c03f8218d9bf0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">decltype(auto) DBInterpreter::getThread </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="Types_8h.html#af58a2151481051184c8869e5bf012e8b">TRD_ID</a> &amp;&#160;</td>
+          <td class="paramname"><em>thread_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Helper function to hide <code>threadMgr_</code> name in the source file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread_id</td><td>The thread ID. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <code><a class="el" href="structShadowThread.html">ShadowThread</a></code> pointer associated to the <code>thread_id</code>. </dd></dl>
 
 </div>
 </div>
@@ -595,7 +559,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0fb40d2433663aff0b810e90ea5840f4"></a>
+<a class="anchor" id="a541dd3664f387579d8d1edc869571958"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -603,10 +567,10 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::importDB </td>
+          <td class="memname">void DBInterpreter::importDB </td>
           <td>(</td>
-          <td class="paramtype">sqlite3 **&#160;</td>
-          <td class="paramname"><em>db</em></td><td>)</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>DBPath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -617,43 +581,17 @@ template&lt;typename IdT , typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="af372e534027204020aae6fc1cd1d8dbc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int DBInterpreter::loadDB </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">sqlite3 **&#160;</td>
-          <td class="paramname"><em>db</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Imports the database in the tables. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">DBPath</td><td>The name of the database to import. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="a09f0a49a761019d8798b53989d78cc49"></a>
+<a class="anchor" id="af2e124603aad466477982989eb2df7e3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -670,14 +608,16 @@ template&lt;typename IdT , typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p><em>Deleted</em> copy assignment operator. </p>
+
 </div>
 </div>
-<a class="anchor" id="a235585ee4107a3e9e317e1ab98076193"></a>
+<a class="anchor" id="a257d372b35ef959578bcebe24b3e3c82"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -685,26 +625,49 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::process </td>
+          <td class="memname"><a class="el" href="classDBInterpreter.html">DBInterpreter</a>&amp; DBInterpreter::operator= </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="classDBInterpreter.html">DBInterpreter</a> &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>The main process routine. Loops over instructions. </p>
-
-<p>Implements <a class="el" href="classInterpreter.html#a52d0c2e34c6a3517e415054c33ee5420">Interpreter</a>.</p>
+<p><em>Deleted</em> move assignment operator. </p>
 
 </div>
 </div>
-<a class="anchor" id="a3f0a38fdb62c5d4fd036787e079a451d"></a>
+<a class="anchor" id="aef939ecdffa464f5b9231b174b2c0614"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::process </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>DBPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes the database. </p>
+<p>After importing the database entries, starts looping over the <code>InstructionTable_</code>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">DBPath</td><td>The database to process. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa1f7f02a773a5768e11d4f17daa6c63b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -712,7 +675,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processAccess </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processAccess </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
           <td class="paramname"><em>instruction</em>, </td>
@@ -732,7 +695,7 @@ template&lt;typename IdT , typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classDBInterpreter.html#a37323f312554e5788a72cdfeebd52ff8">processAccess_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classDBInterpreter.html#a7ce0638690fb306407094bc2c128c68b">processAccess_t</a>&#160;</td>
           <td class="paramname"><em>accessFunc</em>&#160;</td>
         </tr>
         <tr>
@@ -750,7 +713,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a8ee25c68893939f9cc7acefbb811957b"></a>
+<a class="anchor" id="a1c20d7758989ab0c62372a0eec332d9c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -758,7 +721,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processAccessGeneric </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processAccessGeneric </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a>&#160;</td>
           <td class="paramname"><em>accessId</em>, </td>
@@ -790,7 +753,7 @@ template&lt;typename IdT , typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classDBInterpreter.html#a37323f312554e5788a72cdfeebd52ff8">processAccess_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classDBInterpreter.html#a7ce0638690fb306407094bc2c128c68b">processAccess_t</a>&#160;</td>
           <td class="paramname"><em>func</em>&#160;</td>
         </tr>
         <tr>
@@ -808,7 +771,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0a5abf05fed712fbc5169cbe17979cff"></a>
+<a class="anchor" id="a74f6ac39a03ce58d184e0b204273b7de"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -816,7 +779,32 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processAcquire </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processAcquire </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
+          <td class="paramname"><em>ins</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000034">Todo:</a></b></dt><dd>Code duplication! Candidate for template! </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a15b4fde39edcafb03f157c9e4308f765"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processCall </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
           <td class="paramname"><em>instruction</em></td><td>)</td>
@@ -832,7 +820,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a1e78ae1e5d06324377d3384b2aa23037"></a>
+<a class="anchor" id="ab8f758f43dff4125d44b4fc9b2afb09b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -840,31 +828,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processCall </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
-          <td class="paramname"><em>instruction</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab9fad50cba07aa3d8094199c1d9fa78a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int DBInterpreter::processCall </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processCall </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structcall__t.html">call_t</a> &amp;&#160;</td>
           <td class="paramname"><em>call</em>, </td>
@@ -896,7 +860,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0ea880bf818d482ed30949d01e1ddc7c"></a>
+<a class="anchor" id="a75b701435de0029496664bdbe0d6573c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -904,7 +868,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processEnd </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processEnd </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -919,7 +883,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aad4317a6952889b0ebcb459c621125a5"></a>
+<a class="anchor" id="a46ce0d7b6cc29926993e34835c95539a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -927,7 +891,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processFork </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processFork </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structthread__t.html">thread_t</a> &amp;&#160;</td>
           <td class="paramname"><em>thread</em></td><td>)</td>
@@ -940,10 +904,11 @@ template&lt;typename IdT , typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000036">Todo:</a></b></dt><dd>Code duplication! Candidate for template! </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="af0415acf196077052dc4b377e319862a"></a>
+<a class="anchor" id="abc93a63150c184f0c58dffee0018d522"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -951,7 +916,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processInstruction </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processInstruction </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
           <td class="paramname"><em>instruction</em></td><td>)</td>
@@ -967,7 +932,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="af39fcb0a9d2735455a5db5a6f7b47fee"></a>
+<a class="anchor" id="a0ef3f6d822e8ad74de25c38e9543294b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -975,7 +940,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processJoin </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processJoin </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
           <td class="paramname"><em>instruction</em>, </td>
@@ -1010,10 +975,11 @@ template&lt;typename IdT , typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000037">Todo:</a></b></dt><dd>Code duplication! Candidate for template! </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a73992e2770807a5764b0e565bdd772fb"></a>
+<a class="anchor" id="a73faba9e5fff9f2c2dc3c2596afb755b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1021,7 +987,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processMemAccess </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processMemAccess </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a>&#160;</td>
           <td class="paramname"><em>accessId</em>, </td>
@@ -1071,7 +1037,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ae45f1f02c08ef58f52d9e5df3b52a056"></a>
+<a class="anchor" id="a5753f63f4cd242ede580ea49c3af4c7f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1079,10 +1045,10 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processRelease </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processRelease </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
-          <td class="paramname"><em>instruction</em></td><td>)</td>
+          <td class="paramname"><em>ins</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1092,10 +1058,11 @@ template&lt;typename IdT , typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000035">Todo:</a></b></dt><dd>Code duplication! Candidate for template! </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ae2b658ca6395400b2e157e97bc75e17a"></a>
+<a class="anchor" id="ac9d3894eaa2e3f7340bac6c6b7f93fe1"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1103,7 +1070,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processReturn </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processReturn </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;&#160;</td>
           <td class="paramname"><em>ins</em>, </td>
@@ -1129,7 +1096,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a37c634717b8f984c99012b381bc27232"></a>
+<a class="anchor" id="afcd99fcf55ab5a34ffd0a76ffb9da3bb"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1137,7 +1104,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DBInterpreter::processStart </td>
+          <td class="memname"><a class="el" href="DBInterpreter_8h.html#a59e56af19e754a6aa26a612ebf91d05f">ErrorCode</a> DBInterpreter::processStart </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -1177,66 +1144,6 @@ template&lt;typename IdT , typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a6a6f928d43215da6e262b853fbbce339"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* DBInterpreter::_dbPath</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af2311c85e4a8758cb7526bac91fe115a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classEventService.html">EventService</a>* DBInterpreter::_eventService</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a61a08129b6953d99624b8eb0c3e417be"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* DBInterpreter::_logFile</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a class="anchor" id="ad87bf9c2f1be7bb8550e176e3c71325e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1257,7 +1164,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a8092e5244ad346576f1088665f2587b3"></a>
+<a class="anchor" id="aa2c2920a2aed780b13f0e882fb8ba2d7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1265,7 +1172,73 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classAccessTable.html">AccessTable</a> DBInterpreter::accessTable</td>
+          <td class="memname"><a class="el" href="classAccessTable.html">AccessTable</a> DBInterpreter::AccessTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Access IDs to the Access-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a731ff366c58e8ae7abc296d89ac1733c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCallStack.html">CallStack</a> DBInterpreter::CallStack_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stack of call IDs. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa415e2afa2a315e96572dc3720483710"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCallTable.html">CallTable</a> DBInterpreter::CallTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Call IDs to the Call-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="abaa0263abc23715dd4d0286329255d40"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classEventService.html">EventService</a>&gt; DBInterpreter::EventService_</td>
         </tr>
       </table>
   </td>
@@ -1277,7 +1250,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a20bc84496f9740a92396d7868d2520c3"></a>
+<a class="anchor" id="adb651791f7748114115f14269407c738"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1285,7 +1258,73 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classCallStack.html">CallStack</a> DBInterpreter::callStack_</td>
+          <td class="memname"><a class="el" href="classFileTable.html">FileTable</a> DBInterpreter::FileTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the File IDs to the File-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="ac61519d3fc4398017534ab1a25196a00"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFunctionTable.html">FunctionTable</a> DBInterpreter::FunctionTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Function IDs to the Function-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="abb276d5e34434ae0014dca1ee9959cc8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classInstructionTable.html">InstructionTable</a> DBInterpreter::InstructionTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Instruction IDs to the Instruction-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a2c6f64628e1bfc68496ae5aad86e292a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLockMgr.html">LockMgr</a>&gt; DBInterpreter::lockMgr_</td>
         </tr>
       </table>
   </td>
@@ -1297,7 +1336,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a2ad4e7cd7c0daeacb1e5cb0dae535468"></a>
+<a class="anchor" id="aee477b5a293c91a77a97f8fcc1196aa3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1305,7 +1344,117 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classCallTable.html">CallTable</a> DBInterpreter::callTable</td>
+          <td class="memname"><a class="el" href="classLoopExecutionTable.html">LoopExecutionTable</a> DBInterpreter::LoopExecutionTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a51b80e2038435c091a8b7b63c6985957"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLoopIterationTable.html">LoopIterationTable</a> DBInterpreter::LoopIterationTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1b18675a54f065b296d325b20d58c8cf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classLoopTable.html">LoopTable</a> DBInterpreter::LoopTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Loop IDs to the Loop-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1c065193dbdec4c57c476a033c3921a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classReferenceTable.html">ReferenceTable</a> DBInterpreter::ReferenceTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Reference IDs to the Reference-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a92fd186555bdd1207531e260f961862d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegmentTable.html">SegmentTable</a> DBInterpreter::SegmentTable_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Map from the Segment IDs to the Segment-table rows imported from the DB. </p>
+
+</div>
+</div>
+<a class="anchor" id="a9afcd2f5a85c321fec7411fa056e1edf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classThreadMgr.html">ThreadMgr</a>&gt; DBInterpreter::threadMgr_</td>
         </tr>
       </table>
   </td>
@@ -1317,7 +1466,7 @@ template&lt;typename IdT , typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ab0022eeb02640b9b803df3bbcc81228d"></a>
+<a class="anchor" id="a11844c477f15e3340542185bf736fd38"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -1325,7 +1474,7 @@ template&lt;typename IdT , typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFileTable.html">FileTable</a> DBInterpreter::fileTable</td>
+          <td class="memname"><a class="el" href="classThreadTable.html">ThreadTable</a> DBInterpreter::ThreadTable_</td>
         </tr>
       </table>
   </td>
@@ -1335,171 +1484,13 @@ template&lt;typename IdT , typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a class="anchor" id="a61f2c32afcbb0dc6a048c0131bb5871b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classFunctionTable.html">FunctionTable</a> DBInterpreter::functionTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a6503dc9f2c7923255907f6edc4334a74"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classInstructionTable.html">InstructionTable</a> DBInterpreter::instructionTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a1718dcfd0e2716584a618922895f9d6d"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLoopExecutionTable.html">LoopExecutionTable</a> DBInterpreter::loopExecutionTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="addc0473179078124b13ce1459e42f3f5"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLoopIterationTable.html">LoopIterationTable</a> DBInterpreter::loopIterationTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a55b9592f85349cde83b5c29422a2a7e0"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLoopTable.html">LoopTable</a> DBInterpreter::loopTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a5a68f12f4c2daf0c67d82efecf4bac7a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classReferenceTable.html">ReferenceTable</a> DBInterpreter::referenceTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3d146e186c34360c2eced5905236c1c4"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classSegmentTable.html">SegmentTable</a> DBInterpreter::segmentTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="afa018b27f3803459a219fbf25f509116"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classThreadTable.html">ThreadTable</a> DBInterpreter::threadTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Map from the Thread IDs to the Thread-table rows imported from the DB. </p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/<a class="el" href="DBInterpreter_8h_source.html">DBInterpreter.h</a></li>
-<li>src/<a class="el" href="DBInterpreter_8cpp.html">DBInterpreter.cpp</a></li>
+<li>/home/paolo/pcvInterpreter/include/<a class="el" href="DBInterpreter_8h_source.html">DBInterpreter.h</a></li>
+<li>/home/paolo/pcvInterpreter/src/<a class="el" href="DBInterpreter_8cpp.html">DBInterpreter.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

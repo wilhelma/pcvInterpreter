@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>PCV Interpreter: Event Class Reference</title>
+<title>PCV Interpreter: Event&lt; InfoType &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -90,63 +90,84 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classEvent-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Event Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">Event&lt; InfoType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Abstract <a class="el" href="classEvent.html" title="Abstract Event. ">Event</a>.  
+<p>Abstract event.  
  <a href="classEvent.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Event_8h_source.html">Event.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for Event:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classEvent.png" usemap="#Event_map" alt=""/>
-  <map id="Event_map" name="Event_map">
-<area href="classAccessEvent.html" alt="AccessEvent" shape="rect" coords="119,56,228,80"/>
-<area href="classAcquireEvent.html" alt="AcquireEvent" shape="rect" coords="119,112,228,136"/>
-<area href="classCallEvent.html" alt="CallEvent" shape="rect" coords="119,168,228,192"/>
-<area href="classJoinEvent.html" alt="JoinEvent" shape="rect" coords="119,224,228,248"/>
-<area href="classNewThreadEvent.html" alt="NewThreadEvent" shape="rect" coords="119,280,228,304"/>
-<area href="classReleaseEvent.html" alt="ReleaseEvent" shape="rect" coords="119,336,228,360"/>
-<area href="classReturnEvent.html" alt="ReturnEvent" shape="rect" coords="119,392,228,416"/>
-<area href="classThreadEndEvent.html" alt="ThreadEndEvent" shape="rect" coords="119,448,228,472"/>
-</map>
- </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a15158a6fc84126d1b61802b1c91f85ba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a15158a6fc84126d1b61802b1c91f85ba">Event</a> (const <a class="el" href="classShadowThread.html">ShadowThread</a> *thread)</td></tr>
-<tr class="separator:a15158a6fc84126d1b61802b1c91f85ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab864fd85c758006c42cd7a1b3369b483"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ab864fd85c758006c42cd7a1b3369b483">~Event</a> ()</td></tr>
-<tr class="separator:ab864fd85c758006c42cd7a1b3369b483"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af90345dd725e37df44b714ea895bbc65"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classShadowThread.html">ShadowThread</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#af90345dd725e37df44b714ea895bbc65">getThread</a> () const </td></tr>
-<tr class="separator:af90345dd725e37df44b714ea895bbc65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57f82a8731bacc198a3198f0781c05c9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a57f82a8731bacc198a3198f0781c05c9">getEventType</a> () const =0</td></tr>
-<tr class="separator:a57f82a8731bacc198a3198f0781c05c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67b566ee0fd7a315e6fd22c7f8eb7b8b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a67b566ee0fd7a315e6fd22c7f8eb7b8b">Event</a> (const <a class="el" href="structShadowThread.html">ShadowThread</a> *thread, const InfoType *<a class="el" href="Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861acaf9b6b99962bf5c2264824231d7a40c">info</a>)</td></tr>
+<tr class="separator:a67b566ee0fd7a315e6fd22c7f8eb7b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55a410df21f02f269ebe00555ea4ff5"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#aa55a410df21f02f269ebe00555ea4ff5">~Event</a> ()=default</td></tr>
+<tr class="memdesc:aa55a410df21f02f269ebe00555ea4ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> destructor.  <a href="#aa55a410df21f02f269ebe00555ea4ff5">More...</a><br /></td></tr>
+<tr class="separator:aa55a410df21f02f269ebe00555ea4ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd26c6f8c2e9fbd59369e538f8678ad0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#afd26c6f8c2e9fbd59369e538f8678ad0">Event</a> (const <a class="el" href="classEvent.html">Event</a> &amp;)=delete</td></tr>
+<tr class="memdesc:afd26c6f8c2e9fbd59369e538f8678ad0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy constructor.  <a href="#afd26c6f8c2e9fbd59369e538f8678ad0">More...</a><br /></td></tr>
+<tr class="separator:afd26c6f8c2e9fbd59369e538f8678ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2c0f39bbc8ca58cb49f99f7c7f82c0e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ac2c0f39bbc8ca58cb49f99f7c7f82c0e">Event</a> (<a class="el" href="classEvent.html">Event</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:ac2c0f39bbc8ca58cb49f99f7c7f82c0e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move constructor.  <a href="#ac2c0f39bbc8ca58cb49f99f7c7f82c0e">More...</a><br /></td></tr>
+<tr class="separator:ac2c0f39bbc8ca58cb49f99f7c7f82c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af48522be75d0bd52206657b7741c04ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEvent.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#af48522be75d0bd52206657b7741c04ec">operator=</a> (const <a class="el" href="classEvent.html">Event</a> &amp;)=delete</td></tr>
+<tr class="memdesc:af48522be75d0bd52206657b7741c04ec"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy assignment operator.  <a href="#af48522be75d0bd52206657b7741c04ec">More...</a><br /></td></tr>
+<tr class="separator:af48522be75d0bd52206657b7741c04ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c460fc65cf7674b4c9864fca13e3def"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEvent.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a2c460fc65cf7674b4c9864fca13e3def">operator=</a> (<a class="el" href="classEvent.html">Event</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a2c460fc65cf7674b4c9864fca13e3def"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move assignment operator.  <a href="#a2c460fc65cf7674b4c9864fca13e3def">More...</a><br /></td></tr>
+<tr class="separator:a2c460fc65cf7674b4c9864fca13e3def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3236aa6460f7f847015d1e792407f139"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a3236aa6460f7f847015d1e792407f139">getThread</a> () const </td></tr>
+<tr class="memdesc:a3236aa6460f7f847015d1e792407f139"><td class="mdescLeft">&#160;</td><td class="mdescRight">Acesses the thread information.  <a href="#a3236aa6460f7f847015d1e792407f139">More...</a><br /></td></tr>
+<tr class="separator:a3236aa6460f7f847015d1e792407f139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e1cef7b479193cbec3b55d1c3c4435c"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a8e1cef7b479193cbec3b55d1c3c4435c">getInfo</a> () const </td></tr>
+<tr class="memdesc:a8e1cef7b479193cbec3b55d1c3c4435c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access the event information.  <a href="#a8e1cef7b479193cbec3b55d1c3c4435c">More...</a><br /></td></tr>
+<tr class="separator:a8e1cef7b479193cbec3b55d1c3c4435c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad94173e90744533aff3a370566624ad2"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ad94173e90744533aff3a370566624ad2">getEventType</a> () const =0</td></tr>
+<tr class="memdesc:ad94173e90744533aff3a370566624ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the event type.  <a href="#ad94173e90744533aff3a370566624ad2">More...</a><br /></td></tr>
+<tr class="separator:ad94173e90744533aff3a370566624ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:ad36b35f33923f2d96d504b8829dc4bb3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classShadowThread.html">ShadowThread</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ad36b35f33923f2d96d504b8829dc4bb3">_thread</a></td></tr>
-<tr class="separator:ad36b35f33923f2d96d504b8829dc4bb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ec9a055232f5e2cea719f1650b0f575"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structShadowThread.html">ShadowThread</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a0ec9a055232f5e2cea719f1650b0f575">Thread_</a></td></tr>
+<tr class="separator:a0ec9a055232f5e2cea719f1650b0f575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafcb8a7ebc59f5780055d31c2e2e66b4"><td class="memItemLeft" align="right" valign="top">const InfoType *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#aafcb8a7ebc59f5780055d31c2e2e66b4">Info_</a></td></tr>
+<tr class="memdesc:aafcb8a7ebc59f5780055d31c2e2e66b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">The event information.  <a href="#aafcb8a7ebc59f5780055d31c2e2e66b4">More...</a><br /></td></tr>
+<tr class="separator:aafcb8a7ebc59f5780055d31c2e2e66b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Abstract <a class="el" href="classEvent.html" title="Abstract Event. ">Event</a>. </p>
+<div class="textblock"><h3>template&lt;typename InfoType&gt;<br />
+class Event&lt; InfoType &gt;</h3>
+
+<p>Abstract event. </p>
+<p>Base class for all the <code>*Event</code> classes. </p><dl class="section attention"><dt>Attention</dt><dd><a class="el" href="classEvent.html" title="Abstract event. ">Event</a> is not copyable nor moveable! So its inherited classes will be. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a15158a6fc84126d1b61802b1c91f85ba"></a>
+<a class="anchor" id="a67b566ee0fd7a315e6fd22c7f8eb7b8b"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Event::Event </td>
+          <td class="memname"><a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::<a class="el" href="classEvent.html">Event</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classShadowThread.html">ShadowThread</a> *&#160;</td>
-          <td class="paramname"><em>thread</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structShadowThread.html">ShadowThread</a> *&#160;</td>
+          <td class="paramname"><em>thread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const InfoType *&#160;</td>
+          <td class="paramname"><em>info</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -155,18 +176,32 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread</td><td>The thread the event was triggered from. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">info</td><td>The event information. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a class="anchor" id="ab864fd85c758006c42cd7a1b3369b483"></a>
+<a class="anchor" id="aa55a410df21f02f269ebe00555ea4ff5"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual Event::~Event </td>
+          <td class="memname">virtual <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::~<a class="el" href="classEvent.html">Event</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -174,23 +209,83 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p><em>Default</em> destructor. </p>
+
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a57f82a8731bacc198a3198f0781c05c9"></a>
+<a class="anchor" id="afd26c6f8c2e9fbd59369e538f8678ad0"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a> Event::getEventType </td>
+          <td class="memname"><a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::<a class="el" href="classEvent.html">Event</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt; &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Deleted</em> copy constructor. </p>
+
+</div>
+</div>
+<a class="anchor" id="ac2c0f39bbc8ca58cb49f99f7c7f82c0e"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::<a class="el" href="classEvent.html">Event</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Deleted</em> move constructor. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad94173e90744533aff3a370566624ad2"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a> <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::getEventType </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -203,19 +298,23 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classAccessEvent.html#a51dda6a7b720fa0c38723f47471784fa">AccessEvent</a>, <a class="el" href="classCallEvent.html#ae9d81a58aa26d5757306fd1bc0fcd4b7">CallEvent</a>, <a class="el" href="classNewThreadEvent.html#a32ea3296e10aec6c02d8bf95842080e2">NewThreadEvent</a>, <a class="el" href="classAcquireEvent.html#ae05bb3800cbe820941d4ef4d8a88ee24">AcquireEvent</a>, <a class="el" href="classJoinEvent.html#a70bd0da6b8b02825a05203d8b4a11a72">JoinEvent</a>, <a class="el" href="classReleaseEvent.html#a498b4228b2c27423ec8cf8685d28025d">ReleaseEvent</a>, <a class="el" href="classReturnEvent.html#a299802ab08651170494da39355cb0edd">ReturnEvent</a>, and <a class="el" href="classThreadEndEvent.html#aa38dcdc5b10b6ba71bd04a5a1adf1dec">ThreadEndEvent</a>.</p>
+<p>Returns the event type. </p>
+
+<p>Implemented in <a class="el" href="classAccessEvent.html#aae62c01df7dcc460a7194e2a247293a9">AccessEvent</a>, <a class="el" href="classAcquireEvent.html#adc8818d6ab1b3d0aeba1cc69899d7279">AcquireEvent</a>, <a class="el" href="classCallEvent.html#af5361892d96a820260e088349836ed83">CallEvent</a>, <a class="el" href="classJoinEvent.html#a99d907fc4b55856cd7a1b6fe08175267">JoinEvent</a>, <a class="el" href="classNewThreadEvent.html#a5136bb386cf7a6c5ab42b669f1b9c6c7">NewThreadEvent</a>, <a class="el" href="classReleaseEvent.html#af37dc8b882e99af246e56943cab6e4e0">ReleaseEvent</a>, <a class="el" href="classReturnEvent.html#a3978f5d2177b7926962fff612b8790bd">ReturnEvent</a>, and <a class="el" href="classThreadEndEvent.html#a2db5d5fee799b4bb0975a51ccb82bce4">ThreadEndEvent</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af90345dd725e37df44b714ea895bbc65"></a>
+<a class="anchor" id="a8e1cef7b479193cbec3b55d1c3c4435c"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classShadowThread.html">ShadowThread</a>* const Event::getThread </td>
+          <td class="memname">decltype(auto) <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::getInfo </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -228,18 +327,105 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Access the event information. </p>
+
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="ad36b35f33923f2d96d504b8829dc4bb3"></a>
+<a class="anchor" id="a3236aa6460f7f847015d1e792407f139"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classShadowThread.html">ShadowThread</a>* const Event::_thread</td>
+          <td class="memname">decltype(auto) <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::getThread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Acesses the thread information. </p>
+
+</div>
+</div>
+<a class="anchor" id="af48522be75d0bd52206657b7741c04ec"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEvent.html">Event</a>&amp; <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt; &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Deleted</em> copy assignment operator. </p>
+
+</div>
+</div>
+<a class="anchor" id="a2c460fc65cf7674b4c9864fca13e3def"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classEvent.html">Event</a>&amp; <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><em>Deleted</em> move assignment operator. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aafcb8a7ebc59f5780055d31c2e2e66b4"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const InfoType* const <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::Info_</td>
         </tr>
       </table>
   </td>
@@ -249,10 +435,35 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>The event information. </p>
+
+</div>
+</div>
+<a class="anchor" id="a0ec9a055232f5e2cea719f1650b0f575"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InfoType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structShadowThread.html">ShadowThread</a>* const <a class="el" href="classEvent.html">Event</a>&lt; InfoType &gt;::Thread_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>Should this be a <code>unique_ptr</code>? </dd></dl>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/events/<a class="el" href="Event_8h_source.html">Event.h</a></li>
+<li>/home/paolo/pcvInterpreter/include/events/<a class="el" href="Event_8h_source.html">Event.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

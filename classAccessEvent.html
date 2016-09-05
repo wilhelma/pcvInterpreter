@@ -87,13 +87,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classAccessEvent-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">AccessEvent Class Reference</div>  </div>
+<div class="title">AccessEvent Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="classEvent.html" title="Abstract event. ">Event</a> for memory access.  
+ <a href="classAccessEvent.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="AccessEvent_8h_source.html">AccessEvent.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -102,39 +103,45 @@ Inheritance diagram for AccessEvent:</div>
  <div class="center">
   <img src="classAccessEvent.png" usemap="#AccessEvent_map" alt=""/>
   <map id="AccessEvent_map" name="AccessEvent_map">
-<area href="classEvent.html" title="Abstract Event. " alt="Event" shape="rect" coords="0,0,86,24"/>
+<area href="classEvent.html" alt="Event&lt; AccessInfo &gt;" shape="rect" coords="0,0,131,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acf5d9111283277dd7fddc43a9b0a30c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#acf5d9111283277dd7fddc43a9b0a30c3">AccessEvent</a> (const <a class="el" href="classShadowThread.html">ShadowThread</a> *thread, const <a class="el" href="structAccessInfo.html">AccessInfo</a> *info)</td></tr>
+<tr class="memitem:acf5d9111283277dd7fddc43a9b0a30c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#acf5d9111283277dd7fddc43a9b0a30c3">AccessEvent</a> (const <a class="el" href="structShadowThread.html">ShadowThread</a> *thread, const <a class="el" href="structAccessInfo.html">AccessInfo</a> *<a class="el" href="Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861acaf9b6b99962bf5c2264824231d7a40c">info</a>)</td></tr>
 <tr class="separator:acf5d9111283277dd7fddc43a9b0a30c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51dda6a7b720fa0c38723f47471784fa"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#a51dda6a7b720fa0c38723f47471784fa">getEventType</a> () const overridefinal</td></tr>
-<tr class="separator:a51dda6a7b720fa0c38723f47471784fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a479000078173028f6fad03845366e66d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structAccessInfo.html">AccessInfo</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#a479000078173028f6fad03845366e66d">getAccessInfo</a> () const </td></tr>
-<tr class="separator:a479000078173028f6fad03845366e66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classEvent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classEvent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classEvent.html">Event</a></td></tr>
-<tr class="memitem:a15158a6fc84126d1b61802b1c91f85ba inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a15158a6fc84126d1b61802b1c91f85ba">Event</a> (const <a class="el" href="classShadowThread.html">ShadowThread</a> *thread)</td></tr>
-<tr class="separator:a15158a6fc84126d1b61802b1c91f85ba inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab864fd85c758006c42cd7a1b3369b483 inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ab864fd85c758006c42cd7a1b3369b483">~Event</a> ()</td></tr>
-<tr class="separator:ab864fd85c758006c42cd7a1b3369b483 inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af90345dd725e37df44b714ea895bbc65 inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classShadowThread.html">ShadowThread</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#af90345dd725e37df44b714ea895bbc65">getThread</a> () const </td></tr>
-<tr class="separator:af90345dd725e37df44b714ea895bbc65 inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:ac21162a9db706ddc32493ea5a9b141fc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#ac21162a9db706ddc32493ea5a9b141fc">AccessEvent</a> (const <a class="el" href="classAccessEvent.html">AccessEvent</a> &amp;)</td></tr>
-<tr class="separator:ac21162a9db706ddc32493ea5a9b141fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbfa4142e21824b82f5cf8248038bb8b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAccessEvent.html">AccessEvent</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#afbfa4142e21824b82f5cf8248038bb8b">operator=</a> (const <a class="el" href="classAccessEvent.html">AccessEvent</a> &amp;)</td></tr>
-<tr class="separator:afbfa4142e21824b82f5cf8248038bb8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a745740ac11267a20f02fa765c7b7e85c"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structAccessInfo.html">AccessInfo</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#a745740ac11267a20f02fa765c7b7e85c">_info</a></td></tr>
-<tr class="separator:a745740ac11267a20f02fa765c7b7e85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae62c01df7dcc460a7194e2a247293a9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAccessEvent.html#aae62c01df7dcc460a7194e2a247293a9">getEventType</a> () const override</td></tr>
+<tr class="memdesc:aae62c01df7dcc460a7194e2a247293a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the event type.  <a href="#aae62c01df7dcc460a7194e2a247293a9">More...</a><br /></td></tr>
+<tr class="separator:aae62c01df7dcc460a7194e2a247293a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classEvent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classEvent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classEvent.html">Event&lt; AccessInfo &gt;</a></td></tr>
+<tr class="memitem:a67b566ee0fd7a315e6fd22c7f8eb7b8b inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a67b566ee0fd7a315e6fd22c7f8eb7b8b">Event</a> (const <a class="el" href="structShadowThread.html">ShadowThread</a> *thread, const <a class="el" href="structAccessInfo.html">AccessInfo</a> *<a class="el" href="Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861acaf9b6b99962bf5c2264824231d7a40c">info</a>)</td></tr>
+<tr class="separator:a67b566ee0fd7a315e6fd22c7f8eb7b8b inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd26c6f8c2e9fbd59369e538f8678ad0 inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#afd26c6f8c2e9fbd59369e538f8678ad0">Event</a> (const <a class="el" href="classEvent.html">Event</a> &amp;)=delete</td></tr>
+<tr class="memdesc:afd26c6f8c2e9fbd59369e538f8678ad0 inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy constructor.  <a href="#afd26c6f8c2e9fbd59369e538f8678ad0">More...</a><br /></td></tr>
+<tr class="separator:afd26c6f8c2e9fbd59369e538f8678ad0 inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2c0f39bbc8ca58cb49f99f7c7f82c0e inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#ac2c0f39bbc8ca58cb49f99f7c7f82c0e">Event</a> (<a class="el" href="classEvent.html">Event</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:ac2c0f39bbc8ca58cb49f99f7c7f82c0e inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move constructor.  <a href="#ac2c0f39bbc8ca58cb49f99f7c7f82c0e">More...</a><br /></td></tr>
+<tr class="separator:ac2c0f39bbc8ca58cb49f99f7c7f82c0e inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55a410df21f02f269ebe00555ea4ff5 inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#aa55a410df21f02f269ebe00555ea4ff5">~Event</a> ()=default</td></tr>
+<tr class="memdesc:aa55a410df21f02f269ebe00555ea4ff5 inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> destructor.  <a href="#aa55a410df21f02f269ebe00555ea4ff5">More...</a><br /></td></tr>
+<tr class="separator:aa55a410df21f02f269ebe00555ea4ff5 inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af48522be75d0bd52206657b7741c04ec inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEvent.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#af48522be75d0bd52206657b7741c04ec">operator=</a> (const <a class="el" href="classEvent.html">Event</a> &amp;)=delete</td></tr>
+<tr class="memdesc:af48522be75d0bd52206657b7741c04ec inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> copy assignment operator.  <a href="#af48522be75d0bd52206657b7741c04ec">More...</a><br /></td></tr>
+<tr class="separator:af48522be75d0bd52206657b7741c04ec inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c460fc65cf7674b4c9864fca13e3def inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classEvent.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a2c460fc65cf7674b4c9864fca13e3def">operator=</a> (<a class="el" href="classEvent.html">Event</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a2c460fc65cf7674b4c9864fca13e3def inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Deleted</em> move assignment operator.  <a href="#a2c460fc65cf7674b4c9864fca13e3def">More...</a><br /></td></tr>
+<tr class="separator:a2c460fc65cf7674b4c9864fca13e3def inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3236aa6460f7f847015d1e792407f139 inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a3236aa6460f7f847015d1e792407f139">getThread</a> () const</td></tr>
+<tr class="memdesc:a3236aa6460f7f847015d1e792407f139 inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Acesses the thread information.  <a href="#a3236aa6460f7f847015d1e792407f139">More...</a><br /></td></tr>
+<tr class="separator:a3236aa6460f7f847015d1e792407f139 inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e1cef7b479193cbec3b55d1c3c4435c inherit pub_methods_classEvent"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEvent.html#a8e1cef7b479193cbec3b55d1c3c4435c">getInfo</a> () const</td></tr>
+<tr class="memdesc:a8e1cef7b479193cbec3b55d1c3c4435c inherit pub_methods_classEvent"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access the event information.  <a href="#a8e1cef7b479193cbec3b55d1c3c4435c">More...</a><br /></td></tr>
+<tr class="separator:a8e1cef7b479193cbec3b55d1c3c4435c inherit pub_methods_classEvent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classEvent.html" title="Abstract event. ">Event</a> for memory access. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="acf5d9111283277dd7fddc43a9b0a30c3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +152,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">AccessEvent::AccessEvent </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classShadowThread.html">ShadowThread</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structShadowThread.html">ShadowThread</a> *&#160;</td>
           <td class="paramname"><em>thread</em>, </td>
         </tr>
         <tr>
@@ -166,58 +173,18 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ac21162a9db706ddc32493ea5a9b141fc"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">AccessEvent::AccessEvent </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classAccessEvent.html">AccessEvent</a> &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread</td><td>The thread the event was triggered from. </td></tr>
+    <tr><td class="paramname">info</td><td>The access event information. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a479000078173028f6fad03845366e66d"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="structAccessInfo.html">AccessInfo</a>* const AccessEvent::getAccessInfo </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a51dda6a7b720fa0c38723f47471784fa"></a>
+<a class="anchor" id="aae62c01df7dcc460a7194e2a247293a9"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -233,62 +200,19 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">final</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classEvent.html#a57f82a8731bacc198a3198f0781c05c9">Event</a>.</p>
+<p>Return the event type. </p>
 
-</div>
-</div>
-<a class="anchor" id="afbfa4142e21824b82f5cf8248038bb8b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classAccessEvent.html">AccessEvent</a>&amp; AccessEvent::operator= </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classAccessEvent.html">AccessEvent</a> &amp;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a745740ac11267a20f02fa765c7b7e85c"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="structAccessInfo.html">AccessInfo</a>* const AccessEvent::_info</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Implements <a class="el" href="classEvent.html#ad94173e90744533aff3a370566624ad2">Event&lt; AccessInfo &gt;</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/events/<a class="el" href="AccessEvent_8h_source.html">AccessEvent.h</a></li>
+<li>/home/paolo/pcvInterpreter/include/events/<a class="el" href="AccessEvent_8h_source.html">AccessEvent.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

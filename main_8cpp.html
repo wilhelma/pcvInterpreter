@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>PCV Interpreter: src/main.cpp File Reference</title>
+<title>PCV Interpreter: /home/paolo/pcvInterpreter/src/main.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -95,17 +95,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="DBInterpreter_8h_source.html">DBInterpreter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DebugTool_8h_source.html">DebugTool.h</a>&quot;</code><br />
-<code>#include &quot;EventService.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ParasiteTool_8h_source.html">ParasiteTool.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FunctionTrackerTool_8h_source.html">FunctionTrackerTool.h</a>&quot;</code><br />
-<code>#include &quot;LockMgr.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="SAAPRunner_8h_source.html">SAAPRunner.h</a>&quot;</code><br />
-<code>#include &quot;ThreadMgr.h&quot;</code><br />
+<code>#include &quot;SAAPRunner.h&quot;</code><br />
 <code>#include &lt;boost/log/trivial.hpp&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
+<tr class="memdesc:a0ddf1224851353fc92bfbff6f499fa97"><td class="mdescLeft">&#160;</td><td class="mdescRight">The main routine.  <a href="#a0ddf1224851353fc92bfbff6f499fa97">More...</a><br /></td></tr>
 <tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -132,6 +130,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The main routine. </p>
+<dl class="section attention"><dt>Attention</dt><dd>The file name of the database to interpret is ___mandatory!___ </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">argv[0]</td><td>The name of the executable. </td></tr>
+    <tr><td class="paramname">argv[1]</td><td>The name of the database to interpret. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000038">Todo:</a></b></dt><dd>Do in such a way that you don't need the tool address again to remove it. In this way the runner can have a unique_ptr to the tool! </dd></dl>
 
 </div>
 </div>

@@ -1,12 +1,13 @@
 var searchData=
 [
   ['wait',['WAIT',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341ad5cc6a0064b5c25ba37826aa3fda910c',1,'Function.h']]],
-  ['wait2seconds',['wait2seconds',['../nested__test_8c.html#a3ff4345e3b5b0243950fc2351dca5021',1,'wait2seconds():&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a3ff4345e3b5b0243950fc2351dca5021',1,'wait2seconds():&#160;nested_test_with_calls.c']]],
-  ['wait500ms',['wait500ms',['../nested__test_8c.html#a58d3593c655cb563e293bfe05827d29a',1,'wait500ms():&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a58d3593c655cb563e293bfe05827d29a',1,'wait500ms():&#160;nested_test_with_calls.c']]],
+  ['warning',['warning',['../Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861a7b83d3f08fa392b79e3f553b585971cd',1,'Logger.h']]],
   ['wchar_5fmax',['WCHAR_MAX',['../stdint_8h.html#a2a823f3ccf2306cfbaa34d8addf66010',1,'stdint.h']]],
   ['wchar_5fmin',['WCHAR_MIN',['../stdint_8h.html#a051084d5ebcabf282d9ca9bb2b891a78',1,'stdint.h']]],
   ['wcstoimax',['wcstoimax',['../inttypes_8h.html#ae026595b1dcc98cdb66cb46381225188',1,'inttypes.h']]],
   ['wcstoumax',['wcstoumax',['../inttypes_8h.html#a32fa60d80a8e42a3290fb49c8865a4d0',1,'inttypes.h']]],
+  ['what',['what',['../classSQLException.html#af9b03aeca6ccac78cf10673428ebf305',1,'SQLException']]],
+  ['whatreturn_5f',['WhatReturn_',['../classSQLException.html#a3b273cdd13a172047d26fc32f5134a02',1,'SQLException']]],
   ['wint_5fmax',['WINT_MAX',['../stdint_8h.html#ad3f7b6bb8aa7d619017a91d3b2edc1ee',1,'stdint.h']]],
   ['wint_5fmin',['WINT_MIN',['../stdint_8h.html#a5285bc55170ae1701e599decacc7f001',1,'stdint.h']]],
   ['work',['work',['../structcall__site__profile__t.html#af5ae43ef609edd704c40348edd47c56b',1,'call_site_profile_t::work()'],['../structcall__site__work__profile__t.html#a5c1b8ac94e63d7b363b67430a79a1c5b',1,'call_site_work_profile_t::work()'],['../structparasite__profile__t.html#ae0b48b7eafa103aa27483793b731bc68',1,'parasite_profile_t::work()']]],
@@ -35,5 +36,5 @@ var searchData=
   ['writestring',['WriteString',['../classrapidjson_1_1Writer.html#a0fbb77741df512ab83c526bc299ed56e',1,'rapidjson::Writer']]],
   ['writeuint',['WriteUint',['../classrapidjson_1_1Writer.html#ac10739643decdbe4f1dae6702c8bc579',1,'rapidjson::Writer::WriteUint(unsigned u)'],['../classrapidjson_1_1Writer.html#ab7c08a743fff55d9f09dc58f0a75e67f',1,'rapidjson::Writer::WriteUint(unsigned u)']]],
   ['writeuint64',['WriteUint64',['../classrapidjson_1_1Writer.html#a165e94f5bc8097a8145808e1ee3ab05e',1,'rapidjson::Writer::WriteUint64(uint64_t u64)'],['../classrapidjson_1_1Writer.html#a474abb8f7b704f1ef7c00bbe2a2e01b6',1,'rapidjson::Writer::WriteUint64(uint64_t u)']]],
-  ['writevarset_5f',['writeVarSet_',['../classLockSetChecker.html#ab47d3143f5af1efd88d2d316efabd726',1,'LockSetChecker::writeVarSet_()'],['../classRaceDetectionTool.html#afa9d2fee1510fc3fb48f11d4149c7299',1,'RaceDetectionTool::writeVarSet_()'],['../classLockSetChecker.html#a3fe1e66005f5098d3302f64e6496e4c8',1,'LockSetChecker::WriteVarSet_()'],['../classRaceDetectionTool.html#a39b24a5e8c9c6cf828086d44dea5b84b',1,'RaceDetectionTool::WriteVarSet_()']]]
+  ['writevarset_5f',['WriteVarSet_',['../classLockSetChecker.html#a3fe1e66005f5098d3302f64e6496e4c8',1,'LockSetChecker::WriteVarSet_()'],['../classRaceDetectionTool.html#a39b24a5e8c9c6cf828086d44dea5b84b',1,'RaceDetectionTool::WriteVarSet_()'],['../classLockSetChecker.html#ab47d3143f5af1efd88d2d316efabd726',1,'LockSetChecker::writeVarSet_()'],['../classRaceDetectionTool.html#afa9d2fee1510fc3fb48f11d4149c7299',1,'RaceDetectionTool::writeVarSet_()']]]
 ];

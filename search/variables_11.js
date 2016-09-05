@@ -5,7 +5,7 @@ var searchData=
   ['readcount_5f',['readCount_',['../classrapidjson_1_1FileReadStream.html#a2e36a566d23ef19ffa4eb16e0a390cff',1,'rapidjson::FileReadStream']]],
   ['readvarset_5f',['readVarSet_',['../classLockSetChecker.html#a025fc7e5433e5435365c8c781e3dac97',1,'LockSetChecker::readVarSet_()'],['../classRaceDetectionTool.html#a4d1d17c44fc023e8ce50876c6e8e1bc6',1,'RaceDetectionTool::readVarSet_()']]],
   ['reference_5fid',['reference_id',['../structaccess__t.html#a28e51c1c13ebd8eeb4eae107641158f9',1,'access_t']]],
-  ['referencetable',['referenceTable',['../classDBInterpreter.html#a5a68f12f4c2daf0c67d82efecf4bac7a',1,'DBInterpreter']]],
+  ['referencetable_5f',['ReferenceTable_',['../classDBInterpreter.html#a1c065193dbdec4c57c476a033c3921a9',1,'DBInterpreter']]],
   ['releasetime',['releaseTime',['../structReleaseInfo.html#aa60f7db019cdb64f92f14de13d3da210',1,'ReleaseInfo']]],
   ['rem',['rem',['../structimaxdiv__t.html#a6c9701ad10bff81edae7ff679cae7850',1,'imaxdiv_t']]],
   ['running_5flock_5fspan',['running_lock_span',['../structfunction__frame__t.html#a553492d1f6c9d70ffe984bfbe2e9edbf',1,'function_frame_t']]],

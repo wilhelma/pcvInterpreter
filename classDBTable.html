@@ -89,109 +89,134 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classDBTable-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">DBTable&lt; IdT, T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">DBTable&lt; IdT, T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Maps IDs to structs wrapping database table entries.  
+ <a href="classDBTable.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="DBTable_8h_source.html">DBTable.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a1521d79fabda4ac81aa27c8fa8227676"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; IdT, T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a1521d79fabda4ac81aa27c8fa8227676">Map</a></td></tr>
-<tr class="separator:a1521d79fabda4ac81aa27c8fa8227676"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6b4e1be96a8f2bbb566bf226b5a38ac"><td class="memItemLeft" align="right" valign="top">typedef Map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a></td></tr>
-<tr class="separator:ae6b4e1be96a8f2bbb566bf226b5a38ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab6812997fad85458ec888354b774a16"><td class="memItemLeft" align="right" valign="top">typedef Map::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a></td></tr>
-<tr class="separator:aab6812997fad85458ec888354b774a16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a453639302e2ac6b65dab55b206b523cc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a453639302e2ac6b65dab55b206b523cc">value_type</a> = T</td></tr>
+<tr class="separator:a453639302e2ac6b65dab55b206b523cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb0c75d200c3cc66483f72568808a736"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a> = typename std::map&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a></td></tr>
+<tr class="separator:adb0c75d200c3cc66483f72568808a736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5c1123481e3dc1fa3374f55632b950f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> = typename std::map&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a></td></tr>
+<tr class="separator:ac5c1123481e3dc1fa3374f55632b950f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7149c41a174f4b56a25b8553ccb6bde1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a7149c41a174f4b56a25b8553ccb6bde1">DBTable</a> ()</td></tr>
+<tr class="memdesc:a7149c41a174f4b56a25b8553ccb6bde1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a7149c41a174f4b56a25b8553ccb6bde1">More...</a><br /></td></tr>
 <tr class="separator:a7149c41a174f4b56a25b8553ccb6bde1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad76787ae52c668e32a3e2e6528e7948b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ad76787ae52c668e32a3e2e6528e7948b">~DBTable</a> ()</td></tr>
+<tr class="memdesc:ad76787ae52c668e32a3e2e6528e7948b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default destructor.  <a href="#ad76787ae52c668e32a3e2e6528e7948b">More...</a><br /></td></tr>
 <tr class="separator:ad76787ae52c668e32a3e2e6528e7948b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24ee555ba61d2ca7fa960d0fe19d725a"><td class="memItemLeft" align="right" valign="top">virtual const std::pair&lt; <a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a24ee555ba61d2ca7fa960d0fe19d725a">fill</a> (sqlite3_stmt *sqlstmt)=0</td></tr>
-<tr class="separator:a24ee555ba61d2ca7fa960d0fe19d725a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad97be0528c0e058f34edb7df29f6c67c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ad97be0528c0e058f34edb7df29f6c67c">find</a> (const IdT &amp;id)</td></tr>
+<tr class="memitem:ae4a2243f9589b5b18b4c0e2c91675187"><td class="memItemLeft" align="right" valign="top">virtual const std::pair&lt; <a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae4a2243f9589b5b18b4c0e2c91675187">insert</a> (const T &amp;entry)</td></tr>
+<tr class="memdesc:ae4a2243f9589b5b18b4c0e2c91675187"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts the entry in the maps creating a <code>pair(id, entry)</code>.  <a href="#ae4a2243f9589b5b18b4c0e2c91675187">More...</a><br /></td></tr>
+<tr class="separator:ae4a2243f9589b5b18b4c0e2c91675187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39ec32b676a72cb36f88f4e3705c4fe4"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">DBTable::iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a39ec32b676a72cb36f88f4e3705c4fe4">insert</a> (<a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">DBTable::iterator</a> hint, const T &amp;entry)</td></tr>
+<tr class="memdesc:a39ec32b676a72cb36f88f4e3705c4fe4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts the <code>entry</code> in the position pointed to by <code>hint</code>.  <a href="#a39ec32b676a72cb36f88f4e3705c4fe4">More...</a><br /></td></tr>
+<tr class="separator:a39ec32b676a72cb36f88f4e3705c4fe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad97be0528c0e058f34edb7df29f6c67c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ad97be0528c0e058f34edb7df29f6c67c">find</a> (const IdT &amp;id)</td></tr>
+<tr class="memdesc:ad97be0528c0e058f34edb7df29f6c67c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find <code>id</code> in the map.  <a href="#ad97be0528c0e058f34edb7df29f6c67c">More...</a><br /></td></tr>
 <tr class="separator:ad97be0528c0e058f34edb7df29f6c67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9b556f7e6454944271e2a2f72cd54fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae9b556f7e6454944271e2a2f72cd54fc">find</a> (const IdT &amp;id) const </td></tr>
+<tr class="memitem:ae9b556f7e6454944271e2a2f72cd54fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae9b556f7e6454944271e2a2f72cd54fc">find</a> (const IdT &amp;id) const </td></tr>
+<tr class="memdesc:ae9b556f7e6454944271e2a2f72cd54fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find <code>id</code> in the map.  <a href="#ae9b556f7e6454944271e2a2f72cd54fc">More...</a><br /></td></tr>
 <tr class="separator:ae9b556f7e6454944271e2a2f72cd54fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1c4498cda0ebb37634f0f412a9f3239"><td class="memItemLeft" align="right" valign="top">const std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#aa1c4498cda0ebb37634f0f412a9f3239">size</a> () const noexcept</td></tr>
+<tr class="memdesc:aa1c4498cda0ebb37634f0f412a9f3239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the internal map.  <a href="#aa1c4498cda0ebb37634f0f412a9f3239">More...</a><br /></td></tr>
 <tr class="separator:aa1c4498cda0ebb37634f0f412a9f3239"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a256fe0e96099c3bd3098e6df2cc5816c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a256fe0e96099c3bd3098e6df2cc5816c">begin</a> () noexcept</td></tr>
+<tr class="memitem:a256fe0e96099c3bd3098e6df2cc5816c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a256fe0e96099c3bd3098e6df2cc5816c">begin</a> () noexcept</td></tr>
+<tr class="memdesc:a256fe0e96099c3bd3098e6df2cc5816c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin iterator.  <a href="#a256fe0e96099c3bd3098e6df2cc5816c">More...</a><br /></td></tr>
 <tr class="separator:a256fe0e96099c3bd3098e6df2cc5816c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af77cf24b1f26479107fea2ac895ca395"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#af77cf24b1f26479107fea2ac895ca395">end</a> () noexcept</td></tr>
+<tr class="memitem:af77cf24b1f26479107fea2ac895ca395"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#af77cf24b1f26479107fea2ac895ca395">end</a> () noexcept</td></tr>
+<tr class="memdesc:af77cf24b1f26479107fea2ac895ca395"><td class="mdescLeft">&#160;</td><td class="mdescRight">End iterator.  <a href="#af77cf24b1f26479107fea2ac895ca395">More...</a><br /></td></tr>
 <tr class="separator:af77cf24b1f26479107fea2ac895ca395"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8172c7ca380f486a0cba1d8e1fa8f33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae8172c7ca380f486a0cba1d8e1fa8f33">begin</a> () const noexcept</td></tr>
+<tr class="memitem:ae8172c7ca380f486a0cba1d8e1fa8f33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ae8172c7ca380f486a0cba1d8e1fa8f33">begin</a> () const noexcept</td></tr>
 <tr class="separator:ae8172c7ca380f486a0cba1d8e1fa8f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab77c720d9475228c740363aa968b5649"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ab77c720d9475228c740363aa968b5649">end</a> () const noexcept</td></tr>
+<tr class="memitem:ab77c720d9475228c740363aa968b5649"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ab77c720d9475228c740363aa968b5649">end</a> () const noexcept</td></tr>
 <tr class="separator:ab77c720d9475228c740363aa968b5649"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecfc58c72ac6d6dd24946a7ed680a240"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#aecfc58c72ac6d6dd24946a7ed680a240">cbegin</a> () const noexcept</td></tr>
+<tr class="memitem:aecfc58c72ac6d6dd24946a7ed680a240"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#aecfc58c72ac6d6dd24946a7ed680a240">cbegin</a> () const noexcept</td></tr>
+<tr class="memdesc:aecfc58c72ac6d6dd24946a7ed680a240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin const_iterator.  <a href="#aecfc58c72ac6d6dd24946a7ed680a240">More...</a><br /></td></tr>
 <tr class="separator:aecfc58c72ac6d6dd24946a7ed680a240"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab619dc5c2a72043eb4309ae4fa9ab70f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ab619dc5c2a72043eb4309ae4fa9ab70f">cend</a> () const noexcept</td></tr>
+<tr class="memitem:ab619dc5c2a72043eb4309ae4fa9ab70f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#ab619dc5c2a72043eb4309ae4fa9ab70f">cend</a> () const noexcept</td></tr>
+<tr class="memdesc:ab619dc5c2a72043eb4309ae4fa9ab70f"><td class="mdescLeft">&#160;</td><td class="mdescRight">End const_iterator.  <a href="#ab619dc5c2a72043eb4309ae4fa9ab70f">More...</a><br /></td></tr>
 <tr class="separator:ab619dc5c2a72043eb4309ae4fa9ab70f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a6babc41d25dc49bfd7842d7a270c98a0"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a6babc41d25dc49bfd7842d7a270c98a0">insert</a> (const IdT &amp;id, const T &amp;entry)</td></tr>
-<tr class="separator:a6babc41d25dc49bfd7842d7a270c98a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
 <tr class="memitem:a789080a4c75ae41f0898fc5073d677d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a789080a4c75ae41f0898fc5073d677d3">DBTable</a> (const <a class="el" href="classDBTable.html">DBTable</a> &amp;)</td></tr>
 <tr class="separator:a789080a4c75ae41f0898fc5073d677d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7adc7d93590831e991d309827f13643"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html">DBTable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#aa7adc7d93590831e991d309827f13643">operator=</a> (const <a class="el" href="classDBTable.html">DBTable</a> &amp;)</td></tr>
 <tr class="separator:aa7adc7d93590831e991d309827f13643"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a857e71eeaf0aaed36a0e87d60e2938c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDBTable.html#a1521d79fabda4ac81aa27c8fa8227676">Map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a857e71eeaf0aaed36a0e87d60e2938c6">map_</a></td></tr>
-<tr class="separator:a857e71eeaf0aaed36a0e87d60e2938c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a6a1c0ca5138cd6b4d7ed813785bacff7"><td class="memItemLeft" align="right" valign="top">std::map&lt; IdT, T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a6a1c0ca5138cd6b4d7ed813785bacff7">Map_</a></td></tr>
+<tr class="memdesc:a6a1c0ca5138cd6b4d7ed813785bacff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The map associating IDs to database table entries.  <a href="#a6a1c0ca5138cd6b4d7ed813785bacff7">More...</a><br /></td></tr>
+<tr class="separator:a6a1c0ca5138cd6b4d7ed813785bacff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a32e271fd75216201bb8a82cd7dbe117e"><td class="memItemLeft" align="right" valign="top">std::insert_iterator&lt; <a class="el" href="classDBTable.html">DBTable</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBTable.html#a32e271fd75216201bb8a82cd7dbe117e">inserter</a> (<a class="el" href="classDBTable.html">DBTable</a> &amp;table)</td></tr>
+<tr class="separator:a32e271fd75216201bb8a82cd7dbe117e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Typedef Documentation</h2>
-<a class="anchor" id="aab6812997fad85458ec888354b774a16"></a>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename IdT, typename T&gt;<br />
+class DBTable&lt; IdT, T &gt;</h3>
+
+<p>Maps IDs to structs wrapping database table entries. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="ac5c1123481e3dc1fa3374f55632b950f"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename IdT, typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">typedef Map::const_iterator <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a></td>
+          <td class="memname"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000024">Todo:</a></b></dt><dd>Is this needed? </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ae6b4e1be96a8f2bbb566bf226b5a38ac"></a>
+<a class="anchor" id="adb0c75d200c3cc66483f72568808a736"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename IdT, typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">typedef Map::iterator <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a></td>
+          <td class="memname"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Convenience definition to use <code>std::inserter</code> </p>
 
 </div>
 </div>
-<a class="anchor" id="a1521d79fabda4ac81aa27c8fa8227676"></a>
+<a class="anchor" id="a453639302e2ac6b65dab55b206b523cc"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename IdT, typename T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::map&lt;IdT, T&gt; <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#a1521d79fabda4ac81aa27c8fa8227676">Map</a></td>
+          <td class="memname"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#a453639302e2ac6b65dab55b206b523cc">value_type</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Convenience definition to use <code>std::inserter</code> </p>
 
 </div>
 </div>
@@ -219,6 +244,8 @@ template&lt;typename IdT, typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Default constructor. </p>
+
 </div>
 </div>
 <a class="anchor" id="ad76787ae52c668e32a3e2e6528e7948b"></a>
@@ -244,6 +271,8 @@ template&lt;typename IdT, typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Default destructor. </p>
+
 </div>
 </div>
 <a class="anchor" id="a789080a4c75ae41f0898fc5073d677d3"></a>
@@ -265,7 +294,7 @@ template&lt;typename IdT, typename T&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -283,7 +312,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::begin </td>
+          <td class="memname"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -295,6 +324,8 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Begin iterator. </p>
 
 </div>
 </div>
@@ -308,7 +339,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::begin </td>
+          <td class="memname"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -320,6 +351,7 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Begin const_iterator. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000025">Todo:</a></b></dt><dd>Needed? </dd></dl>
 
 </div>
 </div>
@@ -333,7 +365,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::cbegin </td>
+          <td class="memname"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::cbegin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -345,6 +377,8 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Begin const_iterator. </p>
 
 </div>
 </div>
@@ -358,7 +392,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::cend </td>
+          <td class="memname"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::cend </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -370,6 +404,8 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>End const_iterator. </p>
 
 </div>
 </div>
@@ -383,7 +419,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::end </td>
+          <td class="memname"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -395,6 +431,8 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>End iterator. </p>
 
 </div>
 </div>
@@ -408,7 +446,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::end </td>
+          <td class="memname"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -420,34 +458,7 @@ template&lt;typename IdT, typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a24ee555ba61d2ca7fa960d0fe19d725a"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename IdT, typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const std::pair&lt;<a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>, bool&gt; <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::fill </td>
-          <td>(</td>
-          <td class="paramtype">sqlite3_stmt *&#160;</td>
-          <td class="paramname"><em>sqlstmt</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="classAccessTable.html#a808b20af6e32608294e550070977a961">AccessTable</a>, <a class="el" href="classCallTable.html#a3809df7c87243c97386192c652059586">CallTable</a>, <a class="el" href="classFileTable.html#a771231d1d408200a43435b979e1293c8">FileTable</a>, <a class="el" href="classFunctionTable.html#ad02c430261a029cd223b6a9f7c95cabc">FunctionTable</a>, <a class="el" href="classInstructionTable.html#a626db218ab0bfbe87734c46447e01528">InstructionTable</a>, <a class="el" href="classLoopExecutionTable.html#a6aab6019676688d85929f5dc281bdb88">LoopExecutionTable</a>, <a class="el" href="classLoopIterationTable.html#ae918075cacd2f2ce3fce5ead8780367c">LoopIterationTable</a>, <a class="el" href="classLoopTable.html#a176c3a111f15f25b41423ff96ccfa70e">LoopTable</a>, <a class="el" href="classReferenceTable.html#a0cacf534e732a0279470df0143826774">ReferenceTable</a>, <a class="el" href="classThreadTable.html#a3aa1dc196f06c3b9460eae0e7016f56d">ThreadTable</a>, and <a class="el" href="classSegmentTable.html#ae0b03cbd048f81cecd2e1aceafc35fa6">SegmentTable</a>.</p>
+<p>End const_iterator. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000026">Todo:</a></b></dt><dd>Needed? </dd></dl>
 
 </div>
 </div>
@@ -461,7 +472,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::find </td>
+          <td class="memname"><a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::find </td>
           <td>(</td>
           <td class="paramtype">const IdT &amp;&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
@@ -475,6 +486,8 @@ template&lt;typename IdT, typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Find <code>id</code> in the map. </p>
+
 </div>
 </div>
 <a class="anchor" id="ae9b556f7e6454944271e2a2f72cd54fc"></a>
@@ -487,7 +500,7 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#aab6812997fad85458ec888354b774a16">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::find </td>
+          <td class="memname"><a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">const_iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::find </td>
           <td>(</td>
           <td class="paramtype">const IdT &amp;&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
@@ -501,9 +514,11 @@ template&lt;typename IdT, typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Find <code>id</code> in the map. </p>
+
 </div>
 </div>
-<a class="anchor" id="a6babc41d25dc49bfd7842d7a270c98a0"></a>
+<a class="anchor" id="ae4a2243f9589b5b18b4c0e2c91675187"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -513,10 +528,38 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt;<a class="el" href="classDBTable.html#ae6b4e1be96a8f2bbb566bf226b5a38ac">iterator</a>, bool&gt; <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::insert </td>
+          <td class="memname">virtual const std::pair&lt;<a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>, bool&gt; <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::insert </td>
           <td>(</td>
-          <td class="paramtype">const IdT &amp;&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>entry</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inserts the entry in the maps creating a <code>pair(id, entry)</code>. </p>
+
+</div>
+</div>
+<a class="anchor" id="a39ec32b676a72cb36f88f4e3705c4fe4"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdT, typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">DBTable::iterator</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::<a class="el" href="classDBTable.html#adb0c75d200c3cc66483f72568808a736">iterator</a>&#160;</td>
+          <td class="paramname"><em>hint</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -532,10 +575,20 @@ template&lt;typename IdT, typename T&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Inserts the <code>entry</code> in the position pointed to by <code>hint</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hint</td><td>Iterator pointing to the position where to insert <code>entry</code>. </td></tr>
+    <tr><td class="paramname">entry</td><td>The entry to insert. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section attention"><dt>Attention</dt><dd>This is a convenience function only needed to allow <code>std::copy</code> to be used on <code><a class="el" href="classDBTable.html" title="Maps IDs to structs wrapping database table entries. ">DBTable</a></code>. </dd></dl>
 
 </div>
 </div>
@@ -558,7 +611,7 @@ template&lt;typename IdT, typename T&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -588,10 +641,12 @@ template&lt;typename IdT, typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Size of the internal map. </p>
+
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a857e71eeaf0aaed36a0e87d60e2938c6"></a>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a32e271fd75216201bb8a82cd7dbe117e"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -601,20 +656,55 @@ template&lt;typename IdT, typename T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDBTable.html#a1521d79fabda4ac81aa27c8fa8227676">Map</a> <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::map_</td>
+          <td class="memname">std::insert_iterator&lt;<a class="el" href="classDBTable.html">DBTable</a>&gt; inserter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>table</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserter to allow <code>std::copy</code>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">table</td><td>The <code>DBtable</code> to operate upon. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a6a1c0ca5138cd6b4d7ed813785bacff7"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdT, typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;IdT, T&gt; <a class="el" href="classDBTable.html">DBTable</a>&lt; IdT, T &gt;::Map_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p>The map associating IDs to database table entries. </p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/tables/<a class="el" href="DBTable_8h_source.html">DBTable.h</a></li>
+<li>/home/paolo/pcvInterpreter/include/tables/<a class="el" href="DBTable_8h_source.html">DBTable.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -86,17 +86,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">Event Member List</div>  </div>
+<div class="title">Event&lt; InfoType &gt; Member List</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="classEvent.html">Event</a>, including all inherited members.</p>
+<p>This is the complete list of members for <a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#ad36b35f33923f2d96d504b8829dc4bb3">_thread</a></td><td class="entry"><a class="el" href="classEvent.html">Event</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classEvent.html#a15158a6fc84126d1b61802b1c91f85ba">Event</a>(const ShadowThread *thread)</td><td class="entry"><a class="el" href="classEvent.html">Event</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#a57f82a8731bacc198a3198f0781c05c9">getEventType</a>() const =0</td><td class="entry"><a class="el" href="classEvent.html">Event</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classEvent.html#af90345dd725e37df44b714ea895bbc65">getThread</a>() const </td><td class="entry"><a class="el" href="classEvent.html">Event</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#ab864fd85c758006c42cd7a1b3369b483">~Event</a>()</td><td class="entry"><a class="el" href="classEvent.html">Event</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#a67b566ee0fd7a315e6fd22c7f8eb7b8b">Event</a>(const ShadowThread *thread, const InfoType *info)</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classEvent.html#afd26c6f8c2e9fbd59369e538f8678ad0">Event</a>(const Event &amp;)=delete</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#ac2c0f39bbc8ca58cb49f99f7c7f82c0e">Event</a>(Event &amp;&amp;)=delete</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classEvent.html#ad94173e90744533aff3a370566624ad2">getEventType</a>() const =0</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#a8e1cef7b479193cbec3b55d1c3c4435c">getInfo</a>() const </td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classEvent.html#a3236aa6460f7f847015d1e792407f139">getThread</a>() const </td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#aafcb8a7ebc59f5780055d31c2e2e66b4">Info_</a></td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classEvent.html#af48522be75d0bd52206657b7741c04ec">operator=</a>(const Event &amp;)=delete</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#a2c460fc65cf7674b4c9864fca13e3def">operator=</a>(Event &amp;&amp;)=delete</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classEvent.html#a0ec9a055232f5e2cea719f1650b0f575">Thread_</a></td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classEvent.html#aa55a410df21f02f269ebe00555ea4ff5">~Event</a>()=default</td><td class="entry"><a class="el" href="classEvent.html">Event&lt; InfoType &gt;</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

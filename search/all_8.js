@@ -11,6 +11,5 @@ var searchData=
   ['hasroot_5f',['hasRoot_',['../classrapidjson_1_1Writer.html#aafc5c664d831e7ed87c495e7bf71a14c',1,'rapidjson::Writer']]],
   ['head_5f',['head_',['../structrapidjson_1_1GenericStringStream.html#a2556705b0a0fd6393862efe6db025b32',1,'rapidjson::GenericStringStream::head_()'],['../structrapidjson_1_1GenericInsituStringStream.html#a6d611d9f5372d457373b90a711dd2717',1,'rapidjson::GenericInsituStringStream::head_()']]],
   ['head_5ffunction_5findex',['head_function_index',['../structthread__frame__t.html#aeaa075a6d9f5ae215c1dfdd2b6a8c27d',1,'thread_frame_t']]],
-  ['heap',['HEAP',['../Reference_8h.html#aa298d9663bceef9c2ac2880c5bae3327ab6722804f5872cdd88347da194d42087',1,'Reference.h']]],
-  ['hellothread',['HelloThread',['../nested__test_8c.html#a9f90ab34f59fd95d87bff7fe65b7d217',1,'HelloThread(void *threadid):&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a9f90ab34f59fd95d87bff7fe65b7d217',1,'HelloThread(void *threadid):&#160;nested_test_with_calls.c']]]
+  ['heap',['HEAP',['../Reference_8h.html#aa298d9663bceef9c2ac2880c5bae3327ab6722804f5872cdd88347da194d42087',1,'Reference.h']]]
 ];

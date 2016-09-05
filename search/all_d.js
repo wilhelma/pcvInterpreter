@@ -1,25 +1,26 @@
 var searchData=
 [
-  ['main',['MAIN',['../structcall__t.html#a8209b2f1911ccef1f622f98137a57f45',1,'call_t::MAIN()'],['../main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../busy__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;busy_test.c'],['../busy__test_8cc.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;busy_test.cc'],['../busy__test__nested_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;busy_test_nested.c'],['../busy__test__nested_8cc.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;busy_test_nested.cc'],['../lock__example_8c.html#a840291bc02cba5474a4cb46a9b9566fe',1,'main(void):&#160;lock_example.c'],['../nested__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;nested_test.c'],['../nested__test__with__calls_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;nested_test_with_calls.c'],['../scale__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;scale_test.c']]],
+  ['main',['MAIN',['../structcall__t.html#a8209b2f1911ccef1f622f98137a57f45',1,'call_t::MAIN()'],['../main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main():&#160;main.cpp']]],
   ['main_2ecpp',['main.cpp',['../main_8cpp.html',1,'']]],
+  ['make_5fdbinterpreter',['make_DBInterpreter',['../DBInterpreter_8h.html#a71875ae97e42bf4cad8d7ce8a16bca40',1,'make_DBInterpreter(std::string &amp;&amp;logFileName):&#160;DBInterpreter.cpp'],['../DBInterpreter_8cpp.html#a71875ae97e42bf4cad8d7ce8a16bca40',1,'make_DBInterpreter(std::string &amp;&amp;logFileName):&#160;DBInterpreter.cpp']]],
   ['malloc',['Malloc',['../classrapidjson_1_1CrtAllocator.html#aa3dab0aa1b00fc5b6e6cf29708e6667f',1,'rapidjson::CrtAllocator::Malloc()'],['../classrapidjson_1_1MemoryPoolAllocator.html#a208c29e04b1d748bfe068444b7044344',1,'rapidjson::MemoryPoolAllocator::Malloc()']]],
-  ['map',['Map',['../classDBTable.html#a1521d79fabda4ac81aa27c8fa8227676',1,'DBTable']]],
-  ['map_5f',['map_',['../classDBTable.html#a857e71eeaf0aaed36a0e87d60e2938c6',1,'DBTable']]],
+  ['map_5f',['Map_',['../classDBTable.html#a6a1c0ca5138cd6b4d7ed813785bacff7',1,'DBTable']]],
   ['maxchars',['MaxChars',['../structrapidjson_1_1GenericValue_1_1ShortString.html#a77aa02281a84b131e4d4eb3a13146815a78cfea23edd64c3767922023807ced64',1,'rapidjson::GenericValue::ShortString']]],
   ['maxsize',['MaxSize',['../structrapidjson_1_1GenericValue_1_1ShortString.html#a77aa02281a84b131e4d4eb3a13146815a8e7b3228397abe6824e515799763198f',1,'rapidjson::GenericValue::ShortString']]],
   ['member',['Member',['../classrapidjson_1_1GenericValue.html#a0220ddebe2f023fa75b643a50e90e559',1,'rapidjson::GenericValue']]],
   ['memberiterator',['MemberIterator',['../classrapidjson_1_1GenericValue.html#aca5596987335016c1a7c2a9467baf80b',1,'rapidjson::GenericValue']]],
   ['members',['members',['../structrapidjson_1_1GenericValue_1_1Object.html#af9bd5c010b60a93cf910b8b89042d543',1,'rapidjson::GenericValue::Object']]],
-  ['memlockmap_5f',['MemLockMap_',['../classLockMgr.html#a7df96f96830562af60cde8f5fa701e9d',1,'LockMgr::MemLockMap_()'],['../classLockMgr.html#a47a8a4d5b18e5ba6b2861c1eb4bb4465',1,'LockMgr::memLockMap_()']]],
+  ['memlockmap_5f',['MemLockMap_',['../classLockMgr.html#a24f8ed4ba5023ac6e797c71f026a3a23',1,'LockMgr::MemLockMap_()'],['../classLockMgr.html#a47a8a4d5b18e5ba6b2861c1eb4bb4465',1,'LockMgr::memLockMap_()']]],
   ['memory_5fstate',['memory_state',['../structaccess__t.html#a4be26a1510df02dd12cdd118f903a3b2',1,'access_t']]],
   ['memory_5ftype',['memory_type',['../structreference__t.html#a1ef0cd254716f3ef810f2e10c5d6cba1',1,'reference_t']]],
   ['memorybuffer',['MemoryBuffer',['../namespacerapidjson.html#acb643b9055e7988f4cb89ce4f7e6b115',1,'rapidjson']]],
   ['memorybuffer_2eh',['memorybuffer.h',['../memorybuffer_8h.html',1,'']]],
-  ['memorypoolallocator',['MemoryPoolAllocator',['../classrapidjson_1_1MemoryPoolAllocator.html',1,'rapidjson']]],
   ['memorypoolallocator',['MemoryPoolAllocator',['../classrapidjson_1_1MemoryPoolAllocator.html#a59d783f4feba17dcd35d9f25fcbc09f4',1,'rapidjson::MemoryPoolAllocator::MemoryPoolAllocator(size_t chunkSize=kDefaultChunkCapacity, BaseAllocator *baseAllocator=0)'],['../classrapidjson_1_1MemoryPoolAllocator.html#abcc572bdb6902c9d69711540db5098a7',1,'rapidjson::MemoryPoolAllocator::MemoryPoolAllocator(void *buffer, size_t size, size_t chunkSize=kDefaultChunkCapacity, BaseAllocator *baseAllocator=0)'],['../classrapidjson_1_1MemoryPoolAllocator.html#a7aebc93e8dc47971bb3f2e4e50677912',1,'rapidjson::MemoryPoolAllocator::MemoryPoolAllocator(const MemoryPoolAllocator &amp;rhs)']]],
-  ['memorystream',['MemoryStream',['../structrapidjson_1_1MemoryStream.html',1,'rapidjson']]],
+  ['memorypoolallocator',['MemoryPoolAllocator',['../classrapidjson_1_1MemoryPoolAllocator.html',1,'rapidjson']]],
   ['memorystream',['MemoryStream',['../structrapidjson_1_1MemoryStream.html#a78a2158aae245de652bad7d53de1772c',1,'rapidjson::MemoryStream']]],
+  ['memorystream',['MemoryStream',['../structrapidjson_1_1MemoryStream.html',1,'rapidjson']]],
   ['memorystream_2eh',['memorystream.h',['../memorystream_8h.html',1,'']]],
   ['meta_2eh',['meta.h',['../meta_8h.html',1,'']]],
-  ['method',['METHOD',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a725e74fd6435d86483781e2bd8e9d2c7',1,'Function.h']]]
+  ['method',['METHOD',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a725e74fd6435d86483781e2bd8e9d2c7',1,'Function.h']]],
+  ['minlogseverity_5f',['MinLogSeverity_',['../classLogger.html#a2a67fc1537112ea07de160990a0efcf3',1,'Logger']]]
 ];

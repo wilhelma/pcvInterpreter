@@ -99,13 +99,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrongTypedef.html#ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6">StrongTypedef</a> (T value) noexcept</td></tr>
-<tr class="memdesc:ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor It's explicit in order to prevent implicit casts.  <a href="#ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6">More...</a><br /></td></tr>
+<tr class="memdesc:ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6">More...</a><br /></td></tr>
 <tr class="separator:ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad89504e7a23ef71f4837ed54f80117fa"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrongTypedef.html#ad89504e7a23ef71f4837ed54f80117fa">StrongTypedef</a> (const <a class="el" href="structStrongTypedef.html">StrongTypedef</a> &amp;input) noexcept</td></tr>
-<tr class="memdesc:ad89504e7a23ef71f4837ed54f80117fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#ad89504e7a23ef71f4837ed54f80117fa">More...</a><br /></td></tr>
-<tr class="separator:ad89504e7a23ef71f4837ed54f80117fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a3f7bc1220c490057d700c7eedb0da0"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrongTypedef.html#a3a3f7bc1220c490057d700c7eedb0da0">StrongTypedef</a> (const <a class="el" href="structStrongTypedef.html">StrongTypedef</a>&lt; T, n &gt; &amp;input) noexcept</td></tr>
+<tr class="memdesc:a3a3f7bc1220c490057d700c7eedb0da0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#a3a3f7bc1220c490057d700c7eedb0da0">More...</a><br /></td></tr>
+<tr class="separator:a3a3f7bc1220c490057d700c7eedb0da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae54e90663442a5d58ea5c9136c952ddf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrongTypedef.html#ae54e90663442a5d58ea5c9136c952ddf">operator const T</a> () const </td></tr>
-<tr class="memdesc:ae54e90663442a5d58ea5c9136c952ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implicit conversion operator. A return by value is used sice I assume the underlying type should be a primitive.  <a href="#ae54e90663442a5d58ea5c9136c952ddf">More...</a><br /></td></tr>
+<tr class="memdesc:ae54e90663442a5d58ea5c9136c952ddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implicit conversion operator.  <a href="#ae54e90663442a5d58ea5c9136c952ddf">More...</a><br /></td></tr>
 <tr class="separator:ae54e90663442a5d58ea5c9136c952ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bea905f81ecab0d92795d5b97d92deb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStrongTypedef.html#a9bea905f81ecab0d92795d5b97d92deb">operator T &amp;</a> ()</td></tr>
 <tr class="memdesc:a9bea905f81ecab0d92795d5b97d92deb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is called when operator++ is called on the object.  <a href="#a9bea905f81ecab0d92795d5b97d92deb">More...</a><br /></td></tr>
@@ -127,7 +127,7 @@ struct StrongTypedef&lt; T, n &gt;</h3>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>When used with <code>T = std::string</code>, <code>string</code> methods cannot be called. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000033">Todo:</a></b></dt><dd>When used with <code>T = std::string</code>, </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac7e5b4ed47b8ff3f58f5ac36a7cbcfb6"></a>
 <div class="memitem">
@@ -153,11 +153,12 @@ template&lt;typename T, size_t n&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Constructor It's explicit in order to prevent implicit casts. </p>
+<p>Constructor. </p>
+<p>It's <code>explicit</code> in order to prevent implicit casts. </p>
 
 </div>
 </div>
-<a class="anchor" id="ad89504e7a23ef71f4837ed54f80117fa"></a>
+<a class="anchor" id="a3a3f7bc1220c490057d700c7eedb0da0"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -209,7 +210,8 @@ template&lt;typename T, size_t n&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implicit conversion operator. A return by value is used sice I assume the underlying type should be a primitive. </p>
+<p>Implicit conversion operator. </p>
+<p>A return by value is used sice I assume the underlying type should be a primitive. </p>
 
 </div>
 </div>
@@ -264,7 +266,7 @@ template&lt;typename T, size_t n&gt; </div>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="Types_8h_source.html">Types.h</a></li>
+<li>/home/paolo/pcvInterpreter/include/<a class="el" href="Types_8h_source.html">Types.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
