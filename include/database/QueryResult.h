@@ -14,47 +14,42 @@
 
 #include "SQLException.h"
 
-#include <iostream>
-#include <memory>
 #include <sqlite3.h>
 
-/// @class QueryResult
-/// @brief Manages the result of a query to a database.
+/// Holds a prepared query statement and accesses its values.
 class QueryResult {
 public:
-	/// Constructor.
-	QueryResult(sqlite3_stmt* query_statement)
-		: Query_(query_statement)
-	{}
+    /// @brief Constructor.
+    /// @param query_statement The prepared query statement (i.e. the result of a query). 
+    QueryResult(sqlite3_stmt* query_statement)
+        : Query_(query_statement)
+    {}
 
-	/// @brief Accesses the query.
-	/// @param column The column to access in the query.
-	template<typename T>
-	const T get(int column) const;
+    /// @brief Accesses the value in the prepared statement.
+    /// @param column The column to access in the prepared statement.
+    template<typename T>
+    const T get(int column) const;
 
-	/// Makes a step, i.e. reads the next entry.
-	const int step()
-	{ return sqlite3_step(Query_); }
+    /// Makes a step, i.e. reads the next entry in the prepared statement.
+    const int step()
+    { return sqlite3_step(Query_); }
 
-	/// Destructor: throws if `QueryResult::finalize` fails.
-	~QueryResult() {
-		if (finalize() != SQLITE_OK) {
-			std::cerr << "[~QueryResult] " << "Cannot finalize prepared statament" << std::endl;
-			throw SQLException("Cannot finalize prepared statament.", "QueryResult::~QueryResult");
-		}
-	};
+    /// @brief Destructor: tries to finalize the prepared statement.
+    /// @throw SQLException
+    /// @todo Find a way not to throw from the destructor!
+    ~QueryResult() {
+        if (finalize() != SQLITE_OK)
+            throw SQLException("Cannot finalize prepared statament.", "QueryResult::~QueryResult");
+    };
 
 private:
-	/// @brief Pointer to the query results.
-	/// @todo Try to wrap Query_ in a smart pointer (e.g. unique_ptr)
-	sqlite3_stmt* Query_;
+    /// @brief Pointer to the query results.
+    /// @todo Try to wrap Query_ in a smart pointer (e.g. unique_ptr)
+    sqlite3_stmt* Query_;
 
-	/// Finalizes the prepared statement.
-	int finalize()
-	{ return sqlite3_finalize(Query_); }
-
-	/// Constructor (private).
-	QueryResult();
+    /// Finalizes the prepared statement.
+    int finalize()
+    { return sqlite3_finalize(Query_); }
 };
 
 template<typename T>

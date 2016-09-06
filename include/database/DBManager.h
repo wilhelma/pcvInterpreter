@@ -14,42 +14,44 @@
 
 #include "fwd/QueryResult.h"
 
-#include <exception>
-
 #include <memory>
 #include <sqlite3.h>
 #include <string>
 
-/// @class DBManager
-/// Class to manage the SQL database.
+/// Class to open a SQL database and query it.
 class DBManager {
 public:
-	/// Constructor.
-	/// @param DBPath The path of the database
-	explicit DBManager()
-		: Database_(nullptr) //, CurrentQueryResult_(nullptr)
-	{};
+    /// Constructor.
+    explicit DBManager()
+        : Database_(nullptr) //, CurrentQueryResult_(nullptr)
+    {};
 
-	/// Open the database.
-	/// @param DBPath The database to open.
-	void open(const std::string& DBPath);
-	//
-	/// Query the database.
-	/// @param sql_query The database query string
-	std::shared_ptr<QueryResult> query(const std::string& sql_query) const;
+    /// @brief Try to open the database.
+    /// @param DBPath The database to open.
+    /// @throw SQLException
+    void open(const std::string& DBPath);
 
-	/// Desctructor. Try to close the database.
-	~DBManager();
+    /// @brief Query the database.
+    /// @param sql_query The database query string.
+    /// @return A pointer to the QueryResult containing the result of the query.
+    /// @throw SQLException
+    std::unique_ptr<QueryResult> query(const std::string& sql_query) const;
+
+    /// @brief Destructor: try to close the database.
+    /// @throw SQLException
+    /// @todo Find a way not to throw from the destructor!
+    ~DBManager();
 
 private:
-	/// Pointer to the opened database
-	/// @todo Use a `std::unique_ptr`. This fails because at compile time
-	/// `sqlite3` appears to be an incomplete type. I've no idea why.
-//	std::unique_ptr<sqlite3> Database_;
-	sqlite3* Database_;
+    /// @brief Pointer to the opened database.
+    /// @todo Use a `std::unique_ptr`. This fails because at compile time
+    /// `sqlite3` appears to be an incomplete type. I've no idea why.
+    sqlite3* Database_;
+    
+//  std::unique_ptr<sqlite3> Database_;
 
-//	/// Pointer to the prepared statement currently being operated on
-//	std::shared_ptr<QueryResult> CurrentQueryResult_
+//  /// Pointer to the prepared statement currently being operated on
+//  std::shared_ptr<QueryResult> CurrentQueryResult_
 };
 
 #endif
