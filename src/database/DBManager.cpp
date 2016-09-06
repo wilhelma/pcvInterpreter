@@ -15,6 +15,7 @@
 #include "SQLException.h"
 
 #include <iostream>
+#include <memory>
 #include <sqlite3.h>
 #include <string>
 
@@ -32,21 +33,17 @@ void DBManager::open(const std::string& DBPath) {
 //	Database_.reset(temp_db_pointer);
 
 	// if database opening failed
-	if (rc != SQLITE_OK) {
-		std::cerr << sqlite3_errmsg(Database_) << std::endl;
+	if (rc != SQLITE_OK)
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
-	}
 }
 
 DBManager::~DBManager() {
 	auto rc = sqlite3_close(Database_);
-	if (rc != SQLITE_OK) {
-		std::cerr << "[~DBManager] " << sqlite3_errmsg(Database_) << std::endl;
+	if (rc != SQLITE_OK)
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::~DBManager");
-	}
 }
 
-std::shared_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {
+std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {
 	sqlite3_stmt *sql_statement = nullptr;
 
 	// Execute SQL statement
@@ -56,11 +53,8 @@ std::shared_ptr<QueryResult> DBManager::query(const std::string& sql_query) cons
 			&sql_statement,
 			nullptr);
 
-	if (rc != SQLITE_OK) {
-		std::cerr << sqlite3_errmsg(Database_) << std::endl;
+	if (rc != SQLITE_OK)
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::query");
-	}
 
-	// this will be moved, not copied
-	return std::shared_ptr<QueryResult>(new QueryResult(sql_statement));
+	return std::make_unique<QueryResult>(sql_statement);
 }
