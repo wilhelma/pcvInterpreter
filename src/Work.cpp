@@ -17,14 +17,14 @@
 
 
 
-Work::Work() {
+Work::Work() : total(0) {
 
 	std::shared_ptr<call_site_work_hashtable_t> hshtable(new call_site_work_hashtable_t());
 	hashtable = hshtable;
-	total = 0;
+	total = static_cast<TIME>(0);
 }
 
-Work::Work(Work const& hashtable_object) {
+Work::Work(Work const& hashtable_object) : total(0) {
 	hashtable = std::move(hashtable_object.hashtable);
 	total = hashtable_object.total;
 }

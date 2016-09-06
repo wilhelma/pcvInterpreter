@@ -14,12 +14,12 @@
 #include <utility>
 #include "Span.h"
 
-Span::Span() {
+Span::Span() : total(0) {
 	hashtable = std::shared_ptr<call_site_span_hashtable_t>(new call_site_span_hashtable_t);
-	total = 0;
+	total = static_cast<TIME>(0);
 }
 
-Span::Span(Span const& other_span) {
+Span::Span(Span const& other_span) : total(0) {
 	hashtable = std::move(other_span.hashtable);
 	total = other_span.total;
 }
@@ -44,12 +44,12 @@ std::shared_ptr<CallSiteSpanProfile> Span::profileAt(CALLSITE call_site) {
 
 
 void Span::add(TIME local_work) {
-	total += local_work;
+	total = total + local_work;
 }
 
 void Span::add(Span* other_span) {
 
-	total += other_span->total;
+	total = total + other_span->total;
 	for (auto const &it : *(other_span->hashtable)) {
 		CALLSITE call_site = it.first;
 		if (hashtable->count(call_site)) {
@@ -73,7 +73,7 @@ void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
 
 void Span::clear() {
 	hashtable->clear();
-	total = 0;
+	total = static_cast<TIME>(0);
 }
 
 

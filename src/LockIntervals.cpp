@@ -22,7 +22,7 @@ struct {
 
 TIME getMinStart(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
-    TIME min = 0;
+    TIME min = static_cast<TIME>(0);
     for (int i = 0; i < intervls->size(); i++) {
         if (intervls->at(i).start < min)
             min = intervls->at(i).start;
@@ -32,7 +32,7 @@ TIME getMinStart(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
 TIME getMaxStop(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
-    TIME max = 0;
+    TIME max = static_cast<TIME>(0);
     for (int i = 0; i < intervls->size(); i++) {
         if (intervls->at(i).stop > max)
             max = intervls->at(i).stop;
@@ -67,8 +67,8 @@ void LockIntervals::order() {
     for (int i = 0; i < ordered_intervals->size() - 1; i++) {
 
         if (ordered_intervals->at(i).stop > ordered_intervals->at(i+1).start) {
-            TIME right_shift = 1 + ordered_intervals->at(i).stop - 
-                                                 ordered_intervals->at(i+1).start;
+            TIME right_shift = (static_cast<TIME>(1) + ordered_intervals->at(i).stop) - 
+                               ordered_intervals->at(i+1).start;
             ordered_intervals->at(i+1).shift(right_shift);
         }
     }
@@ -77,7 +77,7 @@ void LockIntervals::order() {
 TIME LockIntervals::waitTime() {
 
     if (intervals->size() <= 1)
-        return 0;
+        return static_cast<TIME>(0);
 
     TIME unordered_span = span(intervals);
     print_time("unordered_span", unordered_span);
@@ -149,8 +149,8 @@ void LockIntervals::clear() {
 }
 
 void LockInterval::shift(TIME offset) {
-    start += offset;
-    stop += offset;
+    start = start + offset;
+    stop = stop + offset;
 }
 
 

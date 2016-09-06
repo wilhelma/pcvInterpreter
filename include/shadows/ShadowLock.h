@@ -18,11 +18,11 @@ struct ShadowLock {
 	using LockId = unsigned int;
 	/// @todo Document this!
 	const LockId lockId;
-//	TIME last_acquire_time;	
+	TIME last_acquire_time;	
 
 	/// Constructor.
 	explicit ShadowLock(LockId lockId) noexcept
-		: lockId(lockId)
+		: lockId(lockId), last_acquire_time(0)
 	{};
 	/// _Default_ destructor.
 	~ShadowLock() = default;

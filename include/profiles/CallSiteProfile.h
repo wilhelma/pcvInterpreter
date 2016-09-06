@@ -20,6 +20,7 @@
 #include "CallSiteSpanProfile.h"
 #include "CallSiteWorkProfile.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *   @struct call_site_profile_t
