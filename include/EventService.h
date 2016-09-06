@@ -80,6 +80,8 @@ public:
     bool publish(const ThreadEndEvent *event) const;
 
     /// Grant SAAPRunner the permission to access subscribe and unsubscribe.
+    /// @todo Give SAAPRunner only access to subscribe and unsubscribe
+    /// @todo Give DBInterpreter only access to publish functions
     friend SAAPRunner;
 
 private:

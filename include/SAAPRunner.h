@@ -10,6 +10,7 @@
 
 #include "fwd/Event.h"
 #include "fwd/Filter.h"
+#include "fwd/Observer.h"
 #include "fwd/Tool.h"
 
 #include "EventService.h"
@@ -47,9 +48,9 @@ public:
     /// @attention The returned iterator will be used to
     /// unsubscribe the tool (via `SAAPRunner::removeTool`).
     /// __That's the only chance to get it, so make sure to store it!__
-    decltype(auto) registerTool(std::unique_ptr<Tool>&& tool,
-                                std::unique_ptr<Filter>&& filter,
-                                Events&& events)
+    std::list<Observer>::const_iterator registerTool(std::unique_ptr<Tool>&& tool,
+                                                     std::unique_ptr<Filter>&& filter,
+                                                     Events&& events) const
     { return DBInterpreter_->getEventService()->subscribe(
             std::move(tool), std::move(filter), std::move(events)); }
 
@@ -57,13 +58,13 @@ public:
     /// @param tool Iterator to the Tool to remove.
     /// @attention The Tool iterator is given when registering
     /// the Tool to the SAAPRunner.
-    void removeTool(std::list<Observer>::const_iterator tool)
+    void removeTool(std::list<Observer>::const_iterator tool) const
 	{ DBInterpreter_->getEventService()->unsubscribe(tool); }
 
 	/// @brief Interprets the database.
 	/// @details Calls `Interpreter::process`.
 	/// @param DBPath The database file to interpret.
-	void interpret(const std::string& DBPath)
+	void interpret(const std::string& DBPath) const
 	{ DBInterpreter_->process(DBPath); };
 
 private:
