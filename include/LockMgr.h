@@ -13,26 +13,37 @@
 
 #include <map>
 
-/******************************************************************************
- * LockMgr
- *****************************************************************************/
+/// Lock manager.
+/// @todo Properly document and implement this!
 class LockMgr {
 public:
-	LockMgr() {}
-	~LockMgr() {}
+	/// _Default_ constructor.
+	explicit LockMgr() noexcept = default;
+	/// _Default_ destructor.
+	~LockMgr()                  = default;
+	
+	/// _Deleted_ copy constructor.
+	LockMgr(const LockMgr&)            = delete; 
+	/// _Deleted_ move constructor.
+	LockMgr(LockMgr&&)                 = delete; 
+	/// _Deleted_ copy assignment operator.
+	LockMgr& operator=(const LockMgr&) = delete;
+	/// _Deleted_ move assignment operator.
+	LockMgr& operator=(LockMgr&&)      = delete;
 
+	/// @todo Document this!
 	ShadowLock* getLock(REF_ID refNo);
+	/// @todo Document this!
 	void lockDestroyed(REF_ID refNo);
 
 private:
+	/// @todo Document this!
 	static ShadowLock::LockId currentLockId_;
-	typedef std::map<REF_ID, ShadowLock*> MemLockMap_;
-	
+
+	using MemLockMap_ = std::map<REF_ID, ShadowLock*>;
+	/// @todo Document this!
 	MemLockMap_ memLockMap_;
 
-	// prevent generated functions
-	LockMgr(const LockMgr&);
-	LockMgr& operator=(const LockMgr&);
 };
 
 

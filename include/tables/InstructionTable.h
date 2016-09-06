@@ -12,15 +12,11 @@
 #ifndef  INSTRUCTION_TABLE_H_
 #define  INSTRUCTION_TABLE_H_
 
-#include <sqlite3.h>
-
 #include "DBTable.h"
 #include "Instruction.h"
 #include "Types.h"
 
-class InstructionTable: public DBTable<INS_ID, const instruction_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class InstructionTable final: public DBTable<INS_ID, const instruction_t> {
 };
 
 #endif

@@ -12,29 +12,23 @@
 #ifndef  ACCESS_EVENT_H_
 #define  ACCESS_EVENT_H_
 
-#include "AccessInfo.h"
+#include "fwd/AccessInfo.h"
 #include "fwd/ShadowThread.h"
 
 #include "Event.h"
-#include "Access.h"
-#include "Types.h"
 
-
-class AccessEvent : public Event {
+/// Event for memory access.
+class AccessEvent final : public Event<AccessInfo> {
 public:
-	AccessEvent(const ShadowThread *thread,
-				const AccessInfo *info) :
-		Event(thread), _info(info) {};
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The access event information.
+	AccessEvent(const ShadowThread* thread, const AccessInfo* info) :
+		Event(thread, info) {};
 
-	virtual Events getEventType() const override final { return Events::ACCESS; };
-	const AccessInfo* const getAccessInfo() const { return _info; };
-
-private:
-	const AccessInfo* const _info;
-
-	// prevent generated functions
-	AccessEvent(const AccessEvent&);
-	AccessEvent& operator=(const AccessEvent&);
+    /// Return the event type.
+	virtual Events getEventType() const override
+    { return Events::ACCESS; };
 };
 
 

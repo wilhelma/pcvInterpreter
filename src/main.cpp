@@ -8,17 +8,20 @@
 
 #include "DBInterpreter.h"
 #include "DebugTool.h"
-#include "EventService.h"
+//#include "EventService.h"
 #include "ParasiteTool.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
-#include "LockMgr.h"
+//#include "LockMgr.h"
 #include "SAAPRunner.h"
-#include "ThreadMgr.h"
+//#include "ThreadMgr.h"
 #include <boost/log/trivial.hpp>
 
-
+/// @brief The main routine.
+/// @attention The file name of the database to interpret is ___mandatory!___
+/// @param argv[0] The name of the executable.
+/// @param argv[1] The name of the database to interpret.
 int main(int argc, char* argv[]) {
 
 	// check arguments
@@ -27,29 +30,25 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	// create interpreter, event service, and saap runner
-    std::shared_ptr<EventService> service(new EventService());
-    std::shared_ptr<LockMgr> lockMgr(new LockMgr());
-    std::shared_ptr<ThreadMgr> threadMgr(new ThreadMgr());
-    std::shared_ptr<DBInterpreter> interpreter(new DBInterpreter(argv[1],
-			"SAAP.log",
-			service.get(),
-			lockMgr.get(),
-			threadMgr.get()));
+	// Create a SAAPRunner
+	auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter("SAAP.log")));
 
-    std::shared_ptr<SAAPRunner> runner(new SAAPRunner(interpreter.get()));
+    // Create and register the tool
+	const auto& debug_tool_it = runner->registerTool(
+            std::make_unique<DebugTool>(),
+            std::unique_ptr<Filter>(nullptr),
+            Events::ALL);
 
-  	std::shared_ptr<ParasiteTool> parasiteTool(new ParasiteTool());
-    runner->registerTool(parasiteTool.get(), NULL, Events::ALL);
+	const auto& parasite_tool_it = runner->registerTool(
+            std::make_unique<ParasiteTool>(),
+            std::unique_ptr<Filter>(nullptr),
+            Events::ALL);
 
-    std::shared_ptr<DebugTool> debugTool(new DebugTool());
-	runner->registerTool(debugTool.get(), NULL, Events::ALL);
+	// Start interpretation of the database
+	runner->interpret(static_cast<std::string>(argv[1]));
 
-	// Start interpretation
-	runner->interpret();
-
-	// unregister
-    runner->removeTool(parasiteTool.get());
-	runner->removeTool(debugTool.get());
+	// Unregister the tool
+	runner->removeTool(debug_tool_it);
+	runner->removeTool(parasite_tool_it);
 	return 0;
 }

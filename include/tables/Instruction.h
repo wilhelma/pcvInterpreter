@@ -27,7 +27,7 @@ enum class InstructionType {
 };
 
 struct instruction_t {
-    INS_ID instruction_id;
+    INS_ID id;
     SEG_ID segment_id;
     InstructionType instruction_type;
     LIN_NO line_number;
@@ -37,7 +37,7 @@ struct instruction_t {
                   SEG_ID segmentId,
                   InstructionType instructionType,
                   LIN_NO lineNumber) noexcept
-                  : instruction_id(instructionId), segment_id(segmentId),
+                  : id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
     {
     }

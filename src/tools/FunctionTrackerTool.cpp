@@ -49,7 +49,7 @@ FunctionTrackerTool::~FunctionTrackerTool() {
 
 void FunctionTrackerTool::NewThread(const NewThreadEvent* e ) {
   const NewThreadEvent* event = static_cast<const NewThreadEvent*>(e);
-  const NewThreadInfo* info = event->getNewThreadInfo();
+  const NewThreadInfo* info = event->getInfo();
 
   std::cerr << "New Thread... parent: " << info->parentThread->threadId
             << " child: " << info->childThread->threadId;
@@ -61,14 +61,14 @@ void FunctionTrackerTool::Call(const CallEvent* e) {
 	const CallEvent *event = static_cast<const CallEvent*>(e);
 
 	// This needs to be printed anyway
-	_outFile << event->getCallInfo()->fnSignature << "_" << event->getCallInfo()->segment; // _lastSegmentNumber; //;
-	if( _lastSegmentNumber < (int)event->getCallInfo()->segment ) // connect to branch
+	_outFile << event->getInfo()->fnSignature << "_" << event->getInfo()->segment; // _lastSegmentNumber; //;
+	if( _lastSegmentNumber < (int)event->getInfo()->segment ) // connect to branch
 		_outFile << " -- ";
 	else // -------------------------------------------------------- terminate branch
 		_outFile << ";" << std::endl;
 
 	// update counter for last segment
-	_lastSegmentNumber = (int)event->getCallInfo()->segment;
+	_lastSegmentNumber = (int)event->getInfo()->segment;
 	// update number of recorded calls
 	std::cout << ++ calls << std::endl;
 

@@ -1,6 +1,6 @@
 /**
  *
- *    @file  Thread.h
+ *    @file  Segment.h
  *   @brief  Forward header.
  *
  *    @date  07/06/16
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_THREAD_H_
-#define  FWD_THREAD_H_
+#ifndef  FWD_SEGMENT_H_
+#define  FWD_SEGMENT_H_
 
-struct thread_t;
+struct segment_t;
 
 #endif

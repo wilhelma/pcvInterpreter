@@ -13,25 +13,22 @@
 #define  ACQUIRE_EVENT_H_
 
 #include "fwd/ShadowThread.h"
-#include "AcquireInfo.h"
+#include "fwd/AcquireInfo.h"
 
 #include "Event.h"
 
-class AcquireEvent : public Event {
+/// @todo What is this for?
+class AcquireEvent final : public Event<AcquireInfo> {
 public:
-	AcquireEvent(const ShadowThread *thread,
-				 const AcquireInfo *info) :
-		Event(thread), _info(info) {};
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The acquire event information.
+	AcquireEvent(const ShadowThread* thread, const AcquireInfo* info) :
+		Event(thread, info) {};
 
-	virtual Events getEventType() const override final { return Events::ACQUIRE; };
-	const AcquireInfo* const getAcquireInfo() const { return _info; };
-
-private:
-	const AcquireInfo* const _info;
-
-	// prevent generated functions
-	AcquireEvent(const AcquireEvent&);
-	AcquireEvent& operator=(const AcquireEvent&);
+    /// Return the event type.
+	virtual Events getEventType() const override
+    { return Events::ACQUIRE; };
 };
 
 #endif

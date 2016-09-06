@@ -11,28 +11,24 @@
 
 #ifndef  CALL_EVENT_H_
 #define  CALL_EVENT_H_
-#include "CallInfo.h"
+
+#include "fwd/CallInfo.h"
 #include "fwd/ShadowThread.h"
+
 #include "Event.h"
-#include "Function.h"
-#include "ShadowThread.h"
-#include "Types.h"
 
-class CallEvent : public Event {
-	public:
-		CallEvent(const ShadowThread *thread,
-				  const CallInfo *info) :
-			Event(thread), _info(info) {};
+/// Event for function calls.
+class CallEvent final : public Event<CallInfo> {
+public:
+	/// Constructor.
+    /// @param thread The thread the event was triggered from.
+    /// @param info   The call event information.
+	CallEvent(const ShadowThread* thread, const CallInfo* info) :
+		Event(thread, info) {};
 
-		virtual Events getEventType() const override final { return Events::CALL; };
-		const CallInfo* const getCallInfo() const { return _info; };
-
-	private:
-		const CallInfo* const _info;
-
-		// prevent generated functions
-		CallEvent(const CallEvent&);
-		CallEvent& operator=(const CallEvent&);
+    /// Return the event type.
+    virtual Events getEventType() const override
+    { return Events::CALL; };
 };
 
 #endif

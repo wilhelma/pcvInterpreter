@@ -12,15 +12,11 @@
 #ifndef  CALL_TABLE_H_
 #define  CALL_TABLE_H_
 
-#include <sqlite3.h>
-
-#include "DBTable.h"
 #include "Call.h"
+#include "DBTable.h"
 #include "Types.h"
 
-class CallTable: public DBTable<CAL_ID, const call_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class CallTable final: public DBTable<CAL_ID, const call_t> {
 };
 
 #endif

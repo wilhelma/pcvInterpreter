@@ -5,8 +5,8 @@
  *      Author: wilhelma
  */
 
-#ifndef OBSERVER_H_
-#define OBSERVER_H_
+#ifndef TOOL_H_
+#define TOOL_H_
 
 #include "fwd/AccessEvent.h"
 #include "fwd/AcquireEvent.h"
@@ -33,4 +33,4 @@ virtual ~Tool() {};
 
 };
 
-#endif /* OBSERVER_H_ */
+#endif

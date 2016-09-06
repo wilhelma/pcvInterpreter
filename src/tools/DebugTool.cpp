@@ -27,12 +27,14 @@
 #include "ThreadEndEvent.h"
 #include "ThreadEndInfo.h"
 
+#include "ShadowThread.h"
+
 #include <boost/log/trivial.hpp>
 #include <utility>
 #include <iostream>
 
 void DebugTool::Access(const AccessEvent* event) {
-	const AccessInfo& ai = *(event->getAccessInfo());
+	const AccessInfo& ai = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "AccessEvent:\n"
 		<< " > Access Type:  " << static_cast<unsigned>(ai.type) << "\n"
@@ -40,13 +42,13 @@ void DebugTool::Access(const AccessEvent* event) {
 }
 
 void DebugTool::Acquire(const AcquireEvent* event) {
-  const AcquireInfo& ai = *(event->getAcquireInfo());
+  const AcquireInfo& ai = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
     << "AcquireEvent:" << ai.acquireTime << std::endl;
 }
 
 void DebugTool::Call(const CallEvent* event) {
-	const CallInfo& ci = *(event->getCallInfo());
+	const CallInfo& ci = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "CallEvent:\n"
         << " > Call Site:  " << ci.siteId << "\n"
@@ -60,13 +62,13 @@ void DebugTool::Call(const CallEvent* event) {
 
 
 void DebugTool::Join(const JoinEvent* event) {
-//	const JoinInfo& ji = *(event->getJoinInfo());
+//	const JoinInfo& ji = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "JoinEvent:";
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {
-	const NewThreadInfo& nti = *(event->getNewThreadInfo());
+	const NewThreadInfo& nti = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "NewThreadEvent:\n"
         << " > Thread id: " << nti.childThread->threadId << std::endl
@@ -75,13 +77,13 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 }
 
 void DebugTool::Release(const ReleaseEvent* event) {
-  const ReleaseInfo& ri = *(event->getReleaseInfo());
+  const ReleaseInfo& ri = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
     << "ReleaseEvent:" << ri.releaseTime << std::endl;
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
-	const ReturnInfo& ri = *(event->getReturnInfo());
+	const ReturnInfo& ri = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "ReturnEvent:\n"
 		<< " > Call ID: " << ri.call << "\n"
@@ -89,7 +91,7 @@ void DebugTool::Return(const ReturnEvent* event) {
 }
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
-	const ThreadEndInfo& tei = *(event->getThreadEndInfo());
+	const ThreadEndInfo& tei = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
         << "ThreadEndEvent:\n"
 		<< " > Thread ID: " << tei.id << "\n"

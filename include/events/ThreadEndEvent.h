@@ -13,23 +13,22 @@
 #define  THREAD_END_EVENT_H_
 
 #include "fwd/ShadowThread.h"
-#include "ThreadEndInfo.h"
+#include "fwd/ThreadEndInfo.h"
+
 #include "Event.h"
 
-class ThreadEndEvent : public Event {
+/// Event for a thread end (which happens together or before a join).
+class ThreadEndEvent final : public Event<ThreadEndInfo> {
 public:
-	ThreadEndEvent(const ShadowThread *thread,
-			       const ThreadEndInfo *info)
-		: Event(thread), _info(info) {};
-	virtual Events getEventType() const override final { return Events::THREADEND; };
-	const ThreadEndInfo* const getThreadEndInfo() const { return _info; };
+	/// Constructor.
+    /// @param  thread The thread the event was triggered from.
+    /// @tparam info   The thread end event information.
+	ThreadEndEvent(const ShadowThread* thread, const ThreadEndInfo* info) :
+		Event(thread, info) {};
 
-private:
-	const ThreadEndInfo* const _info;
-
-	// prevent generated functions
-	ThreadEndEvent(const ThreadEndEvent&);
-	ThreadEndEvent& operator=(const ThreadEndEvent&);
+    /// Returns the event type.
+	virtual Events getEventType() const override
+    { return Events::THREADEND; };
 };
 
 #endif

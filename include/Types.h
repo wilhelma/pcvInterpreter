@@ -15,25 +15,25 @@
 #include <string>
 
 /// Struct to prevent implicit conversion among types.
-/// \tparam T The type
-/// \tparam n A dumb integer to prevent casts
-/// \todo When used with `T = std::string`,
-/// `string` methods cannot be called.
+/// @tparam T The type
+/// @tparam n A dumb integer to prevent casts
+/// @todo When used with `T = std::string`,
+///// `string` methods cannot be called.
 template <typename T, size_t n>
 struct StrongTypedef {
-	/// \brief Constructor
-	/// It's explicit in order to prevent implicit casts
+	/// @brief Constructor.
+	/// @details It's `explicit` in order to prevent implicit casts.
 	constexpr explicit StrongTypedef(T value) noexcept
 		: Value_(value)
 		{}
 
-	/// \brief Copy constructor
-	constexpr StrongTypedef(const StrongTypedef& input) noexcept
+	/// @brief Copy constructor
+	constexpr StrongTypedef(const StrongTypedef<T,n>& input) noexcept
 		: Value_(input.Value_)
 		{}
 
-	/// \brief Implicit conversion operator.
-	/// A return by value is used sice I assume the
+	/// @brief Implicit conversion operator.
+	/// @details A return by value is used sice I assume the
 	/// underlying type should be a primitive.
 	operator const T() const { return Value_; }
 
@@ -74,7 +74,28 @@ using POS   = StrongTypedef<unsigned, 11>;
 // MEM_ST  Already uses AccessState
 
 // Call Types
-using TIME     = uint64_t;
+
+using TIME     = StrongTypedef<uint64_t, 12>;
+
+/// Addition operator for `TIME` variables.
+/// @param lhs The left-hand side.
+/// @param lhs The right-hand side.
+inline TIME operator+(const TIME& lhs, const TIME& rhs)
+{ return static_cast<TIME>(static_cast<uint64_t>(lhs) + rhs); }
+
+/// Minus operator for `TIME` variables.
+/// @param t The variable to take the value from.
+/// @return A `TIME` variable whose value is the opposite
+/// of `t`'s one.
+inline TIME operator-(const TIME& t)
+{ return static_cast<TIME>(-static_cast<uint64_t>(t)); }
+
+/// Subtraction operator for `TIME` variables.
+/// @param lhs The left-hand side.
+/// @param lhs The right-hand side.
+inline TIME operator-(const TIME& lhs, const TIME& rhs)
+{ return lhs + (-rhs); }
+
 using CALLSITE = StrongTypedef<size_t,  13>;
 
 // File Types
@@ -101,5 +122,6 @@ using REF_NAME = std::string;
 // Thread Types
 using PID = StrongTypedef<unsigned, 16>;
 using TIME_STRING = std::string;
+using NUM_CYCLES = StrongTypedef<unsigned, 17>;
 
 #endif /* TYPES_H_ */

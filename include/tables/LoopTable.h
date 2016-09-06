@@ -12,15 +12,11 @@
 #ifndef  LOOP_TABLE_H_
 #define  LOOP_TABLE_H_
 
-#include <sqlite3.h>
-
 #include "DBTable.h"
 #include "Loop.h"
 #include "Types.h"
 
-class LoopTable: public DBTable<LOP_ID, loop_t> {
-	public:
-		virtual const std::pair<iterator, bool> fill(sqlite3_stmt *sqlstmt) override final;
+class LoopTable final: public DBTable<LOP_ID, const loop_t> {
 };
 
 #endif

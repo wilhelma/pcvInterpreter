@@ -28,7 +28,6 @@
 #include "CallSiteWorkProfile.h"
 #include "DAG.h"
 #include "Event.h"
-#include "Interpreter.h"
 #include "JoinEvent.h"
 #include "LockIntervals.h"
 #include "NewThreadEvent.h"
