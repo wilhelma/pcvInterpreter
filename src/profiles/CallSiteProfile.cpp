@@ -13,7 +13,8 @@
 
 #include "CallSiteProfile.h"
 
-CallSiteProfile::CallSiteProfile() : call_site(0) {}
+CallSiteProfile::CallSiteProfile() : call_site(0), lock_wait_time(0), span(0), work(0),
+									 start(0), stop(0) {}
 
 CallSiteProfile::~CallSiteProfile() {}
 
@@ -21,7 +22,13 @@ CallSiteProfile::CallSiteProfile (std::shared_ptr<CallSiteSpanProfile>
  																 span_profile,
  							     std::shared_ptr<CallSiteWorkProfile> 
  							      								 work_profile)
- 							      								 : call_site(0) {
+ 							      								 : 
+ 							      								 call_site(0), 
+ 							      								 lock_wait_time(0), 
+ 							      								 span(0),
+ 							      								 work(0),
+									 							 start(0), 
+									 							 stop(0) {
 	call_site = work_profile->call_site;
 	function_signature = work_profile->function_signature;
 	lock_wait_time = span_profile->lock_wait_time;
@@ -48,7 +55,7 @@ void CallSiteProfile::print() {
 	printf("LOCK WAIT TIME IS %f of SPAN \n", static_cast<double>(lock_wait_time) / 
 									     	  static_cast<double>(span));
 	printf("COUNT is %d \n", count);
-	printf("START TIME is %d \n", start);
+	print_time("START TIME ", start);
 	printf("PARALLELISM is %f \n", static_cast<double>(work)/static_cast<double>(span));
 	printf(" ======================================================== \n");
 }

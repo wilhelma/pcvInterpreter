@@ -37,11 +37,11 @@ struct StrongTypedef {
 	/// underlying type should be a primitive.
 	operator const T() const { return Value_; }
 
-  	T& operator +=(const T& rhs) {
+  	const T& operator +=(const T& rhs) {
     	return Value_ + rhs;
   	}
 
-  	T& operator -=(const T& rhs) {
+  	const T& operator -=(const T& rhs) {
     	return Value_ - rhs;
   	}
 

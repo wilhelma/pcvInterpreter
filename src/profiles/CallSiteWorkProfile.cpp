@@ -24,7 +24,7 @@ void CallSiteWorkProfile::add_in_callsite_profile_entries(const std::shared_ptr<
 void CallSiteWorkProfile::init_callsite_profile(CALLSITE call_ste, FUN_SG function_sgnature) {
 	call_site = call_ste;
 	function_signature = function_sgnature;
-	work = 0;
+	work = static_cast<TIME>(0);
 	count = 0;
 }
 

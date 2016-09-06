@@ -7,6 +7,7 @@
 #include <chrono>
 #include <random>
 #include <string>
+#include <iostream>
 
 static inline void print_time(std::string str, TIME time) {
 

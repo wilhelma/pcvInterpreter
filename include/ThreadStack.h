@@ -57,7 +57,7 @@ struct thread_frame_t {
 	}
 
 	void correct_prefix(TIME correction) {
-		prefix.total += correction;
+		prefix.total = prefix.total + correction;
 		print_time("subtracting lock wait time from prefix", correction);
 	}
 
