@@ -32,6 +32,7 @@ set(SRC_LIST
     DAG.cpp
     EventService.cpp
     FunctionStack.cpp
+    LockIntervals.cpp
     LockMgr.cpp
     main.cpp
     ParasiteJsonWriter.cpp
