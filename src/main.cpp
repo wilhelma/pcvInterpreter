@@ -39,16 +39,16 @@ int main(int argc, char* argv[]) {
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
 
-	const auto& parasite_tool_it = runner->registerTool(
-            std::make_unique<ParasiteTool>(),
-            std::unique_ptr<Filter>(nullptr),
-            Events::ALL);
+	// const auto& parasite_tool_it = runner->registerTool(
+ //            std::make_unique<ParasiteTool>(),
+ //            std::unique_ptr<Filter>(nullptr),
+ //            Events::ALL);
 
 	// Start interpretation of the database
 	runner->interpret(static_cast<std::string>(argv[1]));
 
 	// Unregister the tool
 	runner->removeTool(debug_tool_it);
-	runner->removeTool(parasite_tool_it);
+	// runner->removeTool(parasite_tool_it);
 	return 0;
 }
