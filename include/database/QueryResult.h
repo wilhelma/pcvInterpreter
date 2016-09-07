@@ -16,7 +16,8 @@
 
 #include <sqlite3.h>
 
-/// Holds a prepared query statement and accesses its values.
+/// @ingroup input
+/// @brief Holds a prepared query statement and accesses its values.
 class QueryResult {
 public:
     /// @brief Constructor.

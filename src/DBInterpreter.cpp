@@ -78,7 +78,7 @@ DBInterpreter::DBInterpreter(std::string&& logFile,
 {
 	initialize_logger(std::move(logFile));
 	CallStack_.push(call_t::MAIN);
-};
+}
 
 
 template<typename IdT, typename T>

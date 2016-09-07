@@ -18,8 +18,7 @@
 
 #include <memory>
 
-/// A compound of a Tool, a Filter and the Events the Tool
-/// registers to.
+/// @brief Compound of a Tool, a Filter and the Events the Tool registers to.
 struct Observer {
     /// The observing tool.
     std::unique_ptr<Tool> tool;
@@ -45,7 +44,7 @@ struct Observer {
 
     /// _Deleted_ copy constructor.
     Observer(const Observer&)            = delete;
-    /// _Default move constructor.
+    /// _Default_ move constructor.
     Observer(Observer&&)                 = default;
     /// _Deleted_ copy assignment operator.
     Observer& operator=(const Observer&) = delete;

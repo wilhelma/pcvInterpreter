@@ -28,7 +28,8 @@
 #include <memory>
 #include <iterator>
 
-/// Iterates over the rows resulting from a database query.
+/// @ingroup input
+/// @brief Iterates over the rows of the QueryResult resulting from a database query.
 template<typename T>
 class SQLStatementIterator : public std::iterator<std::input_iterator_tag, QueryResult> {
 public:

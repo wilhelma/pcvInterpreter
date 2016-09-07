@@ -51,6 +51,6 @@ struct ShadowLock {
 /// @brief Greater-than operator.
 /// @return Negation of `Shadowlock::operator<()`.
 inline const bool operator>=(const ShadowLock& lhs, const ShadowLock& rhs)
-{ return !(lhs < rhs); };
+{ return !(lhs < rhs); }
 
 #endif

@@ -18,7 +18,15 @@
 #include <sqlite3.h>
 #include <string>
 
-/// Class to open a SQL database and query it.
+/// @defgroup database
+/// @brief Classes related to the database operations.
+
+/// @defgroup input
+/// @brief Classes performing input operations from a database.
+/// @ingroup database
+
+/// @ingroup input
+/// @brief Class to open a SQL database and query it.
 class DBManager {
 public:
     /// Constructor.

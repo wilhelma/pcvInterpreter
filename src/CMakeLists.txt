@@ -52,7 +52,8 @@ set(SRC_LIST ${SRC_LIST}
     profiles/CallSiteWorkProfile.cpp)
 
 set(SRC_LIST ${SRC_LIST}
-    tables/Call.cpp)
+    tables/Call.cpp
+    tables/File.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     tools/DebugTool.cpp

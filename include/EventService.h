@@ -29,8 +29,8 @@
 #include <list>
 #include <memory>
 
-/// The observable. It keeps track of the registered Observer's
-/// and publishes the event to them.
+/// @brief The observable: keeps track of the register observed and
+/// `publish()`es them the Event's received from the DBInterpreter.
 class EventService {
 public:
     /// _Default_ constructor.
@@ -79,7 +79,7 @@ public:
     /// @param event The event to publish.
     bool publish(const ThreadEndEvent *event) const;
 
-    /// Grant SAAPRunner the permission to access subscribe and unsubscribe.
+    /// @brief Grant SAAPRunner the permission to access subscribe and unsubscribe.
     /// @todo Give SAAPRunner only access to subscribe and unsubscribe
     /// @todo Give DBInterpreter only access to publish functions
     friend SAAPRunner;
