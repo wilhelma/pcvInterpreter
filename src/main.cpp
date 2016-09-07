@@ -30,6 +30,8 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	std::cout << "STARTING PARCEIVE " << std::endl;
+
 	// Create a SAAPRunner
 	auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter("SAAP.log")));
 
@@ -39,16 +41,24 @@ int main(int argc, char* argv[]) {
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
 
-	// const auto& parasite_tool_it = runner->registerTool(
- //            std::make_unique<ParasiteTool>(),
- //            std::unique_ptr<Filter>(nullptr),
- //            Events::ALL);
+	const auto& parasite_tool_it = runner->registerTool(
+            std::make_unique<ParasiteTool>(),
+            std::unique_ptr<Filter>(nullptr),
+            Events::ALL);
+
+	std::cout << " BEFORE INTERPRET " << std::endl;
 
 	// Start interpretation of the database
 	runner->interpret(static_cast<std::string>(argv[1]));
 
+
+	std::cout << " AFTER INTERPRET " << std::endl;
+
 	// Unregister the tool
 	runner->removeTool(debug_tool_it);
-	// runner->removeTool(parasite_tool_it);
+	runner->removeTool(parasite_tool_it);		
+
+	std::cout << " AFTER REMOVING TOOLS " << std::endl;
+
 	return 0;
 }
