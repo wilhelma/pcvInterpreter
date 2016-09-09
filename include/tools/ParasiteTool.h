@@ -61,6 +61,10 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
+	static const bool COMMAND_LINE_OUTPUT = 1;
+	static const bool JSON_OUTPUT = 1;
+	static const bool GRAPH_OUTPUT = 1;
+
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
     void Call(const CallEvent* e) override;

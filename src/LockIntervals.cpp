@@ -89,7 +89,7 @@ TIME LockIntervals::waitTime() {
 }
 
 
-void LockIntervals::add(LockIntervals childIntervals) {
+void LockIntervals::add(const LockIntervals& childIntervals) {
 
     intervals->insert(intervals->end(),
                      childIntervals.intervals->begin(),

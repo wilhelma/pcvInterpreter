@@ -35,7 +35,7 @@ class Span {
 
  public:
 	Span();
-	explicit Span(Span const& hshtable);
+	explicit Span(const Span& hshtable);
 	~Span();
 
 	void print();
@@ -78,6 +78,10 @@ class Span {
 				CALLSITE keys to CallSiteSpanProfile values. 
 	*/
 	std::shared_ptr<call_site_span_hashtable_t> hashtable;
+
+ private:
+	// prevent generated functions --------------------------------------------
+	Span& operator=(const Span&);
 	
 };
 

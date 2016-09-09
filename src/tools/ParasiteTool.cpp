@@ -9,10 +9,6 @@
  *
  */
 
-#define COMMAND_LINE_OUTPUT 1
-#define JSON_OUTPUT 1
-#define GRAPH_OUTPUT 1
-
 #include <algorithm>    // std::max
 #include <cassert>
 #include <string>

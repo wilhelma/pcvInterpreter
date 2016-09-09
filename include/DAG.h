@@ -61,6 +61,10 @@ class DAG {
 	vertex_descr_type sink;
 	vertex_descr_type last_vertex;
 	std::string name;
+ private:
+ 	// prevent generated functions --------------------------------------------
+	DAG(const DAG&);
+	DAG& operator=(const DAG&);
 };
 
 #endif /* DAG_H */

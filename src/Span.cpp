@@ -19,7 +19,7 @@ Span::Span() : total(0) {
 	total = static_cast<TIME>(0);
 }
 
-Span::Span(Span const& other_span) : total(0) {
+Span::Span(const Span& other_span) : total(0) {
 	hashtable = std::move(other_span.hashtable);
 	total = other_span.total;
 }

@@ -1,7 +1,6 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
-#define DEBUG_OUTPUT 1
 #include "Types.h"
 
 #include <chrono>
@@ -10,25 +9,19 @@
 #include <iostream>
 
 static inline void print_time(std::string str, TIME time) {
-
-	if (DEBUG_OUTPUT)
-		std::cout << str << " " << time << std::endl;
+	std::cout << str << " " << time << std::endl;
 }
 
 static inline void print_event_start(std::string event_name) {
 
-    if (DEBUG_OUTPUT) {
-        std::cout << "==================" << std::endl;
-        std::cout << event_name << " BEGIN" << std::endl;
-    }
+    std::cout << "==================" << std::endl;
+    std::cout << event_name << " BEGIN" << std::endl;
 }
 
 static inline void print_event_end(std::string event_name) {
 
-    if (DEBUG_OUTPUT) {
-        std::cout << event_name << " END" << std::endl;
-        std::cout << "==================" << std::endl;
-    }
+    std::cout << event_name << " END" << std::endl;
+    std::cout << "==================" << std::endl;
 }
 
 

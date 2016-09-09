@@ -24,7 +24,7 @@ Work::Work() : total(0) {
 	total = static_cast<TIME>(0);
 }
 
-Work::Work(Work const& hashtable_object) : total(0) {
+Work::Work(const Work& hashtable_object) : total(0) {
 	hashtable = std::move(hashtable_object.hashtable);
 	total = hashtable_object.total;
 }
