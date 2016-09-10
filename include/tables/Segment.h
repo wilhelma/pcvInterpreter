@@ -14,13 +14,19 @@
 
 #include "Types.h"
 
-/*! @brief The type of the segment */
+/// @ingroup types
+/// @brief The type of the segment.
 enum class SegmentType : bool {
-    REGION = 0,
-    LOOP   = 1
+    REGION = 0, ///< @todo ?
+    LOOP   = 1  ///< @todo ?
 };
 
+/// @ingroup records
+/// @brief Holds the information contained in one row of the _Segment_
+/// database table.
+/// @todo document this and clarify what is a segment.
 struct segment_t {
+    /// SQL ID of the segment.
     SEG_ID id;
     CAL_ID call_id;
     SegmentType segment_type;
