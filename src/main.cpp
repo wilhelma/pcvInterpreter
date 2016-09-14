@@ -17,6 +17,7 @@
 #include "SAAPRunner.h"
 //#include "ThreadMgr.h"
 #include <boost/log/trivial.hpp>
+#include "Logger.h"
 
 /// @brief The main routine.
 /// @attention The file name of the database to interpret is ___mandatory!___
@@ -24,8 +25,14 @@
 /// @param argv[1] The name of the database to interpret.
 int main(int argc, char* argv[]) {
 
+    Logger<LogSeverity::debug> logger;
+
 	// check arguments
 	if (argc < 2) {
+        logger.trace()   << "trace"   << std::endl;
+        logger.warning() << "warning" << std::endl;
+//        logger<LogSeverity::trace>()       << "trace()" << std::endl;
+
 		BOOST_LOG_TRIVIAL(fatal) << "No database name provided!";
 		return 1;
 	}
