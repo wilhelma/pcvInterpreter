@@ -144,8 +144,10 @@ void ParasiteTool::Call(const CallEvent* e) {
 	print_event_start("CALL");
 	const CallInfo* _info(e->getInfo());
 	last_event_time = _info->callTime;
-	std::cout << "starting call Event with signature " <<
+	if (DEBUG_OUTPUT) {
+		std::cout << "starting call Event with signature " <<
 				      _info->fnSignature.c_str() << std::endl;
+	}
     stacks.bottomThread()->continuation.init_call_site(_info->siteId, 
     												   concur(_info->callTime));
     work.record_call_site(_info->siteId, _info->fnSignature);
@@ -157,9 +159,11 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	const NewThreadInfo* const _info = e->getInfo();
 	vertex_descr_type thread_start_vertex;
-	stacks.bottomThread()->spawned_children_count += 1;
-	if (stacks.bottomThreadIndex() != -1) 
+	
+	if (stacks.bottomThreadIndex() != -1) {
+		stacks.bottomThread()->spawned_children_count += 1;
 		thread_start_vertex = add_local_work(_info->startTime, "TS");
+	}
 	else 
 		thread_start_vertex = thread_graph.last_vertex;
 
@@ -210,8 +214,10 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getInfo());
 	add_local_work(_info->endTime, "R");
-	std::cout << "starting return Event with signature " <<
-		stacks.bottomFunction()->function_signature.c_str() << std::endl;
+	if (DEBUG_OUTPUT) {
+		std::cout << "starting return Event with signature " <<
+			stacks.bottomFunction()->function_signature.c_str() << std::endl;
+	}
 
 	std::shared_ptr<function_frame_t> returned_function(stacks.bottomFunction());
 	stacks.bottomThread()->continuation.
@@ -245,7 +251,9 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	if (ending_thread->prefix() + parent_thread->continuation() 
 			                       > parent_thread->longest_child()) {
 
-		std::cout << "ending thread is longest child encountered so far " << std::endl;
+		if (DEBUG_OUTPUT) {
+			std::cout << "ending thread is longest child encountered so far " << std::endl;
+		}
 		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time(); 
 		parent_thread->longest_child.set(&(ending_thread->prefix));
 		parent_thread->prefix.add(&(parent_thread->continuation));

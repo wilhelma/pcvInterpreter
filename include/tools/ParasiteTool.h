@@ -61,6 +61,7 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
+	static const bool DEBUG_OUTPUT = 1;
 	static const bool COMMAND_LINE_OUTPUT = 1;
 	static const bool JSON_OUTPUT = 1;
 	static const bool GRAPH_OUTPUT = 1;
