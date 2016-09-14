@@ -71,7 +71,9 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 void ParasiteTool::endProfileCalculations() {
 
 	assert(stacks.bottomThreadIndex() == 0);
+	std::cout << "BOTTOM FUNCTION INDEX AT END IS " << stacks.bottomFunctionIndex() << std::endl;
 	assert(stacks.bottomFunctionIndex() == 0);
+
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks.bottomFunction();
 	parasite_profile.lock_wait_time = bottom_function->lock_wait_time();
