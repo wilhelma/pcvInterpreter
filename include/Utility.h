@@ -16,6 +16,12 @@ static inline void print_time(std::string str, TIME time) {
     }
 }
 
+static inline void print_debug(std::string str) {
+    if (PRINT) {
+       std::cout << str << std::endl;
+    }
+}
+
 static inline void print_event_start(std::string event_name) {
 
     if (PRINT) {
