@@ -12,9 +12,12 @@
 #ifndef CALL_SITE_SPAN_PROFILE_H_
 #define CALL_SITE_SPAN_PROFILE_H_
 
-#include <unordered_map>
+#include <iostream>
 #include <memory>
+#include <unordered_map>
+
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *   @struct call_site_span_profile_t

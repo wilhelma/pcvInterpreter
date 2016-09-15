@@ -37,19 +37,6 @@ struct function_frame_t {
 	*/
 	FUN_SG function_signature;
 
-	/**
-	*    @var local_work
-	*    @brief Local work of the function.
-	*/
-	TIME local_work;
-
-	/**
-	*    @var running_work
-	*    @brief The running work of the function's call site. Same as the running
-				span of the function. 
-	*/
-	TIME running_work;
-
 	LockIntervals lock_intervals;
 
 	void add_locks(std::shared_ptr<function_frame_t> child_function) {
@@ -62,8 +49,7 @@ struct function_frame_t {
 		return wait_time;
 	}
 
-	function_frame_t() : call_site(0), local_work(0), running_work(0)
-	{}
+	function_frame_t() : call_site(0) {}
 };
 
 

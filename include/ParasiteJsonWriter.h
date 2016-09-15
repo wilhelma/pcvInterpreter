@@ -42,6 +42,11 @@ class ParasiteJsonWriter {
     std::string name;
 
     char writeBuffer[65536];
+
+ private:
+	// prevent generated functions --------------------------------------------
+	ParasiteJsonWriter(const ParasiteJsonWriter&);
+	ParasiteJsonWriter& operator=(const ParasiteJsonWriter&);
 };
 
 #endif /* PARASITE_JSON_WRITER_H_ */

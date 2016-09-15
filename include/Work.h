@@ -35,9 +35,7 @@ class Work {
 
  public:
 	Work();
-	explicit Work(Work const& hshtable);
-	
-	Work* operator=(const Work& rhs);
+	explicit Work(const Work& wrk);
 	~Work();
 
 	void print();
@@ -75,6 +73,10 @@ class Work {
 				CALLSITE keys to CallSiteWorkProfile values. 
 	*/
 	std::shared_ptr<call_site_work_hashtable_t> hashtable;
+
+ private:
+	// prevent generated functions --------------------------------------------
+	Work& operator=(const Work&);
 	
 };
 

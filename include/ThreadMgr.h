@@ -16,7 +16,7 @@
 class ThreadMgr {
 public:
 	/// _Default_ constructor.
-	explicit ThreadMgr() noexcept  = default;
+  explicit ThreadMgr() = default;
 	/// _Default_ destructor.
 	~ThreadMgr()                   = default;
 

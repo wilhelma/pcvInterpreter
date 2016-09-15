@@ -9,10 +9,6 @@
  *
  */
 
-#define COMMAND_LINE_OUTPUT 1
-#define JSON_OUTPUT 1
-#define GRAPH_OUTPUT 1
-
 #include <algorithm>    // std::max
 #include <cassert>
 #include <string>
@@ -61,6 +57,8 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	  						                   std::string end_vertex_label) {
 
 	print_event_start(end_vertex_label);
+	print_time("strand_end_time", strand_end_time);
+	print_time("last_event_time", last_event_time);
 	assert(strand_end_time >= last_event_time);
 	TIME local_work = strand_end_time - last_event_time;
 	last_event_time = strand_end_time;
@@ -74,8 +72,11 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 
 void ParasiteTool::endProfileCalculations() {
 
+	std::cout << "BOTTOM THREAD INDEX AT END IS " << stacks.bottomFunctionIndex() << std::endl;
 	assert(stacks.bottomThreadIndex() == 0);
+	std::cout << "BOTTOM FUNCTION INDEX AT END IS " << stacks.bottomFunctionIndex() << std::endl;
 	assert(stacks.bottomFunctionIndex() == 0);
+
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
 	std::shared_ptr<function_frame_t> bottom_function = stacks.bottomFunction();
 	parasite_profile.lock_wait_time = bottom_function->lock_wait_time();
@@ -148,8 +149,10 @@ void ParasiteTool::Call(const CallEvent* e) {
 	print_event_start("CALL");
 	const CallInfo* _info(e->getInfo());
 	last_event_time = _info->callTime;
-	std::cout << "starting call Event with signature " <<
+	if (DEBUG_OUTPUT) {
+		std::cout << "starting call Event with signature " <<
 				      _info->fnSignature.c_str() << std::endl;
+	}
     stacks.bottomThread()->continuation.init_call_site(_info->siteId, 
     												   concur(_info->callTime));
     work.record_call_site(_info->siteId, _info->fnSignature);
@@ -161,11 +164,13 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	const NewThreadInfo* const _info = e->getInfo();
 	vertex_descr_type thread_start_vertex;
-	stacks.bottomThread()->spawned_children_count += 1;
-	if (stacks.bottomThreadIndex() != -1) 
+	if (stacks.bottomThreadIndex() != -1) {
+		stacks.bottomThread()->spawned_children_count += 1;
 		thread_start_vertex = add_local_work(_info->startTime, "TS");
-	else 
+	} else {
 		thread_start_vertex = thread_graph.last_vertex;
+		last_event_time = _info->startTime;
+	}
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
@@ -214,8 +219,10 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getInfo());
 	add_local_work(_info->endTime, "R");
-	std::cout << "starting return Event with signature " <<
-		stacks.bottomFunction()->function_signature.c_str() << std::endl;
+	if (DEBUG_OUTPUT) {
+		std::cout << "starting return Event with signature " <<
+			stacks.bottomFunction()->function_signature.c_str() << std::endl;
+	}
 
 	std::shared_ptr<function_frame_t> returned_function(stacks.bottomFunction());
 	stacks.bottomThread()->continuation.
@@ -249,7 +256,9 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	if (ending_thread->prefix() + parent_thread->continuation() 
 			                       > parent_thread->longest_child()) {
 
-		std::cout << "ending thread is longest child encountered so far " << std::endl;
+		if (DEBUG_OUTPUT) {
+			std::cout << "ending thread is longest child encountered so far " << std::endl;
+		}
 		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time(); 
 		parent_thread->longest_child.set(&(ending_thread->prefix));
 		parent_thread->prefix.add(&(parent_thread->continuation));

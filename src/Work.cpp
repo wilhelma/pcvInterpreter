@@ -24,7 +24,7 @@ Work::Work() : total(0) {
 	total = static_cast<TIME>(0);
 }
 
-Work::Work(Work const& hashtable_object) : total(0) {
+Work::Work(const Work& hashtable_object) : total(0) {
 	hashtable = std::move(hashtable_object.hashtable);
 	total = hashtable_object.total;
 }
@@ -43,7 +43,7 @@ std::shared_ptr<CallSiteWorkProfile>  Work::profileAt(CALLSITE call_site) {
 	if (!hashtable->count(call_site)) {
 		std::cout << "WORK PROFILE NOT INITIALIZED CORRECTLY at call site " <<
 			call_site << std::endl;
-		std::exit(EXIT_FAILURE);
+		//std::exit(EXIT_FAILURE);
 	}
 	return hashtable->at(call_site);
 }

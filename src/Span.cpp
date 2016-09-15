@@ -19,7 +19,7 @@ Span::Span() : total(0) {
 	total = static_cast<TIME>(0);
 }
 
-Span::Span(Span const& other_span) : total(0) {
+Span::Span(const Span& other_span) : total(0) {
 	hashtable = std::move(other_span.hashtable);
 	total = other_span.total;
 }
@@ -37,7 +37,7 @@ std::shared_ptr<CallSiteSpanProfile> Span::profileAt(CALLSITE call_site) {
 	if (!hashtable->count(call_site)) {
 		std::cout << "WORK PROFILE NOT INITIALIZED CORRECTLY at call site " <<
 			call_site << std::endl;
-		std::exit(EXIT_FAILURE);
+		//std::exit(EXIT_FAILURE);
 	}
 	return hashtable->at(call_site);
 }

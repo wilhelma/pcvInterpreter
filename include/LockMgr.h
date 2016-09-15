@@ -18,7 +18,7 @@
 class LockMgr {
 public:
 	/// _Default_ constructor.
-	explicit LockMgr() noexcept = default;
+  explicit LockMgr() = default;
 	/// _Default_ destructor.
 	~LockMgr()                  = default;
 	

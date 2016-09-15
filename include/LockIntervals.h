@@ -28,7 +28,7 @@ class LockInterval {
 class LockIntervals {
  public:
  	LockIntervals();
- 	void add(LockIntervals childIntervals);
+ 	void add(const LockIntervals& childIntervals);
  	void addInterval(TIME start, TIME end, unsigned int lock_id);
  	void clear();
  	void order();
@@ -39,6 +39,9 @@ class LockIntervals {
  	std::unordered_map<unsigned int, std::vector<LockInterval>> interval_map;
  	std::shared_ptr<std::vector<LockInterval>> intervals;
  	std::shared_ptr<std::vector<LockInterval>> ordered_intervals;
+ 	// prevent generated functions --------------------------------------------
+	LockIntervals(const LockIntervals&);
+	LockIntervals& operator=(const LockIntervals&);
  };
 
 #endif
