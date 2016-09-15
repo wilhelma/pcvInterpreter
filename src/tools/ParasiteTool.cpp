@@ -157,7 +157,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	const NewThreadInfo* const _info = e->getInfo();
 	vertex_descr_type thread_start_vertex;
-	stacks.bottomThread()->spawned_children_count += 1;
+  //stacks.bottomThread()->spawned_children_count += 1;
 	if (stacks.bottomThreadIndex() != -1) 
 		thread_start_vertex = add_local_work(_info->startTime, "TS");
 	else 

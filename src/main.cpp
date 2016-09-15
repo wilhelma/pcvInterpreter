@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
 
-	const auto& parasite_tool_it = runner->registerTool(
+  const auto& parasite_tool_it = runner->registerTool(
             std::make_unique<ParasiteTool>(),
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
@@ -54,9 +54,9 @@ int main(int argc, char* argv[]) {
 
 	std::cout << " AFTER INTERPRET " << std::endl;
 
-	// Unregister the tool
+  // Unregister the tool
 	runner->removeTool(debug_tool_it);
-	runner->removeTool(parasite_tool_it);		
+  runner->removeTool(parasite_tool_it);
 
 	std::cout << " AFTER REMOVING TOOLS " << std::endl;
 

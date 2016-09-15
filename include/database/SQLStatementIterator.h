@@ -203,12 +203,12 @@ const thread_t SQLStatementIterator<const thread_t>::operator*() const {
     TRD_ID               id(Query_->get<TRD_ID>(0));
     TIME_STRING  start_time(Query_->get<TIME_STRING>(1));
     TIME_STRING    end_time(Query_->get<TIME_STRING>(2));
-    TIME        start_cycle(Query_->get<NUM_CYCLES>(3));
-    TIME         num_cycles(Query_->get<NUM_CYCLES>(3));
-    INS_ID  create_instr_id(Query_->get<INS_ID>(4));
-    INS_ID    join_instr_id(Query_->get<INS_ID>(5));
-    TRD_ID parent_thread_id(Query_->get<TRD_ID>(6));
-    PID          process_id(Query_->get<PID>(7));
+    TIME        start_cycle(Query_->get<TIME>(3));
+    TIME         num_cycles(Query_->get<TIME>(4));
+    INS_ID  create_instr_id(Query_->get<INS_ID>(5));
+    INS_ID    join_instr_id(Query_->get<INS_ID>(6));
+    TRD_ID parent_thread_id(Query_->get<TRD_ID>(7));
+    PID          process_id(Query_->get<PID>(8));
     CAL_ID          call_id(Query_->get<CAL_ID>(9));
 
     return thread_t(id, start_time, end_time, start_cycle, num_cycles, create_instr_id, join_instr_id, parent_thread_id, process_id, call_id);

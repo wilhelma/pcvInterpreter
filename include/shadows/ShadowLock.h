@@ -40,17 +40,17 @@ struct ShadowLock {
 	/// @brief Less-than operator.
 	/// @details Compares the `lockId`s.
 	friend const bool operator<(const ShadowLock& lhs, const ShadowLock& rhs)
-	{ return lhs.lockId < rhs.lockId; };
+  { return lhs.lockId < rhs.lockId; }
 	
 	/// @brief Equality operator.
 	/// @details Compares the `lockId`s.
 	friend const bool operator==(const ShadowLock& lhs, const ShadowLock& rhs)
-	{ return lhs.lockId == rhs.lockId; };
+  { return lhs.lockId == rhs.lockId; }
 };
 
 /// @brief Greater-than operator.
 /// @return Negation of `Shadowlock::operator<()`.
 inline const bool operator>=(const ShadowLock& lhs, const ShadowLock& rhs)
-{ return !(lhs < rhs); };
+{ return !(lhs < rhs); }
 
 #endif
