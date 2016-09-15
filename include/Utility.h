@@ -8,20 +8,34 @@
 #include <string>
 #include <iostream>
 
+#define PRINT 1
+
 static inline void print_time(std::string str, TIME time) {
-	std::cout << str << " " << time << std::endl;
+    if (PRINT) {
+	   std::cout << str << " " << time << std::endl;
+    }
+}
+
+static inline void print_debug(std::string str) {
+    if (PRINT) {
+       std::cout << str << std::endl;
+    }
 }
 
 static inline void print_event_start(std::string event_name) {
 
-    std::cout << "==================" << std::endl;
-    std::cout << event_name << " BEGIN" << std::endl;
+    if (PRINT) {
+        std::cout << "==================" << std::endl;
+        std::cout << event_name << " BEGIN" << std::endl;
+    }
 }
 
 static inline void print_event_end(std::string event_name) {
 
-    std::cout << event_name << " END" << std::endl;
-    std::cout << "==================" << std::endl;
+    if (PRINT) {
+        std::cout << event_name << " END" << std::endl;
+        std::cout << "==================" << std::endl;
+    }
 }
 
 

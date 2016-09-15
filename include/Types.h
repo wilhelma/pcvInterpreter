@@ -75,26 +75,26 @@ using POS   = StrongTypedef<unsigned, 11>;
 
 // Call Types
 
-using TIME     = StrongTypedef<uint64_t, 12>;
+using TIME     = uint64_t;
 
-/// Addition operator for `TIME` variables.
-/// @param lhs The left-hand side.
-/// @param lhs The right-hand side.
-inline TIME operator+(const TIME& lhs, const TIME& rhs)
-{ return static_cast<TIME>(static_cast<uint64_t>(lhs) + rhs); }
+// /// Addition operator for `TIME` variables.
+// /// @param lhs The left-hand side.
+// /// @param lhs The right-hand side.
+// inline TIME operator+(const TIME& lhs, const TIME& rhs)
+// { return static_cast<TIME>(static_cast<uint64_t>(lhs) + rhs); }
 
-/// Minus operator for `TIME` variables.
-/// @param t The variable to take the value from.
-/// @return A `TIME` variable whose value is the opposite
-/// of `t`'s one.
-inline TIME operator-(const TIME& t)
-{ return static_cast<TIME>(-static_cast<uint64_t>(t)); }
+// /// Minus operator for `TIME` variables.
+// /// @param t The variable to take the value from.
+// /// @return A `TIME` variable whose value is the opposite
+// /// of `t`'s one.
+// inline TIME operator-(const TIME& t)
+// { return static_cast<TIME>(-static_cast<uint64_t>(t)); }
 
-/// Subtraction operator for `TIME` variables.
-/// @param lhs The left-hand side.
-/// @param lhs The right-hand side.
-inline TIME operator-(const TIME& lhs, const TIME& rhs)
-{ return lhs + (-rhs); }
+// /// Subtraction operator for `TIME` variables.
+// /// @param lhs The left-hand side.
+// /// @param lhs The right-hand side.
+// inline TIME operator-(const TIME& lhs, const TIME& rhs)
+// { return lhs + (-rhs); }
 
 using CALLSITE = StrongTypedef<size_t,  13>;
 
