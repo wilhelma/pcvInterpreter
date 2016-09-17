@@ -32,8 +32,8 @@ CallSiteProfile::CallSiteProfile (std::shared_ptr<CallSiteSpanProfile>
 	function_signature = work_profile->function_signature;
 	lock_wait_time = span_profile->lock_wait_time;
 	start = span_profile->start;
-	work = work_profile->work + lock_wait_time;
-	span = span_profile->span + lock_wait_time;
+	work = work_profile->work;
+	span = span_profile->span;
 	stop = span_profile->start + span_profile->span;
 	count = work_profile->count;
 	if (work == 0)

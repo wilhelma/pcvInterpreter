@@ -43,10 +43,6 @@ struct thread_frame_t {
 	LockIntervals child_lock_intervals;
 	LockIntervals lock_intervals;
 
-	TIME lock_wait_time(){
-		return lock_intervals.waitTime();
-	}
-
 	void absorb_child_locks() {
 		lock_intervals.add(child_lock_intervals);
 		child_lock_intervals.clear();
@@ -55,17 +51,6 @@ struct thread_frame_t {
 	void add_child_locks(std::shared_ptr<thread_frame_t> child_thread) {
 		child_lock_intervals.add(child_thread->lock_intervals);
 	}
-
-	void correct_prefix(TIME correction) {
-		prefix.total = prefix.total + correction;
-		print_time("subtracting lock wait time from prefix", correction);
-	}
-
-	/**
-	*    @var longest_child_lock_wait_time
-	*    @brief Lock span of the longest spawned child of this thread.
-	*/
-	TIME longest_child_lock_wait_time;
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -95,7 +80,6 @@ struct thread_frame_t {
 	int spawned_children_count;
 
 	thread_frame_t():thread(0),
-					 longest_child_lock_wait_time(0), 
 					 prefix(Span()), 
 					 longest_child(Span()),
 					 continuation(Span()),

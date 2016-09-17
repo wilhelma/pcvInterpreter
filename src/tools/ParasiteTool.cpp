@@ -85,7 +85,7 @@ void ParasiteTool::endProfileCalculations() {
 	parasite_profile.span = bottom_thread->prefix();
 
 	// Calculate work for entire program
-	parasite_profile.work = work() + parasite_profile.lock_wait_time;
+	parasite_profile.work = work();
 
 	// Calculate parallelism for entire program                     
 	parasite_profile.parallelism =  static_cast<double> (parasite_profile.work)
@@ -190,22 +190,12 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	if (bottom_thread->spawned_children_count == 0) {
 	 
 		print_event_start("SYNC");
-		TIME lock_wait_time_excluding_children = bottom_thread->lock_wait_time();
-		bottom_thread->absorb_child_locks();
-		TIME lock_wait_time_including_children = bottom_thread->lock_wait_time();
-		TIME lock_wait_time_on_continuation = lock_wait_time_including_children - 
-									   		  lock_wait_time_excluding_children;
 
 		// If critical path goes through spawned child
-		if (bottom_thread->longest_child() > bottom_thread->continuation()) {
+		if (bottom_thread->longest_child() > bottom_thread->continuation())
 			bottom_thread->prefix.add(&(bottom_thread->longest_child));
-			// avoid double counting of lock wait time
-			bottom_thread->correct_prefix(bottom_thread->longest_child_lock_wait_time);
-		} else { 
+		else 
 			bottom_thread->prefix.add(&(bottom_thread->continuation));
-			// avoid double counting of lock wait time
-			bottom_thread->correct_prefix(lock_wait_time_on_continuation);
-		}
 
 		bottom_thread->continuation.clear();
 		bottom_thread->longest_child.clear();
@@ -241,7 +231,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	const ThreadEndInfo* _info(e->getInfo());
 	add_local_work(_info->endTime, "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
-	ending_thread->continuation.add(ending_thread->lock_wait_time());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
 	if (stacks.bottomThreadIndex() == 0) {
@@ -259,7 +248,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		if (DEBUG_OUTPUT) {
 			std::cout << "ending thread is longest child encountered so far " << std::endl;
 		}
-		parent_thread->longest_child_lock_wait_time = ending_thread->lock_wait_time(); 
 		parent_thread->longest_child.set(&(ending_thread->prefix));
 		parent_thread->prefix.add(&(parent_thread->continuation));
 		parent_thread->continuation.clear();
