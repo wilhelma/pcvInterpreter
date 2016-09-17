@@ -46,7 +46,7 @@ void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {
 
 void DAG::write_dot_file() {
 
-	std::string dir = "/Users/nathanielknapp/Desktop/thesis/python_code/";
+	std::string dir = "./";
 	std::string file_name = (dir + name) + ".dot";
 	std::ofstream dot(file_name);
 	bgl::dynamic_properties dp;
