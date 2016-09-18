@@ -17,7 +17,7 @@ DAG::DAG(std::string _name_) : vertex_count(1), name(_name_){
 
 	std::shared_ptr<Dag> directed_asymmetric_graph(new Dag());
 	dag = directed_asymmetric_graph;
-	last_vertex = bgl::add_vertex(VertexNameProp("TS_1"), *dag);
+	last_vertex = bgl::add_vertex(VertexNameProp("TS_0"), *dag);
 	source = last_vertex;
 }
 
@@ -27,8 +27,6 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label) {
 
 	vertex_count += 1;
-	end_vertex_label = "_" + end_vertex_label;
-	end_vertex_label = std::to_string(vertex_count) + end_vertex_label;
 	vertex_descr_type end = bgl::add_vertex(VertexNameProp(end_vertex_label),
 																		*dag); 
 	double lngth = static_cast<double>(length) / 

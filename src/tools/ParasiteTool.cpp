@@ -50,7 +50,7 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 
 void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
 
-	add_edge(static_cast<TIME>(0), "J");
+	add_edge(static_cast<TIME>(0), label);
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
@@ -235,8 +235,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getInfo());
 	FUN_SG fun_sg = stacks.bottomFunction()->function_signature;
-	std::string return_label = "R_" + std::to_string(static_cast<unsigned>(_info->call)) + fun_sg;
-	add_local_work(_info->endTime, "R");
+	std::string return_label = "R_" + std::to_string(static_cast<unsigned>(_info->call)) + "_" + fun_sg;
+	add_local_work(_info->endTime, return_label);
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting return Event with signature " <<
 			stacks.bottomFunction()->function_signature.c_str() << std::endl;
@@ -258,7 +258,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	const ThreadEndInfo* _info(e->getInfo());
 	std::string thread_id_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
-	add_local_work(_info->endTime, "TE");
+	add_local_work(_info->endTime, thread_id_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
