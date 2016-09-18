@@ -67,7 +67,7 @@ using POS   = StrongTypedef<unsigned, 11>;
 
 // Call Types
 
-using TIME = StrongTypedef<unsigned, 12>;
+using TIME = StrongTypedef<uint64_t, 12>;
 
 /// Increment operator for `TIME` variables.
 /// @param lhs The left-hand side.

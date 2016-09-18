@@ -38,15 +38,20 @@ void ParasiteTool::add_join_edges(vertex_descr_type start) {
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
-void ParasiteTool::add_down_stack(TIME local_work, TIME parallel_time) {
+void ParasiteTool::add_down_stack(TIME local_work) {
 
 	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
 		work.add_to_call_site(stacks.functionAt(i)->call_site,
 						  	   stacks.functionAt(i)->function_signature,
 						  	   local_work);
 		stacks.bottomThread()->continuation.add_to_call_site(
-				 stacks.functionAt(i)->call_site, local_work, parallel_time);
+				 stacks.functionAt(i)->call_site, local_work);
 	}
+}
+
+void ParasiteTool::add_start_time(CALLSITE call_site, TIME start_time) {
+	std::pair<CALLSITE, TIME> newPair(call_site, start_time);
+	start_time_hashtable.insert(newPair);
 }
 
 TIME ParasiteTool::concur(TIME serial_time) {
@@ -64,7 +69,7 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
-	add_down_stack(local_work, concur(strand_end_time));
+	add_down_stack(local_work);
 	print_time("local work", local_work);
 	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);
@@ -124,7 +129,8 @@ void ParasiteTool::outputCallSites() {
 		if (bottom_prefix.hashtable->count(key)) {
 			std::shared_ptr<CallSiteProfile> currentProfile
 					(new CallSiteProfile(bottom_prefix.hashtable->at(key),
-										 wrk->at(key)));
+										 wrk->at(key),
+										 start_time_hashtable.at(key)));
 			if (JSON_OUTPUT)
 				jsonWriter.writeCallSite(currentProfile);
 			if (COMMAND_LINE_OUTPUT)
@@ -153,9 +159,9 @@ void ParasiteTool::Call(const CallEvent* e) {
 		std::cout << "starting call Event with signature " <<
 				      _info->fnSignature.c_str() << std::endl;
 	}
-    stacks.bottomThread()->continuation.init_call_site(_info->siteId, 
-    												   concur(_info->callTime));
+    stacks.bottomThread()->continuation.init_call_site(_info->siteId);
     work.record_call_site(_info->siteId, _info->fnSignature);
+    add_start_time(_info->siteId, concur(_info->callTime));
 	stacks.function_push(_info->fnSignature, _info->siteId);
 	print_event_end("CALL");
 }

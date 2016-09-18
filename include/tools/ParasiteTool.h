@@ -75,10 +75,12 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
-	void add_down_stack(TIME local_work, TIME strand_end_time);
+	void add_down_stack(TIME local_work);
 	
 	vertex_descr_type add_local_work(TIME strand_end_time, 
 	  				   				 std::string end_vertex_label);
+
+	void add_start_time(CALLSITE call_site, TIME start_time);
 
 	void endProfileCalculations();
 
@@ -120,6 +122,8 @@ class ParasiteTool : public Tool {
 
 	ParasiteJsonWriter jsonWriter;
 
+
+
 	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
@@ -127,6 +131,9 @@ class ParasiteTool : public Tool {
 	TIME last_event_time;
 
  private:
+
+ 	std::unordered_map<CALLSITE, TIME, CallSiteHash, CallSiteEqual> start_time_hashtable;
+
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);
 	ParasiteTool& operator=(const ParasiteTool&);

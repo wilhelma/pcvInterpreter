@@ -9,8 +9,6 @@
  *
  */
 
-// TODO: add offset to START TIME ALSO!!
-
 #include "CallSiteProfile.h"
 
 CallSiteProfile::CallSiteProfile() : call_site(0), lock_wait_time(0), span(0), work(0), start(0), stop(0) {}
@@ -20,21 +18,21 @@ CallSiteProfile::~CallSiteProfile() {}
 CallSiteProfile::CallSiteProfile (std::shared_ptr<CallSiteSpanProfile>
  																 span_profile,
  							     std::shared_ptr<CallSiteWorkProfile> 
- 							      								 work_profile)
+ 							      								 work_profile,
+ 							     TIME start_time)
  							      								 : 
  							      								 call_site(0),  
  							      								 lock_wait_time(0),  
  							      								 span(0),
  							      								 work(0),
-									 							 start(0),
+									 							 start(start_time),
 									 							 stop(0) {
 	call_site = work_profile->call_site;
 	function_signature = work_profile->function_signature;
 	lock_wait_time = span_profile->lock_wait_time;
-	start = span_profile->start;
 	work = work_profile->work;
 	span = span_profile->span;
-	stop = span_profile->start + span_profile->span;
+	stop = start + span_profile->span;
 	count = work_profile->count;
 	if (work == 0)
 		std::cout << "ERROR in call site profile initialization: work cannot be zero " << std::endl;

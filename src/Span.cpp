@@ -64,11 +64,10 @@ void Span::add(Span* other_span) {
 	}
 }
 
-void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
+void Span::add_to_call_site(CALLSITE call_site, TIME span) {
 	if (!hashtable->count(call_site))
-		init_call_site(call_site, end_time);
+		init_call_site(call_site);
 	profileAt(call_site)->span += span;
-	profileAt(call_site)->start = std::min(profileAt(call_site)->start, end_time);
 }
 
 void Span::clear() {
@@ -77,10 +76,10 @@ void Span::clear() {
 }
 
 
-void Span::init_call_site(CALLSITE call_site, TIME start_time) {
+void Span::init_call_site(CALLSITE call_site) {
 
 	std::shared_ptr<CallSiteSpanProfile> new_profile(new CallSiteSpanProfile());
-	new_profile->init(call_site, start_time);
+	new_profile->init(call_site);
 	std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile>> 
                                     newPair(call_site, new_profile);
 	hashtable->insert(newPair);
