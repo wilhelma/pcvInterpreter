@@ -17,7 +17,7 @@ DAG::DAG(std::string _name_) : vertex_count(1), name(_name_){
 
 	std::shared_ptr<Dag> directed_asymmetric_graph(new Dag());
 	dag = directed_asymmetric_graph;
-	last_vertex = bgl::add_vertex(VertexNameProp("1_TS"), *dag);
+	last_vertex = bgl::add_vertex(VertexNameProp("TS_1"), *dag);
 	source = last_vertex;
 }
 

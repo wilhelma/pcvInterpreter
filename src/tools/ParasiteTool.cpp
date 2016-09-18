@@ -15,7 +15,23 @@
 #include <utility>
 #include <limits>
 #include <climits>
+
+#include "AccessEvent.h"
+#include "AcquireEvent.h"
+#include "AcquireInfo.h"
+#include "CallEvent.h"
+#include "CallInfo.h"
+#include "JoinEvent.h"
+#include "JoinInfo.h"
+#include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
 #include "ParasiteTool.h"
+#include "ReleaseEvent.h"
+#include "ReleaseInfo.h"
+#include "ReturnEvent.h"
+#include "ReturnInfo.h"
+#include "ThreadEndEvent.h"
+#include "ThreadEndInfo.h"
 
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
 							 jsonWriter(random_string(5)), last_event_time(0) {
@@ -32,7 +48,7 @@ vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_lab
 	return new_vertex;
 }
 
-void ParasiteTool::add_join_edges(vertex_descr_type start) {
+void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
 
 	add_edge(static_cast<TIME>(0), "J");
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
@@ -172,7 +188,8 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	vertex_descr_type thread_start_vertex;
 	if (stacks.bottomThreadIndex() != -1) {
 		stacks.bottomThread()->spawned_children_count += 1;
-		thread_start_vertex = add_local_work(_info->startTime, "TS");
+		std::string thread_id_label = "TS_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId));
+		thread_start_vertex = add_local_work(_info->startTime, thread_id_label);
 	} else {
 		thread_start_vertex = thread_graph.last_vertex;
 		last_event_time = _info->startTime;
@@ -187,10 +204,13 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 void ParasiteTool::Join(const JoinEvent* e) {
 
+	const JoinInfo* const _info = e->getInfo();
 	print_event_start("JOIN");
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
 	bottom_thread->spawned_children_count -= 1;
-	add_join_edges(bottom_thread->join_vertex_list.front());
+	std::string join_label = "JOIN_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId)) + "_" + 
+								  std::to_string(static_cast<unsigned>(_info->parentThread->threadId));
+	add_join_edges(bottom_thread->join_vertex_list.front(), join_label);
 	bottom_thread->join_vertex_list.pop_front();
 
 	if (bottom_thread->spawned_children_count == 0) {
@@ -214,6 +234,8 @@ void ParasiteTool::Join(const JoinEvent* e) {
 void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getInfo());
+	FUN_SG fun_sg = stacks.bottomFunction()->function_signature;
+	std::string return_label = "R_" + std::to_string(static_cast<unsigned>(_info->call)) + fun_sg;
 	add_local_work(_info->endTime, "R");
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting return Event with signature " <<
@@ -235,6 +257,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	const ThreadEndInfo* _info(e->getInfo());
+	std::string thread_id_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
 	add_local_work(_info->endTime, "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));

@@ -19,34 +19,30 @@
 #include <unordered_map>
 #include <vector>
 
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "AcquireInfo.h"
-#include "CallEvent.h"
-#include "CallInfo.h"
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ThreadEndEvent.h"
+
 #include "CallSiteProfile.h"
 #include "CallSiteSpanProfile.h"
-#include "Work.h"
 #include "CallSiteWorkProfile.h"
 #include "DAG.h"
 #include "Event.h"
-#include "JoinEvent.h"
 #include "LockIntervals.h"
-#include "NewThreadEvent.h"
-#include "NewThreadInfo.h"
 #include "ParasiteJsonWriter.h"
 #include "ParasiteProfile.h"
 #include "ParasiteTracker.h"
-#include "ReturnEvent.h"
-#include "ReturnInfo.h"
-#include "ReleaseEvent.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
-#include "ThreadEndEvent.h"
-#include "ThreadEndInfo.h"
 #include "Tool.h"
 #include "Utility.h"
+#include "Work.h"
 
 /**
 *
@@ -94,7 +90,7 @@ class ParasiteTool : public Tool {
 
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
-	void add_join_edges(vertex_descr_type start);
+	void add_join_edges(vertex_descr_type start, std::string label);
 
 	TIME concur(TIME serial_time);
 
@@ -121,8 +117,6 @@ class ParasiteTool : public Tool {
 	std::string name;
 
 	ParasiteJsonWriter jsonWriter;
-
-
 
 	/**
 	*    @var last_lock_start_time
