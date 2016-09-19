@@ -37,10 +37,18 @@ void DBManager::open(const std::string& DBPath) {
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
 }
 
-DBManager::~DBManager() {
-	auto rc = sqlite3_close(Database_);
-	if (rc != SQLITE_OK)
-		throw SQLException(sqlite3_errmsg(Database_), "DBManager::~DBManager");
+// Helper function to close the database
+void close_database(sqlite3* db) {
+	if (sqlite3_close(db) != SQLITE_OK)
+		throw SQLException(sqlite3_errmsg(db), "DBManager::~DBManager");
+}
+
+DBManager::~DBManager() noexcept {
+    try { close_database(Database_); }
+    catch (SQLException& e) {
+        std::cerr << e.what() << std::endl;
+        std::abort();
+    }
 }
 
 std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {

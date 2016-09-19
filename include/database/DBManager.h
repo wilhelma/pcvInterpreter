@@ -46,9 +46,9 @@ public:
     std::unique_ptr<QueryResult> query(const std::string& sql_query) const;
 
     /// @brief Destructor: try to close the database.
-    /// @throw SQLException
-    /// @todo Find a way not to throw from the destructor!
-    ~DBManager();
+    /// @attention If an exception is thrown when closing the database, the 
+    /// execution will be `std::abort()`ed.
+    ~DBManager() noexcept;
 
 private:
     /// @brief Pointer to the opened database.
