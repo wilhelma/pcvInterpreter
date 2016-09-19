@@ -1,6 +1,9 @@
 project(pcv)
 cmake_minimum_required(VERSION 2.8)
 
+FILE(GLOB_RECURSE LibFiles "*.h")
+add_custom_target(headers SOURCES ${LibFiles})
+
 # Add a custom 'doc' target to generate API documentation with Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

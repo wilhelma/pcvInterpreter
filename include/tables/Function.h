@@ -43,6 +43,8 @@ struct function_t {
     /// SQL ID of the function.
     FUN_ID id;
     /// The Function name (_it's not the signature_).
+    FUN_NM name;
+    /// The Function signature.
     FUN_SG signature;
     /// The function type.
     FunctionType type;
@@ -56,11 +58,12 @@ struct function_t {
     /// Constructor.
     explicit
     function_t(FUN_ID sqlID,
+               FUN_NM name,
                FUN_SG fnSignature,
                FunctionType fnType,
                FIL_ID fileId,
                LIN_NO lineNumber) noexcept
-        : id(sqlID), signature(fnSignature), type(fnType),
+        : id(sqlID), name(name), signature(fnSignature), type(fnType),
           file_id(fileId), line_number(lineNumber)
     {}
 };

@@ -388,7 +388,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
                        call.start_time,
                        static_cast<TIME>(call.end_time - call.start_time),
-                       function.signature,
+                       function.name,
                        segId,
                        function.type,
                        file.file_name,
