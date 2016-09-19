@@ -12,36 +12,23 @@
 #ifndef CALL_SITE_SPAN_PROFILE_H_
 #define CALL_SITE_SPAN_PROFILE_H_
 
-#include <unordered_map>
+#include <iostream>
 #include <memory>
+#include <unordered_map>
+
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *   @struct call_site_span_profile_t
 *   @brief Span information describing a call site in the program.
 */
 
-struct call_site_span_profile_t {
-
-    /**
-    *    @var call_site
-    *    @brief The call site whose data is contained in the profile. 
-    */
-    CALLSITE call_site;
-
-    /**
-    *    @var span
-    *    @brief Span of callsite. 
-    */
-    TIME span;
-
-    call_site_span_profile_t() : call_site(0), span(0) {}  
-};
-
 class CallSiteSpanProfile {
     
  public:
-    explicit CallSiteSpanProfile(std::shared_ptr<call_site_span_profile_t> profile);
+
+    CallSiteSpanProfile();
     ~CallSiteSpanProfile();
 
     void print();
@@ -50,19 +37,34 @@ class CallSiteSpanProfile {
     *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add)
     *    @brief Add the entries in profile_to_add to prof
     */
-    void add_in_callsite_span_profile_entries(const std::shared_ptr<call_site_span_profile_t> profile_to_add);
+    void add_in_callsite_span (const std::shared_ptr<CallSiteSpanProfile> 
+                                      profile_to_add);
 
     /**
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init_callsite_span_profile(CALLSITE call_site, TIME span);
-    
+    void init(CALLSITE call_site, TIME start_time);
+
     /**
-    *    @var prof
-    *    @brief The call_site_span_profile_t that the profile's methods act on. 
+    *    @var call_site
+    *    @brief The call site whose data is contained in the profile. 
     */
-    std::shared_ptr<call_site_span_profile_t> prof;
+    CALLSITE call_site;
+
+    TIME start;
+
+    /**
+    *    @var span
+    *    @brief Span of callsite. 
+    */
+    TIME span;
+
+    /**
+    *    @var lock_wait_time
+    *    @brief Lock wait time of callsite. 
+    */
+    TIME lock_wait_time;
 
  private:
     CallSiteSpanProfile(const CallSiteSpanProfile&);

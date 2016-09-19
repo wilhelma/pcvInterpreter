@@ -46,11 +46,11 @@ typedef bgl::graph_traits<Dag>::edge_iterator edge_it_type;
 class DAG {
 
  public:
-	DAG();
+	DAG(std::string _name_);
 	~DAG();
 	vertex_descr_type add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label);
-	void add_join_edges(vertex_descr_type start, vertex_descr_type end);
+	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
 
 	void write_dot_file();
 
@@ -60,6 +60,11 @@ class DAG {
 	vertex_descr_type source;
 	vertex_descr_type sink;
 	vertex_descr_type last_vertex;
+	std::string name;
+ private:
+ 	// prevent generated functions --------------------------------------------
+	DAG(const DAG&);
+	DAG& operator=(const DAG&);
 };
 
 #endif /* DAG_H */

@@ -19,17 +19,14 @@ FunctionStack::FunctionStack() {
 	stack = fxn_stack;
 }
 
-FunctionStack::~FunctionStack() {
-
-}
+FunctionStack::~FunctionStack() {}
 
 void FunctionStack::pop() {
 
 	// the last function frame must stay on the stack to get the end profile
 	assert(stack.size() > 1);
-	int bottom_index = stack.size() - 1;
 	stack.pop_back();
-	printf("popped off of function stack, index is now %d \n", bottom_index);
+	print_debug("popped function");
 }
 
 void FunctionStack::init_frame(int index, 
@@ -43,9 +40,9 @@ void FunctionStack::init_frame(int index,
 std::shared_ptr<function_frame_t> FunctionStack::push(FUN_SG funSg, 
 									   				  CALLSITE callsiteID) {
 	stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
+	print_debug("pushed function");
 	int bottom_index = stack.size() - 1;
 	init_frame(bottom_index, funSg, callsiteID);
-	printf("pushing on to function stack, index is now %d \n", bottom_index);
 	assert(bottom_index >= 0);
 	return stack.back();
 }

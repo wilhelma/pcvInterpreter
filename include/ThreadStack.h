@@ -15,9 +15,11 @@
 
 #include <vector> 
 
-#include "CallSiteSpanHashtable.h"
+#include "Span.h"
 #include "DAG.h"
+#include "LockIntervals.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *    @struct thread_frame_t
@@ -38,41 +40,32 @@ struct thread_frame_t {
 	*/
 	int head_function_index;
 
-	/**
-	*    @var continuation_span
-	*    @brief Continuation span of this thread. 
-	*/
-	TIME continuation_span;
+	LockIntervals child_lock_intervals;
+	LockIntervals lock_intervals;
 
+	TIME lock_wait_time(){
+		return lock_intervals.waitTime();
+	}
 
- 	/**
-	*    @var prefix_span
-	*    @brief Prefix span of this thread. 
-	*/
-	TIME prefix_span;
+	void absorb_child_locks() {
+		lock_intervals.add(child_lock_intervals);
+		child_lock_intervals.clear();
+	}
 
+	void add_child_locks(std::shared_ptr<thread_frame_t> child_thread) {
+		child_lock_intervals.add(child_thread->lock_intervals);
+	}
 
-	/**
-	*    @var lock_span
-	*    @brief Lock span of this thread. 
-	*/
-	TIME lock_span;
-
-
-	/**
-	*    @var lock_span
-	*    @brief Span of the longest spawned child of this thread.
-	*/
-	TIME longest_child_span;
+	void correct_prefix(TIME correction) {
+		prefix.total = prefix.total + correction;
+		print_time("subtracting lock wait time from prefix", correction);
+	}
 
 	/**
-	*    @var longest_child_lock_span
+	*    @var longest_child_lock_wait_time
 	*    @brief Lock span of the longest spawned child of this thread.
 	*/
-	TIME longest_child_lock_span;
-
-
-	TIME thread_start_time;
+	TIME longest_child_lock_wait_time;
 
 	vertex_descr_type first_vertex;
 	vertex_descr_type last_vertex;
@@ -80,33 +73,33 @@ struct thread_frame_t {
 	std::list<vertex_descr_type> join_vertex_list;
 
 	/**
-	*    @var prefix_table
+	*    @var prefix
 	*    @brief Prefix data for each call site in this thread.
 	*/
-	CallSiteSpanHashtable prefix_table;
+	Span prefix;
 
 	/**
-	*    @var longest_child_table
+	*    @var longest_child
 	*    @brief Longest child data for each call site in this thread. 
 	*/
-	CallSiteSpanHashtable longest_child_table;
+	Span longest_child;
 
 	/**
-	*    @var continuation_table
+	*    @var continuation
 	*    @brief Continuation data for each call site in this thread.
 	*/
-	CallSiteSpanHashtable continuation_table;
+	Span continuation;
+
+	TIME concurrency_offset;
+
+	int spawned_children_count;
 
 	thread_frame_t():thread(0),
-					 continuation_span(0),
-					 prefix_span(0), 
-					 lock_span(0), 
-					 longest_child_span(0),
-					 longest_child_lock_span(0), 
-					 thread_start_time(0),
-					 prefix_table(CallSiteSpanHashtable()), 
-					 longest_child_table(CallSiteSpanHashtable()),
-					 continuation_table(CallSiteSpanHashtable()) {}
+					 longest_child_lock_wait_time(0), 
+					 prefix(Span()), 
+					 longest_child(Span()),
+					 continuation(Span()),
+					 concurrency_offset(0) {}
 };
 
 class ThreadStack {

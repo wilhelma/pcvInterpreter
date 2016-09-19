@@ -14,6 +14,7 @@
 
 #include "rapidjson/document.h"
 #include "rapidjson/filewritestream.h"
+#include "rapidjson/prettywriter.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include <cstdio>
@@ -26,12 +27,26 @@
 class ParasiteJsonWriter {
 
  public:
-	ParasiteJsonWriter();
+	ParasiteJsonWriter(std::string _name_);
 	~ParasiteJsonWriter();
 	void writeCallSite(std::shared_ptr<CallSiteProfile> profile);
-	void writeOverallProfile(std::shared_ptr<parasite_profile_t> prof);
+	void writeOverallProfile(parasite_profile_t prof);
 
 	FILE* file_pointer;
+
+	// document is the root of a json message
+    rapidjson::Document fromScratch;
+
+    rapidjson::Value callSiteArray;
+
+    std::string name;
+
+    char writeBuffer[65536];
+
+ private:
+	// prevent generated functions --------------------------------------------
+	ParasiteJsonWriter(const ParasiteJsonWriter&);
+	ParasiteJsonWriter& operator=(const ParasiteJsonWriter&);
 };
 
 #endif /* PARASITE_JSON_WRITER_H_ */

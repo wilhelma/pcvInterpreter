@@ -13,9 +13,9 @@ endif(DOXYGEN_FOUND)
 
 # ---------------------------------- BOOST related search map ---------------------------------------- #
 find_path(BOOST_PATH
-	NAMES boost/log/trivial.hpp
-	PATHS $ENV{BOOST_PATH}
-	DOC "Boost directory"
+  NAMES boost/log/trivial.hpp
+  PATHS $ENV{BOOST_PATH}
+  DOC "Boost directory"
 )
 
 if(NOT BOOST_PATH)
@@ -54,7 +54,7 @@ message(STATUS "SQLite Include Directory: ${SQLITE_INCLUDE_DIR}")
 message(STATUS "SQLite Library Directory: ${SQLITE_LIBRARY_DIR}")
 
 include_directories(${SQLITE_INCLUDE_DIR})
-link_directories   (${SQLITE_LIBRARY_DIR})	
+link_directories   (${SQLITE_LIBRARY_DIR})  
 
 # ------------------------------------ CXX and C Flags --------------------------------------------- #
 

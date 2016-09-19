@@ -13,7 +13,7 @@
 #include "DAG.h"
 #define SCALING_FACTOR 1
 
-DAG::DAG() : vertex_count(1) {
+DAG::DAG(std::string _name_) : vertex_count(1), name(_name_){
 
 	std::shared_ptr<Dag> directed_asymmetric_graph(new Dag());
 	dag = directed_asymmetric_graph;
@@ -30,7 +30,7 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 	end_vertex_label = "_" + end_vertex_label;
 	end_vertex_label = std::to_string(vertex_count) + end_vertex_label;
 	vertex_descr_type end = bgl::add_vertex(VertexNameProp(end_vertex_label),
-																		*dag);
+																		*dag); 
 	double lngth = static_cast<double>(length) / 
 				   static_cast<double>(SCALING_FACTOR);
 	bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
@@ -38,7 +38,7 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 	return end;
 }
 
-void DAG::add_join_edges(vertex_descr_type start, vertex_descr_type end) {
+void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {
 
 	bgl::add_edge(start, end, EdgeWeightProp(0), *dag);
 }
@@ -46,7 +46,9 @@ void DAG::add_join_edges(vertex_descr_type start, vertex_descr_type end) {
 
 void DAG::write_dot_file() {
 
-	std::ofstream dot("parasite_graph.dot");
+	std::string dir = "/Users/nathanielknapp/Desktop/thesis/python_code/";
+	std::string file_name = (dir + name) + ".dot";
+	std::ofstream dot(file_name);
 	bgl::dynamic_properties dp;
     dp.property("label", get(bgl::edge_weight_t(), *dag));
     dp.property("node_id", get(bgl::vertex_name_t(), *dag));

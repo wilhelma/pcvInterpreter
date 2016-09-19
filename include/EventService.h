@@ -34,7 +34,7 @@
 class EventService {
 public:
     /// _Default_ constructor.
-    explicit EventService() noexcept  = default;
+    explicit EventService() = default;
     /// _Default_ destructor.
     ~EventService()                   = default;
 

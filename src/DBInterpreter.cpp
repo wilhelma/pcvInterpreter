@@ -164,8 +164,8 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 	for (const auto& it : CallTable_) {
 		// if there's a call whose instruction id is the same as
 		// ins.id, get its id
-		if (it.second.id == ins.id) {
-			call_id = it.second.id;
+    if (it.second.instruction_id == ins.id) {
+      call_id = it.second.id;
 			found = true;
 			break;
 		}
@@ -191,7 +191,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
     const CAL_ID topCallId = CallStack_.top();
 
     auto callIt = CallTable_.find(topCallId);
-    if (callIt == CallTable_.end()) {
+    if (callIt != CallTable_.end()) {
 
       // publish a return call event in case of mismatching call id's
       const call_t& topCall = callIt->second;

@@ -21,25 +21,32 @@
 
 #include "AccessEvent.h"
 #include "AcquireEvent.h"
+#include "AcquireInfo.h"
 #include "CallEvent.h"
+#include "CallInfo.h"
 #include "CallSiteProfile.h"
 #include "CallSiteSpanProfile.h"
-#include "CallSiteWorkHashtable.h"
+#include "Work.h"
 #include "CallSiteWorkProfile.h"
 #include "DAG.h"
 #include "Event.h"
 #include "JoinEvent.h"
+#include "LockIntervals.h"
 #include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
 #include "ParasiteJsonWriter.h"
 #include "ParasiteProfile.h"
 #include "ParasiteTracker.h"
 #include "ReturnEvent.h"
+#include "ReturnInfo.h"
 #include "ReleaseEvent.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
 #include "ThreadEndEvent.h"
+#include "ThreadEndInfo.h"
 #include "Tool.h"
+#include "Utility.h"
 
 /**
 *
@@ -54,6 +61,11 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
+	static const bool DEBUG_OUTPUT = 1;
+	static const bool COMMAND_LINE_OUTPUT = 1;
+	static const bool JSON_OUTPUT = 1;
+	static const bool GRAPH_OUTPUT = 1;
+
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
     void Call(const CallEvent* e) override;
@@ -63,12 +75,12 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
-	/**
-	*    @fn printProfile()
-	*    @brief Prints overall profile, and function profile information, in a format to be decided. 
-		 @todo Decide on format to print out profile information.
-	*/
-	void printProfile();
+	void add_down_stack(TIME local_work, TIME strand_end_time);
+	
+	vertex_descr_type add_local_work(TIME strand_end_time, 
+	  				   				 std::string end_vertex_label);
+
+	void endProfileCalculations();
 
 	/**
 	*    @fn printOverallProfile()
@@ -78,108 +90,41 @@ class ParasiteTool : public Tool {
 	void printOverallProfile();
 
 
-	/**
-	*    @fn printCallSiteProfiles()
-	*    @brief Prints call ite profile information, in a format to be decided. 
-		 @todo Decide on format to print out profile information.
-	*/
-	void printCallSiteProfiles();
-
-	void printGraphInformation(); 
-
-	void writeJson();
-
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
 	void add_join_edges(vertex_descr_type start);
+
+	TIME concur(TIME serial_time);
+
+	void outputCallSites();
+
+	void outputOverallProfile();
 	
 	/**
 	*    @var main_stack
 	*    @brief Contains a thread stack and a function stack to track events. 
 	*/
-	std::unique_ptr<ParasiteTracker> stacks;
+	ParasiteTracker stacks;
 
 	/**
 	*    @var parasite_profile
 	*    @brief Contains parallelism, work, and span after simulator finishes.
 	*/
-	std::shared_ptr<parasite_profile_t> parasite_profile;
+	parasite_profile_t parasite_profile;
 
-	std::shared_ptr<CallSiteWorkHashtable> work_table;
-
-	/**
-	*    @var lock_hashtable
-	*    @brief Maps lock IDs to the index of their respective functions in the 
-				function stack. 
-	*/
-	std::unordered_map<unsigned int, int> lock_hashtable;
+	Work work;
 
 	DAG thread_graph;
 
-	/**
-	*    @var last_function_call_time
-	*    @brief Time stamp for the most recent function call in the simulator. 
-	*/
-	TIME last_function_call_time;
+	std::string name;
 
-
-	/**
-	*    @var last_function_return_time
-	*    @brief Time stamp for the most recent function return in the simulator.
-	*/
-	TIME last_function_return_time;
-
-	/**
-	*    @var last_function_runtime
-	*    @brief Duration of the last function that was called. 
-	*/
-	TIME last_function_runtime;
-
-	/**
-	*    @var last_thread_end_time
-	*    @brief Time stamp for the last thread that has ended in the simulator.
-	*/
-	TIME last_thread_end_time;
-
-
-	/**
-	*    @var last_thread_runtime
-	*    @brief Duration of the last function that was called. 
-	*/
-	TIME last_thread_runtime;
-
-	/**
-	*    @var last_thread_start_time
-	*    @brief Time stamp for the start of the most recent thread in the simulator.
-	*/
-	TIME last_thread_start_time;
-
-
-	/**
-	*    @var last_lock_end_time
-	*    @brief Tracks the last lock end time, for calculation of 
-				lock span. 
-	*/
-	TIME lock_span_end_time;
-
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the last lock start time, for calculation of 
-				lock span. 
-	*/
-	TIME lock_span_start_time;
+	ParasiteJsonWriter jsonWriter;
 
 	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the time of the last thread event
-	*/
-	TIME last_thread_event_time;
 
  private:
 	// prevent generated functions --------------------------------------------

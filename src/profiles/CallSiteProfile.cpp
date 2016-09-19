@@ -4,43 +4,59 @@
  *   @brief  Implementation file for the class `CallSiteProfile`
  *
  *    @date  06/17/16
- *  @author  Nathaniel Knapp (github.com/deknapp),
+ *  @author  Nathaniel Knapp (github.com/deknapp) << 
  *           <nathaniel.knapp@gmail.com>
  *
  */
 
+// TODO: add offset to START TIME ALSO!!
+
 #include "CallSiteProfile.h"
+
+CallSiteProfile::CallSiteProfile() : call_site(0), lock_wait_time(0), span(0), work(0), start(0), stop(0) {}
 
 CallSiteProfile::~CallSiteProfile() {}
 
-CallSiteProfile::CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
+CallSiteProfile::CallSiteProfile (std::shared_ptr<CallSiteSpanProfile>
  																 span_profile,
- 							     std::shared_ptr<call_site_work_profile_t> 
- 							      								 work_profile) {
-
-	std::shared_ptr<call_site_profile_t> prf(new call_site_profile_t());
-	prof = prf;
-	prof->call_site = work_profile->call_site;
-	prof->function_signature = work_profile->function_signature;
-	prof->work = work_profile->work;
-	prof->span = span_profile->span;
-	prof->count = work_profile->count;
-	if (prof->work == 0)
-		printf("ERROR in call site profile initialization: work cannot be zero \n");
-	if (prof->span == 0)
-		printf("ERROR in call site profile initialization: span cannot be zero \n");
-	prof->parallelism = prof->work / prof->span;
+ 							     std::shared_ptr<CallSiteWorkProfile> 
+ 							      								 work_profile)
+ 							      								 : 
+ 							      								 call_site(0),  
+ 							      								 lock_wait_time(0),  
+ 							      								 span(0),
+ 							      								 work(0),
+									 							 start(0),
+									 							 stop(0) {
+	call_site = work_profile->call_site;
+	function_signature = work_profile->function_signature;
+	lock_wait_time = span_profile->lock_wait_time;
+	start = span_profile->start;
+	work = work_profile->work + lock_wait_time;
+	span = span_profile->span + lock_wait_time;
+	stop = span_profile->start + span_profile->span;
+	count = work_profile->count;
+	if (work == 0)
+		std::cout << "ERROR in call site profile initialization: work cannot be zero " << std::endl;
+	if (span == 0)
+		std::cout << "ERROR in call site profile initialization: span cannot be zero " << std::endl;
+	parallelism = static_cast<double>(work) /
+				  static_cast<double>(span);
 }
 
 void CallSiteProfile::print() {
-	printf(" ================ \n");
-	printf("CALL SITE %d \n", static_cast<int>(prof->call_site));
-	printf("FUNCTION SIGNATURE is %s \n", prof->function_signature.c_str());
-	printf("WORK is %llu \n", static_cast<unsigned long long>(prof->work));
-	printf("SPAN is %llu \n", static_cast<unsigned long long>(prof->span));
-	printf("COUNT is %d \n", prof->count);
-	printf("PARALLELISM is %f \n", static_cast<double>(prof->work)/static_cast<double>(prof->span));
-	printf("================\n");
+	std::cout << " ======================================================== " << std::endl;
+	std::cout << "CALL SITE " <<  static_cast<int>(call_site) << std::endl;
+	std::cout << "FUNCTION SIGNATURE is " <<  function_signature.c_str() << std::endl;
+	print_time("WORK", work);
+	print_time("LOCK_WAIT_TIME", lock_wait_time);
+	print_time("SPAN", span);
+	std::cout << "LOCK WAIT TIME PERCENTAGE OF SPAN " <<  static_cast<double>(lock_wait_time) / 
+									     	  		      static_cast<double>(span) << std::endl;
+	std::cout << "COUNT " <<  count << std::endl;
+	print_time("START TIME", start);
+	std::cout << "PARALLELISM " <<  static_cast<double>(work)/static_cast<double>(span) << std::endl;
+	std::cout << " ======================================================== " << std::endl;
 }
 
 

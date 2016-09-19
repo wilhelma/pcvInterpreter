@@ -14,7 +14,9 @@
 #define FunctionStack_H_
 
 #include <vector> 
+#include "LockIntervals.h"
 #include "Types.h"
+#include "Utility.h" 
 
 /**
 *    @struct function_frame_t
@@ -35,34 +37,19 @@ struct function_frame_t {
 	*/
 	FUN_SG function_signature;
 
-	/**
-	*    @var local_work
-	*    @brief Local work of the function.
-	*/
-	TIME local_work;
+	LockIntervals lock_intervals;
 
-	/**
-	*    @var local_lock_span
-	*    @brief The local lock span of the function.
-	*/
-	TIME local_lock_span;
+	void add_locks(std::shared_ptr<function_frame_t> child_function) {
+		lock_intervals.add(child_function->lock_intervals);
+	}
 
-	/**
-	*    @var running_work
-	*    @brief The running work of the function's call site. Same as the running
-				span of the function. 
-	*/
-	TIME running_work;
+	TIME lock_wait_time(){
+		TIME wait_time = lock_intervals.waitTime();
+		print_time("calculated lock wait time as", wait_time);
+		return wait_time;
+	}
 
-	/**
-	*    @var running_work
-	*    @brief The running lock span of the function's call site. 
-	*/
-	TIME running_lock_span;
-
-	function_frame_t() : call_site(0), local_work(0), local_lock_span(0),
-						 running_work(0), running_lock_span(0)
-	{}
+	function_frame_t() : call_site(0) {}
 };
 
 

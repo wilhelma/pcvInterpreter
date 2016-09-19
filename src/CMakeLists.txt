@@ -32,19 +32,18 @@ set(SRC_LIST
     DAG.cpp
     EventService.cpp
     FunctionStack.cpp
+    LockIntervals.cpp
     LockMgr.cpp
     main.cpp
     ParasiteJsonWriter.cpp
     ParasiteTracker.cpp
     ThreadMgr.cpp
-    ThreadStack.cpp)
+    ThreadStack.cpp
+    Span.cpp
+    Work.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     database/DBManager.cpp)
-
-set(SRC_LIST ${SRC_LIST}
-    hashtables/CallSiteSpanHashtable.cpp
-    hashtables/CallSiteWorkHashtable.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     profiles/CallSiteProfile.cpp
@@ -59,7 +58,7 @@ set(SRC_LIST ${SRC_LIST}
     tools/DebugTool.cpp
     tools/FunctionTrackerTool.cpp
     tools/LockSetChecker.cpp
-    tools/RaceDetectionTool.cpp)
+    tools/ParasiteTool.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 add_dependencies(${PROJECT_NAME} rapidjson)

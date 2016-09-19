@@ -63,4 +63,10 @@ template<>
 inline const std::string QueryResult::get(int column) const
 { return std::string(reinterpret_cast<const char*>(sqlite3_column_text(Query_, column))); }
 
+/// @brief Accesses the query (`TIME` specialization).
+/// @param column The column to access in the query.
+template<>
+inline const uint64_t QueryResult::get(int column) const
+{ return uint64_t(sqlite3_column_int64(Query_, column)); }
+
 #endif

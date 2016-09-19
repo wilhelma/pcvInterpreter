@@ -12,6 +12,7 @@
 #ifndef CALL_SITE_PROFILE_H_
 #define CALL_SITE_PROFILE_H_
 
+#include <limits>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -19,13 +20,26 @@
 #include "CallSiteSpanProfile.h"
 #include "CallSiteWorkProfile.h"
 #include "Types.h"
+#include "Utility.h"
 
 /**
 *   @struct call_site_profile_t
 *   @brief Work and span information describing a call site in the program.
 */
 
-struct call_site_profile_t {
+class CallSiteProfile {
+    
+ public:
+    explicit CallSiteProfile(std::shared_ptr<CallSiteSpanProfile>
+                                                                 span_profile,
+                             std::shared_ptr<CallSiteWorkProfile> 
+                                                                 work_profile);
+
+    CallSiteProfile();
+    ~CallSiteProfile();
+
+    void print();
+    
 
     /**
     *    @var call_site
@@ -56,6 +70,12 @@ struct call_site_profile_t {
 
 
     /**
+    *    @var lock_wait_time
+    *    @brief Lock wait time of callsite. 
+    */
+    TIME lock_wait_time;
+
+    /**
     *    @var span
     *    @brief Span of callsite. 
     */
@@ -67,39 +87,8 @@ struct call_site_profile_t {
     */
     TIME work;
 
-    call_site_profile_t() : call_site(0),  count(0), parallelism(0), span(0), work(0) {}  
-};
-
-class CallSiteProfile {
-    
- public:
-    explicit CallSiteProfile(std::shared_ptr<call_site_profile_t> profile);
-    explicit CallSiteProfile(std::shared_ptr<call_site_span_profile_t>
-                                                                 span_profile,
-                             std::shared_ptr<call_site_work_profile_t> 
-                                                                 work_profile);
-
-    ~CallSiteProfile();
-
-    void print();
-
-    /**
-    *    @fn add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add)
-    *    @brief Add the entries in profile_to_add to prof
-    */
-    void add_in_callsite_profile_entries(const std::shared_ptr<call_site_profile_t> profile_to_add);
-
-    /**
-    *    @fn init_callsite_profile(...)
-    *    @brief Initialize prof with the information provided in function parameters
-    */
-    void init_callsite_profile(CALLSITE call_site, TIME work, TIME span);
-    
-    /**
-    *    @var prof
-    *    @brief The call_site_profile_t that the profile's methods act on. 
-    */
-    std::shared_ptr<call_site_profile_t> prof;
+    TIME start;
+    TIME stop;
 
  private:
     CallSiteProfile(const CallSiteProfile&);

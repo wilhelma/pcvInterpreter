@@ -24,8 +24,6 @@ void ThreadStack::pop() {
 	// the last thread frame must stay on the stack to get the end profile
 	assert(stack.size() > 1);
 	stack.pop_back();
-	int bottom_index = stack.size() - 1;
-	printf("popped off of thread stack, index is now %d \n", bottom_index);
 }
 
 void ThreadStack::init_frame(int thread_index, int head_function_index, 
@@ -36,7 +34,6 @@ void ThreadStack::init_frame(int thread_index, int head_function_index,
 	stack.at(thread_index)->thread = thread_id;
 	stack.at(thread_index)->first_vertex = first_vertex;
 	stack.at(thread_index)->last_vertex = first_vertex;
-
 }
 
 std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index, 
@@ -44,7 +41,6 @@ std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index,
 	 											  vertex_descr_type first_vertex) {
 	stack.push_back(std::shared_ptr<thread_frame_t> (new thread_frame_t));
 	int bottom_index = stack.size() - 1;
-	printf("pushing on to thread stack, index is now %d \n", bottom_index);
 	init_frame(bottom_index, head_function_index, thread_id, first_vertex);
 	assert(bottom_index >= 0);
 	return stack.at(bottom_index);
