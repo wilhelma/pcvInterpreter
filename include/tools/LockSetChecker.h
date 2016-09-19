@@ -30,6 +30,7 @@
 
 #define THREADS 100
 
+/// @ingroup observers
 class LockSetChecker : public Tool {
 public:
 	LockSetChecker(const char* outFile);

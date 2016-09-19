@@ -17,17 +17,18 @@
 
 #include "Event.h"
 
-/// Event for a new thread creation.
+/// @ingroup events
+/// @brief Event for a new thread creation.
 class NewThreadEvent final : public Event<NewThreadInfo> {
 public:
-	/// Constructor.
+    /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The new thread event information.
-	NewThreadEvent(const ShadowThread* thread, const NewThreadInfo* info) :
-		Event(thread, info) {};
+    explicit NewThreadEvent(const ShadowThread* thread, const NewThreadInfo* info) :
+        Event(thread, info) {};
 
     /// Returns the event type.
-	virtual Events getEventType() const override
+    virtual Events getEventType() const override
     { return Events::NEWTHREAD; };
 };
 

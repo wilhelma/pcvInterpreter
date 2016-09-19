@@ -17,14 +17,15 @@
 
 #include "Event.h"
 
-/// Event for function calls.
+/// @ingroup events
+/// @brief Event for function calls.
 class CallEvent final : public Event<CallInfo> {
 public:
-	/// Constructor.
+    /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The call event information.
-	CallEvent(const ShadowThread* thread, const CallInfo* info) :
-		Event(thread, info) {};
+    explicit CallEvent(const ShadowThread* thread, const CallInfo* info) :
+        Event(thread, info) {};
 
     /// Return the event type.
     virtual Events getEventType() const override

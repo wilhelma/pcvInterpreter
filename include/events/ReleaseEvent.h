@@ -17,17 +17,18 @@
 
 #include "Event.h"
 
-/// Event for a resource lock release.
+/// @ingroup events
+/// @brief Event for a resource lock release.
 class ReleaseEvent final : public Event<ReleaseInfo> {
 public:
-	/// Constructor.
+    /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The release event information.
-	ReleaseEvent(const ShadowThread* thread, const ReleaseInfo* info) :
-		Event(thread, info) {};
+    explicit ReleaseEvent(const ShadowThread* thread, const ReleaseInfo* info) :
+        Event(thread, info) {};
 
     /// Returns the event type.
-	virtual Events getEventType() const override
+    virtual Events getEventType() const override
     { return Events::RELEASE; }; 
 };
 

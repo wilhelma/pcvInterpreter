@@ -29,6 +29,7 @@
 
 #define THREADS 100
 
+/// @ingroup observers
 class RaceDetectionTool : public Tool {
 public:
 	RaceDetectionTool(const char* outFile);
