@@ -9,5 +9,6 @@ var searchData=
   ['joininfo',['JoinInfo',['../structJoinInfo.html',1,'JoinInfo'],['../structJoinInfo.html#a2f61e72525473328defdb4adc1aa93a1',1,'JoinInfo::JoinInfo()']]],
   ['joininfo_2eh',['JoinInfo.h',['../fwd_2JoinInfo_8h.html',1,'']]],
   ['joininfo_2eh',['JoinInfo.h',['../JoinInfo_8h.html',1,'']]],
-  ['json_5foutput',['JSON_OUTPUT',['../ParasiteTool_8cpp.html#a4f4933f1ff2025b4530be0fe03731bbd',1,'ParasiteTool.cpp']]]
+  ['json_5foutput',['JSON_OUTPUT',['../classParasiteTool.html#ad5e14bca5d71123857b16e08f8445081',1,'ParasiteTool']]],
+  ['jsonwriter',['jsonWriter',['../classParasiteTool.html#a0a087f981014ef6f2e72bbfa832e1b52',1,'ParasiteTool']]]
 ];

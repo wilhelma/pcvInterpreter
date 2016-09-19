@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -90,31 +89,38 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classDBManager-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">DBManager Class Reference</div>  </div>
+<div class="title">DBManager Class Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__input.html">Input</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Class to open a SQL database and query it.  
+ <a href="classDBManager.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="DBManager_8h_source.html">DBManager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:afb4f09d26522754aab71b801716a8325"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#afb4f09d26522754aab71b801716a8325">DBManager</a> ()</td></tr>
+<tr class="memdesc:afb4f09d26522754aab71b801716a8325"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#afb4f09d26522754aab71b801716a8325">More...</a><br /></td></tr>
 <tr class="separator:afb4f09d26522754aab71b801716a8325"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea8b91191fa84a0c6ed54a54758e7f6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#aea8b91191fa84a0c6ed54a54758e7f6e">open</a> (const std::string &amp;DBPath)</td></tr>
+<tr class="memdesc:aea8b91191fa84a0c6ed54a54758e7f6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to open the database.  <a href="#aea8b91191fa84a0c6ed54a54758e7f6e">More...</a><br /></td></tr>
 <tr class="separator:aea8b91191fa84a0c6ed54a54758e7f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a851d52cc70e688c97321020f3e73efc0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classQueryResult.html">QueryResult</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#a851d52cc70e688c97321020f3e73efc0">query</a> (const std::string &amp;sql_query) const </td></tr>
-<tr class="separator:a851d52cc70e688c97321020f3e73efc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6d8cb78041c8ff0c5e77609ca512df0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#ae6d8cb78041c8ff0c5e77609ca512df0">~DBManager</a> ()</td></tr>
-<tr class="memdesc:ae6d8cb78041c8ff0c5e77609ca512df0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Desctructor. Try to close the database.  <a href="#ae6d8cb78041c8ff0c5e77609ca512df0">More...</a><br /></td></tr>
-<tr class="separator:ae6d8cb78041c8ff0c5e77609ca512df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9753b887e476da4ad6a807fb91f5de94"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classQueryResult.html">QueryResult</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#a9753b887e476da4ad6a807fb91f5de94">query</a> (const std::string &amp;sql_query) const </td></tr>
+<tr class="memdesc:a9753b887e476da4ad6a807fb91f5de94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query the database.  <a href="#a9753b887e476da4ad6a807fb91f5de94">More...</a><br /></td></tr>
+<tr class="separator:a9753b887e476da4ad6a807fb91f5de94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae8f658b90f7c15d04b474aa11516a2b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#aae8f658b90f7c15d04b474aa11516a2b">~DBManager</a> () noexcept</td></tr>
+<tr class="memdesc:aae8f658b90f7c15d04b474aa11516a2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor: try to close the database.  <a href="#aae8f658b90f7c15d04b474aa11516a2b">More...</a><br /></td></tr>
+<tr class="separator:aae8f658b90f7c15d04b474aa11516a2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a23fbe74e73cc2af4ec65c893397a1678"><td class="memItemLeft" align="right" valign="top">sqlite3 *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDBManager.html#a23fbe74e73cc2af4ec65c893397a1678">Database_</a></td></tr>
+<tr class="memdesc:a23fbe74e73cc2af4ec65c893397a1678"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the opened database.  <a href="#a23fbe74e73cc2af4ec65c893397a1678">More...</a><br /></td></tr>
 <tr class="separator:a23fbe74e73cc2af4ec65c893397a1678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class to manage the SQL database. </p>
+<div class="textblock"><p>Class to open a SQL database and query it. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afb4f09d26522754aab71b801716a8325"></a>
 <div class="memitem">
@@ -136,18 +142,17 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">DBPath</td><td>The path of the database </td></tr>
-  </table>
-  </dd>
-</dl>
+
+<p>Constructor. </p>
 
 </div>
 </div>
-<a class="anchor" id="ae6d8cb78041c8ff0c5e77609ca512df0"></a>
+<a class="anchor" id="aae8f658b90f7c15d04b474aa11516a2b"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">DBManager::~DBManager </td>
@@ -156,9 +161,15 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Desctructor. Try to close the database. </p>
+<p>Destructor: try to close the database. </p>
+<dl class="section attention"><dt>Attention</dt><dd>If an exception is thrown when closing the database, the execution will be <code>std::abort()</code>ed. </dd></dl>
 
 </div>
 </div>
@@ -176,21 +187,29 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Open the database. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Try to open the database. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">DBPath</td><td>The database to open. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classSQLException.html" title="Exception class for SQL-related objects. ">SQLException</a></td><td></td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a class="anchor" id="a851d52cc70e688c97321020f3e73efc0"></a>
+<a class="anchor" id="a9753b887e476da4ad6a807fb91f5de94"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt; <a class="el" href="classQueryResult.html">QueryResult</a> &gt; DBManager::query </td>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classQueryResult.html">QueryResult</a> &gt; DBManager::query </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>sql_query</em></td><td>)</td>
@@ -198,9 +217,18 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Query the database. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Query the database. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sql_query</td><td>The database query string </td></tr>
+    <tr><td class="paramname">sql_query</td><td>The database query string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the <a class="el" href="classQueryResult.html" title="Holds a prepared query statement and accesses its values. ">QueryResult</a> containing the result of the query. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classSQLException.html" title="Exception class for SQL-related objects. ">SQLException</a></td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -225,7 +253,9 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Pointer to the opened database </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Use a <code>std::unique_ptr</code>. This fails because at compile time <code>sqlite3</code> appears to be an incomplete type. I've no idea why. </dd></dl>
+
+<p>Pointer to the opened database. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Use a <code>std::unique_ptr</code>. This fails because at compile time <code>sqlite3</code> appears to be an incomplete type. I've no idea why. </dd></dl>
 
 </div>
 </div>

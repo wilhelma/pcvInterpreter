@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -101,6 +100,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a654a04b387ff2e48715ac6e62bf5c977"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#a654a04b387ff2e48715ac6e62bf5c977">add_locks</a> (std::shared_ptr&lt; <a class="el" href="structfunction__frame__t.html">function_frame_t</a> &gt; child_function)</td></tr>
+<tr class="separator:a654a04b387ff2e48715ac6e62bf5c977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a296bf66fd5d83ed352abfb04289b272c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#a296bf66fd5d83ed352abfb04289b272c">lock_wait_time</a> ()</td></tr>
+<tr class="separator:a296bf66fd5d83ed352abfb04289b272c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f74ae6779f79b151b86d3ed714c9c2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#ac3f74ae6779f79b151b86d3ed714c9c2">function_frame_t</a> ()</td></tr>
 <tr class="separator:ac3f74ae6779f79b151b86d3ed714c9c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -112,17 +115,8 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ab766a1fb9cfbea8cd38ccfd289137bb6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#acffa440bd33ed09aa0b1c0b78231af1b">FUN_SG</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#ab766a1fb9cfbea8cd38ccfd289137bb6">function_signature</a></td></tr>
 <tr class="memdesc:ab766a1fb9cfbea8cd38ccfd289137bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The signature of the function.  <a href="#ab766a1fb9cfbea8cd38ccfd289137bb6">More...</a><br /></td></tr>
 <tr class="separator:ab766a1fb9cfbea8cd38ccfd289137bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e75a4c4d8a0d4058aebc60229f81967"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#a4e75a4c4d8a0d4058aebc60229f81967">local_work</a></td></tr>
-<tr class="memdesc:a4e75a4c4d8a0d4058aebc60229f81967"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local work of the function.  <a href="#a4e75a4c4d8a0d4058aebc60229f81967">More...</a><br /></td></tr>
-<tr class="separator:a4e75a4c4d8a0d4058aebc60229f81967"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe0e130f51ef571ef172cd5d15298f4f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#afe0e130f51ef571ef172cd5d15298f4f">local_lock_span</a></td></tr>
-<tr class="memdesc:afe0e130f51ef571ef172cd5d15298f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The local lock span of the function.  <a href="#afe0e130f51ef571ef172cd5d15298f4f">More...</a><br /></td></tr>
-<tr class="separator:afe0e130f51ef571ef172cd5d15298f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc00a51e5e14f61cb63d9c514687826e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#adc00a51e5e14f61cb63d9c514687826e">running_work</a></td></tr>
-<tr class="memdesc:adc00a51e5e14f61cb63d9c514687826e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The running work of the function's call site. Same as the running span of the function.  <a href="#adc00a51e5e14f61cb63d9c514687826e">More...</a><br /></td></tr>
-<tr class="separator:adc00a51e5e14f61cb63d9c514687826e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a553492d1f6c9d70ffe984bfbe2e9edbf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#a553492d1f6c9d70ffe984bfbe2e9edbf">running_lock_span</a></td></tr>
-<tr class="separator:a553492d1f6c9d70ffe984bfbe2e9edbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3193cec2d3068f97f131fba07a8b848c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLockIntervals.html">LockIntervals</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__frame__t.html#a3193cec2d3068f97f131fba07a8b848c">lock_intervals</a></td></tr>
+<tr class="separator:a3193cec2d3068f97f131fba07a8b848c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Function stack frame providing information about one function, updated with events. </p>
@@ -136,6 +130,54 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">function_frame_t::function_frame_t </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a654a04b387ff2e48715ac6e62bf5c977"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void function_frame_t::add_locks </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structfunction__frame__t.html">function_frame_t</a> &gt;&#160;</td>
+          <td class="paramname"><em>child_function</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a296bf66fd5d83ed352abfb04289b272c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> function_frame_t::lock_wait_time </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -179,58 +221,15 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afe0e130f51ef571ef172cd5d15298f4f"></a>
+<a class="anchor" id="a3193cec2d3068f97f131fba07a8b848c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">function_frame_t::local_lock_span</td>
+          <td class="memname"><a class="el" href="classLockIntervals.html">LockIntervals</a> function_frame_t::lock_intervals</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>The local lock span of the function. </p>
-
-</div>
-</div>
-<a class="anchor" id="a4e75a4c4d8a0d4058aebc60229f81967"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">function_frame_t::local_work</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Local work of the function. </p>
-
-</div>
-</div>
-<a class="anchor" id="a553492d1f6c9d70ffe984bfbe2e9edbf"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> function_frame_t::running_lock_span</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="adc00a51e5e14f61cb63d9c514687826e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">function_frame_t::running_work</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>The running work of the function's call site. Same as the running span of the function. </p>
-<p>The running lock span of the function's call site. </p>
 
 </div>
 </div>

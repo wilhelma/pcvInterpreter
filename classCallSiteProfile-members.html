@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,14 +91,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>This is the complete list of members for <a class="el" href="classCallSiteProfile.html">CallSiteProfile</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#abb73642afea6a881879611668140cd27">add_in_callsite_profile_entries</a>(const std::shared_ptr&lt; call_site_profile_t &gt; profile_to_add)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a2dd9b249bc26ef08232d65b74992d51d">CallSiteProfile</a>(std::shared_ptr&lt; call_site_profile_t &gt; profile)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a99f019e376f68bb7571d59534d73025d">CallSiteProfile</a>(std::shared_ptr&lt; call_site_span_profile_t &gt; span_profile, std::shared_ptr&lt; call_site_work_profile_t &gt; work_profile)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a3b8d36db1f674c2e24e4933febc6f8c6">call_site</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#ab8c28c24825717cae683533df0c6d24a">CallSiteProfile</a>(std::shared_ptr&lt; CallSiteSpanProfile &gt; span_profile, std::shared_ptr&lt; CallSiteWorkProfile &gt; work_profile)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#af30d54ddaca94bbc62cf397cfb8ce533">CallSiteProfile</a>()</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a3f1f73e87cf1b540d471fb7db5891052">CallSiteProfile</a>(const CallSiteProfile &amp;)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a024bb682626827176eb3fe2fe74d61f4">init_callsite_profile</a>(CALLSITE call_site, TIME work, TIME span)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a16497840c68a37ec0c94c2cfaf89f658">count</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a404e7c8c9ab90f04b9de617ac0ee3b7b">function_signature</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a19fa443156298be2e1094d0b1532fab7">lock_wait_time</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a0046cc43ab5eeb72968f4a3aca3ed700">operator=</a>(const CallSiteProfile &amp;)</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a5d8478451e484d0a702036360ef7bb03">print</a>()</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a4f1df0eb1fc3cd36cc2b13f4b7cf3ae8">prof</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#aa3af8b72e2f93f8cc355232a62b83f3d">parallelism</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a5d8478451e484d0a702036360ef7bb03">print</a>()</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a3523e1802b1313fb9ee4c02aa3f81810">span</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a672fec958ca5a319fa45fb556ee2a3ad">start</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#a85d154cb72bec8843c0951e031861e36">stop</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteProfile.html#a80805103eb3d19638934f1094a89e66b">work</a></td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCallSiteProfile.html#ae8a887e5bdda469c5aa1f03b65e24ee1">~CallSiteProfile</a>()</td><td class="entry"><a class="el" href="classCallSiteProfile.html">CallSiteProfile</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->

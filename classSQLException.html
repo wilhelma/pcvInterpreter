@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -88,12 +87,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classSQLException-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">SQLException Class Reference</div>  </div>
+<div class="title">SQLException Class Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Exception class for SQL-related objects.  
+ <a href="classSQLException.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="SQLException_8h_source.html">SQLException.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -117,14 +118,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a3b273cdd13a172047d26fc32f5134a02"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSQLException.html#a3b273cdd13a172047d26fc32f5134a02">WhatReturn_</a></td></tr>
 <tr class="memdesc:a3b273cdd13a172047d26fc32f5134a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">In order to prevent <a class="el" href="classSQLException.html#af9b03aeca6ccac78cf10673428ebf305">what()</a> to deallocate the memory before it's accessed.  <a href="#a3b273cdd13a172047d26fc32f5134a02">More...</a><br /></td></tr>
 <tr class="separator:a3b273cdd13a172047d26fc32f5134a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:ad1fd168b3b5661fa5c5322e9442c9d36"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSQLException.html#ad1fd168b3b5661fa5c5322e9442c9d36">SQLException</a> ()</td></tr>
-<tr class="memdesc:ad1fd168b3b5661fa5c5322e9442c9d36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor (private).  <a href="#ad1fd168b3b5661fa5c5322e9442c9d36">More...</a><br /></td></tr>
-<tr class="separator:ad1fd168b3b5661fa5c5322e9442c9d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Exception class for SQL-related objects. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a27aedf1968545ebc936445adbb8da691"></a>
 <div class="memitem">
 <div class="memproto">
@@ -156,38 +153,13 @@ Private Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructor </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">what_arg</td><td>String descripting exception </td></tr>
     <tr><td class="paramname">func_name</td><td>Name of the function originating the exception </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a class="anchor" id="ad1fd168b3b5661fa5c5322e9442c9d36"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">SQLException::SQLException </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default constructor (private). </p>
 
 </div>
 </div>

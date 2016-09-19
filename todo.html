@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -82,85 +81,109 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000010"></a>Member <a class="el" href="structAccessInfo.html#aef9d29ed73af2c1ed3cc36a1a0bba5d5">AccessInfo::var</a>  </dt>
+<dt><a class="anchor" id="_todo000024"></a>Member <a class="el" href="structaccess__t.html#a554df154c99c93be3b14cc7f6bbe1ade">access_t::position</a>  </dt>
+<dd>position?  </dd>
+<dt><a class="anchor" id="_todo000025"></a>Member <a class="el" href="structaccess__t.html#a28e51c1c13ebd8eeb4eae107641158f9">access_t::reference_id</a>  </dt>
+<dd>reference_id?  </dd>
+<dt><a class="anchor" id="_todo000011"></a>Member <a class="el" href="structAccessInfo.html#aef9d29ed73af2c1ed3cc36a1a0bba5d5">AccessInfo::var</a>  </dt>
 <dd>Document this!  </dd>
+<dt><a class="anchor" id="_todo000022"></a>Member <a class="el" href="Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8c">AccessState</a>  </dt>
+<dd>What are these states?  </dd>
 <dt><a class="anchor" id="_todo000007"></a>Class <a class="el" href="classAcquireEvent.html">AcquireEvent</a>  </dt>
 <dd>What is this for?  </dd>
-<dt><a class="anchor" id="_todo000005"></a>Member <a class="el" href="classDBInterpreter.html#ab8e6babba870bb46b83143fb1ee92b27">DBInterpreter::getCallerID</a>  (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins) const </dt>
+<dt><a class="anchor" id="_todo000005"></a>Member <a class="el" href="classDBInterpreter.html#ab8e6babba870bb46b83143fb1ee92b27">DBInterpreter::getCallerID</a>  (const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a> &amp;ins) const </dt>
 <dd>Properly implement error handling.  </dd>
-<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="classDBInterpreter.html#a1249abc621c741418be36e36fa2d9693">DBInterpreter::getCallID</a>  (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;ins) const </dt>
+<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="classDBInterpreter.html#a1249abc621c741418be36e36fa2d9693">DBInterpreter::getCallID</a>  (const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a> &amp;ins) const </dt>
 <dd>Properly implement error handling.  </dd>
 <dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="classDBInterpreter.html#af0a6ebdeb9b82904aec4ddcddfae173e">DBInterpreter::getEventService</a>  ()</dt>
 <dd>Bad interface design! This pointer shouldn't be accessible outside!  </dd>
-<dt><a class="anchor" id="_todo000034"></a>Member <a class="el" href="classDBInterpreter.html#a74f6ac39a03ce58d184e0b204273b7de">DBInterpreter::processAcquire</a>  (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</dt>
+<dt><a class="anchor" id="_todo000044"></a>Member <a class="el" href="classDBInterpreter.html#a74f6ac39a03ce58d184e0b204273b7de">DBInterpreter::processAcquire</a>  (const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a> &amp;instruction)</dt>
 <dd>Code duplication! Candidate for template!  </dd>
-<dt><a class="anchor" id="_todo000036"></a>Member <a class="el" href="classDBInterpreter.html#a46ce0d7b6cc29926993e34835c95539a">DBInterpreter::processFork</a>  (const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</dt>
+<dt><a class="anchor" id="_todo000046"></a>Member <a class="el" href="classDBInterpreter.html#a46ce0d7b6cc29926993e34835c95539a">DBInterpreter::processFork</a>  (const <a class="el" href="structthread__t.html" title="Holds the information contained in one row of the Thread database table. ">thread_t</a> &amp;thread)</dt>
 <dd>Code duplication! Candidate for template!  </dd>
-<dt><a class="anchor" id="_todo000037"></a>Member <a class="el" href="classDBInterpreter.html#a0ef3f6d822e8ad74de25c38e9543294b">DBInterpreter::processJoin</a>  (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html">call_t</a> &amp;call, const <a class="el" href="structthread__t.html">thread_t</a> &amp;thread)</dt>
+<dt><a class="anchor" id="_todo000047"></a>Member <a class="el" href="classDBInterpreter.html#a0ef3f6d822e8ad74de25c38e9543294b">DBInterpreter::processJoin</a>  (const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a> &amp;instruction, const <a class="el" href="structsegment__t.html" title="Holds the information contained in one row of the Segment database table. ">segment_t</a> &amp;segment, const <a class="el" href="structcall__t.html" title="Holds the information contained in one row of the Call database table. ">call_t</a> &amp;call, const <a class="el" href="structthread__t.html" title="Holds the information contained in one row of the Thread database table. ">thread_t</a> &amp;thread)</dt>
 <dd>Code duplication! Candidate for template!  </dd>
-<dt><a class="anchor" id="_todo000035"></a>Member <a class="el" href="classDBInterpreter.html#a5753f63f4cd242ede580ea49c3af4c7f">DBInterpreter::processRelease</a>  (const <a class="el" href="structinstruction__t.html">instruction_t</a> &amp;instruction)</dt>
+<dt><a class="anchor" id="_todo000045"></a>Member <a class="el" href="classDBInterpreter.html#a5753f63f4cd242ede580ea49c3af4c7f">DBInterpreter::processRelease</a>  (const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a> &amp;instruction)</dt>
 <dd>Code duplication! Candidate for template!  </dd>
 <dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="classDBManager.html#a23fbe74e73cc2af4ec65c893397a1678">DBManager::Database_</a>  </dt>
 <dd>Use a <code>std::unique_ptr</code>. This fails because at compile time <code>sqlite3</code> appears to be an incomplete type. I've no idea why.  </dd>
-<dt><a class="anchor" id="_todo000025"></a>Member <a class="el" href="classDBTable.html#ae8172c7ca380f486a0cba1d8e1fa8f33">DBTable&lt; IdT, T &gt;::begin</a>  () const noexcept</dt>
+<dt><a class="anchor" id="_todo000027"></a>Member <a class="el" href="classDBTable.html#ae8172c7ca380f486a0cba1d8e1fa8f33">DBTable&lt; IdT, T &gt;::begin</a>  () const noexcept</dt>
 <dd>Needed?  </dd>
-<dt><a class="anchor" id="_todo000024"></a>Member <a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">DBTable&lt; IdT, T &gt;::const_iterator</a>  </dt>
+<dt><a class="anchor" id="_todo000026"></a>Member <a class="el" href="classDBTable.html#ac5c1123481e3dc1fa3374f55632b950f">DBTable&lt; IdT, T &gt;::const_iterator</a>  </dt>
 <dd>Is this needed?  </dd>
-<dt><a class="anchor" id="_todo000026"></a>Member <a class="el" href="classDBTable.html#ab77c720d9475228c740363aa968b5649">DBTable&lt; IdT, T &gt;::end</a>  () const noexcept</dt>
+<dt><a class="anchor" id="_todo000028"></a>Member <a class="el" href="classDBTable.html#ab77c720d9475228c740363aa968b5649">DBTable&lt; IdT, T &gt;::end</a>  () const noexcept</dt>
 <dd>Needed?  </dd>
 <dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="classEvent.html#a0ec9a055232f5e2cea719f1650b0f575">Event&lt; InfoType &gt;::Thread_</a>  </dt>
 <dd>Should this be a <code>unique_ptr</code>?  </dd>
-<dt><a class="anchor" id="_todo000009"></a>Class <a class="el" href="classFilter.html">Filter</a>  </dt>
+<dt><a class="anchor" id="_todo000009"></a>Member <a class="el" href="classEventService.html#aab6b25c27af77e603e90cec4a09802ac">EventService::SAAPRunner</a>  </dt>
+<dd><p class="startdd">Give <a class="el" href="classSAAPRunner.html">SAAPRunner</a> only access to subscribe and unsubscribe </p>
+<p class="enddd">Give <a class="el" href="classDBInterpreter.html" title="Database interpreter: produces Event&#39;s from the database types (e.g. access_t, call_t and so on)...">DBInterpreter</a> only access to publish functions  </p>
+</dd>
+<dt><a class="anchor" id="_todo000010"></a>Class <a class="el" href="classFilter.html">Filter</a>  </dt>
 <dd>Implement and document this!  </dd>
-<dt><a class="anchor" id="_todo000038"></a>Member <a class="el" href="classFunctionTrackerTool.html#a904508c005c7813101dcc04d62de94d1">FunctionTrackerTool::FunctionTrackerTool</a>  (std::string outFileName="functionGraph.dot", std::string graphName="graph")</dt>
+<dt><a class="anchor" id="_todo000030"></a>Member <a class="el" href="structfunction__t.html#ab46474015d34b88fcd1f7dfd7d0e91c8">function_t::file_id</a>  </dt>
+<dd>Which file? The one where it was defined or the one where it was declared?  </dd>
+<dt><a class="anchor" id="_todo000031"></a>Member <a class="el" href="structfunction__t.html#a09be0e09298f3724a1cf66e91b8252bc">function_t::line_number</a>  </dt>
+<dd>Line number of what?  </dd>
+<dt><a class="anchor" id="_todo000048"></a>Member <a class="el" href="classFunctionTrackerTool.html#a904508c005c7813101dcc04d62de94d1">FunctionTrackerTool::FunctionTrackerTool</a>  (std::string outFileName="functionGraph.dot", std::string graphName="graph")</dt>
 <dd>Check for errors/exceptions  </dd>
-<dt><a class="anchor" id="_todo000039"></a>Member <a class="el" href="classFunctionTrackerTool.html#ad3d8af84ba6acb1981a995fd37c9ed22">FunctionTrackerTool::~FunctionTrackerTool</a>  ()</dt>
+<dt><a class="anchor" id="_todo000049"></a>Member <a class="el" href="classFunctionTrackerTool.html#ad3d8af84ba6acb1981a995fd37c9ed22">FunctionTrackerTool::~FunctionTrackerTool</a>  ()</dt>
 <dd>Check for errors/exceptions  </dd>
-<dt><a class="anchor" id="_todo000011"></a>Class <a class="el" href="classLockMgr.html">LockMgr</a>  </dt>
+<dt><a class="anchor" id="_todo000029"></a>Member <a class="el" href="Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341">FunctionType</a>  </dt>
+<dd>document this!  </dd>
+<dt><a class="anchor" id="_todo000032"></a>Member <a class="el" href="structinstruction__t.html#a7c5bb0ffa7084d1ce2ee6dba9a33677b">instruction_t::line_number</a>  </dt>
+<dd>To retrieve the file name?  </dd>
+<dt><a class="anchor" id="_todo000012"></a>Class <a class="el" href="classLockMgr.html">LockMgr</a>  </dt>
 <dd>Properly document and implement this!  </dd>
-<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="classLockMgr.html#a4b3dfbaf2b45f65fc13650432f5d48ea">LockMgr::currentLockId_</a>  </dt>
+<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="classLockMgr.html#a4b3dfbaf2b45f65fc13650432f5d48ea">LockMgr::currentLockId_</a>  </dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000012"></a>Member <a class="el" href="classLockMgr.html#ad5ed87960234bf28403f5155618df951">LockMgr::getLock</a>  (REF_ID refNo)</dt>
+<dt><a class="anchor" id="_todo000013"></a>Member <a class="el" href="classLockMgr.html#ad5ed87960234bf28403f5155618df951">LockMgr::getLock</a>  (REF_ID refNo)</dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000013"></a>Member <a class="el" href="classLockMgr.html#a06e71b2d2a6941d57eb2a10e24384951">LockMgr::lockDestroyed</a>  (REF_ID refNo)</dt>
+<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="classLockMgr.html#a06e71b2d2a6941d57eb2a10e24384951">LockMgr::lockDestroyed</a>  (REF_ID refNo)</dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="classLockMgr.html#a47a8a4d5b18e5ba6b2861c1eb4bb4465">LockMgr::memLockMap_</a>  </dt>
+<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="classLockMgr.html#a47a8a4d5b18e5ba6b2861c1eb4bb4465">LockMgr::memLockMap_</a>  </dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000017"></a>Class <a class="el" href="classLogger.html">Logger</a>  </dt>
-<dd><a class="el" href="classLogger.html">Logger</a> default severity and log priorities are known at compile time: find a way to suppress output at compile time!  </dd>
-<dt><a class="anchor" id="_todo000018"></a>Member <a class="el" href="classLogger.html#a2a67fc1537112ea07de160990a0efcf3">Logger::MinLogSeverity_</a>  </dt>
-<dd>implement output soppression  </dd>
-<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="Logger_8h.html#ae9bc80fa4dd4f462d1cea8eb81c4d861">LogSeverity</a>  </dt>
-<dd>Introduce an ordering.  </dd>
-<dt><a class="anchor" id="_todo000032"></a>Member <a class="el" href="classParasiteTool.html#af5f6e4e1313c55d3da429702f93acf40">ParasiteTool::printCallSiteProfiles</a>  ()</dt>
-<dd>Decide on format to print out profile information.  </dd>
-<dt><a class="anchor" id="_todo000031"></a>Member <a class="el" href="classParasiteTool.html#a7d72aa7a711eecf0d85e5cf8b9eee6eb">ParasiteTool::printOverallProfile</a>  ()</dt>
-<dd>Decide on format to print out profile information.  </dd>
-<dt><a class="anchor" id="_todo000030"></a>Member <a class="el" href="classParasiteTool.html#a245a26f0545ded706f041ca5f3c7eda0">ParasiteTool::printProfile</a>  ()</dt>
+<dt><a class="anchor" id="_todo000038"></a>Member <a class="el" href="Segment_8h.html#a2062ac0939fa9eb5a13e7041de1bd58fa9159b3578e4e1eb31ffdf90acd6f6e40">LOOP</a>  </dt>
+<dd>?  </dd>
+<dt><a class="anchor" id="_todo000033"></a>Class <a class="el" href="structloopExecution__t.html">loopExecution_t</a>  </dt>
+<dd>Document this!  </dd>
+<dt><a class="anchor" id="_todo000042"></a>Member <a class="el" href="classParasiteTool.html#a7d72aa7a711eecf0d85e5cf8b9eee6eb">ParasiteTool::printOverallProfile</a>  ()</dt>
 <dd>Decide on format to print out profile information.  </dd>
 <dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="classQueryResult.html#ab0eaa2c76713e2f92a02bde22e69c047">QueryResult::Query_</a>  </dt>
 <dd>Try to wrap Query_ in a smart pointer (e.g. unique_ptr)  </dd>
-<dt><a class="anchor" id="_todo000019"></a>Class <a class="el" href="structShadowLock.html">ShadowLock</a>  </dt>
+<dt><a class="anchor" id="_todo000023"></a>Module <a class="el" href="group__records.html">records</a>  </dt>
+<dd>The naming of the struct member variables is not consistent.  </dd>
+<dt><a class="anchor" id="_todo000035"></a>Member <a class="el" href="structreference__t.html#a9fa634553d0ce0a09f55cf4c23eb9532">reference_t::allocinstr</a>  </dt>
+<dd>Is this correct?  </dd>
+<dt><a class="anchor" id="_todo000034"></a>Member <a class="el" href="structreference__t.html#a83883b3b8558524bad798bf5922e5add">reference_t::size</a>  </dt>
+<dd>In bytes, bits, words, kilograms?  </dd>
+<dt><a class="anchor" id="_todo000037"></a>Member <a class="el" href="Segment_8h.html#a2062ac0939fa9eb5a13e7041de1bd58fa69aede266809f89b89fe70681f6a129f">REGION</a>  </dt>
+<dd>?  </dd>
+<dt><a class="anchor" id="_todo000036"></a>Class <a class="el" href="structsegment__t.html">segment_t</a>  </dt>
+<dd>document this and clarify what is a segment.  </dd>
+<dt><a class="anchor" id="_todo000017"></a>Class <a class="el" href="structShadowLock.html">ShadowLock</a>  </dt>
 <dd><p class="startdd">Document this! </p>
 <p class="enddd">Complete implementation: it doesn't make sense to define comparison operators if LockId_ is publicly accessible!  </p>
 </dd>
-<dt><a class="anchor" id="_todo000020"></a>Member <a class="el" href="structShadowLock.html#ae08b1fb9c86593d10f1c1d6e04c45c3a">ShadowLock::lockId</a>  </dt>
+<dt><a class="anchor" id="_todo000018"></a>Member <a class="el" href="structShadowLock.html#ae08b1fb9c86593d10f1c1d6e04c45c3a">ShadowLock::lockId</a>  </dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000021"></a>Class <a class="el" href="structShadowThread.html">ShadowThread</a>  </dt>
+<dt><a class="anchor" id="_todo000019"></a>Class <a class="el" href="structShadowThread.html">ShadowThread</a>  </dt>
 <dd><p class="startdd">Document this! </p>
 <p class="enddd">Complete implementation: it doesn't make sense to define comparison operators if threadId is publicly accessible!  </p>
 </dd>
-<dt><a class="anchor" id="_todo000022"></a>Class <a class="el" href="structShadowVar.html">ShadowVar</a>  </dt>
+<dt><a class="anchor" id="_todo000020"></a>Class <a class="el" href="structShadowVar.html">ShadowVar</a>  </dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000023"></a>Member <a class="el" href="structShadowVar.html#a8937f82e60813975c93c798f548e510e">ShadowVar::id</a>  </dt>
+<dt><a class="anchor" id="_todo000021"></a>Member <a class="el" href="structShadowVar.html#a8937f82e60813975c93c798f548e510e">ShadowVar::id</a>  </dt>
 <dd>Document this!  </dd>
 <dt><a class="anchor" id="_todo000003"></a>Member <a class="el" href="classSQLStatementIterator.html#a8b9f002aed36e6eb129f00829d34d75e">SQLStatementIterator&lt; T &gt;::operator*</a>  () const</dt>
 <dd>Define types for <code>parent</code> and <code>duration</code>  </dd>
-<dt><a class="anchor" id="_todo000033"></a>Class <a class="el" href="structStrongTypedef.html">StrongTypedef&lt; T, n &gt;</a>  </dt>
+<dt><a class="anchor" id="_todo000043"></a>Class <a class="el" href="structStrongTypedef.html">StrongTypedef&lt; T, n &gt;</a>  </dt>
 <dd>When used with <code>T = std::string</code>,  </dd>
-<dt><a class="anchor" id="_todo000028"></a>Class <a class="el" href="classThreadMgr.html">ThreadMgr</a>  </dt>
+<dt><a class="anchor" id="_todo000039"></a>Class <a class="el" href="structthread__t.html">thread_t</a>  </dt>
+<dd>document this  </dd>
+<dt><a class="anchor" id="_todo000040"></a>Class <a class="el" href="classThreadMgr.html">ThreadMgr</a>  </dt>
 <dd>Document this!  </dd>
-<dt><a class="anchor" id="_todo000029"></a>Member <a class="el" href="classThreadMgr.html#a8a2dbc63ab2d2df4d10a91a239ce04db">ThreadMgr::currentThreadId_</a>  </dt>
+<dt><a class="anchor" id="_todo000041"></a>Member <a class="el" href="classThreadMgr.html#a8a2dbc63ab2d2df4d10a91a239ce04db">ThreadMgr::currentThreadId_</a>  </dt>
 <dd>Document this! </dd>
 </dl>
 </div></div><!-- contents -->

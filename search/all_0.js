@@ -5,6 +5,5 @@ var searchData=
   ['_5flastsegmentnumber',['_lastSegmentNumber',['../classFunctionTrackerTool.html#a2aed88664a08569be67133fa6ce3b153',1,'FunctionTrackerTool']]],
   ['_5foutfile',['_outFile',['../classFunctionTrackerTool.html#a422d139f3f810b1eab2bc4fca34c27e6',1,'FunctionTrackerTool']]],
   ['_5foutfilename',['_outFileName',['../classFunctionTrackerTool.html#a6be963a94eec400e10e371d6df035430',1,'FunctionTrackerTool']]],
-  ['_5fshadowvarmap',['_shadowVarMap',['../classDBInterpreter.html#ad87bf9c2f1be7bb8550e176e3c71325e',1,'DBInterpreter']]],
-  ['_5fw64',['_W64',['../stdint_8h.html#a3730e9bd68460c3bea497352ee69b9ae',1,'stdint.h']]]
+  ['_5fshadowvarmap',['_shadowVarMap',['../classDBInterpreter.html#ad87bf9c2f1be7bb8550e176e3c71325e',1,'DBInterpreter']]]
 ];

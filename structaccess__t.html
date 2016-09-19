@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -90,33 +89,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structaccess__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">access_t Struct Reference</div>  </div>
+<div class="title">access_t Struct Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__records.html">Records</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Holds the information contained in one row of the <em>Access</em> database table.  
+ <a href="structaccess__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Access_8h_source.html">Access.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac684e978d43f19f11e7015f8397dae85"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#ac684e978d43f19f11e7015f8397dae85">access_t</a> (<a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a> sqlID, <a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a> instructionID, <a class="el" href="Types_8h.html#ad67a088284a3c422d359a2156be5a9b1">POS</a> pos, <a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a> referenceID, <a class="el" href="Access_8h.html#ad8aff9e545a5f496a179a16667431478">AccessType</a> accessType, <a class="el" href="Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8c">AccessState</a> memoryState) noexcept</td></tr>
+<tr class="memdesc:ac684e978d43f19f11e7015f8397dae85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ac684e978d43f19f11e7015f8397dae85">More...</a><br /></td></tr>
 <tr class="separator:ac684e978d43f19f11e7015f8397dae85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a58c7d5939902af602e772b521625340c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#adea8afa7ac54bb1f67cb599591d4e5fd">ACC_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#a58c7d5939902af602e772b521625340c">id</a></td></tr>
+<tr class="memdesc:a58c7d5939902af602e772b521625340c"><td class="mdescLeft">&#160;</td><td class="mdescRight">SQL ID of the access.  <a href="#a58c7d5939902af602e772b521625340c">More...</a><br /></td></tr>
 <tr class="separator:a58c7d5939902af602e772b521625340c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0560d188d356b3b929e33abe04d88b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#aa0560d188d356b3b929e33abe04d88b9">instruction_id</a></td></tr>
+<tr class="memdesc:aa0560d188d356b3b929e33abe04d88b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the instruction where the memory was accessed from.  <a href="#aa0560d188d356b3b929e33abe04d88b9">More...</a><br /></td></tr>
 <tr class="separator:aa0560d188d356b3b929e33abe04d88b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a554df154c99c93be3b14cc7f6bbe1ade"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad67a088284a3c422d359a2156be5a9b1">POS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#a554df154c99c93be3b14cc7f6bbe1ade">position</a></td></tr>
 <tr class="separator:a554df154c99c93be3b14cc7f6bbe1ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28e51c1c13ebd8eeb4eae107641158f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a8406aa01dea63416b09857b0c047a23f">REF_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#a28e51c1c13ebd8eeb4eae107641158f9">reference_id</a></td></tr>
 <tr class="separator:a28e51c1c13ebd8eeb4eae107641158f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64a07007a3fe6e7f899ad081851bfbcc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Access_8h.html#ad8aff9e545a5f496a179a16667431478">AccessType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#a64a07007a3fe6e7f899ad081851bfbcc">access_type</a></td></tr>
+<tr class="memdesc:a64a07007a3fe6e7f899ad081851bfbcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of the access.  <a href="#a64a07007a3fe6e7f899ad081851bfbcc">More...</a><br /></td></tr>
 <tr class="separator:a64a07007a3fe6e7f899ad081851bfbcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4be26a1510df02dd12cdd118f903a3b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8c">AccessState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaccess__t.html#a4be26a1510df02dd12cdd118f903a3b2">memory_state</a></td></tr>
+<tr class="memdesc:a4be26a1510df02dd12cdd118f903a3b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">The state of the access.  <a href="#a4be26a1510df02dd12cdd118f903a3b2">More...</a><br /></td></tr>
 <tr class="separator:a4be26a1510df02dd12cdd118f903a3b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Holds the information contained in one row of the <em>Access</em> database table. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac684e978d43f19f11e7015f8397dae85"></a>
 <div class="memitem">
 <div class="memproto">
@@ -173,6 +182,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Constructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -186,6 +197,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The type of the access. </p>
+
 </div>
 </div>
 <a class="anchor" id="a58c7d5939902af602e772b521625340c"></a>
@@ -197,6 +210,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>SQL ID of the access. </p>
 
 </div>
 </div>
@@ -210,6 +225,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>ID of the instruction where the memory was accessed from. </p>
+
 </div>
 </div>
 <a class="anchor" id="a4be26a1510df02dd12cdd118f903a3b2"></a>
@@ -222,6 +239,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The state of the access. </p>
+
 </div>
 </div>
 <a class="anchor" id="a554df154c99c93be3b14cc7f6bbe1ade"></a>
@@ -233,6 +252,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000024">Todo:</a></b></dt><dd>position? </dd></dl>
 
 </div>
 </div>
@@ -245,6 +265,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000025">Todo:</a></b></dt><dd>reference_id? </dd></dl>
 
 </div>
 </div>

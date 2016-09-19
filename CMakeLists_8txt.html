@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,27 +91,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac6a6a705f6b8855ff75defeebf954425"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#ac6a6a705f6b8855ff75defeebf954425">set</a> (INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/${pcv_SOURCE_DIR}/include/database/${pcv_SOURCE_DIR}/include/events/${pcv_SOURCE_DIR}/include/hashtables/${pcv_SOURCE_DIR}/include/infos/${pcv_SOURCE_DIR}/include/profiles/${pcv_SOURCE_DIR}/include/shadows/${pcv_SOURCE_DIR}/include/tables/${pcv_SOURCE_DIR}/include/tools/) include_directories($</td></tr>
-<tr class="separator:ac6a6a705f6b8855ff75defeebf954425"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca7fd2dd2e7da0eeda9e9f78c407d984"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#aca7fd2dd2e7da0eeda9e9f78c407d984">set</a> (SRC_LIST DBInterpreter.cpp DAG.cpp EventService.cpp FunctionStack.cpp LockMgr.cpp main.cpp ParasiteJsonWriter.cpp ParasiteTracker.cpp ThreadMgr.cpp ThreadStack.cpp) set(SRC_LIST $</td></tr>
-<tr class="separator:aca7fd2dd2e7da0eeda9e9f78c407d984"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa76c4d7052d6aad62a63399fc2ceecd9"><td class="memItemLeft" align="right" valign="top">database <a class="el" href="classDBManager.html">DBManager</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#aa76c4d7052d6aad62a63399fc2ceecd9">set</a> (SRC_LIST ${SRC_LIST}hashtables/CallSiteSpanHashtable.cpp hashtables/CallSiteWorkHashtable.cpp) set(SRC_LIST $</td></tr>
-<tr class="separator:aa76c4d7052d6aad62a63399fc2ceecd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab513feee9d3f3d449eed75084e1018e8"><td class="memItemLeft" align="right" valign="top">profiles <a class="el" href="classCallSiteProfile.html">CallSiteProfile</a> cpp profiles <a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a> cpp profiles <a class="el" href="classCallSiteWorkProfile.html">CallSiteWorkProfile</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#ab513feee9d3f3d449eed75084e1018e8">set</a> (SRC_LIST ${SRC_LIST}tables/Call.cpp) set(SRC_LIST $</td></tr>
-<tr class="separator:ab513feee9d3f3d449eed75084e1018e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a938f0841a5383eb7de7c353c5140ed84"><td class="memItemLeft" align="right" valign="top">tools <a class="el" href="classDebugTool.html">DebugTool</a> cpp tools <a class="el" href="classFunctionTrackerTool.html">FunctionTrackerTool</a> cpp tools <a class="el" href="classLockSetChecker.html">LockSetChecker</a> cpp tools <a class="el" href="classRaceDetectionTool.html">RaceDetectionTool</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a938f0841a5383eb7de7c353c5140ed84">add_executable</a> (${PROJECT_NAME}${SRC_LIST}) target_link_libraries($</td></tr>
-<tr class="separator:a938f0841a5383eb7de7c353c5140ed84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbce3fd0c152568594c1b6a09406862b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#afbce3fd0c152568594c1b6a09406862b">set</a> (INCLUDE_DIRECTORIES ${pcv_SOURCE_DIR}/include/${pcv_SOURCE_DIR}/include/database/${pcv_SOURCE_DIR}/include/events/${pcv_SOURCE_DIR}/include/hashtables/${pcv_SOURCE_DIR}/include/infos/${pcv_SOURCE_DIR}/include/profiles/${pcv_SOURCE_DIR}/include/shadows/${pcv_SOURCE_DIR}/include/tables/${pcv_SOURCE_DIR}/include/tools/) include(ExternalProject) set(RAPIDJSON_SOURCE_DIR $</td></tr>
+<tr class="separator:afbce3fd0c152568594c1b6a09406862b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65e421b4830a19b8a58b0a0cbcb0930f"><td class="memItemLeft" align="right" valign="top">external rapidjson&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a65e421b4830a19b8a58b0a0cbcb0930f">ExternalProject_Add</a> (rapidjson DOWNLOAD_DIR ${RAPIDJSON_SOURCE_DIR}GIT_REPOSITORY https:UPDATE_COMMAND ${GIT_EXECUTABLE}pull origin master CONFIGURE_COMMAND&quot;&quot;BUILD_COMMAND&quot;&quot;INSTALL_COMMAND&quot;&quot;LOG_DOWNLOAD ON) set_target_properties(rapidjson PROPERTIES EXCLUDE_FROM_ALL TRUE) ExternalProject_Get_Property(rapidjson source_dir) <a class="el" href="CMakeLists_8txt.html#a294471ab4caf30650f96ae93c9bd8681">include_directories</a>($</td></tr>
+<tr class="separator:a65e421b4830a19b8a58b0a0cbcb0930f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a294471ab4caf30650f96ae93c9bd8681"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a294471ab4caf30650f96ae93c9bd8681">include_directories</a> (${INCLUDE_DIRECTORIES}${source_dir}/include) <a class="el" href="CMakeLists_8txt.html#a6a0ff4da92ff5fa97fa66a566a996ece">set</a>(SRC_LIST DBInterpreter.cpp DAG.cpp EventService.cpp FunctionStack.cpp LockIntervals.cpp LockMgr.cpp main.cpp ParasiteJsonWriter.cpp ParasiteTracker.cpp ThreadMgr.cpp ThreadStack.cpp Span.cpp Work.cpp) <a class="el" href="CMakeLists_8txt.html#a6a0ff4da92ff5fa97fa66a566a996ece">set</a>(SRC_LIST $</td></tr>
+<tr class="separator:a294471ab4caf30650f96ae93c9bd8681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2465d4a1c8d51df008d974ecc4400edf"><td class="memItemLeft" align="right" valign="top">database <a class="el" href="classDBManager.html">DBManager</a> cpp database <a class="el" href="classQueryResult.html">QueryResult</a> cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a2465d4a1c8d51df008d974ecc4400edf">set</a> (SRC_LIST ${SRC_LIST}profiles/CallSiteProfile.cpp profiles/CallSiteSpanProfile.cpp profiles/CallSiteWorkProfile.cpp) set(SRC_LIST $</td></tr>
+<tr class="separator:a2465d4a1c8d51df008d974ecc4400edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a0ff4da92ff5fa97fa66a566a996ece"><td class="memItemLeft" align="right" valign="top">tables Call cpp tables File cpp&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CMakeLists_8txt.html#a6a0ff4da92ff5fa97fa66a566a996ece">set</a> (SRC_LIST ${SRC_LIST}tools/DebugTool.cpp tools/FunctionTrackerTool.cpp tools/LockSetChecker.cpp tools/ParasiteTool.cpp) add_executable($</td></tr>
+<tr class="separator:a6a0ff4da92ff5fa97fa66a566a996ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a938f0841a5383eb7de7c353c5140ed84"></a>
+<a class="anchor" id="a65e421b4830a19b8a58b0a0cbcb0930f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">tools <a class="el" href="classDebugTool.html">DebugTool</a> cpp tools <a class="el" href="classFunctionTrackerTool.html">FunctionTrackerTool</a> cpp tools <a class="el" href="classLockSetChecker.html">LockSetChecker</a> cpp tools <a class="el" href="classRaceDetectionTool.html">RaceDetectionTool</a> cpp add_executable </td>
+          <td class="memname">external rapidjson ExternalProject_Add </td>
           <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>${PROJECT_NAME}${SRC_LIST}</em></td><td>)</td>
+          <td class="paramtype">rapidjson DOWNLOAD_DIR ${RAPIDJSON_SOURCE_DIR}GIT_REPOSITORY https:UPDATE_COMMAND ${GIT_EXECUTABLE}pull origin master CONFIGURE_COMMAND&quot;&quot;BUILD_COMMAND&quot;&quot;INSTALL_COMMAND&quot;&quot;LOG_DOWNLOAD&#160;</td>
+          <td class="paramname"><em>ON</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -120,7 +119,23 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac6a6a705f6b8855ff75defeebf954425"></a>
+<a class="anchor" id="a294471ab4caf30650f96ae93c9bd8681"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">include_directories </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>${INCLUDE_DIRECTORIES}${source_dir}/</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="afbce3fd0c152568594c1b6a09406862b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -136,14 +151,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aca7fd2dd2e7da0eeda9e9f78c407d984"></a>
+<a class="anchor" id="a2465d4a1c8d51df008d974ecc4400edf"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">set </td>
+          <td class="memname">database <a class="el" href="classDBManager.html">DBManager</a> cpp database <a class="el" href="classQueryResult.html">QueryResult</a> cpp set </td>
           <td>(</td>
-          <td class="paramtype">SRC_LIST DBInterpreter.cpp DAG.cpp EventService.cpp FunctionStack.cpp LockMgr.cpp main.cpp ParasiteJsonWriter.cpp ParasiteTracker.cpp ThreadMgr.cpp ThreadStack.&#160;</td>
+          <td class="paramtype">SRC_LIST ${SRC_LIST}profiles/CallSiteProfile.cpp profiles/CallSiteSpanProfile.cpp profiles/CallSiteWorkProfile.&#160;</td>
           <td class="paramname"><em>cpp</em></td><td>)</td>
           <td></td>
         </tr>
@@ -152,30 +167,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa76c4d7052d6aad62a63399fc2ceecd9"></a>
+<a class="anchor" id="a6a0ff4da92ff5fa97fa66a566a996ece"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">database <a class="el" href="classDBManager.html">DBManager</a> cpp set </td>
+          <td class="memname">tables Call cpp tables File cpp set </td>
           <td>(</td>
-          <td class="paramtype">SRC_LIST ${SRC_LIST}hashtables/CallSiteSpanHashtable.cpp hashtables/CallSiteWorkHashtable.&#160;</td>
-          <td class="paramname"><em>cpp</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab513feee9d3f3d449eed75084e1018e8"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">profiles <a class="el" href="classCallSiteProfile.html">CallSiteProfile</a> cpp profiles <a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a> cpp profiles <a class="el" href="classCallSiteWorkProfile.html">CallSiteWorkProfile</a> cpp set </td>
-          <td>(</td>
-          <td class="paramtype">SRC_LIST ${SRC_LIST}tables/Call.&#160;</td>
+          <td class="paramtype">SRC_LIST ${SRC_LIST}tools/DebugTool.cpp tools/FunctionTrackerTool.cpp tools/LockSetChecker.cpp tools/ParasiteTool.&#160;</td>
           <td class="paramname"><em>cpp</em></td><td>)</td>
           <td></td>
         </tr>

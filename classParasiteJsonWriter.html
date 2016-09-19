@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -88,6 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classParasiteJsonWriter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">ParasiteJsonWriter Class Reference</div>  </div>
@@ -98,29 +98,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a77a55abbc42e9df5aebca155294332dc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a77a55abbc42e9df5aebca155294332dc">ParasiteJsonWriter</a> ()</td></tr>
-<tr class="separator:a77a55abbc42e9df5aebca155294332dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dbd84ed5bff2ed01a66e27c04fff07d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a3dbd84ed5bff2ed01a66e27c04fff07d">ParasiteJsonWriter</a> (std::string _name_)</td></tr>
+<tr class="separator:a3dbd84ed5bff2ed01a66e27c04fff07d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8bc5663e543f3d72661b2ae440c5513"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#aa8bc5663e543f3d72661b2ae440c5513">~ParasiteJsonWriter</a> ()</td></tr>
 <tr class="separator:aa8bc5663e543f3d72661b2ae440c5513"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01e70e24ab6df013c95f1b4008b8fcac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a01e70e24ab6df013c95f1b4008b8fcac">writeCallSite</a> (std::shared_ptr&lt; <a class="el" href="classCallSiteProfile.html">CallSiteProfile</a> &gt; profile)</td></tr>
 <tr class="separator:a01e70e24ab6df013c95f1b4008b8fcac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af05c62047c93895b74875739bba4bfcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#af05c62047c93895b74875739bba4bfcf">writeOverallProfile</a> (std::shared_ptr&lt; <a class="el" href="structparasite__profile__t.html">parasite_profile_t</a> &gt; prof)</td></tr>
-<tr class="separator:af05c62047c93895b74875739bba4bfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02fa5c03e6efab60c6c983841a5ac5e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a02fa5c03e6efab60c6c983841a5ac5e5">writeOverallProfile</a> (<a class="el" href="structparasite__profile__t.html">parasite_profile_t</a> prof)</td></tr>
+<tr class="separator:a02fa5c03e6efab60c6c983841a5ac5e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af60953a701ef67bd76b90e52b92245a3"><td class="memItemLeft" align="right" valign="top">FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#af60953a701ef67bd76b90e52b92245a3">file_pointer</a></td></tr>
 <tr class="separator:af60953a701ef67bd76b90e52b92245a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acabd0e74144ea2e9d171e3290325c71f"><td class="memItemLeft" align="right" valign="top">rapidjson::Document&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#acabd0e74144ea2e9d171e3290325c71f">fromScratch</a></td></tr>
+<tr class="separator:acabd0e74144ea2e9d171e3290325c71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b156c6693e5d28089e64462b06b61e2"><td class="memItemLeft" align="right" valign="top">rapidjson::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a7b156c6693e5d28089e64462b06b61e2">callSiteArray</a></td></tr>
+<tr class="separator:a7b156c6693e5d28089e64462b06b61e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6019abefb88f76f84636d791784bb912"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a6019abefb88f76f84636d791784bb912">name</a></td></tr>
+<tr class="separator:a6019abefb88f76f84636d791784bb912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3149f5a7312dc8e784d1398ae7fd1d7d"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a3149f5a7312dc8e784d1398ae7fd1d7d">writeBuffer</a> [65536]</td></tr>
+<tr class="separator:a3149f5a7312dc8e784d1398ae7fd1d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:acfba5c2be19695383a80248c1fb0ac61"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#acfba5c2be19695383a80248c1fb0ac61">ParasiteJsonWriter</a> (const <a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a> &amp;)</td></tr>
+<tr class="separator:acfba5c2be19695383a80248c1fb0ac61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41e0168ec992dfb660a158fdb9a3ae2d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classParasiteJsonWriter.html#a41e0168ec992dfb660a158fdb9a3ae2d">operator=</a> (const <a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a> &amp;)</td></tr>
+<tr class="separator:a41e0168ec992dfb660a158fdb9a3ae2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a77a55abbc42e9df5aebca155294332dc"></a>
+<a class="anchor" id="a3dbd84ed5bff2ed01a66e27c04fff07d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">ParasiteJsonWriter::ParasiteJsonWriter </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>_name_</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -143,7 +159,55 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="acfba5c2be19695383a80248c1fb0ac61"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ParasiteJsonWriter::ParasiteJsonWriter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a41e0168ec992dfb660a158fdb9a3ae2d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a>&amp; ParasiteJsonWriter::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classParasiteJsonWriter.html">ParasiteJsonWriter</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a01e70e24ab6df013c95f1b4008b8fcac"></a>
 <div class="memitem">
 <div class="memproto">
@@ -160,14 +224,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af05c62047c93895b74875739bba4bfcf"></a>
+<a class="anchor" id="a02fa5c03e6efab60c6c983841a5ac5e5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void ParasiteJsonWriter::writeOverallProfile </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structparasite__profile__t.html">parasite_profile_t</a> &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="structparasite__profile__t.html">parasite_profile_t</a>&#160;</td>
           <td class="paramname"><em>prof</em></td><td>)</td>
           <td></td>
         </tr>
@@ -177,12 +241,60 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a7b156c6693e5d28089e64462b06b61e2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rapidjson::Value ParasiteJsonWriter::callSiteArray</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="af60953a701ef67bd76b90e52b92245a3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">FILE* ParasiteJsonWriter::file_pointer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="acabd0e74144ea2e9d171e3290325c71f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">rapidjson::Document ParasiteJsonWriter::fromScratch</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a6019abefb88f76f84636d791784bb912"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ParasiteJsonWriter::name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a3149f5a7312dc8e784d1398ae7fd1d7d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char ParasiteJsonWriter::writeBuffer[65536]</td>
         </tr>
       </table>
 </div><div class="memdoc">

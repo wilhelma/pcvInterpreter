@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -96,13 +95,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
+<p>The observable: keeps track of the register observed and <code><a class="el" href="classEventService.html#ad9eea694b6732cde7720865bd79f3518" title="Puiblish an AccessEvent to the registered tools. ">publish()</a></code>es them the <a class="el" href="classEvent.html" title="Abstract event. ">Event</a>'s received from the <a class="el" href="classDBInterpreter.html" title="Database interpreter: produces Event&#39;s from the database types (e.g. access_t, call_t and so on)...">DBInterpreter</a>.  
+ <a href="classEventService.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="EventService_8h_source.html">EventService.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a375fbe452bd3158f38a4dbaf29bb63e8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventService.html#a375fbe452bd3158f38a4dbaf29bb63e8">EventService</a> () noexcept=default</td></tr>
-<tr class="memdesc:a375fbe452bd3158f38a4dbaf29bb63e8"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> constructor.  <a href="#a375fbe452bd3158f38a4dbaf29bb63e8">More...</a><br /></td></tr>
-<tr class="separator:a375fbe452bd3158f38a4dbaf29bb63e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7e4bb0dc82d548b86bbffaa8d8ae9ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventService.html#ac7e4bb0dc82d548b86bbffaa8d8ae9ab">EventService</a> ()=default</td></tr>
+<tr class="memdesc:ac7e4bb0dc82d548b86bbffaa8d8ae9ab"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> constructor.  <a href="#ac7e4bb0dc82d548b86bbffaa8d8ae9ab">More...</a><br /></td></tr>
+<tr class="separator:ac7e4bb0dc82d548b86bbffaa8d8ae9ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17108d41db0bfb89e8331f0e80c5ea74"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventService.html#a17108d41db0bfb89e8331f0e80c5ea74">~EventService</a> ()=default</td></tr>
 <tr class="memdesc:a17108d41db0bfb89e8331f0e80c5ea74"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> destructor.  <a href="#a17108d41db0bfb89e8331f0e80c5ea74">More...</a><br /></td></tr>
 <tr class="separator:a17108d41db0bfb89e8331f0e80c5ea74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,7 +157,7 @@ Private Member Functions</h2></td></tr>
 <tr class="memdesc:a368c9d0c581e8c8d341f36e07bdeb3d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes a tool to the observable.  <a href="#a368c9d0c581e8c8d341f36e07bdeb3d8">More...</a><br /></td></tr>
 <tr class="separator:a368c9d0c581e8c8d341f36e07bdeb3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d48e71d867e493b09e02d07afffa7d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventService.html#a4d48e71d867e493b09e02d07afffa7d5">unsubscribe</a> (std::list&lt; <a class="el" href="structObserver.html">Observer</a> &gt;::const_iterator tool)</td></tr>
-<tr class="memdesc:a4d48e71d867e493b09e02d07afffa7d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribes a tool to the <code><a class="el" href="classEventService.html">EventService</a></code>.  <a href="#a4d48e71d867e493b09e02d07afffa7d5">More...</a><br /></td></tr>
+<tr class="memdesc:a4d48e71d867e493b09e02d07afffa7d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribes a tool to the <code><a class="el" href="classEventService.html" title="The observable: keeps track of the register observed and publish()es them the Event&#39;s received from t...">EventService</a></code>.  <a href="#a4d48e71d867e493b09e02d07afffa7d5">More...</a><br /></td></tr>
 <tr class="separator:a4d48e71d867e493b09e02d07afffa7d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
@@ -165,9 +167,9 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ab3ea2f6cea67dcf1be88b7f743aab991"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The observable. It keeps track of the registered <a class="el" href="structObserver.html">Observer</a>'s and publishes the event to them. </p>
+<div class="textblock"><p>The observable: keeps track of the register observed and <code><a class="el" href="classEventService.html#ad9eea694b6732cde7720865bd79f3518" title="Puiblish an AccessEvent to the registered tools. ">publish()</a></code>es them the <a class="el" href="classEvent.html" title="Abstract event. ">Event</a>'s received from the <a class="el" href="classDBInterpreter.html" title="Database interpreter: produces Event&#39;s from the database types (e.g. access_t, call_t and so on)...">DBInterpreter</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a375fbe452bd3158f38a4dbaf29bb63e8"></a>
+<a class="anchor" id="ac7e4bb0dc82d548b86bbffaa8d8ae9ab"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -183,7 +185,7 @@ Private Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">explicit</span><span class="mlabel">default</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">explicit</span><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -587,7 +589,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Unsubscribes a tool to the <code><a class="el" href="classEventService.html">EventService</a></code>. </p>
+<p>Unsubscribes a tool to the <code><a class="el" href="classEventService.html" title="The observable: keeps track of the register observed and publish()es them the Event&#39;s received from t...">EventService</a></code>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tool</td><td>Iterator to the tool to remove. </td></tr>
@@ -632,6 +634,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Grant <a class="el" href="classSAAPRunner.html">SAAPRunner</a> the permission to access subscribe and unsubscribe. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000009">Todo:</a></b></dt><dd><p class="startdd">Give <a class="el" href="classSAAPRunner.html">SAAPRunner</a> only access to subscribe and unsubscribe </p>
+<p class="enddd">Give <a class="el" href="classDBInterpreter.html" title="Database interpreter: produces Event&#39;s from the database types (e.g. access_t, call_t and so on)...">DBInterpreter</a> only access to publish functions </p>
+</dd></dl>
 
 </div>
 </div>

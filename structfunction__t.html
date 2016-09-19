@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -87,40 +86,44 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structfunction__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">function_t Struct Reference</div>  </div>
+<div class="title">function_t Struct Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__records.html">Records</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Holds the information contained in one row of the <em>Function</em> database table.  
+ <a href="structfunction__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Function_8h_source.html">Function.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d19a5f82c73be5a51c900e66ad4d3ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#a0d19a5f82c73be5a51c900e66ad4d3ee">function_t</a> (<a class="el" href="Types_8h.html#a89f009e924194ee9a3ac18b7801453fb">FUN_ID</a> sqlID, <a class="el" href="Types_8h.html#acffa440bd33ed09aa0b1c0b78231af1b">FUN_SG</a> fnSignature, <a class="el" href="Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341">FunctionType</a> fnType, <a class="el" href="Types_8h.html#af4d81d1aeaaf21e7b5bc60c33ebae2f9">FIL_ID</a> fileId, <a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a> lineNumber) noexcept</td></tr>
+<tr class="memdesc:a0d19a5f82c73be5a51c900e66ad4d3ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a0d19a5f82c73be5a51c900e66ad4d3ee">More...</a><br /></td></tr>
 <tr class="separator:a0d19a5f82c73be5a51c900e66ad4d3ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a822b52f609231ee0fdb64ca1cb2d469b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#a822b52f609231ee0fdb64ca1cb2d469b">printFunctionType</a> (unsigned short shift)</td></tr>
-<tr class="separator:a822b52f609231ee0fdb64ca1cb2d469b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a810c42aa3c767de286b950e47813457a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a89f009e924194ee9a3ac18b7801453fb">FUN_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#a810c42aa3c767de286b950e47813457a">id</a></td></tr>
+<tr class="memdesc:a810c42aa3c767de286b950e47813457a"><td class="mdescLeft">&#160;</td><td class="mdescRight">SQL ID of the function.  <a href="#a810c42aa3c767de286b950e47813457a">More...</a><br /></td></tr>
 <tr class="separator:a810c42aa3c767de286b950e47813457a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54cf1e64f51d24e7788989bcfd275fbf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#acffa440bd33ed09aa0b1c0b78231af1b">FUN_SG</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#a54cf1e64f51d24e7788989bcfd275fbf">signature</a></td></tr>
+<tr class="memdesc:a54cf1e64f51d24e7788989bcfd275fbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Function name (<em>it's not the signature</em>).  <a href="#a54cf1e64f51d24e7788989bcfd275fbf">More...</a><br /></td></tr>
 <tr class="separator:a54cf1e64f51d24e7788989bcfd275fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9d004de76223d1c302b1bc80ed0631f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341">FunctionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#ad9d004de76223d1c302b1bc80ed0631f">type</a></td></tr>
+<tr class="memdesc:ad9d004de76223d1c302b1bc80ed0631f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The function type.  <a href="#ad9d004de76223d1c302b1bc80ed0631f">More...</a><br /></td></tr>
 <tr class="separator:ad9d004de76223d1c302b1bc80ed0631f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab46474015d34b88fcd1f7dfd7d0e91c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#af4d81d1aeaaf21e7b5bc60c33ebae2f9">FIL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#ab46474015d34b88fcd1f7dfd7d0e91c8">file_id</a></td></tr>
+<tr class="memdesc:ab46474015d34b88fcd1f7dfd7d0e91c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ID of the file of the function.  <a href="#ab46474015d34b88fcd1f7dfd7d0e91c8">More...</a><br /></td></tr>
 <tr class="separator:ab46474015d34b88fcd1f7dfd7d0e91c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09be0e09298f3724a1cf66e91b8252bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfunction__t.html#a09be0e09298f3724a1cf66e91b8252bc">line_number</a></td></tr>
 <tr class="separator:a09be0e09298f3724a1cf66e91b8252bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Holds the information contained in one row of the <em>Function</em> database table. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a0d19a5f82c73be5a51c900e66ad4d3ee"></a>
 <div class="memitem">
 <div class="memproto">
@@ -171,30 +174,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a822b52f609231ee0fdb64ca1cb2d469b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void function_t::printFunctionType </td>
-          <td>(</td>
-          <td class="paramtype">unsigned short&#160;</td>
-          <td class="paramname"><em>shift</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Constructor. </p>
 
 </div>
 </div>
@@ -209,6 +189,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The ID of the file of the function. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>Which file? The one where it was defined or the one where it was declared? </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a810c42aa3c767de286b950e47813457a"></a>
@@ -221,6 +204,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>SQL ID of the function. </p>
+
 </div>
 </div>
 <a class="anchor" id="a09be0e09298f3724a1cf66e91b8252bc"></a>
@@ -232,6 +217,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000031">Todo:</a></b></dt><dd>Line number of what? </dd></dl>
 
 </div>
 </div>
@@ -245,6 +231,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The Function name (<em>it's not the signature</em>). </p>
+
 </div>
 </div>
 <a class="anchor" id="ad9d004de76223d1c302b1bc80ed0631f"></a>
@@ -256,6 +244,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The function type. </p>
 
 </div>
 </div>

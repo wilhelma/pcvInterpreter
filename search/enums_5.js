@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['parseerrorcode',['ParseErrorCode',['../group__RAPIDJSON__ERRORS.html#ga7d3acf640886b1f2552dc8c4cd6dea60',1,'rapidjson']]],
-  ['parseflag',['ParseFlag',['../namespacerapidjson.html#a81379eb4e94a0386d71d15fda882ebc9',1,'rapidjson']]]
+  ['segmenttype',['SegmentType',['../Segment_8h.html#a2062ac0939fa9eb5a13e7041de1bd58f',1,'Segment.h']]],
+  ['stackaction',['StackAction',['../CallStack_8h.html#a924f51423cfffe0c81fdd613ab0202a3',1,'CallStack.h']]]
 ];

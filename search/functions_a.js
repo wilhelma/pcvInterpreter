@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['key',['Key',['../classrapidjson_1_1GenericDocument.html#a4bc59e7ec43a909af155c18e7f948f40',1,'rapidjson::GenericDocument::Key()'],['../classrapidjson_1_1PrettyWriter.html#af565ad95092f80f3db34c6e5e372540b',1,'rapidjson::PrettyWriter::Key(const Ch *str, SizeType length, bool copy=false)'],['../classrapidjson_1_1PrettyWriter.html#a16cfd8a385d04f24203cb99e12e432d1',1,'rapidjson::PrettyWriter::Key(const Ch *str)'],['../structrapidjson_1_1BaseReaderHandler.html#a92649c2dc3e94e085ee056c17444d418',1,'rapidjson::BaseReaderHandler::Key()'],['../classrapidjson_1_1Writer.html#aa15723b3ee548ca9499c8e146b69ddce',1,'rapidjson::Writer::Key(const Ch *str, SizeType length, bool copy=false)'],['../classrapidjson_1_1Writer.html#a1fd39e3bf6e2f8759ecc1ec289191214',1,'rapidjson::Writer::Key(const Ch *str)']]]
+  ['main',['main',['../main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.cpp']]],
+  ['make_5fdbinterpreter',['make_DBInterpreter',['../DBInterpreter_8h.html#a71875ae97e42bf4cad8d7ce8a16bca40',1,'make_DBInterpreter(std::string &amp;&amp;logFileName):&#160;DBInterpreter.cpp'],['../DBInterpreter_8cpp.html#a71875ae97e42bf4cad8d7ce8a16bca40',1,'make_DBInterpreter(std::string &amp;&amp;logFileName):&#160;DBInterpreter.cpp']]]
 ];

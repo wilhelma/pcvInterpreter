@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -90,29 +89,39 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structinstruction__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">instruction_t Struct Reference</div>  </div>
+<div class="title">instruction_t Struct Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__records.html">Records</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Holds the information contained in one row of the <em>Instruction</em> database table.  
+ <a href="structinstruction__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Instruction_8h_source.html">Instruction.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aefeb254328e121dbfbc1f89b1a919fd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structinstruction__t.html#aefeb254328e121dbfbc1f89b1a919fd5">instruction_t</a> (<a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a> instructionId, <a class="el" href="Types_8h.html#a63f0cd130dcec3e0f4e0beea67c4475e">SEG_ID</a> segmentId, <a class="el" href="Instruction_8h.html#a89ee1c4e5e5a33c60d0e6dc126ed2c0d">InstructionType</a> instructionType, <a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a> lineNumber) noexcept</td></tr>
+<tr class="memdesc:aefeb254328e121dbfbc1f89b1a919fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#aefeb254328e121dbfbc1f89b1a919fd5">More...</a><br /></td></tr>
 <tr class="separator:aefeb254328e121dbfbc1f89b1a919fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a60ea53c5358d6d10aa1a2640afd151b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structinstruction__t.html#a60ea53c5358d6d10aa1a2640afd151b1">id</a></td></tr>
+<tr class="memdesc:a60ea53c5358d6d10aa1a2640afd151b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">SQL ID of the instruction.  <a href="#a60ea53c5358d6d10aa1a2640afd151b1">More...</a><br /></td></tr>
 <tr class="separator:a60ea53c5358d6d10aa1a2640afd151b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2799c3101b3995b05aa71cfb856d6825"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a63f0cd130dcec3e0f4e0beea67c4475e">SEG_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structinstruction__t.html#a2799c3101b3995b05aa71cfb856d6825">segment_id</a></td></tr>
+<tr class="memdesc:a2799c3101b3995b05aa71cfb856d6825"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ID of the segment containing the instruction.  <a href="#a2799c3101b3995b05aa71cfb856d6825">More...</a><br /></td></tr>
 <tr class="separator:a2799c3101b3995b05aa71cfb856d6825"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83a1cf27ffbac0b0773d30a00f0b98e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Instruction_8h.html#a89ee1c4e5e5a33c60d0e6dc126ed2c0d">InstructionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structinstruction__t.html#a83a1cf27ffbac0b0773d30a00f0b98e3">instruction_type</a></td></tr>
+<tr class="memdesc:a83a1cf27ffbac0b0773d30a00f0b98e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The instruction type.  <a href="#a83a1cf27ffbac0b0773d30a00f0b98e3">More...</a><br /></td></tr>
 <tr class="separator:a83a1cf27ffbac0b0773d30a00f0b98e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c5bb0ffa7084d1ce2ee6dba9a33677b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a405f496ba9b48e07041aa19fc1542d6d">LIN_NO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structinstruction__t.html#a7c5bb0ffa7084d1ce2ee6dba9a33677b">line_number</a></td></tr>
+<tr class="memdesc:a7c5bb0ffa7084d1ce2ee6dba9a33677b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The line number of the instruction.  <a href="#a7c5bb0ffa7084d1ce2ee6dba9a33677b">More...</a><br /></td></tr>
 <tr class="separator:a7c5bb0ffa7084d1ce2ee6dba9a33677b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Holds the information contained in one row of the <em>Instruction</em> database table. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aefeb254328e121dbfbc1f89b1a919fd5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -157,6 +166,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Constructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -170,6 +181,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>SQL ID of the instruction. </p>
+
 </div>
 </div>
 <a class="anchor" id="a83a1cf27ffbac0b0773d30a00f0b98e3"></a>
@@ -181,6 +194,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The instruction type. </p>
 
 </div>
 </div>
@@ -194,6 +209,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The line number of the instruction. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000032">Todo:</a></b></dt><dd>To retrieve the file name? </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a2799c3101b3995b05aa71cfb856d6825"></a>
@@ -205,6 +223,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The ID of the segment containing the instruction. </p>
 
 </div>
 </div>

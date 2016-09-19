@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['heap',['HEAP',['../Reference_8h.html#aa298d9663bceef9c2ac2880c5bae3327ab6722804f5872cdd88347da194d42087',1,'Reference.h']]]
+  ['init',['INIT',['../Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8cafaee4ca3c30ee18148ce3ada37466498',1,'Access.h']]]
 ];

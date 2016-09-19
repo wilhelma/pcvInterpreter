@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -115,15 +114,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab8a92fde2550a12e747d0b952e6f2750"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#ab8a92fde2550a12e747d0b952e6f2750">~SAAPRunner</a> ()=default</td></tr>
 <tr class="memdesc:ab8a92fde2550a12e747d0b952e6f2750"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Default</em> destructor.  <a href="#ab8a92fde2550a12e747d0b952e6f2750">More...</a><br /></td></tr>
 <tr class="separator:ab8a92fde2550a12e747d0b952e6f2750"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0a732b384589c62e5858b356ee9f078"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#ac0a732b384589c62e5858b356ee9f078">registerTool</a> (std::unique_ptr&lt; <a class="el" href="classTool.html">Tool</a> &gt; &amp;&amp;tool, std::unique_ptr&lt; <a class="el" href="classFilter.html">Filter</a> &gt; &amp;&amp;filter, <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a> &amp;&amp;events)</td></tr>
-<tr class="memdesc:ac0a732b384589c62e5858b356ee9f078"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes the tool to the <a class="el" href="classEventService.html">EventService</a>.  <a href="#ac0a732b384589c62e5858b356ee9f078">More...</a><br /></td></tr>
-<tr class="separator:ac0a732b384589c62e5858b356ee9f078"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c7540768f8ab0b6083e20978ac43653"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#a1c7540768f8ab0b6083e20978ac43653">removeTool</a> (std::list&lt; <a class="el" href="structObserver.html">Observer</a> &gt;::const_iterator tool)</td></tr>
-<tr class="memdesc:a1c7540768f8ab0b6083e20978ac43653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribes the <a class="el" href="classTool.html">Tool</a> from the events and deletes it.  <a href="#a1c7540768f8ab0b6083e20978ac43653">More...</a><br /></td></tr>
-<tr class="separator:a1c7540768f8ab0b6083e20978ac43653"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d3c90be794c9b76a937d733e5dd9319"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#a7d3c90be794c9b76a937d733e5dd9319">interpret</a> (const std::string &amp;DBPath)</td></tr>
-<tr class="memdesc:a7d3c90be794c9b76a937d733e5dd9319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interprets the database.  <a href="#a7d3c90be794c9b76a937d733e5dd9319">More...</a><br /></td></tr>
-<tr class="separator:a7d3c90be794c9b76a937d733e5dd9319"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c331f1be633806668c9c53a2b800cdf"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="structObserver.html">Observer</a> &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#a4c331f1be633806668c9c53a2b800cdf">registerTool</a> (std::unique_ptr&lt; <a class="el" href="classTool.html">Tool</a> &gt; &amp;&amp;tool, std::unique_ptr&lt; <a class="el" href="classFilter.html">Filter</a> &gt; &amp;&amp;filter, <a class="el" href="Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd">Events</a> &amp;&amp;events) const </td></tr>
+<tr class="memdesc:a4c331f1be633806668c9c53a2b800cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes the tool to the <a class="el" href="classEventService.html" title="The observable: keeps track of the register observed and publish()es them the Event&#39;s received from t...">EventService</a>.  <a href="#a4c331f1be633806668c9c53a2b800cdf">More...</a><br /></td></tr>
+<tr class="separator:a4c331f1be633806668c9c53a2b800cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8e7186da6032d7d60d1280d7fe3fb0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#ac8e7186da6032d7d60d1280d7fe3fb0b">removeTool</a> (std::list&lt; <a class="el" href="structObserver.html">Observer</a> &gt;::const_iterator tool) const </td></tr>
+<tr class="memdesc:ac8e7186da6032d7d60d1280d7fe3fb0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribes the <a class="el" href="classTool.html">Tool</a> from the events and deletes it.  <a href="#ac8e7186da6032d7d60d1280d7fe3fb0b">More...</a><br /></td></tr>
+<tr class="separator:ac8e7186da6032d7d60d1280d7fe3fb0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab56e1191feb4ce2dc2a1196ac2df38e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSAAPRunner.html#ab56e1191feb4ce2dc2a1196ac2df38e2">interpret</a> (const std::string &amp;DBPath) const </td></tr>
+<tr class="memdesc:ab56e1191feb4ce2dc2a1196ac2df38e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interprets the database.  <a href="#ab56e1191feb4ce2dc2a1196ac2df38e2">More...</a><br /></td></tr>
+<tr class="separator:ab56e1191feb4ce2dc2a1196ac2df38e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -240,7 +239,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a7d3c90be794c9b76a937d733e5dd9319"></a>
+<a class="anchor" id="ab56e1191feb4ce2dc2a1196ac2df38e2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -252,7 +251,7 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>DBPath</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -324,7 +323,7 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac0a732b384589c62e5858b356ee9f078"></a>
+<a class="anchor" id="a4c331f1be633806668c9c53a2b800cdf"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -332,7 +331,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">decltype(auto) SAAPRunner::registerTool </td>
+          <td class="memname">std::list&lt;<a class="el" href="structObserver.html">Observer</a>&gt;::const_iterator SAAPRunner::registerTool </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classTool.html">Tool</a> &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>tool</em>, </td>
@@ -352,7 +351,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -362,7 +361,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Subscribes the tool to the <a class="el" href="classEventService.html">EventService</a>. </p>
+<p>Subscribes the tool to the <a class="el" href="classEventService.html" title="The observable: keeps track of the register observed and publish()es them the Event&#39;s received from t...">EventService</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tool</td><td>Pointer to the <a class="el" href="classTool.html">Tool</a> to register. </td></tr>
@@ -371,12 +370,12 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An iterator to the element that has been subscribed to the <a class="el" href="classEventService.html">EventService</a>. </dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>The returned iterator will be used to unsubscribe the tool (via <code><a class="el" href="classSAAPRunner.html#a1c7540768f8ab0b6083e20978ac43653" title="Unsubscribes the Tool from the events and deletes it. ">SAAPRunner::removeTool</a></code>). <b>That's the only chance to get it, so make sure to store it!</b> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>An iterator to the element that has been subscribed to the <a class="el" href="classEventService.html" title="The observable: keeps track of the register observed and publish()es them the Event&#39;s received from t...">EventService</a>. </dd></dl>
+<dl class="section attention"><dt>Attention</dt><dd>The returned iterator will be used to unsubscribe the tool (via <code><a class="el" href="classSAAPRunner.html#ac8e7186da6032d7d60d1280d7fe3fb0b" title="Unsubscribes the Tool from the events and deletes it. ">SAAPRunner::removeTool</a></code>). <b>That's the only chance to get it, so make sure to store it!</b> </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a1c7540768f8ab0b6083e20978ac43653"></a>
+<a class="anchor" id="ac8e7186da6032d7d60d1280d7fe3fb0b"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -388,7 +387,7 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::list&lt; <a class="el" href="structObserver.html">Observer</a> &gt;::const_iterator&#160;</td>
           <td class="paramname"><em>tool</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>

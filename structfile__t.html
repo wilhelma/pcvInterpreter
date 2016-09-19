@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -88,12 +87,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="structfile__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">file_t Struct Reference</div>  </div>
+<div class="title">file_t Struct Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__records.html">Records</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Holds the information contained in one row of the <em>File</em> database table.  
+ <a href="structfile__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="File_8h_source.html">File.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -105,18 +106,18 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8496adce487a7ffa1eeef6803ae94fe0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#af4d81d1aeaaf21e7b5bc60c33ebae2f9">FIL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfile__t.html#a8496adce487a7ffa1eeef6803ae94fe0">id</a></td></tr>
+<tr class="memdesc:a8496adce487a7ffa1eeef6803ae94fe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">SQL ID of the file.  <a href="#a8496adce487a7ffa1eeef6803ae94fe0">More...</a><br /></td></tr>
 <tr class="separator:a8496adce487a7ffa1eeef6803ae94fe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58f971dd1f060c6f70857956e60a8d57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a32fbb6f649d60d2da7047f1dc66d346c">FIL_PT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfile__t.html#a58f971dd1f060c6f70857956e60a8d57">file_path</a></td></tr>
+<tr class="memdesc:a58f971dd1f060c6f70857956e60a8d57"><td class="mdescLeft">&#160;</td><td class="mdescRight">The file path (and name).  <a href="#a58f971dd1f060c6f70857956e60a8d57">More...</a><br /></td></tr>
 <tr class="separator:a58f971dd1f060c6f70857956e60a8d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd1ac94d66a15dfb0cb49a840f7410ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a32fbb6f649d60d2da7047f1dc66d346c">FIL_PT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfile__t.html#afd1ac94d66a15dfb0cb49a840f7410ff">file_name</a></td></tr>
+<tr class="memdesc:afd1ac94d66a15dfb0cb49a840f7410ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">The file name only (retrieved from the file path).  <a href="#afd1ac94d66a15dfb0cb49a840f7410ff">More...</a><br /></td></tr>
 <tr class="separator:afd1ac94d66a15dfb0cb49a840f7410ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:aad22efcf96f8cdb39423f68d6f48d0fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfile__t.html#aad22efcf96f8cdb39423f68d6f48d0fa">retrieveFileName</a> (<a class="el" href="Types_8h.html#a32fbb6f649d60d2da7047f1dc66d346c">FIL_PT</a> filePath)</td></tr>
-<tr class="separator:aad22efcf96f8cdb39423f68d6f48d0fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Holds the information contained in one row of the <em>File</em> database table. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a6eec5c3759d0fcc3b47e2d33bc752ea4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -144,35 +145,17 @@ Private Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">explicit</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="aad22efcf96f8cdb39423f68d6f48d0fa"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int file_t::retrieveFileName </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="Types_8h.html#a32fbb6f649d60d2da7047f1dc66d346c">FIL_PT</a>&#160;</td>
-          <td class="paramname"><em>filePath</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Constructor. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sqlID</td><td>The SQL ID of the file. </td></tr>
+    <tr><td class="paramname">filePath</td><td>The file path and name. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -187,6 +170,8 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The file name only (retrieved from the file path). </p>
+
 </div>
 </div>
 <a class="anchor" id="a58f971dd1f060c6f70857956e60a8d57"></a>
@@ -198,6 +183,8 @@ Private Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>The file path (and name). </p>
 
 </div>
 </div>
@@ -211,10 +198,13 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>SQL ID of the file. </p>
+
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>/home/paolo/pcvInterpreter/include/tables/<a class="el" href="File_8h_source.html">File.h</a></li>
+<li>/home/paolo/pcvInterpreter/src/tables/<a class="el" href="File_8cpp.html">File.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

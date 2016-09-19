@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -91,30 +90,40 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structcall__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">call_t Struct Reference</div>  </div>
+<div class="title">call_t Struct Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__records.html">Records</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Holds the information contained in one row of the <em>Call</em> database table.  
+ <a href="structcall__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Call_8h_source.html">Call.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8e77c4744c63ff6314bd0393f1efe3d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a8e77c4744c63ff6314bd0393f1efe3d0">call_t</a> (<a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a> sqlID, <a class="el" href="Types_8h.html#af58a2151481051184c8869e5bf012e8b">TRD_ID</a> threadID, <a class="el" href="Types_8h.html#a89f009e924194ee9a3ac18b7801453fb">FUN_ID</a> functionID, <a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a> instructionID, <a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> startTime, <a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> endTime) noexcept</td></tr>
+<tr class="memitem:a8e77c4744c63ff6314bd0393f1efe3d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a8e77c4744c63ff6314bd0393f1efe3d0">call_t</a> (<a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a> sqlID, <a class="el" href="Types_8h.html#af58a2151481051184c8869e5bf012e8b">TRD_ID</a> threadID, <a class="el" href="Types_8h.html#a89f009e924194ee9a3ac18b7801453fb">FUN_ID</a> functionID, <a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a> instructionID, <a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> startTime, <a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> endTime) noexcept</td></tr>
+<tr class="memdesc:a8e77c4744c63ff6314bd0393f1efe3d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a8e77c4744c63ff6314bd0393f1efe3d0">More...</a><br /></td></tr>
 <tr class="separator:a8e77c4744c63ff6314bd0393f1efe3d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a327f9633bea7d745288daa2d126c1e34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a327f9633bea7d745288daa2d126c1e34">id</a></td></tr>
+<tr class="memdesc:a327f9633bea7d745288daa2d126c1e34"><td class="mdescLeft">&#160;</td><td class="mdescRight">SQL ID of the call.  <a href="#a327f9633bea7d745288daa2d126c1e34">More...</a><br /></td></tr>
 <tr class="separator:a327f9633bea7d745288daa2d126c1e34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83fdcfee231eea2141e6c877dbfba935"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#af58a2151481051184c8869e5bf012e8b">TRD_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a83fdcfee231eea2141e6c877dbfba935">thread_id</a></td></tr>
+<tr class="memdesc:a83fdcfee231eea2141e6c877dbfba935"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the thread where the function was called from.  <a href="#a83fdcfee231eea2141e6c877dbfba935">More...</a><br /></td></tr>
 <tr class="separator:a83fdcfee231eea2141e6c877dbfba935"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a768b8b0609416e8435d9b2b630724a6d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#a89f009e924194ee9a3ac18b7801453fb">FUN_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a768b8b0609416e8435d9b2b630724a6d">function_id</a></td></tr>
+<tr class="memdesc:a768b8b0609416e8435d9b2b630724a6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the called function.  <a href="#a768b8b0609416e8435d9b2b630724a6d">More...</a><br /></td></tr>
 <tr class="separator:a768b8b0609416e8435d9b2b630724a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa100f564917a93bdefdcdbfa170d8d2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad1a1f88c1f5511a61f8632aec527a6f2">INS_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#aa100f564917a93bdefdcdbfa170d8d2a">instruction_id</a></td></tr>
+<tr class="memdesc:aa100f564917a93bdefdcdbfa170d8d2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the instruction where the function was called from.  <a href="#aa100f564917a93bdefdcdbfa170d8d2a">More...</a><br /></td></tr>
 <tr class="separator:aa100f564917a93bdefdcdbfa170d8d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac29718029b0f9cd913a2e0be32990517"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#ac29718029b0f9cd913a2e0be32990517">start_time</a></td></tr>
+<tr class="memitem:ac29718029b0f9cd913a2e0be32990517"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#ac29718029b0f9cd913a2e0be32990517">start_time</a></td></tr>
+<tr class="memdesc:ac29718029b0f9cd913a2e0be32990517"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time when the call started.  <a href="#ac29718029b0f9cd913a2e0be32990517">More...</a><br /></td></tr>
 <tr class="separator:ac29718029b0f9cd913a2e0be32990517"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af75128feb4ed223e66ca01e19c61493a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#af75128feb4ed223e66ca01e19c61493a">end_time</a></td></tr>
+<tr class="memitem:af75128feb4ed223e66ca01e19c61493a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#af75128feb4ed223e66ca01e19c61493a">end_time</a></td></tr>
+<tr class="memdesc:af75128feb4ed223e66ca01e19c61493a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time when the call ended (i.e. the called function returned).  <a href="#af75128feb4ed223e66ca01e19c61493a">More...</a><br /></td></tr>
 <tr class="separator:af75128feb4ed223e66ca01e19c61493a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
@@ -122,7 +131,9 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a8209b2f1911ccef1f622f98137a57f45"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="Types_8h.html#a7b34bae2afe66706e1b1c5f280d29f31">CAL_ID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcall__t.html#a8209b2f1911ccef1f622f98137a57f45">MAIN</a></td></tr>
 <tr class="separator:a8209b2f1911ccef1f622f98137a57f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Holds the information contained in one row of the <em>Call</em> database table. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a8e77c4744c63ff6314bd0393f1efe3d0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -157,13 +168,13 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td>
           <td class="paramname"><em>startTime</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td>
           <td class="paramname"><em>endTime</em>&#160;</td>
         </tr>
         <tr>
@@ -179,6 +190,8 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Constructor. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -187,10 +200,12 @@ Static Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> call_t::end_time</td>
+          <td class="memname"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> call_t::end_time</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time when the call ended (i.e. the called function returned). </p>
 
 </div>
 </div>
@@ -204,6 +219,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>ID of the called function. </p>
+
 </div>
 </div>
 <a class="anchor" id="a327f9633bea7d745288daa2d126c1e34"></a>
@@ -216,6 +233,8 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>SQL ID of the call. </p>
+
 </div>
 </div>
 <a class="anchor" id="aa100f564917a93bdefdcdbfa170d8d2a"></a>
@@ -227,6 +246,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>ID of the instruction where the function was called from. </p>
 
 </div>
 </div>
@@ -255,10 +276,12 @@ Static Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> call_t::start_time</td>
+          <td class="memname"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> call_t::start_time</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Time when the call started. </p>
 
 </div>
 </div>
@@ -271,6 +294,8 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>ID of the thread where the function was called from. </p>
 
 </div>
 </div>

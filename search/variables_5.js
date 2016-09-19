@@ -1,12 +1,20 @@
 var searchData=
 [
-  ['e',['e',['../structrapidjson_1_1internal_1_1DiyFp.html#adb29b66d68cb2675c06deda434bfcafb',1,'rapidjson::internal::DiyFp']]],
-  ['elements',['elements',['../structrapidjson_1_1GenericValue_1_1Array.html#a06523964db15451cca958e993f672aae',1,'rapidjson::GenericValue::Array']]],
-  ['end_5f',['end_',['../structrapidjson_1_1MemoryStream.html#a47f45298891e8156121b4017954fabe8',1,'rapidjson::MemoryStream']]],
-  ['end_5ftime',['end_time',['../structcall__t.html#af75128feb4ed223e66ca01e19c61493a',1,'call_t::end_time()'],['../structthread__t.html#aaef65c8c35d8fb04daed3ecafc8b7234',1,'thread_t::end_time()']]],
-  ['endtime',['endTime',['../structReturnInfo.html#aac3c65f0a613c54a1ce7fc12f5a9ff0b',1,'ReturnInfo::endTime()'],['../structThreadEndInfo.html#aca39d07e69154b74f3ca0703b31c99f6',1,'ThreadEndInfo::endTime()']]],
-  ['eof_5f',['eof_',['../classrapidjson_1_1FileReadStream.html#adee210f3c66e6a05a61379b1e6835f09',1,'rapidjson::FileReadStream']]],
-  ['epoch',['epoch',['../structRaceDetectionTool_1_1VarSet__.html#a5752ed73082a87725978bf723f079031',1,'RaceDetectionTool::VarSet_']]],
-  ['events',['events',['../structObserver.html#a85e27631224e023bcdf6ce9af35e90fc',1,'Observer']]],
-  ['eventservice_5f',['EventService_',['../classDBInterpreter.html#abaa0263abc23715dd4d0286329255d40',1,'DBInterpreter']]]
+  ['file_5fid',['file_id',['../structfunction__t.html#ab46474015d34b88fcd1f7dfd7d0e91c8',1,'function_t']]],
+  ['file_5fname',['file_name',['../structfile__t.html#afd1ac94d66a15dfb0cb49a840f7410ff',1,'file_t']]],
+  ['file_5fpath',['file_path',['../structfile__t.html#a58f971dd1f060c6f70857956e60a8d57',1,'file_t']]],
+  ['file_5fpointer',['file_pointer',['../classParasiteJsonWriter.html#af60953a701ef67bd76b90e52b92245a3',1,'ParasiteJsonWriter']]],
+  ['filename',['fileName',['../structCallInfo.html#abb12ab6b59e3c9eb415da717ee967821',1,'CallInfo']]],
+  ['filepath',['filePath',['../structCallInfo.html#a42b4954263250e82578982b58c9123f3',1,'CallInfo']]],
+  ['filetable_5f',['FileTable_',['../classDBInterpreter.html#adb651791f7748114115f14269407c738',1,'DBInterpreter']]],
+  ['filter',['filter',['../structObserver.html#a25dc983dbfcec11ce00a6b7fba024e84',1,'Observer']]],
+  ['first_5fvertex',['first_vertex',['../structthread__frame__t.html#a1545b70885ad7d82473351a119756b9f',1,'thread_frame_t']]],
+  ['firstinstruction',['firstInstruction',['../structLockSetChecker_1_1RaceEntry__.html#a6041f2f4d96df3ea5a4faf4267e5fa1e',1,'LockSetChecker::RaceEntry_::firstInstruction()'],['../structRaceDetectionTool_1_1RaceEntry__.html#a48945ddb2f13da52a38f4ffb34a0d7a8',1,'RaceDetectionTool::RaceEntry_::firstInstruction()']]],
+  ['fnsignature',['fnSignature',['../structCallInfo.html#aabbc8a091749af770d61eb4165ea3f4e',1,'CallInfo']]],
+  ['fntype',['fnType',['../structCallInfo.html#a65003c8b0a31b8be0ec7f56ff8e36523',1,'CallInfo']]],
+  ['fromscratch',['fromScratch',['../classParasiteJsonWriter.html#acabd0e74144ea2e9d171e3290325c71f',1,'ParasiteJsonWriter']]],
+  ['function_5fid',['function_id',['../structcall__t.html#a768b8b0609416e8435d9b2b630724a6d',1,'call_t']]],
+  ['function_5fsignature',['function_signature',['../structfunction__frame__t.html#ab766a1fb9cfbea8cd38ccfd289137bb6',1,'function_frame_t::function_signature()'],['../classCallSiteProfile.html#a404e7c8c9ab90f04b9de617ac0ee3b7b',1,'CallSiteProfile::function_signature()'],['../classCallSiteWorkProfile.html#aaab10a703b98de02e16bfacb87d8ff7d',1,'CallSiteWorkProfile::function_signature()']]],
+  ['function_5fstack',['function_stack',['../classParasiteTracker.html#af0875dc315a47965b806a116652d7e2c',1,'ParasiteTracker']]],
+  ['functiontable_5f',['FunctionTable_',['../classDBInterpreter.html#ac61519d3fc4398017534ab1a25196a00',1,'DBInterpreter']]]
 ];

@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,14 +91,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>This is the complete list of members for <a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a74bce35d02ae596c951dbcf9c180fde1">add_in_callsite_span_profile_entries</a>(const std::shared_ptr&lt; call_site_span_profile_t &gt; profile_to_add)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a2ea38b8009cf48f8a9b5a55a999572dc">CallSiteSpanProfile</a>(std::shared_ptr&lt; call_site_span_profile_t &gt; profile)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a5bd5abde039ebb650cb3f41fc2447e5b">CallSiteSpanProfile</a>(const CallSiteSpanProfile &amp;)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#aaa975096bd2524925cc8646bc50703dc">init_callsite_span_profile</a>(CALLSITE call_site, TIME span)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#ab4b26dc9966d53de2662758105f94e09">add_in_callsite_span</a>(const std::shared_ptr&lt; CallSiteSpanProfile &gt; profile_to_add)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a35aa609d87f79d9134ce92b515ef7333">call_site</a></td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#abef4eb07f4e98d55d5dc1ff45ae980b0">CallSiteSpanProfile</a>()</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a5bd5abde039ebb650cb3f41fc2447e5b">CallSiteSpanProfile</a>(const CallSiteSpanProfile &amp;)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a10e6c72d24abd9aa7826fc3044cbd2aa">init</a>(CALLSITE call_site, TIME start_time)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a010a03237237e5da22d2f003bf57bf44">lock_wait_time</a></td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a35c47bea91db3a8011ea308d739aa9bb">operator=</a>(const CallSiteSpanProfile &amp;)</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#acc0ca3f1e8f7da4dce366c2020556e2a">print</a>()</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a9f48a24d8e980b1111ddd58c6c490a02">prof</a></td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#aa9f13f89937c4bc8106f0aa65994f168">~CallSiteSpanProfile</a>()</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#ae55c56b289838c5ae955032709f2e164">span</a></td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#a32421b247b61f5bb05c0a984e0d084e3">start</a></td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classCallSiteSpanProfile.html#aa9f13f89937c4bc8106f0aa65994f168">~CallSiteSpanProfile</a>()</td><td class="entry"><a class="el" href="classCallSiteSpanProfile.html">CallSiteSpanProfile</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

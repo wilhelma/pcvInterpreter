@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -101,6 +100,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a4e327d5022f30972be579639242fa4b8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a4e327d5022f30972be579639242fa4b8">lock_wait_time</a> ()</td></tr>
+<tr class="separator:a4e327d5022f30972be579639242fa4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a3551e5b684cd5aa319ba7955ad5f3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a5a3551e5b684cd5aa319ba7955ad5f3b">absorb_child_locks</a> ()</td></tr>
+<tr class="separator:a5a3551e5b684cd5aa319ba7955ad5f3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a404995334b300ec367e269bcdc34dd56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a404995334b300ec367e269bcdc34dd56">add_child_locks</a> (std::shared_ptr&lt; <a class="el" href="structthread__frame__t.html">thread_frame_t</a> &gt; child_thread)</td></tr>
+<tr class="separator:a404995334b300ec367e269bcdc34dd56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a170c6b83d3a58a7f59094c7c668f7a5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a170c6b83d3a58a7f59094c7c668f7a5f">correct_prefix</a> (<a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> correction)</td></tr>
+<tr class="separator:a170c6b83d3a58a7f59094c7c668f7a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab33006d791591fb59bcada09ad871e30"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#ab33006d791591fb59bcada09ad871e30">thread_frame_t</a> ()</td></tr>
 <tr class="separator:ab33006d791591fb59bcada09ad871e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -112,37 +119,32 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aeaa075a6d9f5ae215c1dfdd2b6a8c27d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#aeaa075a6d9f5ae215c1dfdd2b6a8c27d">head_function_index</a></td></tr>
 <tr class="memdesc:aeaa075a6d9f5ae215c1dfdd2b6a8c27d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The index of the thread's head function (the first function called in the thread after it spawns), in the function_stack of main_stack.  <a href="#aeaa075a6d9f5ae215c1dfdd2b6a8c27d">More...</a><br /></td></tr>
 <tr class="separator:aeaa075a6d9f5ae215c1dfdd2b6a8c27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefddcf0d5e35ae5444faffa03b8d6f54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#aefddcf0d5e35ae5444faffa03b8d6f54">continuation_span</a></td></tr>
-<tr class="memdesc:aefddcf0d5e35ae5444faffa03b8d6f54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Continuation span of this thread.  <a href="#aefddcf0d5e35ae5444faffa03b8d6f54">More...</a><br /></td></tr>
-<tr class="separator:aefddcf0d5e35ae5444faffa03b8d6f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aae767a21ca96e91469cf25b96f2c04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a2aae767a21ca96e91469cf25b96f2c04">prefix_span</a></td></tr>
-<tr class="memdesc:a2aae767a21ca96e91469cf25b96f2c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prefix span of this thread.  <a href="#a2aae767a21ca96e91469cf25b96f2c04">More...</a><br /></td></tr>
-<tr class="separator:a2aae767a21ca96e91469cf25b96f2c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca09385a601a5a67d3f693d80e5af9d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#aca09385a601a5a67d3f693d80e5af9d3">lock_span</a></td></tr>
-<tr class="memdesc:aca09385a601a5a67d3f693d80e5af9d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock span of this thread.  <a href="#aca09385a601a5a67d3f693d80e5af9d3">More...</a><br /></td></tr>
-<tr class="separator:aca09385a601a5a67d3f693d80e5af9d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a918b9f5fb8ee38933c676c4fad0ed0c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a918b9f5fb8ee38933c676c4fad0ed0c9">longest_child_span</a></td></tr>
-<tr class="separator:a918b9f5fb8ee38933c676c4fad0ed0c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae60fc4a674edab77846cc13644dbce2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#ae60fc4a674edab77846cc13644dbce2e">longest_child_lock_span</a></td></tr>
-<tr class="memdesc:ae60fc4a674edab77846cc13644dbce2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock span of the longest spawned child of this thread.  <a href="#ae60fc4a674edab77846cc13644dbce2e">More...</a><br /></td></tr>
-<tr class="separator:ae60fc4a674edab77846cc13644dbce2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83c8754dd68ed9188b64d58223b6b4ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a83c8754dd68ed9188b64d58223b6b4ea">thread_start_time</a></td></tr>
-<tr class="separator:a83c8754dd68ed9188b64d58223b6b4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2190c5ec60a937d9378ef0bfd87710"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLockIntervals.html">LockIntervals</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a8e2190c5ec60a937d9378ef0bfd87710">child_lock_intervals</a></td></tr>
+<tr class="separator:a8e2190c5ec60a937d9378ef0bfd87710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aef1d01f8432af6d4f1a27e08f5bf71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLockIntervals.html">LockIntervals</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a6aef1d01f8432af6d4f1a27e08f5bf71">lock_intervals</a></td></tr>
+<tr class="separator:a6aef1d01f8432af6d4f1a27e08f5bf71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3847e35f8ad9962000a36ea7717e98b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a3847e35f8ad9962000a36ea7717e98b2">longest_child_lock_wait_time</a></td></tr>
+<tr class="memdesc:a3847e35f8ad9962000a36ea7717e98b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lock span of the longest spawned child of this thread.  <a href="#a3847e35f8ad9962000a36ea7717e98b2">More...</a><br /></td></tr>
+<tr class="separator:a3847e35f8ad9962000a36ea7717e98b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1545b70885ad7d82473351a119756b9f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DAG_8h.html#aa33b92f212a8e8386077a77bd9108da0">vertex_descr_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a1545b70885ad7d82473351a119756b9f">first_vertex</a></td></tr>
 <tr class="separator:a1545b70885ad7d82473351a119756b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11b120e5859d3e692e2ce7a964ac6048"><td class="memItemLeft" align="right" valign="top"><a class="el" href="DAG_8h.html#aa33b92f212a8e8386077a77bd9108da0">vertex_descr_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a11b120e5859d3e692e2ce7a964ac6048">last_vertex</a></td></tr>
 <tr class="separator:a11b120e5859d3e692e2ce7a964ac6048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a8a3c98e8c1a7de5b565c8242de5868"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="DAG_8h.html#aa33b92f212a8e8386077a77bd9108da0">vertex_descr_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a5a8a3c98e8c1a7de5b565c8242de5868">join_vertex_list</a></td></tr>
 <tr class="separator:a5a8a3c98e8c1a7de5b565c8242de5868"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44642b094a10b2bcba8e6922da3badbd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallSiteSpanHashtable.html">CallSiteSpanHashtable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a44642b094a10b2bcba8e6922da3badbd">prefix_table</a></td></tr>
-<tr class="memdesc:a44642b094a10b2bcba8e6922da3badbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prefix data for each call site in this thread.  <a href="#a44642b094a10b2bcba8e6922da3badbd">More...</a><br /></td></tr>
-<tr class="separator:a44642b094a10b2bcba8e6922da3badbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09d4cfdaa3e955e1afafda13d3ce96d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallSiteSpanHashtable.html">CallSiteSpanHashtable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a09d4cfdaa3e955e1afafda13d3ce96d5">longest_child_table</a></td></tr>
-<tr class="memdesc:a09d4cfdaa3e955e1afafda13d3ce96d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Longest child data for each call site in this thread.  <a href="#a09d4cfdaa3e955e1afafda13d3ce96d5">More...</a><br /></td></tr>
-<tr class="separator:a09d4cfdaa3e955e1afafda13d3ce96d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad363f936fa8d5d7defe72bf520d6b884"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCallSiteSpanHashtable.html">CallSiteSpanHashtable</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#ad363f936fa8d5d7defe72bf520d6b884">continuation_table</a></td></tr>
-<tr class="memdesc:ad363f936fa8d5d7defe72bf520d6b884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Continuation data for each call site in this thread.  <a href="#ad363f936fa8d5d7defe72bf520d6b884">More...</a><br /></td></tr>
-<tr class="separator:ad363f936fa8d5d7defe72bf520d6b884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5bc0f6b92fbfd2f68eb9b0d6ce61dff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpan.html">Span</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#af5bc0f6b92fbfd2f68eb9b0d6ce61dff">prefix</a></td></tr>
+<tr class="memdesc:af5bc0f6b92fbfd2f68eb9b0d6ce61dff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prefix data for each call site in this thread.  <a href="#af5bc0f6b92fbfd2f68eb9b0d6ce61dff">More...</a><br /></td></tr>
+<tr class="separator:af5bc0f6b92fbfd2f68eb9b0d6ce61dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a343aa8737c72f8ec17a17fe94aca5000"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpan.html">Span</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a343aa8737c72f8ec17a17fe94aca5000">longest_child</a></td></tr>
+<tr class="memdesc:a343aa8737c72f8ec17a17fe94aca5000"><td class="mdescLeft">&#160;</td><td class="mdescRight">Longest child data for each call site in this thread.  <a href="#a343aa8737c72f8ec17a17fe94aca5000">More...</a><br /></td></tr>
+<tr class="separator:a343aa8737c72f8ec17a17fe94aca5000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0be018d5c26ea98e6194786a22fd9b0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpan.html">Span</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a0be018d5c26ea98e6194786a22fd9b0a">continuation</a></td></tr>
+<tr class="memdesc:a0be018d5c26ea98e6194786a22fd9b0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Continuation data for each call site in this thread.  <a href="#a0be018d5c26ea98e6194786a22fd9b0a">More...</a><br /></td></tr>
+<tr class="separator:a0be018d5c26ea98e6194786a22fd9b0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94982ddd2de741ee882aed531e72b49e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a94982ddd2de741ee882aed531e72b49e">concurrency_offset</a></td></tr>
+<tr class="separator:a94982ddd2de741ee882aed531e72b49e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97c7deae8b63f90ac78f46e3b81e91e3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structthread__frame__t.html#a97c7deae8b63f90ac78f46e3b81e91e3">spawned_children_count</a></td></tr>
+<tr class="separator:a97c7deae8b63f90ac78f46e3b81e91e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Thread frame providing information about one thread, updated with events. </p>
@@ -170,27 +172,132 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a5a3551e5b684cd5aa319ba7955ad5f3b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void thread_frame_t::absorb_child_locks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a404995334b300ec367e269bcdc34dd56"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void thread_frame_t::add_child_locks </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structthread__frame__t.html">thread_frame_t</a> &gt;&#160;</td>
+          <td class="paramname"><em>child_thread</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a170c6b83d3a58a7f59094c7c668f7a5f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void thread_frame_t::correct_prefix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a>&#160;</td>
+          <td class="paramname"><em>correction</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a4e327d5022f30972be579639242fa4b8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> thread_frame_t::lock_wait_time </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="aefddcf0d5e35ae5444faffa03b8d6f54"></a>
+<a class="anchor" id="a8e2190c5ec60a937d9378ef0bfd87710"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::continuation_span</td>
+          <td class="memname"><a class="el" href="classLockIntervals.html">LockIntervals</a> thread_frame_t::child_lock_intervals</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Continuation span of this thread. </p>
-
 </div>
 </div>
-<a class="anchor" id="ad363f936fa8d5d7defe72bf520d6b884"></a>
+<a class="anchor" id="a94982ddd2de741ee882aed531e72b49e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::continuation_table</td>
+          <td class="memname"><a class="el" href="Types_8h.html#ad81de639a1922b1bdb48ddb5381aa0ba">TIME</a> thread_frame_t::concurrency_offset</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a0be018d5c26ea98e6194786a22fd9b0a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">thread_frame_t::continuation</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -249,53 +356,24 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aca09385a601a5a67d3f693d80e5af9d3"></a>
+<a class="anchor" id="a6aef1d01f8432af6d4f1a27e08f5bf71"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::lock_span</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Lock span of this thread. </p>
-<p>Span of the longest spawned child of this thread. </p>
-
-</div>
-</div>
-<a class="anchor" id="ae60fc4a674edab77846cc13644dbce2e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">thread_frame_t::longest_child_lock_span</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Lock span of the longest spawned child of this thread. </p>
-
-</div>
-</div>
-<a class="anchor" id="a918b9f5fb8ee38933c676c4fad0ed0c9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> thread_frame_t::longest_child_span</td>
+          <td class="memname"><a class="el" href="classLockIntervals.html">LockIntervals</a> thread_frame_t::lock_intervals</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a class="anchor" id="a09d4cfdaa3e955e1afafda13d3ce96d5"></a>
+<a class="anchor" id="a343aa8737c72f8ec17a17fe94aca5000"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::longest_child_table</td>
+          <td class="memname">thread_frame_t::longest_child</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -304,31 +382,43 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a2aae767a21ca96e91469cf25b96f2c04"></a>
+<a class="anchor" id="a3847e35f8ad9962000a36ea7717e98b2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::prefix_span</td>
+          <td class="memname">thread_frame_t::longest_child_lock_wait_time</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Prefix span of this thread. </p>
+<p>Lock span of the longest spawned child of this thread. </p>
 
 </div>
 </div>
-<a class="anchor" id="a44642b094a10b2bcba8e6922da3badbd"></a>
+<a class="anchor" id="af5bc0f6b92fbfd2f68eb9b0d6ce61dff"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">thread_frame_t::prefix_table</td>
+          <td class="memname">thread_frame_t::prefix</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Prefix data for each call site in this thread. </p>
+
+</div>
+</div>
+<a class="anchor" id="a97c7deae8b63f90ac78f46e3b81e91e3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int thread_frame_t::spawned_children_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -343,18 +433,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The thread's ID. </p>
-
-</div>
-</div>
-<a class="anchor" id="a83c8754dd68ed9188b64d58223b6b4ea"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Types_8h.html#ae4578be081d6d3f12c8dca826f9781c3">TIME</a> thread_frame_t::thread_start_time</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

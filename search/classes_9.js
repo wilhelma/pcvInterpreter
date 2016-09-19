@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['joinevent',['JoinEvent',['../classJoinEvent.html',1,'']]],
-  ['joininfo',['JoinInfo',['../structJoinInfo.html',1,'']]]
+  ['newthreadevent',['NewThreadEvent',['../classNewThreadEvent.html',1,'']]],
+  ['newthreadinfo',['NewThreadInfo',['../structNewThreadInfo.html',1,'']]]
 ];

@@ -40,7 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -93,11 +92,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#friends">Friends</a> &#124;
 <a href="classSQLStatementIterator-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">SQLStatementIterator&lt; T &gt; Class Template Reference</div>  </div>
+<div class="title">SQLStatementIterator&lt; T &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__database.html">Database</a> &raquo; <a class="el" href="group__input.html">Input</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Iterates over the rows resulting from a database query.  
+<p>Iterates over the rows of the <a class="el" href="classQueryResult.html" title="Holds a prepared query statement and accesses its values. ">QueryResult</a> resulting from a database query.  
  <a href="classSQLStatementIterator.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="fwd_2SQLStatementIterator_8h_source.html">SQLStatementIterator.h</a>&gt;</code></p>
@@ -125,51 +124,50 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a254ee55da163801693094272a6e49549"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-increment operator.  <a href="#a254ee55da163801693094272a6e49549">More...</a><br /></td></tr>
 <tr class="separator:a254ee55da163801693094272a6e49549"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09cd0086cb14a148b5cf83a0c08ce2b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSQLStatementIterator.html">SQLStatementIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a09cd0086cb14a148b5cf83a0c08ce2b2">operator++</a> (int)</td></tr>
-<tr class="memdesc:a09cd0086cb14a148b5cf83a0c08ce2b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Post-increment operator (calls the pre-increment one).  <a href="#a09cd0086cb14a148b5cf83a0c08ce2b2">More...</a><br /></td></tr>
 <tr class="separator:a09cd0086cb14a148b5cf83a0c08ce2b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14c6ccb0008f9cdf5f2213f22e657a78"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a14c6ccb0008f9cdf5f2213f22e657a78"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structaccess__t.html">access_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a14c6ccb0008f9cdf5f2213f22e657a78">operator*</a> () const</td></tr>
-<tr class="memdesc:a14c6ccb0008f9cdf5f2213f22e657a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structaccess__t.html">access_t</a></code> specialization).  <a href="#a14c6ccb0008f9cdf5f2213f22e657a78">More...</a><br /></td></tr>
+<tr class="memdesc:a14c6ccb0008f9cdf5f2213f22e657a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structaccess__t.html" title="Holds the information contained in one row of the Access database table. ">access_t</a></code> specialization).  <a href="#a14c6ccb0008f9cdf5f2213f22e657a78">More...</a><br /></td></tr>
 <tr class="separator:a14c6ccb0008f9cdf5f2213f22e657a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96c5f3b8291b83d59752d55a90c99c91"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a96c5f3b8291b83d59752d55a90c99c91"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structcall__t.html">call_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a96c5f3b8291b83d59752d55a90c99c91">operator*</a> () const</td></tr>
-<tr class="memdesc:a96c5f3b8291b83d59752d55a90c99c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structcall__t.html">call_t</a></code> specialization).  <a href="#a96c5f3b8291b83d59752d55a90c99c91">More...</a><br /></td></tr>
+<tr class="memdesc:a96c5f3b8291b83d59752d55a90c99c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structcall__t.html" title="Holds the information contained in one row of the Call database table. ">call_t</a></code> specialization).  <a href="#a96c5f3b8291b83d59752d55a90c99c91">More...</a><br /></td></tr>
 <tr class="separator:a96c5f3b8291b83d59752d55a90c99c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adac110ea59926dd662d1807bd579c62c"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:adac110ea59926dd662d1807bd579c62c"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structfile__t.html">file_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#adac110ea59926dd662d1807bd579c62c">operator*</a> () const</td></tr>
-<tr class="memdesc:adac110ea59926dd662d1807bd579c62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structfile__t.html">file_t</a></code> specialization).  <a href="#adac110ea59926dd662d1807bd579c62c">More...</a><br /></td></tr>
+<tr class="memdesc:adac110ea59926dd662d1807bd579c62c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structfile__t.html" title="Holds the information contained in one row of the File database table. ">file_t</a></code> specialization).  <a href="#adac110ea59926dd662d1807bd579c62c">More...</a><br /></td></tr>
 <tr class="separator:adac110ea59926dd662d1807bd579c62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67cc1037a4d8b531b3391a902bab9ea0"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a67cc1037a4d8b531b3391a902bab9ea0"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structfunction__t.html">function_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a67cc1037a4d8b531b3391a902bab9ea0">operator*</a> () const</td></tr>
-<tr class="memdesc:a67cc1037a4d8b531b3391a902bab9ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structfunction__t.html">function_t</a></code> specialization).  <a href="#a67cc1037a4d8b531b3391a902bab9ea0">More...</a><br /></td></tr>
+<tr class="memdesc:a67cc1037a4d8b531b3391a902bab9ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structfunction__t.html" title="Holds the information contained in one row of the Function database table. ">function_t</a></code> specialization).  <a href="#a67cc1037a4d8b531b3391a902bab9ea0">More...</a><br /></td></tr>
 <tr class="separator:a67cc1037a4d8b531b3391a902bab9ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe7bc56ea1b5a7e66d1841c43e58db3b"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:abe7bc56ea1b5a7e66d1841c43e58db3b"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structinstruction__t.html">instruction_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#abe7bc56ea1b5a7e66d1841c43e58db3b">operator*</a> () const</td></tr>
-<tr class="memdesc:abe7bc56ea1b5a7e66d1841c43e58db3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structinstruction__t.html">instruction_t</a></code> specialization).  <a href="#abe7bc56ea1b5a7e66d1841c43e58db3b">More...</a><br /></td></tr>
+<tr class="memdesc:abe7bc56ea1b5a7e66d1841c43e58db3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a></code> specialization).  <a href="#abe7bc56ea1b5a7e66d1841c43e58db3b">More...</a><br /></td></tr>
 <tr class="separator:abe7bc56ea1b5a7e66d1841c43e58db3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b9f002aed36e6eb129f00829d34d75e"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a8b9f002aed36e6eb129f00829d34d75e"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structloopExecution__t.html">loopExecution_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a8b9f002aed36e6eb129f00829d34d75e">operator*</a> () const</td></tr>
-<tr class="memdesc:a8b9f002aed36e6eb129f00829d34d75e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloopExecution__t.html">loopExecution_t</a></code> specialization).  <a href="#a8b9f002aed36e6eb129f00829d34d75e">More...</a><br /></td></tr>
+<tr class="memdesc:a8b9f002aed36e6eb129f00829d34d75e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloopExecution__t.html" title="Holds the information contained in one row of the LoopExecution database table. ">loopExecution_t</a></code> specialization).  <a href="#a8b9f002aed36e6eb129f00829d34d75e">More...</a><br /></td></tr>
 <tr class="separator:a8b9f002aed36e6eb129f00829d34d75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaa88ad1b957970c5dcbd90500672c9f"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:aeaa88ad1b957970c5dcbd90500672c9f"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structloopIteration__t.html">loopIteration_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#aeaa88ad1b957970c5dcbd90500672c9f">operator*</a> () const</td></tr>
-<tr class="memdesc:aeaa88ad1b957970c5dcbd90500672c9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloopIteration__t.html">loopIteration_t</a></code> specialization).  <a href="#aeaa88ad1b957970c5dcbd90500672c9f">More...</a><br /></td></tr>
+<tr class="memdesc:aeaa88ad1b957970c5dcbd90500672c9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloopIteration__t.html" title="Holds the information contained in one row of the LoopIteration database table. ">loopIteration_t</a></code> specialization).  <a href="#aeaa88ad1b957970c5dcbd90500672c9f">More...</a><br /></td></tr>
 <tr class="separator:aeaa88ad1b957970c5dcbd90500672c9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b452617674b47ad3decb850501bdd78"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a2b452617674b47ad3decb850501bdd78"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structloop__t.html">loop_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a2b452617674b47ad3decb850501bdd78">operator*</a> () const</td></tr>
-<tr class="memdesc:a2b452617674b47ad3decb850501bdd78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloop__t.html">loop_t</a></code> specialization).  <a href="#a2b452617674b47ad3decb850501bdd78">More...</a><br /></td></tr>
+<tr class="memdesc:a2b452617674b47ad3decb850501bdd78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structloop__t.html" title="Holds the information contained in one row of the Loop database table. ">loop_t</a></code> specialization).  <a href="#a2b452617674b47ad3decb850501bdd78">More...</a><br /></td></tr>
 <tr class="separator:a2b452617674b47ad3decb850501bdd78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a174221254c3ed71f0865f139a7cada41"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a174221254c3ed71f0865f139a7cada41"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structreference__t.html">reference_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a174221254c3ed71f0865f139a7cada41">operator*</a> () const</td></tr>
-<tr class="memdesc:a174221254c3ed71f0865f139a7cada41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structreference__t.html">reference_t</a></code> specialization).  <a href="#a174221254c3ed71f0865f139a7cada41">More...</a><br /></td></tr>
+<tr class="memdesc:a174221254c3ed71f0865f139a7cada41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structreference__t.html" title="Holds the information contained in one row of the Reference database table. ">reference_t</a></code> specialization).  <a href="#a174221254c3ed71f0865f139a7cada41">More...</a><br /></td></tr>
 <tr class="separator:a174221254c3ed71f0865f139a7cada41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25b661681615abbc55f47b6dab1c6ae8"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a25b661681615abbc55f47b6dab1c6ae8"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structsegment__t.html">segment_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a25b661681615abbc55f47b6dab1c6ae8">operator*</a> () const</td></tr>
-<tr class="memdesc:a25b661681615abbc55f47b6dab1c6ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structsegment__t.html">segment_t</a></code> specialization).  <a href="#a25b661681615abbc55f47b6dab1c6ae8">More...</a><br /></td></tr>
+<tr class="memdesc:a25b661681615abbc55f47b6dab1c6ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structsegment__t.html" title="Holds the information contained in one row of the Segment database table. ">segment_t</a></code> specialization).  <a href="#a25b661681615abbc55f47b6dab1c6ae8">More...</a><br /></td></tr>
 <tr class="separator:a25b661681615abbc55f47b6dab1c6ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6836eb0477aadd6099cc93db07f5038e"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:a6836eb0477aadd6099cc93db07f5038e"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="structthread__t.html">thread_t</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a6836eb0477aadd6099cc93db07f5038e">operator*</a> () const</td></tr>
-<tr class="memdesc:a6836eb0477aadd6099cc93db07f5038e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structthread__t.html">thread_t</a></code> specialization).  <a href="#a6836eb0477aadd6099cc93db07f5038e">More...</a><br /></td></tr>
+<tr class="memdesc:a6836eb0477aadd6099cc93db07f5038e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deference operator (<code>const <a class="el" href="structthread__t.html" title="Holds the information contained in one row of the Thread database table. ">thread_t</a></code> specialization).  <a href="#a6836eb0477aadd6099cc93db07f5038e">More...</a><br /></td></tr>
 <tr class="separator:a6836eb0477aadd6099cc93db07f5038e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -187,7 +185,7 @@ Private Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a2932ed5ef408eb2c0de9dc1a82765fbe"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classQueryResult.html">QueryResult</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSQLStatementIterator.html#a2932ed5ef408eb2c0de9dc1a82765fbe">Query_</a></td></tr>
-<tr class="memdesc:a2932ed5ef408eb2c0de9dc1a82765fbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to <a class="el" href="classQueryResult.html" title="Manages the result of a query to a database. ">QueryResult</a>, which manages the query result.  <a href="#a2932ed5ef408eb2c0de9dc1a82765fbe">More...</a><br /></td></tr>
+<tr class="memdesc:a2932ed5ef408eb2c0de9dc1a82765fbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to <a class="el" href="classQueryResult.html" title="Holds a prepared query statement and accesses its values. ">QueryResult</a>, which manages the query result.  <a href="#a2932ed5ef408eb2c0de9dc1a82765fbe">More...</a><br /></td></tr>
 <tr class="separator:a2932ed5ef408eb2c0de9dc1a82765fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
@@ -200,7 +198,7 @@ Friends</h2></td></tr>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class SQLStatementIterator&lt; T &gt;</h3>
 
-<p>Iterates over the rows resulting from a database query. </p>
+<p>Iterates over the rows of the <a class="el" href="classQueryResult.html" title="Holds a prepared query statement and accesses its values. ">QueryResult</a> resulting from a database query. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aef31a4fb0c3d2eb1394e04439949e249"></a>
 <div class="memitem">
@@ -227,7 +225,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>Constructor. </p>
-<p>Initializes the <code>Query_</code> pointer and make the first step. </p><dl class="params"><dt>Parameters</dt><dd>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">query</td><td>The query result manager statement to read values in. </td></tr>
   </table>
@@ -326,7 +324,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structaccess__t.html">access_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structaccess__t.html" title="Holds the information contained in one row of the Access database table. ">access_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -345,7 +343,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structcall__t.html">call_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structcall__t.html" title="Holds the information contained in one row of the Call database table. ">call_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -364,7 +362,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structfile__t.html">file_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structfile__t.html" title="Holds the information contained in one row of the File database table. ">file_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -383,7 +381,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structfunction__t.html">function_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structfunction__t.html" title="Holds the information contained in one row of the Function database table. ">function_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -402,7 +400,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structinstruction__t.html">instruction_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structinstruction__t.html" title="Holds the information contained in one row of the Instruction database table. ">instruction_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -421,7 +419,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structloopExecution__t.html">loopExecution_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structloopExecution__t.html" title="Holds the information contained in one row of the LoopExecution database table. ">loopExecution_t</a></code> specialization). </p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Define types for <code>parent</code> and <code>duration</code> </dd></dl>
 
 </div>
@@ -441,7 +439,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structloopIteration__t.html">loopIteration_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structloopIteration__t.html" title="Holds the information contained in one row of the LoopIteration database table. ">loopIteration_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -460,7 +458,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structloop__t.html">loop_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structloop__t.html" title="Holds the information contained in one row of the Loop database table. ">loop_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -479,7 +477,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structreference__t.html">reference_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structreference__t.html" title="Holds the information contained in one row of the Reference database table. ">reference_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -498,7 +496,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structsegment__t.html">segment_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structsegment__t.html" title="Holds the information contained in one row of the Segment database table. ">segment_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -517,7 +515,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Deference operator (<code>const <a class="el" href="structthread__t.html">thread_t</a></code> specialization). </p>
+<p>Deference operator (<code>const <a class="el" href="structthread__t.html" title="Holds the information contained in one row of the Thread database table. ">thread_t</a></code> specialization). </p>
 
 </div>
 </div>
@@ -537,7 +535,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Pre-increment operator. </p>
-<p>Reads the next line of the query statement. When the query is over, the iterator is set to <code><a class="el" href="classSQLStatementIterator.html#a47ae8a8ad38fdd8210861c94b55dd722" title="Constructs and returns and empty iterator. ">end()</a></code> and returned. If errors occurr, an exception is thrown. </p>
+<p>Reads the next line of the query statement. When the query is over, the iterator is set to <code><a class="el" href="classSQLStatementIterator.html#a47ae8a8ad38fdd8210861c94b55dd722" title="Constructs and returns and empty iterator. ">end()</a></code> and returned. </p><dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classSQLException.html" title="Exception class for SQL-related objects. ">SQLException</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -556,8 +559,12 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Post-increment operator (calls the pre-increment one). </p>
+<p>Post-increment operator (calls the pre-increment one). </p><dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classSQLException.html" title="Exception class for SQL-related objects. ">SQLException</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -650,7 +657,8 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Pointer to <a class="el" href="classQueryResult.html" title="Manages the result of a query to a database. ">QueryResult</a>, which manages the query result. </p>
+<p>Pointer to <a class="el" href="classQueryResult.html" title="Holds a prepared query statement and accesses its values. ">QueryResult</a>, which manages the query result. </p>
+<dl class="section attention"><dt>Attention</dt><dd>This can't be a <code>unique_ptr</code> because the iterator needs to be copied in <code>std::copy</code>. </dd></dl>
 
 </div>
 </div>
