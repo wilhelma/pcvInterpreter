@@ -57,10 +57,11 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
-	static const bool DEBUG_OUTPUT = 1;
+	static const bool DEBUG_OUTPUT = 0;
 	static const bool COMMAND_LINE_OUTPUT = 1;
 	static const bool JSON_OUTPUT = 1;
 	static const bool GRAPH_OUTPUT = 1;
+	static const bool GRAPH_RETURNS = 0;
 
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
@@ -75,6 +76,10 @@ class ParasiteTool : public Tool {
 	
 	vertex_descr_type add_local_work(TIME strand_end_time, 
 	  				   				 std::string end_vertex_label);
+
+	void add_return_local_work(TIME strand_end_time, 
+	  				   		   std::string end_vertex_label);
+
 
 	void add_start_time(CALLSITE call_site, TIME start_time);
 

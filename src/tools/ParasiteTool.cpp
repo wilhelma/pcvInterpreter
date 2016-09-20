@@ -87,8 +87,22 @@ vertex_descr_type ParasiteTool::add_local_work(TIME strand_end_time,
 	stacks.bottomThread()->continuation.add(local_work);
 	add_down_stack(local_work);
 	print_time("local work", local_work);
-	print_time("last_event_time", last_event_time);
 	return add_edge(local_work, end_vertex_label);
+}
+
+void ParasiteTool::add_return_local_work(TIME strand_end_time, 
+	  						             std::string end_vertex_label) {
+
+	print_event_start(end_vertex_label);
+	print_time("strand_end_time", strand_end_time);
+	print_time("last_event_time", last_event_time);
+	assert(strand_end_time >= last_event_time);
+	TIME local_work = strand_end_time - last_event_time;
+	last_event_time = strand_end_time;
+	work.add(local_work);
+	stacks.bottomThread()->continuation.add(local_work);
+	add_down_stack(local_work);
+	print_time("local work", local_work);
 }
 
 void ParasiteTool::endProfileCalculations() {
@@ -236,7 +250,10 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	const ReturnInfo* _info(e->getInfo());
 	FUN_SG fun_sg = stacks.bottomFunction()->function_signature;
 	std::string return_label = "R_" + std::to_string(static_cast<unsigned>(_info->call)) + "_" + fun_sg;
-	add_local_work(_info->endTime, return_label);
+	if (GRAPH_RETURNS)
+		add_local_work(_info->endTime, return_label);
+	else
+		add_return_local_work(_info->endTime, return_label);
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting return Event with signature " <<
 			stacks.bottomFunction()->function_signature.c_str() << std::endl;

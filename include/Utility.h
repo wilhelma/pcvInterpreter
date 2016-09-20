@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#define PRINT 1
+#define PRINT 0
 
 static inline void print_time(std::string str, TIME time) {
     if (PRINT) {
