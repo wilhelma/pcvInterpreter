@@ -57,7 +57,7 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
-	static const bool DEBUG_OUTPUT = 0;
+	static const bool DEBUG_OUTPUT = 1;
 	static const bool COMMAND_LINE_OUTPUT = 1;
 	static const bool JSON_OUTPUT = 1;
 	static const bool GRAPH_OUTPUT = 1;
@@ -88,9 +88,9 @@ class ParasiteTool : public Tool {
 	void printOverallProfile();
 
 
-	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
+	vertex_descr_type add_edge(std::string end_vertex_label);
 
-	void add_join_edges(vertex_descr_type start, std::string label, TIME local_event_work);
+	void add_join_edges(vertex_descr_type start, std::string label);
 
 	TIME concur(TIME serial_time);
 

@@ -39,18 +39,20 @@ ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(
 	jsonWriter.name = name;
 }
 
-vertex_descr_type ParasiteTool::add_edge(TIME length, std::string end_vertex_label) {
+vertex_descr_type ParasiteTool::add_edge(std::string end_vertex_label) {
 
 	vertex_descr_type new_vertex = 
-		thread_graph.add_edge(stacks.bottomThread()->last_vertex, length,
+		thread_graph.add_edge(stacks.bottomThread()->last_vertex,
+							  stacks.bottomThread()->current_edge_length,
 							  end_vertex_label);
+	stacks.bottomThread()->current_edge_length = static_cast<TIME>(0);
 	stacks.bottomThread()->last_vertex = new_vertex;
 	return new_vertex;
 }
 
-void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label, TIME local_event_work) {
+void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
 
-	add_edge(local_event_work, label);
+	add_edge(label);
 	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
@@ -85,6 +87,7 @@ void ParasiteTool::add_local_work(TIME strand_end_time,
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
+	stacks.bottomThread()->current_edge_length += local_work;
 	add_down_stack(local_work);
 	print_time("local work", local_work);
 }
@@ -188,20 +191,15 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 		stacks.bottomThread()->spawned_children_count += 1;
 		std::string new_thread_label = "TS_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId));
 		add_local_work(_info->startTime, new_thread_label);
-		TIME local_event_work = _info->startTime - stacks.bottomThread()->last_event_time;
-		assert(_info->startTime >= stacks.bottomThread()->last_event_time);
-		stacks.bottomThread()->last_event_time = _info->startTime;
-		thread_start_vertex = add_edge(local_event_work, new_thread_label);
+		thread_start_vertex = add_edge(new_thread_label);
 	} else {
 		thread_start_vertex = thread_graph.last_vertex;
 		last_event_time = _info->startTime;
-		stacks.bottomThread()->last_event_time = _info->startTime;
 	}
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
 		                thread_start_vertex);
-
 	print_event_end("NEW THREAD");
 }
 
@@ -213,11 +211,9 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	bottom_thread->spawned_children_count -= 1;
 	std::string join_label = "JOIN_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId)) + "_" + 
 								  std::to_string(static_cast<unsigned>(_info->parentThread->threadId));
-
-	TIME local_event_work = static_cast<TIME>(0); //info->joinTime - stacks.bottomThread()->last_event_time;
-	//assert(_info->joinTime >= last_thread_event_time);
-	stacks.bottomThread()->last_event_time = static_cast<TIME>(0);// _info->joinTime;
-	add_join_edges(bottom_thread->join_vertex_list.front(), join_label, local_event_work);
+	
+	add_local_work(_info->joinTime, join_label);				  
+	add_join_edges(bottom_thread->join_vertex_list.front(), join_label);
 	bottom_thread->join_vertex_list.pop_front();
 
 	if (bottom_thread->spawned_children_count == 0) {
@@ -266,10 +262,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	const ThreadEndInfo* _info(e->getInfo());
 	std::string thread_end_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
 	add_local_work(_info->endTime, thread_end_label);
-	TIME local_event_work = _info->endTime - stacks.bottomThread()->last_event_time;
-	stacks.bottomThread()->last_event_time = _info->endTime;
-	assert(_info->endTime >= stacks.bottomThread()->last_event_time);
-	add_edge(local_event_work, thread_end_label);
+	add_edge(thread_end_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
@@ -294,7 +287,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	}
 
 	parent_thread->add_child_locks(ending_thread);
-	stacks.thread_pop();
+	stacks.thread_pop();;
 	print_event_end("THREAD END");
 }
 

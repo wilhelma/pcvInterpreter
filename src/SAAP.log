@@ -11,12 +11,12 @@
 11: <trace> Rows in Thread:        5
 12: <debug> NewThreadEvent:
  > Thread id: 0
- > Start time:  1173163633
+ > Start time:  67815589156818545
  > Runtime      978905061
 
 13: <debug> CallEvent:
  > Call Site:  24
- > Start Time  1849268702
+ > Start Time  67815589832923614
  > Runtime:    249431364
  > Fun. sig.:  main
  > Fun. type:  8
@@ -25,7 +25,7 @@
 
 14: <debug> CallEvent:
  > Call Site:  831
- > Start Time  1850088790
+ > Start Time  67815589833743702
  > Runtime:    37244
  > Fun. sig.:  cur_time
  > Fun. type:  8
@@ -34,11 +34,11 @@
 
 15: <debug> ReturnEvent:
  > Call ID: 2
- > End time: 1850126034
+ > End time: 67815589833780946
 
 16: <debug> CallEvent:
  > Call Site:  828
- > Start Time  1851663358
+ > Start Time  67815589835318270
  > Runtime:    149451576
  > Fun. sig.:  nqueen
  > Fun. type:  8
@@ -47,7 +47,7 @@
 
 17: <debug> CallEvent:
  > Call Site:  788
- > Start Time  1894608834
+ > Start Time  67815589878263746
  > Runtime:    105609240
  > Fun. sig.:  nqw_pth_master
  > Fun. type:  8
@@ -56,24 +56,24 @@
 
 18: <debug> CallEvent:
  > Call Site:  571
- > Start Time  1895355862
+ > Start Time  67815589879010774
  > Runtime:    63484668
  > Fun. sig.:  mk_work_queue
  > Fun. type:  8
  > File name:  /nqueens.c
  > File path:  /shared/tests/nqueens.c
 
-19: <debug> AcquireEvent:1900522390
+19: <debug> AcquireEvent:67815589884177302
 
-20: <debug> ReleaseEvent:1911912670
+20: <debug> ReleaseEvent:67815589895567582
 
 21: <debug> ReturnEvent:
  > Call ID: 5
- > End time: 1958840530
+ > End time: 67815589942495442
 
 22: <debug> CallEvent:
  > Call Site:  565
- > Start Time  1960245498
+ > Start Time  67815589943900410
  > Runtime:    7425764
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -82,7 +82,7 @@
 
 23: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1962688378
+ > Start Time  67815589946343290
  > Runtime:    4571220
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -91,7 +91,7 @@
 
 24: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1962718818
+ > Start Time  67815589946373730
  > Runtime:    3388576
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -100,7 +100,7 @@
 
 25: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1963885818
+ > Start Time  67815589947540730
  > Runtime:    1353008
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -109,15 +109,15 @@
 
 26: <debug> ReturnEvent:
  > Call ID: 11
- > End time: 1965238826
+ > End time: 67815589948893738
 
 27: <debug> ReturnEvent:
  > Call ID: 10
- > End time: 1966107394
+ > End time: 67815589949762306
 
 28: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967164214
+ > Start Time  67815589950819126
  > Runtime:    51048
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -126,7 +126,7 @@
 
 29: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967192982
+ > Start Time  67815589950847894
  > Runtime:    11032
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -135,15 +135,15 @@
 
 30: <debug> ReturnEvent:
  > Call ID: 13
- > End time: 1967204014
+ > End time: 67815589950858926
 
 31: <debug> ReturnEvent:
  > Call ID: 12
- > End time: 1967215262
+ > End time: 67815589950870174
 
 32: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967224614
+ > Start Time  67815589950879526
  > Runtime:    25804
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -152,7 +152,7 @@
 
 33: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967233018
+ > Start Time  67815589950887930
  > Runtime:    8736
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -161,19 +161,19 @@
 
 34: <debug> ReturnEvent:
  > Call ID: 15
- > End time: 1967241754
+ > End time: 67815589950896666
 
 35: <debug> ReturnEvent:
  > Call ID: 14
- > End time: 1967250418
+ > End time: 67815589950905330
 
 36: <debug> ReturnEvent:
  > Call ID: 9
- > End time: 1967259598
+ > End time: 67815589950914510
 
 37: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967296138
+ > Start Time  67815589950951050
  > Runtime:    84432
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -182,7 +182,7 @@
 
 38: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967310638
+ > Start Time  67815589950965550
  > Runtime:    27688
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -191,7 +191,7 @@
 
 39: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967319686
+ > Start Time  67815589950974598
  > Runtime:    9392
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -200,15 +200,15 @@
 
 40: <debug> ReturnEvent:
  > Call ID: 18
- > End time: 1967329078
+ > End time: 67815589950983990
 
 41: <debug> ReturnEvent:
  > Call ID: 17
- > End time: 1967338326
+ > End time: 67815589950993238
 
 42: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967346582
+ > Start Time  67815589951001494
  > Runtime:    25560
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -217,7 +217,7 @@
 
 43: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967354806
+ > Start Time  67815589951009718
  > Runtime:    8824
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -226,19 +226,19 @@
 
 44: <debug> ReturnEvent:
  > Call ID: 20
- > End time: 1967363630
+ > End time: 67815589951018542
 
 45: <debug> ReturnEvent:
  > Call ID: 19
- > End time: 1967372142
+ > End time: 67815589951027054
 
 46: <debug> ReturnEvent:
  > Call ID: 16
- > End time: 1967380570
+ > End time: 67815589951035482
 
 47: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967388770
+ > Start Time  67815589951043682
  > Runtime:    75084
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -247,7 +247,7 @@
 
 48: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967397026
+ > Start Time  67815589951051938
  > Runtime:    25440
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -256,7 +256,7 @@
 
 49: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967405342
+ > Start Time  67815589951060254
  > Runtime:    8596
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -265,15 +265,15 @@
 
 50: <debug> ReturnEvent:
  > Call ID: 23
- > End time: 1967413938
+ > End time: 67815589951068850
 
 51: <debug> ReturnEvent:
  > Call ID: 22
- > End time: 1967422466
+ > End time: 67815589951077378
 
 52: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967430510
+ > Start Time  67815589951085422
  > Runtime:    25088
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -282,7 +282,7 @@
 
 53: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967438582
+ > Start Time  67815589951093494
  > Runtime:    8532
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -291,19 +291,19 @@
 
 54: <debug> ReturnEvent:
  > Call ID: 25
- > End time: 1967447114
+ > End time: 67815589951102026
 
 55: <debug> ReturnEvent:
  > Call ID: 24
- > End time: 1967455598
+ > End time: 67815589951110510
 
 56: <debug> ReturnEvent:
  > Call ID: 21
- > End time: 1967463854
+ > End time: 67815589951118766
 
 57: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967471818
+ > Start Time  67815589951126730
  > Runtime:    74392
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -312,7 +312,7 @@
 
 58: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967479850
+ > Start Time  67815589951134762
  > Runtime:    24984
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -321,7 +321,7 @@
 
 59: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967487886
+ > Start Time  67815589951142798
  > Runtime:    8512
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -330,15 +330,15 @@
 
 60: <debug> ReturnEvent:
  > Call ID: 28
- > End time: 1967496398
+ > End time: 67815589951151310
 
 61: <debug> ReturnEvent:
  > Call ID: 27
- > End time: 1967504834
+ > End time: 67815589951159746
 
 62: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967512762
+ > Start Time  67815589951167674
  > Runtime:    25216
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -347,7 +347,7 @@
 
 63: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967520830
+ > Start Time  67815589951175742
  > Runtime:    8576
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -356,19 +356,19 @@
 
 64: <debug> ReturnEvent:
  > Call ID: 30
- > End time: 1967529406
+ > End time: 67815589951184318
 
 65: <debug> ReturnEvent:
  > Call ID: 29
- > End time: 1967537978
+ > End time: 67815589951192890
 
 66: <debug> ReturnEvent:
  > Call ID: 26
- > End time: 1967546210
+ > End time: 67815589951201122
 
 67: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967554426
+ > Start Time  67815589951209338
  > Runtime:    108520
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -377,7 +377,7 @@
 
 68: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967562582
+ > Start Time  67815589951217494
  > Runtime:    25332
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -386,7 +386,7 @@
 
 69: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967570746
+ > Start Time  67815589951225658
  > Runtime:    8532
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -395,15 +395,15 @@
 
 70: <debug> ReturnEvent:
  > Call ID: 33
- > End time: 1967579278
+ > End time: 67815589951234190
 
 71: <debug> ReturnEvent:
  > Call ID: 32
- > End time: 1967587914
+ > End time: 67815589951242826
 
 72: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967595954
+ > Start Time  67815589951250866
  > Runtime:    25440
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -412,7 +412,7 @@
 
 73: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967604454
+ > Start Time  67815589951259366
  > Runtime:    8528
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -421,15 +421,15 @@
 
 74: <debug> ReturnEvent:
  > Call ID: 35
- > End time: 1967612982
+ > End time: 67815589951267894
 
 75: <debug> ReturnEvent:
  > Call ID: 34
- > End time: 1967621394
+ > End time: 67815589951276306
 
 76: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1967629410
+ > Start Time  67815589951284322
  > Runtime:    25320
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -438,7 +438,7 @@
 
 77: <debug> CallEvent:
  > Call Site:  442
- > Start Time  1967637798
+ > Start Time  67815589951292710
  > Runtime:    8360
  > Fun. sig.:  work_queue_add
  > Fun. type:  8
@@ -447,41 +447,41 @@
 
 78: <debug> ReturnEvent:
  > Call ID: 37
- > End time: 1967646158
+ > End time: 67815589951301070
 
 79: <debug> ReturnEvent:
  > Call ID: 36
- > End time: 1967654730
+ > End time: 67815589951309642
 
 80: <debug> ReturnEvent:
  > Call ID: 31
- > End time: 1967662946
+ > End time: 67815589951317858
 
 81: <debug> ReturnEvent:
  > Call ID: 8
- > End time: 1967671262
+ > End time: 67815589951326174
 
 82: <debug> NewThreadEvent:
  > Thread id: 1
- > Start time:  1974053454
+ > Start time:  67815589957708366
  > Runtime      13636736
 
 83: <debug> CallEvent:
  > Call Site:  599
- > Start Time  1975051510
+ > Start Time  67815589958706422
  > Runtime:    12556596
  > Fun. sig.:  nq_worker
  > Fun. type:  8
  > File name:  /nqueens.c
  > File path:  /shared/tests/nqueens.c
 
-84: <debug> AcquireEvent:1977004862
+84: <debug> AcquireEvent:67815589960659774
 
-85: <debug> ReleaseEvent:1979955958
+85: <debug> ReleaseEvent:67815589963610870
 
 86: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1981471254
+ > Start Time  67815589965126166
  > Runtime:    330324
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -490,7 +490,7 @@
 
 87: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1981501290
+ > Start Time  67815589965156202
  > Runtime:    291024
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -499,7 +499,7 @@
 
 88: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1981510762
+ > Start Time  67815589965165674
  > Runtime:    271648
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -508,7 +508,7 @@
 
 89: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1981519310
+ > Start Time  67815589965174222
  > Runtime:    238348
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -517,27 +517,27 @@
 
 90: <debug> ReturnEvent:
  > Call ID: 44
- > End time: 1981757658
+ > End time: 67815589965412570
 
 91: <debug> ReturnEvent:
  > Call ID: 43
- > End time: 1981782410
+ > End time: 67815589965437322
 
 92: <debug> ReturnEvent:
  > Call ID: 42
- > End time: 1981792314
+ > End time: 67815589965447226
 
 93: <debug> ReturnEvent:
  > Call ID: 41
- > End time: 1981801578
+ > End time: 67815589965456490
 
-94: <debug> AcquireEvent:1984184842
+94: <debug> AcquireEvent:67815589967839754
 
-95: <debug> ReleaseEvent:1985432050
+95: <debug> ReleaseEvent:67815589969086962
 
 96: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1985439730
+ > Start Time  67815589969094642
  > Runtime:    64068
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -546,7 +546,7 @@
 
 97: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985450418
+ > Start Time  67815589969105330
  > Runtime:    44980
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -555,7 +555,7 @@
 
 98: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985459070
+ > Start Time  67815589969113982
  > Runtime:    27404
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -564,7 +564,7 @@
 
 99: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985467314
+ > Start Time  67815589969122226
  > Runtime:    9400
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -573,27 +573,27 @@
 
 100: <debug> ReturnEvent:
  > Call ID: 50
- > End time: 1985476714
+ > End time: 67815589969131626
 
 101: <debug> ReturnEvent:
  > Call ID: 49
- > End time: 1985486474
+ > End time: 67815589969141386
 
 102: <debug> ReturnEvent:
  > Call ID: 48
- > End time: 1985495398
+ > End time: 67815589969150310
 
 103: <debug> ReturnEvent:
  > Call ID: 47
- > End time: 1985503798
+ > End time: 67815589969158710
 
-104: <debug> AcquireEvent:1985522558
+104: <debug> AcquireEvent:67815589969177470
 
-105: <debug> ReleaseEvent:1985536874
+105: <debug> ReleaseEvent:67815589969191786
 
 106: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1985541574
+ > Start Time  67815589969196486
  > Runtime:    55192
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -602,7 +602,7 @@
 
 107: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985550206
+ > Start Time  67815589969205118
  > Runtime:    8488
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -611,19 +611,19 @@
 
 108: <debug> ReturnEvent:
  > Call ID: 54
- > End time: 1985558694
+ > End time: 67815589969213606
 
 109: <debug> ReturnEvent:
  > Call ID: 53
- > End time: 1985596766
+ > End time: 67815589969251678
 
-110: <debug> AcquireEvent:1985622254
+110: <debug> AcquireEvent:67815589969277166
 
-111: <debug> ReleaseEvent:1985636314
+111: <debug> ReleaseEvent:67815589969291226
 
 112: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1985641118
+ > Start Time  67815589969296030
  > Runtime:    78120
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -632,7 +632,7 @@
 
 113: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985649878
+ > Start Time  67815589969304790
  > Runtime:    60700
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -641,7 +641,7 @@
 
 114: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985658106
+ > Start Time  67815589969313018
  > Runtime:    43732
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -650,7 +650,7 @@
 
 115: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985682626
+ > Start Time  67815589969337538
  > Runtime:    10068
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -659,27 +659,27 @@
 
 116: <debug> ReturnEvent:
  > Call ID: 60
- > End time: 1985692694
+ > End time: 67815589969347606
 
 117: <debug> ReturnEvent:
  > Call ID: 59
- > End time: 1985701838
+ > End time: 67815589969356750
 
 118: <debug> ReturnEvent:
  > Call ID: 58
- > End time: 1985710578
+ > End time: 67815589969365490
 
 119: <debug> ReturnEvent:
  > Call ID: 57
- > End time: 1985719238
+ > End time: 67815589969374150
 
-120: <debug> AcquireEvent:1985736226
+120: <debug> AcquireEvent:67815589969391138
 
-121: <debug> ReleaseEvent:1985749578
+121: <debug> ReleaseEvent:67815589969404490
 
 122: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1985754098
+ > Start Time  67815589969409010
  > Runtime:    107240
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -688,7 +688,7 @@
 
 123: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985762574
+ > Start Time  67815589969417486
  > Runtime:    25308
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -697,7 +697,7 @@
 
 124: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985770558
+ > Start Time  67815589969425470
  > Runtime:    8604
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -706,15 +706,15 @@
 
 125: <debug> ReturnEvent:
  > Call ID: 65
- > End time: 1985779162
+ > End time: 67815589969434074
 
 126: <debug> ReturnEvent:
  > Call ID: 64
- > End time: 1985787882
+ > End time: 67815589969442794
 
 127: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985796314
+ > Start Time  67815589969451226
  > Runtime:    56480
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -723,7 +723,7 @@
 
 128: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985811610
+ > Start Time  67815589969466522
  > Runtime:    32400
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -732,7 +732,7 @@
 
 129: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985826494
+ > Start Time  67815589969481406
  > Runtime:    8960
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -741,27 +741,27 @@
 
 130: <debug> ReturnEvent:
  > Call ID: 68
- > End time: 1985835454
+ > End time: 67815589969490366
 
 131: <debug> ReturnEvent:
  > Call ID: 67
- > End time: 1985844010
+ > End time: 67815589969498922
 
 132: <debug> ReturnEvent:
  > Call ID: 66
- > End time: 1985852794
+ > End time: 67815589969507706
 
 133: <debug> ReturnEvent:
  > Call ID: 63
- > End time: 1985861338
+ > End time: 67815589969516250
 
-134: <debug> AcquireEvent:1985878790
+134: <debug> AcquireEvent:67815589969533702
 
-135: <debug> ReleaseEvent:1985892086
+135: <debug> ReleaseEvent:67815589969546998
 
 136: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1985896578
+ > Start Time  67815589969551490
  > Runtime:    96952
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -770,7 +770,7 @@
 
 137: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985905038
+ > Start Time  67815589969559950
  > Runtime:    42720
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -779,7 +779,7 @@
 
 138: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985913402
+ > Start Time  67815589969568314
  > Runtime:    25764
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -788,7 +788,7 @@
 
 139: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1985921778
+ > Start Time  67815589969576690
  > Runtime:    8616
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -797,27 +797,27 @@
 
 140: <debug> ReturnEvent:
  > Call ID: 74
- > End time: 1985930394
+ > End time: 67815589969585306
 
 141: <debug> ReturnEvent:
  > Call ID: 73
- > End time: 1985939166
+ > End time: 67815589969594078
 
 142: <debug> ReturnEvent:
  > Call ID: 72
- > End time: 1985947758
+ > End time: 67815589969602670
 
 143: <debug> ReturnEvent:
  > Call ID: 71
- > End time: 1985993530
+ > End time: 67815589969648442
 
-144: <debug> AcquireEvent:1986012598
+144: <debug> AcquireEvent:67815589969667510
 
-145: <debug> ReleaseEvent:1986026398
+145: <debug> ReleaseEvent:67815589969681310
 
 146: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986031018
+ > Start Time  67815589969685930
  > Runtime:    63540
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -826,7 +826,7 @@
 
 147: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986039598
+ > Start Time  67815589969694510
  > Runtime:    46644
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -835,7 +835,7 @@
 
 148: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986047742
+ > Start Time  67815589969702654
  > Runtime:    29996
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -844,7 +844,7 @@
 
 149: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986055762
+ > Start Time  67815589969710674
  > Runtime:    13356
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -853,27 +853,27 @@
 
 150: <debug> ReturnEvent:
  > Call ID: 80
- > End time: 1986069118
+ > End time: 67815589969724030
 
 151: <debug> ReturnEvent:
  > Call ID: 79
- > End time: 1986077738
+ > End time: 67815589969732650
 
 152: <debug> ReturnEvent:
  > Call ID: 78
- > End time: 1986086242
+ > End time: 67815589969741154
 
 153: <debug> ReturnEvent:
  > Call ID: 77
- > End time: 1986094558
+ > End time: 67815589969749470
 
-154: <debug> AcquireEvent:1986112198
+154: <debug> AcquireEvent:67815589969767110
 
-155: <debug> ReleaseEvent:1986125438
+155: <debug> ReleaseEvent:67815589969780350
 
 156: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986130006
+ > Start Time  67815589969784918
  > Runtime:    93864
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -882,7 +882,7 @@
 
 157: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986138702
+ > Start Time  67815589969793614
  > Runtime:    42588
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -891,7 +891,7 @@
 
 158: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986146846
+ > Start Time  67815589969801758
  > Runtime:    25884
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -900,7 +900,7 @@
 
 159: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986155298
+ > Start Time  67815589969810210
  > Runtime:    8808
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -909,19 +909,19 @@
 
 160: <debug> ReturnEvent:
  > Call ID: 86
- > End time: 1986164106
+ > End time: 67815589969819018
 
 161: <debug> ReturnEvent:
  > Call ID: 85
- > End time: 1986172730
+ > End time: 67815589969827642
 
 162: <debug> ReturnEvent:
  > Call ID: 84
- > End time: 1986181290
+ > End time: 67815589969836202
 
 163: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986189414
+ > Start Time  67815589969844326
  > Runtime:    26140
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -930,7 +930,7 @@
 
 164: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986198006
+ > Start Time  67815589969852918
  > Runtime:    8988
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -939,23 +939,23 @@
 
 165: <debug> ReturnEvent:
  > Call ID: 88
- > End time: 1986206994
+ > End time: 67815589969861906
 
 166: <debug> ReturnEvent:
  > Call ID: 87
- > End time: 1986215554
+ > End time: 67815589969870466
 
 167: <debug> ReturnEvent:
  > Call ID: 83
- > End time: 1986223870
+ > End time: 67815589969878782
 
-168: <debug> AcquireEvent:1986241326
+168: <debug> AcquireEvent:67815589969896238
 
-169: <debug> ReleaseEvent:1986254394
+169: <debug> ReleaseEvent:67815589969909306
 
 170: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986258842
+ > Start Time  67815589969913754
  > Runtime:    60832
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -964,7 +964,7 @@
 
 171: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986267422
+ > Start Time  67815589969922334
  > Runtime:    43844
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -973,7 +973,7 @@
 
 172: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986275530
+ > Start Time  67815589969930442
  > Runtime:    27304
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -982,7 +982,7 @@
 
 173: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986283826
+ > Start Time  67815589969938738
  > Runtime:    8432
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -991,27 +991,27 @@
 
 174: <debug> ReturnEvent:
  > Call ID: 94
- > End time: 1986292258
+ > End time: 67815589969947170
 
 175: <debug> ReturnEvent:
  > Call ID: 93
- > End time: 1986302834
+ > End time: 67815589969957746
 
 176: <debug> ReturnEvent:
  > Call ID: 92
- > End time: 1986311266
+ > End time: 67815589969966178
 
 177: <debug> ReturnEvent:
  > Call ID: 91
- > End time: 1986319674
+ > End time: 67815589969974586
 
-178: <debug> AcquireEvent:1986337126
+178: <debug> AcquireEvent:67815589969992038
 
-179: <debug> ReleaseEvent:1986350410
+179: <debug> ReleaseEvent:67815589970005322
 
 180: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986354890
+ > Start Time  67815589970009802
  > Runtime:    25360
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1020,7 +1020,7 @@
 
 181: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986363358
+ > Start Time  67815589970018270
  > Runtime:    8600
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1029,19 +1029,19 @@
 
 182: <debug> ReturnEvent:
  > Call ID: 98
- > End time: 1986371958
+ > End time: 67815589970026870
 
 183: <debug> ReturnEvent:
  > Call ID: 97
- > End time: 1986380250
+ > End time: 67815589970035162
 
-184: <debug> AcquireEvent:1986397314
+184: <debug> AcquireEvent:67815589970052226
 
-185: <debug> ReleaseEvent:1986410486
+185: <debug> ReleaseEvent:67815589970065398
 
 186: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986414950
+ > Start Time  67815589970069862
  > Runtime:    59580
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1050,7 +1050,7 @@
 
 187: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986423674
+ > Start Time  67815589970078586
  > Runtime:    42180
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1059,7 +1059,7 @@
 
 188: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986431846
+ > Start Time  67815589970086758
  > Runtime:    25624
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1068,7 +1068,7 @@
 
 189: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986440202
+ > Start Time  67815589970095114
  > Runtime:    8600
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1077,27 +1077,27 @@
 
 190: <debug> ReturnEvent:
  > Call ID: 104
- > End time: 1986448802
+ > End time: 67815589970103714
 
 191: <debug> ReturnEvent:
  > Call ID: 103
- > End time: 1986457470
+ > End time: 67815589970112382
 
 192: <debug> ReturnEvent:
  > Call ID: 102
- > End time: 1986465854
+ > End time: 67815589970120766
 
 193: <debug> ReturnEvent:
  > Call ID: 101
- > End time: 1986474530
+ > End time: 67815589970129442
 
-194: <debug> AcquireEvent:1986491478
+194: <debug> AcquireEvent:67815589970146390
 
-195: <debug> ReleaseEvent:1986504442
+195: <debug> ReleaseEvent:67815589970159354
 
 196: <debug> CallEvent:
  > Call Site:  547
- > Start Time  1986508842
+ > Start Time  67815589970163754
  > Runtime:    58052
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1106,7 +1106,7 @@
 
 197: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986517178
+ > Start Time  67815589970172090
  > Runtime:    41464
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1115,7 +1115,7 @@
 
 198: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986525318
+ > Start Time  67815589970180230
  > Runtime:    25120
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1124,7 +1124,7 @@
 
 199: <debug> CallEvent:
  > Call Site:  461
- > Start Time  1986533414
+ > Start Time  67815589970188326
  > Runtime:    8540
  > Fun. sig.:  nqw
  > Fun. type:  8
@@ -1133,109 +1133,109 @@
 
 200: <debug> ReturnEvent:
  > Call ID: 110
- > End time: 1986541954
+ > End time: 67815589970196866
 
 201: <debug> ReturnEvent:
  > Call ID: 109
- > End time: 1986550438
+ > End time: 67815589970205350
 
 202: <debug> ReturnEvent:
  > Call ID: 108
- > End time: 1986558642
+ > End time: 67815589970213554
 
 203: <debug> ReturnEvent:
  > Call ID: 107
- > End time: 1986566894
+ > End time: 67815589970221806
 
-204: <debug> AcquireEvent:1986583490
+204: <debug> AcquireEvent:67815589970238402
 
-205: <debug> ReleaseEvent:1987088922
+205: <debug> ReleaseEvent:67815589970743834
 
 206: <debug> ReturnEvent:
  > Call ID: 38
- > End time: 1987608106
+ > End time: 67815589971263018
 
 207: <debug> ThreadEndEvent:
  > Thread ID: 1
- > End time:  1987690190
+ > End time:  67815589971345102
 
 208: <debug> NewThreadEvent:
  > Thread id: 2
- > Start time:  1991358002
+ > Start time:  67815589975012914
  > Runtime      127132
 
 209: <debug> CallEvent:
  > Call Site:  599
- > Start Time  1991404230
+ > Start Time  67815589975059142
  > Runtime:    56400
  > Fun. sig.:  nq_worker
  > Fun. type:  8
  > File name:  /nqueens.c
  > File path:  /shared/tests/nqueens.c
 
-210: <debug> AcquireEvent:1991437306
+210: <debug> AcquireEvent:67815589975092218
 
-211: <debug> ReleaseEvent:1991454630
+211: <debug> ReleaseEvent:67815589975109542
 
 212: <debug> ReturnEvent:
  > Call ID: 113
- > End time: 1991460630
+ > End time: 67815589975115542
 
 213: <debug> ThreadEndEvent:
  > Thread ID: 2
- > End time:  1991485134
+ > End time:  67815589975140046
 
 214: <debug> NewThreadEvent:
  > Thread id: 3
- > Start time:  1991747534
+ > Start time:  67815589975402446
  > Runtime      114556
 
 215: <debug> CallEvent:
  > Call Site:  599
- > Start Time  1991787710
+ > Start Time  67815589975442622
  > Runtime:    51424
  > Fun. sig.:  nq_worker
  > Fun. type:  8
  > File name:  /nqueens.c
  > File path:  /shared/tests/nqueens.c
 
-216: <debug> AcquireEvent:1991817514
+216: <debug> AcquireEvent:67815589975472426
 
-217: <debug> ReleaseEvent:1991833582
+217: <debug> ReleaseEvent:67815589975488494
 
 218: <debug> ReturnEvent:
  > Call ID: 116
- > End time: 1991839134
+ > End time: 67815589975494046
 
 219: <debug> ThreadEndEvent:
  > Thread ID: 3
- > End time:  1991862090
+ > End time:  67815589975517002
 
 220: <debug> NewThreadEvent:
  > Thread id: 4
- > Start time:  1991886562
+ > Start time:  67815589975541474
  > Runtime      98684
 
 221: <debug> CallEvent:
  > Call Site:  599
- > Start Time  1991918642
+ > Start Time  67815589975573554
  > Runtime:    46328
  > Fun. sig.:  nq_worker
  > Fun. type:  8
  > File name:  /nqueens.c
  > File path:  /shared/tests/nqueens.c
 
-222: <debug> AcquireEvent:1991944770
+222: <debug> AcquireEvent:67815589975599682
 
-223: <debug> ReleaseEvent:1991959582
+223: <debug> ReleaseEvent:67815589975614494
 
 224: <debug> ReturnEvent:
  > Call ID: 119
- > End time: 1991964970
+ > End time: 67815589975619882
 
 225: <debug> ThreadEndEvent:
  > Thread ID: 4
- > End time:  1991985246
+ > End time:  67815589975640158
 
 226: <debug> JoinEvent:
 227: <debug> JoinEvent:
@@ -1243,15 +1243,15 @@
 229: <debug> JoinEvent:
 230: <debug> ReturnEvent:
  > Call ID: 4
- > End time: 2000218074
+ > End time: 67815589983872986
 
 231: <debug> ReturnEvent:
  > Call ID: 3
- > End time: 2001114934
+ > End time: 67815589984769846
 
 232: <debug> CallEvent:
  > Call Site:  827
- > Start Time  2001730958
+ > Start Time  67815589985385870
  > Runtime:    30408
  > Fun. sig.:  cur_time
  > Fun. type:  8
@@ -1260,9 +1260,9 @@
 
 233: <debug> ReturnEvent:
  > Call ID: 1
- > End time: 2098700066
+ > End time: 67815590082354978
 
 234: <debug> ThreadEndEvent:
  > Thread ID: 0
- > End time:  2152068694
+ > End time:  67815590135723606
 
