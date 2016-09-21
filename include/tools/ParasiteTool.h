@@ -111,6 +111,7 @@ class ParasiteTool : public Tool {
 	parasite_profile_t parasite_profile;
 
 	Work work;
+	Span span;
 
 	DAG thread_graph;
 

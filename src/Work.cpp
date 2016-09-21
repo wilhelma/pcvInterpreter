@@ -43,7 +43,6 @@ std::shared_ptr<CallSiteWorkProfile>  Work::profileAt(CALLSITE call_site) {
 	if (!hashtable->count(call_site)) {
 		std::cout << "WORK PROFILE NOT INITIALIZED CORRECTLY at call site " <<
 			call_site << std::endl;
-		//std::exit(EXIT_FAILURE);
 	}
 	return hashtable->at(call_site);
 }

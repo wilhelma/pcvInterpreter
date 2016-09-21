@@ -62,6 +62,8 @@ class Span {
 	*/
 	void add_to_call_site(CALLSITE call_site, TIME span);
 
+	void collect(Span* other_span);
+
 	void init_call_site(CALLSITE call_site);
 
 	void add_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);

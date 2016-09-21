@@ -64,6 +64,7 @@ void ParasiteTool::add_down_stack(TIME local_work) {
 						  	   local_work);
 		stacks.bottomThread()->continuation.add_to_call_site(
 				 stacks.functionAt(i)->call_site, local_work);
+
 	}
 }
 
@@ -137,16 +138,13 @@ void ParasiteTool::outputOverallProfile() {
 
 void ParasiteTool::outputCallSites() {
 
-	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
-    Span bottom_prefix(bottom_thread->prefix);
-	std::shared_ptr<call_site_work_hashtable_t> wrk = work.hashtable;
-
-	for (auto const &it : *wrk) {
+	span.collect(&(stacks.bottomThread()->prefix));
+	for (auto const &it : *work.hashtable) {
 		CALLSITE key = it.first;
-		if (bottom_prefix.hashtable->count(key)) {
+		if (span.hashtable->count(key)) {
 			std::shared_ptr<CallSiteProfile> currentProfile
-					(new CallSiteProfile(bottom_prefix.hashtable->at(key),
-										 wrk->at(key),
+					(new CallSiteProfile(span.hashtable->at(key),
+										 work.hashtable->at(key),
 										 start_time_hashtable.at(key)));
 			if (JSON_OUTPUT)
 				jsonWriter.writeCallSite(currentProfile);
@@ -265,6 +263,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	add_edge(thread_end_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
+	span.collect(&(ending_thread->prefix));
 
 	if (stacks.bottomThreadIndex() == 0) {
 		return;
@@ -287,7 +286,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	}
 
 	parent_thread->add_child_locks(ending_thread);
-	stacks.thread_pop();;
+	stacks.thread_pop();
 	print_event_end("THREAD END");
 }
 

@@ -40,6 +40,9 @@ class CallSiteSpanProfile {
     void add_in_callsite_span (const std::shared_ptr<CallSiteSpanProfile> 
                                       profile_to_add);
 
+    void replace_if_greater(const std::shared_ptr<CallSiteSpanProfile> 
+                                      profile_to_add);
+
     /**
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
