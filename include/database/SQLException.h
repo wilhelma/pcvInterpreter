@@ -15,7 +15,8 @@
 #include <exception>
 #include <string>
 
-/// Exception class for SQL-related objects.
+/// @ingroup database
+/// @brief Exception class for SQL-related objects.
 class SQLException: public std::exception {
 public:
     /// Constructor.

@@ -12,15 +12,15 @@
 
 /// @brief Run-time events.
 enum class Events: unsigned char {
-    NEWTHREAD = 0x1,  // 00000001
-    THREADEND = 0x2,  // 00000010
-    JOIN      = 0x4,  // 00000100
-    ACQUIRE   = 0x8,  // 00001000
-    RELEASE   = 0x10, // 00010000
-    ACCESS    = 0x20, // 00100000
-	CALL      = 0x40, // 01000000
-    RETURN    = 0x80, // 10000000
-    ALL       = 0xFF  // 11111111 
+    NEWTHREAD = 0x1,  ///< A new thread has been created.
+    THREADEND = 0x2,  ///< A thread terminates (i.e. returns).
+    JOIN      = 0x4,  ///< Two threads are joint.
+    ACQUIRE   = 0x8,  ///< A lock has been acquired.
+    RELEASE   = 0x10, ///< A lock has been released.
+    ACCESS    = 0x20, ///< A memory location has been accessed.
+    CALL      = 0x40, ///< A function has been called.
+    RETURN    = 0x80, ///< A function has returned.
+    ALL       = 0xFF  ///< An event matches all the previous. 
 };
 
 /// @brief Bitwise _or_ operator for `Events`.

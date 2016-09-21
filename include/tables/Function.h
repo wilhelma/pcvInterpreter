@@ -16,7 +16,8 @@
 
 #include "Types.h"
 
-/*! @brief The type of the function */
+/// @brief The type of the function.
+/// @todo document this!
 enum class FunctionType : uint32_t  {
 	ENTRY_ROUTINE    = (1 << 0),  // 1
 	EXIT_ROUTINE     = (1 << 1),  // 2
@@ -35,95 +36,36 @@ enum class FunctionType : uint32_t  {
 	SIGNAL_BROADCAST = (1 << 14),
 };
 
+/// @ingroup records
+/// @brief Holds the information contained in one row of the _Function_
+/// database table.
 struct function_t {
+    /// SQL ID of the function.
     FUN_ID id;
+    /// The Function name (_it's not the signature_).
+    FUN_NM name;
+    /// The Function signature.
     FUN_SG signature;
+    /// The function type.
     FunctionType type;
+    /// @brief The ID of the file of the function.
+    /// @todo Which file? The one where it was defined or
+    /// the one where it was declared?
     FIL_ID file_id;
+    /// @todo Line number of what?
     LIN_NO line_number;
 
+    /// Constructor.
     explicit
     function_t(FUN_ID sqlID,
+               FUN_NM name,
                FUN_SG fnSignature,
                FunctionType fnType,
                FIL_ID fileId,
                LIN_NO lineNumber) noexcept
-        : id(sqlID), signature(fnSignature), type(fnType),
+        : id(sqlID), name(name), signature(fnSignature), type(fnType),
           file_id(fileId), line_number(lineNumber)
-    {
-    }
-
-    static void printFunctionType(unsigned short shift) {
-        switch(shift) {
-            case 0:
-                std::cout << "ENTRY_ROUTINE" << std::endl;
-                break;
-            case 1:
-                std::cout << "EXIT_ROUTINE"  << std::endl;
-                break;
-            case 2:
-                std::cout << "FUNCTION"  << std::endl;
-                break;
-            case 3:
-                std::cout << "METHOD"  << std::endl;
-                break;
-            case 4:
-                std::cout << "FREE"  << std::endl;
-                break;
-            case 5:
-                std::cout << "FORK"  << std::endl;
-                break;
-            case 6:
-                std::cout << "JOIN"  << std::endl;
-                break;
-            case 7:
-                std::cout << "ACQUIRE"  << std::endl;
-                break;
-            case 8:
-                std::cout << "RELEASE"  << std::endl;
-                break;
-            case 9:
-                std::cout << "EXTERNAL"  << std::endl;
-                break;
-            case 10:
-                std::cout << "ALLOC"  << std::endl;
-                break;
-            case 11:
-                std::cout << "BARRIER"  << std::endl;
-                break;
-            case 12:
-                std::cout << "WAIT"  << std::endl;
-                break;
-            case 13:
-                std::cout << "SIGNAL_SINGLE"  << std::endl;
-                break;
-            case 14:
-                std::cout << "SIGNAL_BROADCAST"  << std::endl;
-                break;
-        }
-    }
-
-    /**
-     * @brief Decodes the function type
-     * @todo Return a proper thing!!
-     */
-//  static Function::type getFunctionType(FUN_TYP fnType) {
-//
-//      // shift right functionType till there is no information left
-//      unsigned int counter = 0;
-//      while( fnType != 0 ){
-//          if( fnType & 1 ) {
-//              std::cout << "   -- has type " << (1 << counter) << std::endl;
-//              std::cout << "    -> ";
-//              printFunctionType( counter );
-//          }
-//
-//          counter ++;
-//          // shift right by one
-//          fnType >>= 1;
-//      }
-//      return Function::OTHER;
-//  }
+    {}
 };
 
 #endif

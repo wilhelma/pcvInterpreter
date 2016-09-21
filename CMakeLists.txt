@@ -1,6 +1,9 @@
 project(pcv)
 cmake_minimum_required(VERSION 2.8)
 
+FILE(GLOB_RECURSE LibFiles "*.h")
+add_custom_target(headers SOURCES ${LibFiles})
+
 # Add a custom 'doc' target to generate API documentation with Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -63,4 +66,9 @@ set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -pedantic -g -Wall -Wno-unkno
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 
 # Add subdirectories
-add_subdirectory(src)
+find_package(Git)
+if (GIT_FOUND)
+    add_subdirectory(src)
+else (GIT_FOUND)
+    message(FATAL "Git not found: cannot download rapidjson. Please install git.")
+endif (GIT_FOUND)

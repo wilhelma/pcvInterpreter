@@ -18,7 +18,15 @@
 #include <sqlite3.h>
 #include <string>
 
-/// Class to open a SQL database and query it.
+/// @defgroup database
+/// @brief Classes related to the database operations.
+
+/// @defgroup input
+/// @brief Classes performing input operations from a database.
+/// @ingroup database
+
+/// @ingroup input
+/// @brief Class to open a SQL database and query it.
 class DBManager {
 public:
     /// Constructor.
@@ -38,9 +46,9 @@ public:
     std::unique_ptr<QueryResult> query(const std::string& sql_query) const;
 
     /// @brief Destructor: try to close the database.
-    /// @throw SQLException
-    /// @todo Find a way not to throw from the destructor!
-    ~DBManager();
+    /// @attention If an exception is thrown when closing the database, the 
+    /// execution will be `std::abort()`ed.
+    ~DBManager() noexcept;
 
 private:
     /// @brief Pointer to the opened database.

@@ -14,16 +14,21 @@
 
 #include "Types.h"
 
+/// @ingroup records
+/// @brief Holds the information contained in one row of the _Loop_
+/// database table.
 struct loop_t {
+    /// SQL ID of the loop.
     LOP_ID id;
-    unsigned line_number;
+    /// The line number.
+    LIN_NO line_number;
 
+    /// Constructor.
     explicit
     loop_t(LOP_ID sqlID,
-           int lineNumber) noexcept
+           LIN_NO lineNumber) noexcept
         : id(sqlID), line_number(lineNumber)
     {}
-
 };
 
 #endif

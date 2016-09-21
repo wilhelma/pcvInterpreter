@@ -1,0 +1,35 @@
+# Use Ubuntu 14.04
+sudo: required
+dist: trusty
+
+# Set the language
+language: cpp
+
+# Set the compiler
+compiler:
+    - gcc
+
+# Install pcv dependencies
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - cmake
+            - sqlite3
+            - libboost-all-dev
+            # Install GCC 6 to support C++14 from the above repository
+            - gcc-6
+            - g++-6
+
+# Sent e-mails if the build fail
+notification:
+    email:
+        on_success: change
+        on_failure: always
+
+# Build
+script:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
+    - mkdir build && cd build
+    - cmake .. && make -j

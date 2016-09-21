@@ -14,35 +14,21 @@
 
 #include "Types.h"
 
+/// @ingroup records
+/// @brief Holds the information contained in one row of the _File_
+/// database table.
 struct file_t {
+    /// SQL ID of the file.
     FIL_ID id;
+    /// The file path (and name).
     FIL_PT file_path;
-    FIL_PT file_name; // retrieved from file_path
+    /// The file name only (retrieved from the file path).
+    FIL_PT file_name;
 
-    explicit
-    file_t(FIL_ID sqlID,
-           FIL_PT filePath) noexcept
-        : id(sqlID), file_path(filePath)
-    {
-        retrieveFileName( filePath );
-    }
-
-    private:
-    int retrieveFileName( FIL_PT filePath ) {
-        // Separator
-        const char directorySeparator = '/';
-        // search for last occurrence
-        size_t pos = filePath.find_last_of( directorySeparator );
-
-        // if separator is not found
-        if( pos > filePath.size() ) {
-            this->file_name = filePath;
-            return 1;
-        }
-
-        this->file_name = filePath.substr( pos );
-        return 0;
-    }
+    /// Constructor.
+    /// @param sqlID    The SQL ID of the file.
+    /// @param filePath The file path and name.
+    explicit file_t(FIL_ID sqlID, FIL_PT filePath) noexcept;
 };
 
 #endif

@@ -28,7 +28,8 @@
 #include <memory>
 #include <iterator>
 
-/// Iterates over the rows resulting from a database query.
+/// @ingroup input
+/// @brief Iterates over the rows of the QueryResult resulting from a database query.
 template<typename T>
 class SQLStatementIterator : public std::iterator<std::input_iterator_tag, QueryResult> {
 public:
@@ -123,12 +124,13 @@ const file_t SQLStatementIterator<const file_t>::operator*() const {
 template<>
 const function_t SQLStatementIterator<const function_t>::operator*() const {
     FUN_ID          id(Query_->get<FUN_ID>(0));
+    FUN_NM        name(Query_->get<FUN_SG>(1));
     FUN_SG   signature(Query_->get<FUN_SG>(2));
     FIL_ID     file_id(Query_->get<FIL_ID>(3));
     LIN_NO line_number(Query_->get<LIN_NO>(4));
     FunctionType  type(Query_->get<FunctionType>(6));
 
-    return function_t(id, signature, type, file_id, line_number);
+    return function_t(id, name, signature, type, file_id, line_number);
 }
 
 /// Deference operator (`const instruction_t` specialization).

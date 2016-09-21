@@ -388,7 +388,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
                        call.start_time,
                        static_cast<TIME>(call.end_time - call.start_time),
-                       function.signature,
+                       function.name,
                        segId,
                        function.type,
                        file.file_name,
@@ -533,7 +533,7 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
 
     auto pT = getThread(thread.parent_thread_id);
     auto cT = getThread(thread.id);
-    JoinInfo info(cT, pT);
+    JoinInfo info(cT, pT, call.end_time);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );
 

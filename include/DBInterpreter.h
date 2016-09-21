@@ -55,7 +55,10 @@ enum class ErrorCode {
     ABORT        = 3  ///< @brief Operation aborted.
 };
 
-/// Database Interpreter.
+/// @ingroup database
+/// @brief Database interpreter: produces Event's from the database types (e.g. access_t, call_t and so on).
+/// @details Processes the database rows turning them into Event's.
+/// To `publish()` them, the Event's are then passed to the EventService.
 class DBInterpreter {
 public:
     /// Constructor.

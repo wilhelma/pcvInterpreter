@@ -109,6 +109,8 @@ using FIL_PT = std::string;
 
 // Function Types
 using FUN_SG = std::string; 
+// Function Name
+using FUN_NM = std::string;
 // FUN_TYP Already uses FunctionType
 using LIN_NO = StrongTypedef<unsigned, 14>; 
 

@@ -43,7 +43,8 @@ set(SRC_LIST
     Work.cpp)
 
 set(SRC_LIST ${SRC_LIST}
-    database/DBManager.cpp)
+    database/DBManager.cpp
+    database/QueryResult.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     profiles/CallSiteProfile.cpp
@@ -51,7 +52,8 @@ set(SRC_LIST ${SRC_LIST}
     profiles/CallSiteWorkProfile.cpp)
 
 set(SRC_LIST ${SRC_LIST}
-    tables/Call.cpp)
+    tables/Call.cpp
+    tables/File.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     tools/DebugTool.cpp
