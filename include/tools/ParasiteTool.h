@@ -61,7 +61,6 @@ class ParasiteTool : public Tool {
 	static const bool COMMAND_LINE_OUTPUT = 1;
 	static const bool JSON_OUTPUT = 1;
 	static const bool GRAPH_OUTPUT = 1;
-	static const bool GRAPH_RETURNS = 0;
 
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
@@ -74,12 +73,8 @@ class ParasiteTool : public Tool {
 
 	void add_down_stack(TIME local_work);
 	
-	vertex_descr_type add_local_work(TIME strand_end_time, 
-	  				   				 std::string end_vertex_label);
-
-	void add_return_local_work(TIME strand_end_time, 
-	  				   		   std::string end_vertex_label);
-
+	void add_local_work(TIME strand_end_time, 
+	  				   	std::string end_vertex_label);
 
 	void add_start_time(CALLSITE call_site, TIME start_time);
 
@@ -128,6 +123,13 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
+
+	/**
+	*    @var last_lock_start_time
+	*    @brief Tracks the time of the last join, new thread, or thread end event
+	*/
+	TIME last_thread_event_time;
+
 
  private:
 
