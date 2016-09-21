@@ -90,7 +90,7 @@ class ParasiteTool : public Tool {
 
 	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
 
-	void add_join_edges(vertex_descr_type start, std::string label);
+	void add_join_edges(vertex_descr_type start, std::string label, TIME local_event_work);
 
 	TIME concur(TIME serial_time);
 
@@ -123,13 +123,6 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
-	/**
-	*    @var last_lock_start_time
-	*    @brief Tracks the time of the last join, new thread, or thread end event
-	*/
-	TIME last_thread_event_time;
-
 
  private:
 

@@ -79,11 +79,14 @@ struct thread_frame_t {
 
 	int spawned_children_count;
 
-	thread_frame_t():thread(0),
+	TIME last_event_time;
+
+	thread_frame_t():thread(static_cast<TIME>(0)),
 					 prefix(Span()), 
 					 longest_child(Span()),
 					 continuation(Span()),
-					 concurrency_offset(0) {}
+					 concurrency_offset(static_cast<TIME>(0)),
+					 last_event_time(static_cast<TIME>(0)) {}
 };
 
 class ThreadStack {
