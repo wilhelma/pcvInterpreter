@@ -15,6 +15,8 @@
 
 #include "Types.h"
 
+static const TRD_ID NO_TRD_ID = static_cast<TRD_ID>(NO_ID);
+
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _Thread_
 /// database table.
