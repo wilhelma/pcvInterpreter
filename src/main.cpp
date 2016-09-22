@@ -10,6 +10,7 @@
 #include "DebugTool.h"
 //#include "EventService.h"
 #include "ParasiteTool.h"
+#include "SequenceTool.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
@@ -41,10 +42,15 @@ int main(int argc, char* argv[]) {
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
 
-  const auto& parasite_tool_it = runner->registerTool(
-            std::make_unique<ParasiteTool>(),
+	const auto& sequence_tool_it = runner->registerTool(
+            std::make_unique<SequenceTool>(),
             std::unique_ptr<Filter>(nullptr),
             Events::ALL);
+
+    // const auto& parasite_tool_it = runner->registerTool(
+    //         std::make_unique<ParasiteTool>(),
+    //         std::unique_ptr<Filter>(nullptr),
+    //         Events::ALL);
 
 	std::cout << " BEFORE INTERPRET " << std::endl;
 
@@ -56,7 +62,8 @@ int main(int argc, char* argv[]) {
 
   // Unregister the tool
 	runner->removeTool(debug_tool_it);
-  runner->removeTool(parasite_tool_it);
+	runner->removeTool(sequence_tool_it);
+  // runner->removeTool(parasite_tool_it);
 
 	std::cout << " AFTER REMOVING TOOLS " << std::endl;
 

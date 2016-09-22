@@ -59,6 +59,7 @@ set(SRC_LIST ${SRC_LIST}
     tools/DebugTool.cpp
     tools/FunctionTrackerTool.cpp
     tools/LockSetChecker.cpp
+    tools/SequenceTool.cpp
     tools/ParasiteTool.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
