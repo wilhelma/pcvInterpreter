@@ -533,7 +533,7 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
 
     auto pT = getThread(thread.parent_thread_id);
     auto cT = getThread(thread.id);
-    JoinInfo info(cT, pT);
+    JoinInfo info(cT, pT, call.end_time);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );
 
