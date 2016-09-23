@@ -157,29 +157,33 @@ const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	return search->second.call_id;
 }
 
+/// @todo If the ID isn't found the program should probably crash. This means
+/// the input database was inconsistent. Anyway, here the return value is both
+/// the call_id and (in case of error) the ErrorCode. __That's bad design__
 const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
-	// look for the call id of the instruction
-	CAL_ID call_id(0);
-	bool found = false;
-	for (const auto& it : CallTable_) {
-		// if there's a call whose instruction id is the same as
-		// ins.id, get its id
-    if (it.second.instruction_id == ins.id) {
-      call_id = it.second.id;
-			found = true;
-			break;
-		}
-	}
-
-	// if the iterator reached the end, no entry has been found in callT_
-	if (!found) {
-		BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
-			<< ins.id;
-		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
-	}
-
-//	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
-	return call_id;
+    return CallTable_.getInstructionCaller(ins);
+//    // look for the call id of the instruction
+//    CAL_ID call_id(0);
+//    bool found = false;
+//    for (const auto& it : CallTable_) {
+//        // if there's a call whose instruction id is the same as
+//        // ins.id, get its id
+//        if (it.second.instruction_id == ins.id) {
+//            call_id = it.second.id;
+//            found = true;
+//            break;
+//        }
+//    }
+//
+//    // if the iterator reached the end, no entry has been found in callT_
+//    if (!found) {
+//        BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
+//            << ins.id;
+//        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
+//    }
+//
+//    //	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
+//    return call_id;
 }
 
 
