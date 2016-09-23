@@ -126,6 +126,8 @@ private:
 
     /// Stack of call IDs.
     CallStack CallStack_;
+
+    TIME lastEventTime_;
   
     std::shared_ptr<EventService> EventService_;
     shadowVarMap_t _shadowVarMap;
@@ -179,10 +181,11 @@ private:
     ErrorCode processAcquire(const instruction_t& instruction);
     ErrorCode processRelease(const instruction_t& instruction);
     ErrorCode processJoin(const instruction_t& instruction,
-            const segment_t& segment,
-            const call_t& call,
-            const thread_t& thread);
+                          const thread_t& thread);
     ErrorCode processFork(const thread_t& thread);
+
+    ErrorCode publishCallReturn(const call_t& topCall);
+    ErrorCode publishThreadReturn(TRD_ID threadId);
 
   /// Parent call ID of an instruction
   /// @return The call ID, if it's found in `segmentT_`

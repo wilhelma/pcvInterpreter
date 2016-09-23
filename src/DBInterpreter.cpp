@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include <cassert>
 
 #include "SQLStatementIterator.h"
 
@@ -74,7 +75,8 @@ DBInterpreter::DBInterpreter(std::string&& logFile,
                              std::shared_ptr<EventService> service,
 							 std::unique_ptr<LockMgr>&&   lockMgr,
 							 std::unique_ptr<ThreadMgr>&& threadMgr) :
-	EventService_(service), lockMgr_(std::move(lockMgr)), threadMgr_(std::move(threadMgr))
+  lastEventTime_(0), EventService_(service), lockMgr_(std::move(lockMgr)),
+  threadMgr_(std::move(threadMgr))
 {
 	initialize_logger(std::move(logFile));
 	CallStack_.push(call_t::MAIN);
@@ -184,41 +186,65 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 
 
 ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
-                                 const call_t& call) {
+                                       const call_t& call) {
+  TRD_ID returnThread = NO_TRD_ID;
 
-  while (!CallStack_.isEmpty() &&
-         call.id != CallStack_.top()) {
-    const CAL_ID topCallId = CallStack_.top();
-
+  const CAL_ID topCallId = CallStack_.top();
+  while (!CallStack_.isEmpty() && call.id != topCallId) {
     auto callIt = CallTable_.find(topCallId);
     if (callIt != CallTable_.end()) {
-
-      // publish a return call event in case of mismatching call id's
       const call_t& topCall = callIt->second;
-      ReturnInfo info(topCallId, topCall.end_time);
-      auto sThread = getThread(topCall.thread_id);
-      ReturnEvent event(sThread, &info);
-      getEventService()->publish(&event);
 
-      // publish a thread end event in case of mismatching thread id's
-      if (call.thread_id != topCall.thread_id) {
-          auto threadIt = ThreadTable_.find(topCall.thread_id);
-          if (threadIt != ThreadTable_.end()) {
-              const thread_t& thread = threadIt->second;
-              ThreadEndInfo  end_info(static_cast<TIME>(
-                                        thread.start_cycle + thread.num_cycles),
-                                      sThread->threadId);
-              ThreadEndEvent end_event(sThread, &end_info);
-              getEventService()->publish(&end_event);
-          }
+      if (returnThread != NO_TRD_ID && returnThread != topCall.thread_id) {
+        publishThreadReturn(topCall.thread_id);
+        returnThread = NO_TRD_ID;
       }
+
+      publishCallReturn(topCall);
+
+      if (call.thread_id != topCall.thread_id)
+        returnThread = topCall.thread_id;
+
       CallStack_.pop();
     } else {
       return ErrorCode::NO_ENTRY;
     }
   }
 
+  if (returnThread != NO_TRD_ID)
+    publishThreadReturn(returnThread);
+
 	return ErrorCode::OK;
+}
+
+ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
+  assert(lastEventTime_ <= topCall.end_time);
+
+  auto sThread = getThread(topCall.thread_id);
+  ReturnInfo info(topCall.id, topCall.end_time);
+  ReturnEvent event(sThread, &info);
+  getEventService()->publish(&event);
+  lastEventTime_ = topCall.end_time;
+
+  return ErrorCode::OK;
+}
+
+ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
+  auto threadIt = ThreadTable_.find(threadId);
+  if (threadIt != ThreadTable_.end()) {
+    const thread_t& thread = threadIt->second;
+    const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
+    assert(lastEventTime_ <= threadEndTime);
+    ThreadEndInfo  end_info(threadEndTime, threadId);
+    auto sThread = getThread(threadId);
+    ThreadEndEvent end_event(sThread, &end_info);
+    getEventService()->publish(&end_event);
+    lastEventTime_ = threadEndTime;
+  } else {
+    return ErrorCode::NO_ENTRY;
+  }
+
+  return ErrorCode::OK;
 }
 
 ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
@@ -334,7 +360,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
         for (const auto& it : ThreadTable_) {
           const thread_t& thread = it.second;
           if (ins.id == thread.join_instruction_id) {
-              ret = processJoin(ins, segment, call, thread);
+              ret = processJoin(ins, thread);
           }
         }
         break;
@@ -370,6 +396,8 @@ size_t getHash(unsigned funId, unsigned lineNo) {
 //}
 
 ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
+  assert(lastEventTime_ <= call.start_time);
+
   auto ret = ErrorCode::NO_ENTRY;
 
   auto functionIt = FunctionTable_.find(call.function_id);
@@ -397,6 +425,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         auto thread = getThread(call.thread_id);
         CallEvent event(thread, &info);
         getEventService()->publish(&event);
+        lastEventTime_ = call.start_time;
         CallStack_.push(call.id);
         ret = ErrorCode::OK;
       }
@@ -474,6 +503,7 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     auto callIt = CallTable_.find(getCallID(ins));
     if (callIt != CallTable_.end()) {
       const call_t& call = callIt->second;
+      assert(lastEventTime_ <= call.start_time);
       for (auto accIt : AccessTable_) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
@@ -484,6 +514,7 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
             AcquireInfo info(lock, call.start_time);
             AcquireEvent event( thread, &info );
             getEventService()->publish( &event );
+            lastEventTime_ = call.start_time;
             return ErrorCode::OK;
           }
         }
@@ -497,6 +528,7 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
   auto callIt = CallTable_.find(getCallID(ins));
   if (callIt != CallTable_.end()) {
     const call_t& call = callIt->second;
+    assert(lastEventTime_ <= call.start_time);
     for (auto accIt : AccessTable_) {
       const access_t& access = accIt.second;
       if (access.instruction_id == ins.id) {
@@ -507,6 +539,7 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
           ReleaseInfo info(lock, call.start_time);
           ReleaseEvent event( thread, &info );
           getEventService()->publish( &event );
+          lastEventTime_ = call.start_time;
           return ErrorCode::OK;
         }
       }
@@ -517,23 +550,23 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
+    assert (lastEventTime_ <= thread.start_cycle);
     auto pT = getThread(thread.parent_thread_id);
     auto cT = getThread(thread.id);
     NewThreadInfo info(cT, pT, thread.start_cycle, thread.num_cycles);
     NewThreadEvent event( pT, &info );
     getEventService()->publish( &event );
+    lastEventTime_ = thread.start_cycle;
     return ErrorCode::OK;
 }
 
 /// @todo Code duplication! Candidate for template!
-ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
-                               const segment_t& segment,
-                               const call_t& call,
-                               const thread_t& thread) {
+ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
+                                     const thread_t& thread) {
 
     auto pT = getThread(thread.parent_thread_id);
     auto cT = getThread(thread.id);
-    JoinInfo info(cT, pT, call.end_time);
+    JoinInfo info(cT, pT, lastEventTime_);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );
 

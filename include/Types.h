@@ -13,6 +13,7 @@
 #define TYPES_H_
 
 #include <string>
+#include <limits>
 
 /// Struct to prevent implicit conversion among types.
 /// @tparam T The type
@@ -60,13 +61,14 @@ using REF_ID = StrongTypedef<ID,  8>;
 using SEG_ID = StrongTypedef<ID,  9>;
 using TRD_ID = StrongTypedef<ID, 10>;
 
+static const ID NO_ID = std::numeric_limits<ID>::max();
+
 // Access Types
 using POS   = StrongTypedef<unsigned, 11>;
 // ACC_TYP Already uses AccessType
 // MEM_ST  Already uses AccessState
 
 // Call Types
-
 using TIME = uint64_t;
 
 /// Increment operator for `TIME` variables.
