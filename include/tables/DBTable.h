@@ -10,90 +10,103 @@
 
 #include <map>
 
-/// Maps IDs to structs wrapping database table entries.
+/// @defgroup tables
+/// @ingroup database
+/// @brief Classes in this group mimic a database table.
+/// @details The idea is that each class is a wrapper around a map
+/// between an ID type and a database record, e.g. `std::map<ACC_ID, access_t>`.
+
+
+/// @ingroup tables
+/// @brief Base class (default implementation) for all the tables.
+/// @todo The ID in the record is redundant. Consider removing it.
 template<typename IdT, typename T>
 class DBTable {
 public:
-	/// @typedef DBTable::value_type
-	/// Convenience definition to use `std::inserter`
-	using value_type     = T;
+    /// @typedef DBTable::value_type
+    /// @brief Convenience definition to use `std::inserter`.
+    using value_type     = T;
 
-	/// @typedef DBTable::iterator
-	/// Convenience definition to use `std::inserter`
-	using iterator       = typename std::map<IdT, T>::iterator;
+    /// @typedef DBTable::iterator
+    /// @brief Convenience definition to use `std::inserter`.
+    using iterator       = typename std::map<IdT, T>::iterator;
 
-	/// @typedef DBTable::const_iterator
-	/// @todo Is this needed?
-	using const_iterator = typename std::map<IdT, T>::const_iterator;
+    /// @typedef DBTable::const_iterator
+    /// @brief Convenience definition to use `std::inserter`.
+    /// @todo Is this needed?
+    using const_iterator = typename std::map<IdT, T>::const_iterator;
 
-	/// Default constructor.
-	DBTable() {};
+    /// _Default_ constructor.
+    constexpr explicit DBTable() = default;
 
-	/// Default destructor.
-	virtual ~DBTable() {};
+    /// _Default_ destructor.
+    virtual ~DBTable() = default;
 
-	/// Inserts the entry in the maps creating a `pair(id, entry)`.
-	virtual const std::pair<iterator, bool> insert(const T& entry)
-	{ return Map_.insert(typename std::map<IdT, T>::value_type(entry.id, entry)); }
+    /// _Deleted_ copy constructor.
+    DBTable(const DBTable&)            = delete;
+    /// _Deleted_ move constructor.
+    DBTable(DBTable&&)                 = delete;
+    /// _Deleted_ copy assignment operator.
+    DBTable& operator=(const DBTable&) = delete;
+    /// _Deleted_ move assignment operator.
+    DBTable& operator=(DBTable&&)      = delete;
 
-	/// @brief Inserts the `entry` in the position pointed to by `hint`.
-	/// @param hint  Iterator pointing to the position where to insert `entry`.
-	/// @param entry The entry to insert.
-	/// @attention This is a convenience function only needed to allow
-	/// `std::copy` to be used on `DBTable`.
-	virtual DBTable::iterator insert(DBTable::iterator hint, const T& entry)
-	{ return Map_.insert(hint, typename std::map<IdT, T>::value_type(entry.id, entry)); }
+    /// Inserts the entry in the maps creating a `pair(id, entry)`.
+    virtual const std::pair<iterator, bool> insert(const T& entry)
+    { return Map_.insert(typename std::map<IdT, T>::value_type(entry.id, entry)); }
 
-	/// Inserter to allow `std::copy`.
-	/// @param table The `DBtable` to operate upon.
-	friend std::insert_iterator<DBTable> inserter(DBTable& table)
-	{ return std::insert_iterator<DBTable>(table, table.end()); }
-	
-	/// Find `id` in the map.
-	iterator find(const IdT& id)
-	{ return Map_.find(id); };
-	
-	/// Find `id` in the map.
-	const_iterator find(const IdT& id) const
-	{ return Map_.find(id); };
-	
-	/// Size of the internal map.
-	const std::size_t size() const noexcept
-	{ return Map_.size(); };
+    /// @brief Inserts the `entry` in the position pointed to by `hint`.
+    /// @param hint  Iterator pointing to the position where to insert `entry`.
+    /// @param entry The entry to insert.
+    /// @attention This is a convenience function only needed to allow
+    /// `std::copy` to be used on `DBTable`.
+    virtual DBTable::iterator insert(DBTable::iterator hint, const T& entry)
+    { return Map_.insert(hint, typename std::map<IdT, T>::value_type(entry.id, entry)); }
 
-	/// Begin iterator.
-	iterator begin() noexcept
-	{ return Map_.begin(); };
+    /// Inserter to allow `std::copy`.
+    /// @param table The `DBtable` to operate upon.
+    friend std::insert_iterator<DBTable> inserter(DBTable& table)
+    { return std::insert_iterator<DBTable>(table, table.end()); }
+    
+    /// Find `id` in the map.
+    iterator find(const IdT& id)
+    { return Map_.find(id); };
+    
+    /// Find `id` in the map.
+    const_iterator find(const IdT& id) const
+    { return Map_.find(id); };
+    
+    /// Size of the internal map.
+    const std::size_t size() const noexcept
+    { return Map_.size(); };
 
-	/// End iterator.
-	iterator end() noexcept
-	{ return Map_.end(); };
+    /// Begin iterator.
+    iterator begin() noexcept
+    { return Map_.begin(); };
 
-	/// Begin const_iterator.
-	/// @todo Needed?
-	const_iterator begin() const noexcept
-	{ return Map_.begin(); };
+    /// End iterator.
+    iterator end() noexcept
+    { return Map_.end(); };
 
-	/// End const_iterator.
-	/// @todo Needed?
-	const_iterator end() const noexcept
-	{ return Map_.end(); };
+    /// Begin const_iterator.
+    const_iterator begin() const noexcept
+    { return Map_.begin(); };
 
-	/// Begin const_iterator.
-	const_iterator cbegin() const noexcept
-	{ return Map_.cbegin(); };
-	
-	/// End const_iterator.
-	const_iterator cend() const noexcept
-	{ return Map_.cend(); };
+    /// End const_iterator.
+    const_iterator end() const noexcept
+    { return Map_.end(); };
 
-protected:								  	
-	/// The map associating IDs to database table entries.
-	std::map<IdT, T> Map_;
+    /// Begin const_iterator.
+    const_iterator cbegin() const noexcept
+    { return Map_.cbegin(); };
+    
+    /// End const_iterator.
+    const_iterator cend() const noexcept
+    { return Map_.cend(); };
 
-	// prevent generated functions
-	DBTable(const DBTable&);
-	DBTable& operator=(const DBTable&);		 
+protected:                                  
+    /// The map associating IDs to database table entries.
+    std::map<IdT, T> Map_;
 };
 
 

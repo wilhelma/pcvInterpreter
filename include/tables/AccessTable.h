@@ -16,6 +16,7 @@
 #include "DBTable.h"
 #include "Types.h"
 
+#include <map>
 #include <vector>
 
 class AccessTable final: public DBTable<ACC_ID, const access_t> {
