@@ -194,6 +194,8 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
 		                thread_start_vertex);
+	if (stacks.bottomThreadIndex() != 0)
+		stacks.bottomThread()->concurrency_offset += stacks.bottomParentThread()->concurrency_offset;
 	print_event_end("NEW THREAD");
 }
 
