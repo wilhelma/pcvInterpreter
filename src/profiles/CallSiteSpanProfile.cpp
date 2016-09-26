@@ -21,13 +21,6 @@ void CallSiteSpanProfile::add_in_callsite_span
 	span += profile_to_add->span;
 }
 
-void CallSiteSpanProfile::replace_if_greater
-			  (const std::shared_ptr<CallSiteSpanProfile> profile_to_add) {
-
-  	if (profile_to_add->span > span)
-		span = profile_to_add->span;
-}
-
 void CallSiteSpanProfile::init(CALLSITE cll_site) {
 	call_site = cll_site;
 }

@@ -36,17 +36,10 @@ void Span::collect(Span* other_span) {
 
 	for (auto const &it : *(other_span->hashtable)) {
 		CALLSITE call_site = it.first;
-		if (hashtable->count(call_site)) {
-		    profileAt(call_site)->replace_if_greater(other_span->hashtable->at(call_site));
-		    profileAt(call_site)->lock_wait_time = 
-		    				other_span->hashtable->at(call_site)->lock_wait_time;
-		} else  {
-			std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile> > 
-                                  newPair(call_site, other_span->hashtable->at(call_site));
-			hashtable->insert(newPair);
-		}
+		std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile> > 
+                            newPair(call_site, other_span->hashtable->at(call_site));
+		hashtable->insert(newPair);
 	}
-
 }
 
 std::shared_ptr<CallSiteSpanProfile> Span::profileAt(CALLSITE call_site) {
