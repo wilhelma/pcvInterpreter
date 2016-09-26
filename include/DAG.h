@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "Types.h"
+#include "Utility.h"
 
 namespace bgl = boost;
 

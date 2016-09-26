@@ -210,7 +210,8 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	
 	add_local_work(_info->joinTime, join_label);				  
 	add_join_edges(bottom_thread->join_vertex_list.front(), join_label);
-	bottom_thread->join_vertex_list.pop_front();
+	if (bottom_thread->join_vertex_list.size())
+		bottom_thread->join_vertex_list.pop_front();
 
 	if (bottom_thread->spawned_children_count == 0) {
 	 

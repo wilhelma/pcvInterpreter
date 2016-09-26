@@ -26,30 +26,37 @@ DAG::~DAG() {}
 vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label) {
 
-	vertex_count += 1;
-	vertex_descr_type end = bgl::add_vertex(VertexNameProp(end_vertex_label),
+	if (GRAPH) {
+		vertex_count += 1;
+		vertex_descr_type end = bgl::add_vertex(VertexNameProp(end_vertex_label),
 																		*dag); 
-	double lngth = static_cast<double>(length) / 
+		double lngth = static_cast<double>(length) / 
 				   static_cast<double>(SCALING_FACTOR);
-	bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
-	last_vertex = end;
-	return end;
+		bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
+		last_vertex = end;
+		return end;
+	}
+	else 
+		return NULL;
 }
 
 void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {
 
-	bgl::add_edge(start, end, EdgeWeightProp(0), *dag);
+	if (GRAPH)
+		bgl::add_edge(start, end, EdgeWeightProp(0), *dag);
 }
 
 
 void DAG::write_dot_file() {
 
-	std::string dir = "./";
-	std::string file_name = (dir + name) + ".dot";
-	std::ofstream dot(file_name);
-	bgl::dynamic_properties dp;
-    dp.property("label", get(bgl::edge_weight_t(), *dag));
-    dp.property("node_id", get(bgl::vertex_name_t(), *dag));
-    dp.property("weight", get(bgl::edge_weight_t(), *dag));
-	write_graphviz_dp(dot, *dag, dp);
+	if (GRAPH) {
+		std::string dir = "./";
+		std::string file_name = (dir + name) + ".dot";
+		std::ofstream dot(file_name);
+		bgl::dynamic_properties dp;
+    	dp.property("label", get(bgl::edge_weight_t(), *dag));
+    	dp.property("node_id", get(bgl::vertex_name_t(), *dag));
+    	dp.property("weight", get(bgl::edge_weight_t(), *dag));
+		write_graphviz_dp(dot, *dag, dp);
+	}
 }
