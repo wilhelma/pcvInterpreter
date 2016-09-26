@@ -34,7 +34,8 @@
 #include "ThreadEndInfo.h"
 
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
-							 jsonWriter(random_string(5)), last_event_time(static_cast<TIME>(0)) {
+							 jsonWriter(random_string(5)), last_event_time(static_cast<TIME>(0)),
+							 parallel_time(static_cast<TIME>(0)) {
 	thread_graph.name = name;
 	jsonWriter.name = name;
 }
@@ -113,6 +114,16 @@ void ParasiteTool::endProfileCalculations() {
 	// Calculate parallelism for entire program                     
 	parasite_profile.parallelism =  static_cast<double> (parasite_profile.work)
 				                   / static_cast<double> (parasite_profile.span);
+
+ 	TIME min = std::numeric_limits<TIME>::max();
+ 	for (auto &it : start_time_hashtable) {
+    	if (it.second < min)
+    		min = it.second;
+    }
+
+    for (auto &it : start_time_hashtable) {
+    	it.second -= min;
+    }
 }
 
 
@@ -169,7 +180,8 @@ void ParasiteTool::Call(const CallEvent* e) {
 
 	const CallInfo* _info(e->getInfo());
 	std::string call_label = "CALL_" + _info->fnSignature;
-	add_local_work(_info->callTime, call_label);
+	if (stacks.bottomFunctionIndex() > -1)
+		add_local_work(_info->callTime, call_label);
     stacks.bottomThread()->continuation.init_call_site(_info->siteId);
     work.record_call_site(_info->siteId, _info->fnSignature);
     add_start_time(_info->siteId, concur(_info->callTime));
@@ -224,6 +236,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		bottom_thread->continuation.clear();
 		bottom_thread->longest_child.clear();
+		horizontalThreadPlot.updateAfterSync();
 		print_event_end("SYNC");
 	}
 	print_event_end("JOIN");
@@ -269,7 +282,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
 	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
-	concurrency_offset += ending_thread->prefix();
+	parallel_time += ending_thread->prefix();
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 
@@ -284,6 +297,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	}
 
 	parent_thread->add_child_locks(ending_thread);
+	horizontalThreadPlot.end_segment(_info->endTime, ending_thread->span());
 	stacks.thread_pop();
 	print_event_end("THREAD END");
 }
