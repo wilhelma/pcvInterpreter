@@ -125,6 +125,8 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
+	TIME concurrency_offset;
+
  private:
 
  	std::unordered_map<CALLSITE, TIME, CallSiteHash, CallSiteEqual> start_time_hashtable;

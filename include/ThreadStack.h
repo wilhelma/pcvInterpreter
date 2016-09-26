@@ -75,8 +75,6 @@ struct thread_frame_t {
 	*/
 	Span continuation;
 
-	TIME concurrency_offset;
-
 	int spawned_children_count;
 
 	TIME current_edge_length;
@@ -85,7 +83,6 @@ struct thread_frame_t {
 					 prefix(Span()), 
 					 longest_child(Span()),
 					 continuation(Span()),
-					 concurrency_offset(static_cast<TIME>(0)),
 					 current_edge_length(static_cast<TIME>(0)) {}
 };
 

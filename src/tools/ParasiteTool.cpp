@@ -74,7 +74,7 @@ void ParasiteTool::add_start_time(CALLSITE call_site, TIME start_time) {
 }
 
 TIME ParasiteTool::concur(TIME serial_time) {
-	return serial_time - stacks.bottomThread()->concurrency_offset;
+	return serial_time - concurrency_offset;
 }
 
 void ParasiteTool::add_local_work(TIME strand_end_time, 
@@ -194,8 +194,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
 		                _info->childThread->threadId, 
 		                thread_start_vertex);
-	if (stacks.bottomThreadIndex() != 0)
-		stacks.bottomThread()->concurrency_offset += stacks.bottomParentThread()->concurrency_offset;
+
 	print_event_end("NEW THREAD");
 }
 
@@ -270,7 +269,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
 	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
-	parent_thread->concurrency_offset += ending_thread->prefix();
+	concurrency_offset += ending_thread->prefix();
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 
