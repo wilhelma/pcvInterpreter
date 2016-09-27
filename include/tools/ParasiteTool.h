@@ -114,7 +114,6 @@ class ParasiteTool : public Tool {
 	Span span;
 
 	DAG thread_graph;
-	HorizontalThreadPlot horizontalThreadPlot;
 
 	std::string name;
 
@@ -126,7 +125,7 @@ class ParasiteTool : public Tool {
 	*/
 	TIME last_event_time;
 
-	TIME parallel_time;
+	TIME concurrency_offset;
 
  private:
 
