@@ -189,7 +189,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
                                        const call_t& call) {
   TRD_ID returnThread = NO_TRD_ID;
 
-  const CAL_ID topCallId = CallStack_.top();
+  CAL_ID topCallId = CallStack_.top();
   while (!CallStack_.isEmpty() && call.id != topCallId) {
     auto callIt = CallTable_.find(topCallId);
     if (callIt != CallTable_.end()) {
@@ -206,6 +206,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
         returnThread = topCall.thread_id;
 
       CallStack_.pop();
+      topCallId = CallStack_.top();
     } else {
       return ErrorCode::NO_ENTRY;
     }
