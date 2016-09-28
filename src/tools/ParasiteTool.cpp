@@ -179,9 +179,9 @@ ParasiteTool::~ParasiteTool() {
 void ParasiteTool::Call(const CallEvent* e) {
 
 	const CallInfo* _info(e->getInfo());
-	std::string call_label = "CALL_" + _info->fnSignature;
-	if (stacks.bottomFunctionIndex() > -1)
-		add_local_work(_info->callTime, call_label);
+	std::string call_label = "CALL_" + std::to_string(static_cast<unsigned>(_info->siteId)) + "_" +
+																	     _info->fnSignature;
+	add_local_work(_info->callTime, call_label);
     stacks.bottomThread()->continuation.init_call_site(_info->siteId);
     work.record_call_site(_info->siteId, _info->fnSignature);
     add_start_time(_info->siteId, concur(_info->callTime));
@@ -246,14 +246,11 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const ReturnInfo* _info(e->getInfo());
 	FUN_SG fun_sg = stacks.bottomFunction()->function_signature;
-	std::string return_label = "R_" + std::to_string(static_cast<unsigned>(_info->call)) + "_" + fun_sg;
-	add_local_work(_info->endTime, return_label);
-	if (DEBUG_OUTPUT) {
-		std::cout << "starting return Event with signature " <<
-			stacks.bottomFunction()->function_signature.c_str() << std::endl;
-	}
-
 	std::shared_ptr<function_frame_t> returned_function(stacks.bottomFunction());
+	std::string return_label = "R_"
+								+ std::to_string(static_cast<unsigned>(returned_function->call_site))
+							    + "_" + fun_sg;
+	add_local_work(_info->endTime, return_label);
 	stacks.bottomThread()->continuation.
 						    add_lock_wait_time(returned_function->call_site, 
 									           returned_function->lock_wait_time());
@@ -294,6 +291,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 		parent_thread->prefix.add(&(parent_thread->continuation));
 		parent_thread->continuation.clear();
 	}
+
 
 	parent_thread->add_child_locks(ending_thread);
 	stacks.thread_pop();
