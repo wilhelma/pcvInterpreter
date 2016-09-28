@@ -8,15 +8,17 @@
 
 #include "DBInterpreter.h"
 #include "DebugTool.h"
-//#include "EventService.h"
 #include "ParasiteTool.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
-//#include "LockMgr.h"
 #include "SAAPRunner.h"
-//#include "ThreadMgr.h"
-#include <boost/log/trivial.hpp>
+
+// logger
+#include "easylogging++.h"
+
+// Initialize the logger
+INITIALIZE_EASYLOGGINGPP
 
 /// @brief The main routine.
 /// @attention The file name of the database to interpret is ___mandatory!___
@@ -26,14 +28,14 @@ int main(int argc, char* argv[]) {
 
     // check arguments
     if (argc < 2) {
-        BOOST_LOG_TRIVIAL(fatal) << "No database name provided!";
+        LOG(FATAL) << "No database name provided!";
         return 1;
     }
 
     std::cout << "STARTING PARCEIVE " << std::endl;
 
     // Create a SAAPRunner
-    auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter("SAAP.log")));
+    auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter()));
 
     // Create and register the tool
     const auto& debug_tool_it = runner->registerTool(

@@ -62,21 +62,24 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
     /// Constructor.
-    DBInterpreter(std::string&& logFile, 
-                  std::shared_ptr<EventService> service,
+    DBInterpreter(std::shared_ptr<EventService> service,
                   std::unique_ptr<LockMgr>&&   lockMgr,
                   std::unique_ptr<ThreadMgr>&& threadMgr);
 
     /// _Deleted_ copy constructor.
-    DBInterpreter(const DBInterpreter&)            = delete;
+    DBInterpreter(const DBInterpreter&) = delete;
     /// _Deleted_ move constructor.
-    DBInterpreter(DBInterpreter&&)                 = delete;
+    DBInterpreter(DBInterpreter&&)      = delete;
+
     /// _Deleted_ copy assignment operator.
     DBInterpreter& operator=(const DBInterpreter&) = delete;
     /// _Deleted_ move assignment operator.
     DBInterpreter& operator=(DBInterpreter&&)      = delete;
+
+    /// _Deleted_ default constructor.
+    DBInterpreter()  = delete;
     /// _Default_ destructor.
-    ~DBInterpreter()                               = default;
+    ~DBInterpreter() = default;
 
     /// @brief Processes the database.
     /// @details After importing the database entries, starts looping
@@ -199,6 +202,11 @@ private:
 /// @brief Helper function to create a `DBInterpreter`.
 /// @param logFileName The name of the log file.
 /// @return A `std::unique_ptr` to a `DBInterpreter`.
-std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName);
+inline std::unique_ptr<DBInterpreter> make_DBInterpreter() noexcept {
+	return std::make_unique<DBInterpreter>(
+            std::make_shared<EventService>(),
+			std::make_unique<LockMgr>(),
+            std::make_unique<ThreadMgr>());
+}
 
 #endif /* DBINTERPRETER_H_ */

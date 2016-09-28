@@ -45,38 +45,13 @@
 #include <memory>
 
 // logging system
-#include <boost/log/core.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
+#include "easylogging++.h"
 
-// Helper function to initialize the log.
-void initialize_logger(std::string&& logFileName) {
-	namespace logging = boost::log;
-	namespace expr    = boost::log::expressions;
-
-	logging::add_file_log(
-			logging::keywords::file_name = logFileName,
-			logging::keywords::format = (
-				expr::stream
-				<< expr::attr< unsigned int >("LineID")
-				<< ": <" << logging::trivial::severity
-				<< "> " << expr::smessage
-				)	
-			);
-
-	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
-	logging::add_common_attributes();
-}
-
-DBInterpreter::DBInterpreter(std::string&& logFile,
-                             std::shared_ptr<EventService> service,
+DBInterpreter::DBInterpreter(std::shared_ptr<EventService> service,
 							 std::unique_ptr<LockMgr>&&   lockMgr,
 							 std::unique_ptr<ThreadMgr>&& threadMgr) :
 	EventService_(service), lockMgr_(std::move(lockMgr)), threadMgr_(std::move(threadMgr))
 {
-	initialize_logger(std::move(logFile));
 	CallStack_.push(call_t::MAIN);
 }
 
@@ -93,7 +68,7 @@ void DBInterpreter::importDB(const std::string& DBPath) {
 	try {
 		db.open(DBPath);
 	} catch (const SQLException& e) {
-		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		LOG(FATAL) << e.what();
 		std::abort();
 	}
 
@@ -110,17 +85,17 @@ void DBInterpreter::importDB(const std::string& DBPath) {
     fill("SELECT * from Segment;",       db, SegmentTable_);
     fill("SELECT * from Thread;",        db, ThreadTable_);
 
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << AccessTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << CallTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << FileTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << FunctionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << InstructionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << LoopTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << LoopExecutionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << LoopIterationTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << ReferenceTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << SegmentTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << ThreadTable_.size();
+    LOG(TRACE) << "Rows in Access:        " << AccessTable_.size();
+    LOG(TRACE) << "Rows in Call:          " << CallTable_.size();
+    LOG(TRACE) << "Rows in File:          " << FileTable_.size();
+    LOG(TRACE) << "Rows in Function:      " << FunctionTable_.size();
+    LOG(TRACE) << "Rows in Instruction:   " << InstructionTable_.size();
+    LOG(TRACE) << "Rows in Loop:          " << LoopTable_.size();
+    LOG(TRACE) << "Rows in LoopExecution: " << LoopExecutionTable_.size();
+    LOG(TRACE) << "Rows in LoopIteration: " << LoopIterationTable_.size();
+    LOG(TRACE) << "Rows in Reference:     " << ReferenceTable_.size();
+    LOG(TRACE) << "Rows in Segment:       " << SegmentTable_.size();
+    LOG(TRACE) << "Rows in Thread:        " << ThreadTable_.size();
 }
 
 ErrorCode DBInterpreter::process(const std::string& DBPath) {
@@ -129,7 +104,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 		importDB(DBPath);
 	} catch (const SQLException& e) {
 		// this should only happen if the database can't be closed
-		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		LOG(FATAL) << e.what();
 		std::abort();
 	}
 
@@ -150,7 +125,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	auto search = SegmentTable_.find(ins.segment_id);
 	if (search == SegmentTable_.cend()) {
-		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
+		LOG(ERROR) << "Segment " << ins.segment_id
 			<< " not found in SegmentTable_";
 		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
@@ -162,28 +137,6 @@ const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 /// the call_id and (in case of error) the ErrorCode. __That's bad design__
 const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
     return CallTable_.getInstructionCaller(ins);
-//    // look for the call id of the instruction
-//    CAL_ID call_id(0);
-//    bool found = false;
-//    for (const auto& it : CallTable_) {
-//        // if there's a call whose instruction id is the same as
-//        // ins.id, get its id
-//        if (it.second.instruction_id == ins.id) {
-//            call_id = it.second.id;
-//            found = true;
-//            break;
-//        }
-//    }
-//
-//    // if the iterator reached the end, no entry has been found in callT_
-//    if (!found) {
-//        BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
-//            << ins.id;
-//        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
-//    }
-//
-//    //	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
-//    return call_id;
 }
 
 
@@ -209,8 +162,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
           auto threadIt = ThreadTable_.find(topCall.thread_id);
           if (threadIt != ThreadTable_.end()) {
               const thread_t& thread = threadIt->second;
-              ThreadEndInfo  end_info(static_cast<TIME>(
-                                        thread.start_cycle + thread.num_cycles),
+              ThreadEndInfo  end_info(thread.start_cycle + thread.num_cycles,
                                       sThread->threadId);
               ThreadEndEvent end_event(sThread, &end_info);
               getEventService()->publish(&end_event);
@@ -244,7 +196,7 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
                              call,
                              accessFunc);
       } else {
-        BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
+        LOG(ERROR) << "Access not found: " << it;
         return ErrorCode::NO_ENTRY;
       }
     }
@@ -366,7 +318,7 @@ size_t getHash(unsigned funId, unsigned lineNo) {
 //        if (!processCall(seg.call_id, search->second, seg, ins))
 //            return 1;
 //    } else {
-//        BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
+//        LOG(ERROR) << "Call not found: " << seg.call_id;
 //        return 1;
 //    }
 //
@@ -436,7 +388,7 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
     REF_ID refId = access.reference_id;
     auto search = ReferenceTable_.find(refId);
     if ( search == ReferenceTable_.end() ) {
-        BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
+        LOG(ERROR) << "Reference not found: " << access.reference_id;
         return ErrorCode::NO_ENTRY;
 	}
 
@@ -542,10 +494,4 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& instruction,
     getEventService()->publish( &event );
 
     return ErrorCode::OK;
-}
-
-std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName) {
-	return std::make_unique<DBInterpreter>(
-			std::move(logFileName), std::make_shared<EventService>(),
-			std::make_unique<LockMgr>(), std::make_unique<ThreadMgr>());
 }

@@ -15,28 +15,28 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # ---------------------------------- BOOST related search map ---------------------------------------- #
-find_path(BOOST_PATH
-  NAMES boost/log/trivial.hpp
-  PATHS $ENV{BOOST_PATH}
-  DOC "Boost directory"
-)
-
-if(NOT BOOST_PATH)
-  message(FATAL_ERROR
-    "\nBOOST directory not found!\n"
-    "Please set the environment variable BOOST_PATH to the base directory"
-  )
-endif(NOT BOOST_PATH)
-
-#add_definitions(-DBOOST_LOG_DYN_LINK)
-set(Boost_USE_STATIC_LIBS ON)
-# thread
-find_package(Boost COMPONENTS log log_setup thread date_time filesystem system REQUIRED)
-message(STATUS "Boost  Include Directory: ${Boost_INCLUDE_DIR}")
-message(STATUS "Boost  Library Directory: ${Boost_LIBRARY_DIR}")
-
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories   (${Boost_LIBRARY_DIR})
+#find_path(BOOST_PATH
+#  NAMES boost/log/trivial.hpp
+#  PATHS $ENV{BOOST_PATH}
+#  DOC "Boost directory"
+#)
+#
+#if(NOT BOOST_PATH)
+#  message(FATAL_ERROR
+#    "\nBOOST directory not found!\n"
+#    "Please set the environment variable BOOST_PATH to the base directory"
+#  )
+#endif(NOT BOOST_PATH)
+#
+##add_definitions(-DBOOST_LOG_DYN_LINK)
+#set(Boost_USE_STATIC_LIBS ON)
+## thread
+#find_package(Boost COMPONENTS log log_setup thread date_time filesystem system REQUIRED)
+#message(STATUS "Boost  Include Directory: ${Boost_INCLUDE_DIR}")
+#message(STATUS "Boost  Library Directory: ${Boost_LIBRARY_DIR}")
+#
+#include_directories(${Boost_INCLUDE_DIRS})
+#link_directories   (${Boost_LIBRARY_DIR})
 
 # --------------------------------- SQLITE related search map ---------------------------------------- #
 
@@ -70,5 +70,5 @@ find_package(Git)
 if (GIT_FOUND)
     add_subdirectory(src)
 else (GIT_FOUND)
-    message(FATAL "Git not found: cannot download rapidjson. Please install git.")
+    message(FATAL "Git not found: cannot download rapidjson and easylogging++. Please install git.")
 endif (GIT_FOUND)

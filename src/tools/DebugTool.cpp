@@ -29,13 +29,14 @@
 
 #include "ShadowThread.h"
 
-#include <boost/log/trivial.hpp>
+#include "easylogging++.h"
+//#include <boost/log/trivial.hpp>
 #include <utility>
 #include <iostream>
 
 void DebugTool::Access(const AccessEvent* event) {
 	const AccessInfo& ai = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
 		<< "AccessEvent:\n"
 		<< " > Access Type:  " << static_cast<unsigned>(ai.type) << "\n"
 		<< " > Instruct. id: " << ai.instructionID << "\n";
@@ -43,13 +44,13 @@ void DebugTool::Access(const AccessEvent* event) {
 
 void DebugTool::Acquire(const AcquireEvent* event) {
   const AcquireInfo& ai = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
     << "AcquireEvent:" << ai.acquireTime << std::endl;
 }
 
 void DebugTool::Call(const CallEvent* event) {
 	const CallInfo& ci = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
 		<< "CallEvent:\n"
         << " > Call Site:  " << ci.siteId << "\n"
         << " > Start Time  " << ci.callTime << "\n"
@@ -63,13 +64,13 @@ void DebugTool::Call(const CallEvent* event) {
 
 void DebugTool::Join(const JoinEvent* event) {
 //	const JoinInfo& ji = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
 		<< "JoinEvent:";
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {
 	const NewThreadInfo& nti = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
 		<< "NewThreadEvent:\n"
         << " > Thread id: " << nti.childThread->threadId << std::endl
         << " > Start time:  " << nti.startTime << "\n"
@@ -78,13 +79,13 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 
 void DebugTool::Release(const ReleaseEvent* event) {
   const ReleaseInfo& ri = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
     << "ReleaseEvent:" << ri.releaseTime << std::endl;
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
 	const ReturnInfo& ri = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
 		<< "ReturnEvent:\n"
 		<< " > Call ID: " << ri.call << "\n"
 		<< " > End time: " << ri.endTime << "\n";
@@ -92,7 +93,7 @@ void DebugTool::Return(const ReturnEvent* event) {
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
 	const ThreadEndInfo& tei = *(event->getInfo());
-	BOOST_LOG_TRIVIAL(debug) 
+	LOG(DEBUG) 
         << "ThreadEndEvent:\n"
 		<< " > Thread ID: " << tei.id << "\n"
 		<< " > End time:  " << tei.endTime << "\n";
