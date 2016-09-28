@@ -61,11 +61,13 @@ void Work::clear() {
 
 void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 
-	std::shared_ptr<CallSiteWorkProfile> new_ptr(new CallSiteWorkProfile());
-	new_ptr->init_callsite_profile(call_site, function_signature);
-	std::pair<CALLSITE, std::shared_ptr<CallSiteWorkProfile>> 
+	if (!hashtable->count(call_site)) {
+		std::shared_ptr<CallSiteWorkProfile> new_ptr(new CallSiteWorkProfile());
+		new_ptr->init_callsite_profile(call_site, function_signature);
+		std::pair<CALLSITE, std::shared_ptr<CallSiteWorkProfile>> 
                                     newPair(call_site, new_ptr);
-	hashtable->insert(newPair);
+		hashtable->insert(newPair);
+	}
 }
 
 
@@ -78,7 +80,9 @@ void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 						    TIME work) {
 	if (!hashtable->count(call_site))
 		init_call_site(call_site, function_signature);
+	std::cout << " BEFORE " << profileAt(call_site)->work << std::endl;
 	profileAt(call_site)->work += work;
+	std::cout << " AFTER " << profileAt(call_site)->work << std::endl;
 }
 
 TIME Work::at_call_site(CALLSITE call_site) {

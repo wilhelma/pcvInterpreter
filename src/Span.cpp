@@ -88,11 +88,13 @@ void Span::clear() {
 
 void Span::init_call_site(CALLSITE call_site) {
 
-	std::shared_ptr<CallSiteSpanProfile> new_profile(new CallSiteSpanProfile());
-	new_profile->init(call_site);
-	std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile>> 
+	if (!hashtable->count(call_site)) {
+		std::shared_ptr<CallSiteSpanProfile> new_profile(new CallSiteSpanProfile());
+		new_profile->init(call_site);
+		std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile>> 
                                     newPair(call_site, new_profile);
-	hashtable->insert(newPair);
+		hashtable->insert(newPair);
+	}
 }
 
 

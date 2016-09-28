@@ -104,7 +104,7 @@ using TIME = uint64_t;
 // inline TIME operator-(const TIME& lhs, const TIME& rhs)
 // { return lhs + (-rhs); }
 
-using CALLSITE = StrongTypedef<size_t,  13>;
+using CALLSITE = size_t;
 
 // File Types
 using FIL_PT = std::string;

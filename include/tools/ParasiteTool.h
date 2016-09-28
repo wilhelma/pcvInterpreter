@@ -119,6 +119,10 @@ class ParasiteTool : public Tool {
 
 	ParasiteJsonWriter jsonWriter;
 
+	std::vector<CALLSITE> already_called_list;
+
+	std::vector<int> top_level_check_stack;
+	
 	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
