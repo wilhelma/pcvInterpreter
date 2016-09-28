@@ -80,16 +80,12 @@ void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 						    TIME work) {
 	if (!hashtable->count(call_site))
 		init_call_site(call_site, function_signature);
-	std::cout << " BEFORE " << profileAt(call_site)->work << std::endl;
 	profileAt(call_site)->work += work;
-	std::cout << " AFTER " << profileAt(call_site)->work << std::endl;
 }
 
 TIME Work::at_call_site(CALLSITE call_site) {
 	return profileAt(call_site)->work;
 }
-
-
 
 void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
 

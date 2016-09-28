@@ -36,8 +36,10 @@ CallSiteProfile::CallSiteProfile (std::shared_ptr<CallSiteSpanProfile>
 	count = work_profile->count;
 	if (work == 0)
 		std::cout << "ERROR in call site profile initialization: work cannot be zero " << std::endl;
-	if (span == 0)
+	if (span == 0) {
 		std::cout << "ERROR in call site profile initialization: span cannot be zero " << std::endl;
+		span = 1;
+	};
 	parallelism = static_cast<double>(work) /
 				  static_cast<double>(span);
 }
