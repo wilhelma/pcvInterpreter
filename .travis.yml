@@ -17,7 +17,6 @@ addons:
         packages:
             - cmake
             - sqlite3
-            - libboost-all-dev
             # Install GCC 6 to support C++14 from the above repository
             - gcc-6
             - g++-6
