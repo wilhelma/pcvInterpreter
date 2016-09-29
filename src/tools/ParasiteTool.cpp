@@ -187,7 +187,7 @@ void ParasiteTool::Call(const CallEvent* e) {
     work.record_call_site(_info->siteId, _info->fnSignature);
     add_start_time(_info->siteId, concur(_info->callTime));
 
-    int alreadyCalled = std::count(already_called_list.begin(), already_called_list.end(), _info->siteId);
+    int alreadyCalled = std::count(already_called_list.begin(), already_called_list.end(), _info->siteId); 
     if (!alreadyCalled) {
     	already_called_list.push_back(_info->siteId);
 		stacks.function_push(_info->fnSignature, _info->siteId);
@@ -281,7 +281,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	add_edge(thread_end_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
-	span.collect(&(ending_thread->prefix));
 
 	if (stacks.bottomThreadIndex() == 0) {
 		return;

@@ -9,7 +9,7 @@
 #include <iostream>
 
 #define PRINT 1
-#define GRAPH 0
+#define GRAPH 1
 
 static inline void print_time(std::string str, TIME time) {
     if (PRINT) {
