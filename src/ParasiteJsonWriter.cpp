@@ -22,7 +22,7 @@ ParasiteJsonWriter::~ParasiteJsonWriter() {
     rapidjson::Document::AllocatorType& allocator = fromScratch.GetAllocator();
     fromScratch.AddMember("call_site_array", callSiteArray, allocator);
     std::string dir = "./";
-    std::string file_name = dir + name + ".json";
+    std::string file_name = dir + "parasite_output"+ ".json";
     file_pointer = fopen(file_name.c_str(), "w"); // non-Windows use "w"
     rapidjson::FileWriteStream output_stream(file_pointer,
                                              writeBuffer, 

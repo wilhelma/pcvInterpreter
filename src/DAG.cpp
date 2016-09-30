@@ -51,7 +51,7 @@ void DAG::write_dot_file() {
 
 	if (GRAPH) {
 		std::string dir = "./";
-		std::string file_name = (dir + name) + ".dot";
+		std::string file_name = (dir + "parasite_output") + ".dot";
 		std::ofstream dot(file_name);
 		bgl::dynamic_properties dp;
     	dp.property("label", get(bgl::edge_weight_t(), *dag));
