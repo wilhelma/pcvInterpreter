@@ -193,8 +193,8 @@ void ParasiteTool::Call(const CallEvent* e) {
     add_start_time(_info->siteId, concur(_info->callTime));
 
 	int topCall = !std::count(already_called_list.begin(), 
-							 already_called_list.end(),
-						     _info->siteId);
+							  already_called_list.end(),
+						      _info->siteId);
 	if (topCall) {
     	already_called_list.push_back(_info->siteId);
 	}
@@ -279,6 +279,21 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 		return;
 								
 	stacks.bottomParentFunction()->add_locks(returned_function);
+
+	if (stacks.bottomFunction()->topCall) {
+		std::vector<CALLSITE>::iterator position = std::find(already_called_list.begin(), 
+															 already_called_list.end(),
+															 returned_function->call_site);
+		already_called_list.erase(position);
+	}
+
+	if (stacks.bottomFunction()->topCallOnThread) {
+		std::vector<CALLSITE>::iterator position = std::find(stacks.bottomThread()->already_called_list.begin(), 
+															 stacks.bottomThread()->already_called_list.end(),
+															 returned_function->call_site);
+		stacks.bottomThread()->already_called_list.erase(position);
+	}
+
 	stacks.function_pop();
 	print_event_end("RETURN");
 }
@@ -287,7 +302,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	const ThreadEndInfo* _info(e->getInfo());
 	std::string thread_end_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
-	add_local_work(_info->endTime, thread_end_label);
+	add_local_work(_info->endTime, thread_end_label); 
 	add_edge(thread_end_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
