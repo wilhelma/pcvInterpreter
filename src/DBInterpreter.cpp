@@ -71,6 +71,12 @@ void initialize_logger(std::string&& logFileName) {
 	logging::add_common_attributes();
 }
 
+size_t getHash(unsigned funId, unsigned lineNo) {
+    size_t h1 = std::hash<unsigned>()(funId);
+    size_t h2 = std::hash<unsigned>()(lineNo);
+    return h1 ^ (h2 << 1);
+}
+
 DBInterpreter::DBInterpreter(std::string&& logFile,
                              std::shared_ptr<EventService> service,
 							 std::unique_ptr<LockMgr>&&   lockMgr,
@@ -79,9 +85,7 @@ DBInterpreter::DBInterpreter(std::string&& logFile,
   threadMgr_(std::move(threadMgr))
 {
 	initialize_logger(std::move(logFile));
-	CallStack_.push(call_t::MAIN);
 }
-
 
 template<typename IdT, typename T>
 inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
@@ -193,7 +197,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
                                        const call_t& call) {
   TRD_ID returnThread = NO_TRD_ID;
 
-  CAL_ID topCallId = CallStack_.top();
+  CAL_ID topCallId =CallStack_.top();
   while (!CallStack_.isEmpty() && call.id != topCallId) {
     auto callIt = CallTable_.find(topCallId);
     if (callIt != CallTable_.end()) {
@@ -226,7 +230,7 @@ ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
   assert(lastEventTime_ <= topCall.end_time);
 
   auto sThread = getThread(topCall.thread_id);
-  ReturnInfo info(topCall.id, topCall.end_time);
+  ReturnInfo info(topCall.id, topCall.function_id, topCall.end_time);
   ReturnEvent event(sThread, &info);
   getEventService()->publish(&event);
   lastEventTime_ = topCall.end_time;
@@ -245,6 +249,7 @@ ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
     ThreadEndEvent end_event(sThread, &end_info);
     getEventService()->publish(&end_event);
     lastEventTime_ = threadEndTime;
+    lastThreadId = thread.parent_thread_id;
   } else {
     return ErrorCode::NO_ENTRY;
   }
@@ -300,25 +305,31 @@ ErrorCode DBInterpreter::processStart() {
 ErrorCode DBInterpreter::processEnd() {
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto callIt = CallTable_.find(call_t::MAIN);
-  if (callIt != CallTable_.end()) {
-    const call_t& call = callIt->second;
-    auto threadIt = ThreadTable_.find(call.thread_id);
-    if (threadIt != ThreadTable_.end()) {
-      const thread_t& thread = threadIt->second;
-
-      // publish a return call event for main
+  // close final calls
+  while (!CallStack_.isEmpty()) {
+    const CAL_ID topCallId = CallStack_.pop();
+    auto callIt = CallTable_.find(topCallId);
+    if (callIt != CallTable_.end()) {
+      const call_t& call = callIt->second;
       auto sThread = getThread(call.thread_id);
-      ReturnInfo info(call.id, call.end_time);
+
+      if (call.thread_id != lastThreadId) {
+        // publish a thread end event
+        auto threadIt = ThreadTable_.find(lastThreadId);
+        if (threadIt != ThreadTable_.end()) {
+          const thread_t& thread = threadIt->second;
+          ThreadEndInfo end_info(static_cast<TIME>(
+                                 thread.start_cycle + thread.num_cycles),
+                                 thread.id);
+          ThreadEndEvent end_event(sThread, &end_info);
+          getEventService()->publish(&end_event);
+          lastThreadId = call.thread_id;
+        }
+      }
+
+      ReturnInfo info (call.id, call.function_id, call.end_time);
       ReturnEvent event(sThread, &info);
       getEventService()->publish(&event);
-
-      // publish a thread end event for the main thread
-      ThreadEndInfo  end_info(static_cast<TIME>(
-                                  thread.start_cycle + thread.num_cycles),
-                              sThread->threadId);
-      ThreadEndEvent end_event(sThread, &end_info);
-      getEventService()->publish(&end_event);
       ret = ErrorCode::OK;
     }
   }
@@ -376,12 +387,6 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
   }
 
   return ret;
-}
-
-size_t getHash(unsigned funId, unsigned lineNo) {
-    size_t h1 = std::hash<unsigned>()(funId);
-    size_t h2 = std::hash<unsigned>()(lineNo);
-    return h1 ^ (h2 << 1);
 }
 
 //int DBInterpreter::processSegment(SEG_ID segmentId,
@@ -562,6 +567,7 @@ ErrorCode DBInterpreter::processFork(const thread_t& thread) {
     NewThreadEvent event( pT, &info );
     getEventService()->publish( &event );
     lastEventTime_ = thread.start_cycle;
+    lastThreadId = thread.id;
     return ErrorCode::OK;
 }
 
@@ -574,6 +580,7 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
     JoinInfo info(cT, pT, lastEventTime_);
     JoinEvent event( pT, &info );
     getEventService()->publish( &event );
+    lastThreadId = thread.parent_thread_id;
 
     return ErrorCode::OK;
 }
