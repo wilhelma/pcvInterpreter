@@ -79,6 +79,8 @@ struct thread_frame_t {
 
 	TIME current_edge_length;
 
+	std::vector<CALLSITE> already_called_list;
+
 	thread_frame_t():thread(static_cast<TIME>(0)),
 					 prefix(Span()), 
 					 longest_child(Span()),

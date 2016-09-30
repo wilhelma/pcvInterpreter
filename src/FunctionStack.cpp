@@ -31,18 +31,24 @@ void FunctionStack::pop() {
 
 void FunctionStack::init_frame(int index, 
 							   FUN_SG funSg,
-							   CALLSITE callsiteID) {
+							   CALLSITE callsiteID,
+							   int topCll,
+							   int topCllOnThread) {
 	assert(index >= 0);	
 	stack.at(index)->call_site = callsiteID;
 	stack.at(index)->function_signature = funSg;
+	stack.at(index)->topCall = topCll;
+	stack.at(index)->topCallOnThread = topCllOnThread;
 }
 
 std::shared_ptr<function_frame_t> FunctionStack::push(FUN_SG funSg, 
-									   				  CALLSITE callsiteID) {
+									   				  CALLSITE callsiteID,
+									   				  int topCall,
+									   				  int topCallOnThread) {
 	stack.push_back(std::shared_ptr<function_frame_t> (new function_frame_t));
 	print_debug("pushed function");
 	int bottom_index = stack.size() - 1;
-	init_frame(bottom_index, funSg, callsiteID);
+	init_frame(bottom_index, funSg, callsiteID, topCall, topCallOnThread);
 	assert(bottom_index >= 0);
 	return stack.back();
 }

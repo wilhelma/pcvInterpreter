@@ -128,6 +128,7 @@ private:
     CallStack CallStack_;
 
     TIME lastEventTime_;
+    TRD_ID lastThreadId = NO_TRD_ID;
   
     std::shared_ptr<EventService> EventService_;
     shadowVarMap_t _shadowVarMap;

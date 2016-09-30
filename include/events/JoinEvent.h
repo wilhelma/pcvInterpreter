@@ -17,17 +17,18 @@
 
 #include "Event.h"
 
-/// Event for joining threads.
+/// @ingroup events
+/// @brief Event for joining threads.
 class JoinEvent final : public Event<JoinInfo> {
 public:
-	/// Constructor.
+    ///@brief  Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The join event information.
-	JoinEvent(const ShadowThread* thread, const JoinInfo* info) :
-		Event(thread, info) {};
+    explicit JoinEvent(const ShadowThread* thread, const JoinInfo* info) :
+        Event(thread, info) {};
 
     /// Returns the event type.
-	virtual Events getEventType() const override
+    virtual Events getEventType() const override
     { return Events::JOIN; };
 };
 

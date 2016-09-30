@@ -17,17 +17,18 @@
 
 #include "Event.h"
 
-/// Event for memory access.
+/// @ingroup events
+/// @brief Event for memory access.
 class AccessEvent final : public Event<AccessInfo> {
 public:
-	/// Constructor.
+    /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The access event information.
-	AccessEvent(const ShadowThread* thread, const AccessInfo* info) :
-		Event(thread, info) {};
+    explicit AccessEvent(const ShadowThread* thread, const AccessInfo* info) :
+        Event(thread, info) {};
 
     /// Return the event type.
-	virtual Events getEventType() const override
+    virtual Events getEventType() const override
     { return Events::ACCESS; };
 };
 

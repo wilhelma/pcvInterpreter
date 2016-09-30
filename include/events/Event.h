@@ -5,12 +5,13 @@
 
 #include "fwd/ShadowThread.h"
 
-#include "Types.h"
+#include <type_traits>
 
-#include <string>
-#include <stdlib.h>
+/// @defgroup events
+/// @brief Runtime events 
 
-/// @brief Run-time events.
+/// @ingroup events
+/// @brief Run-time event types.
 enum class Events: unsigned char {
     NEWTHREAD = 0x1,  ///< A new thread has been created.
     THREADEND = 0x2,  ///< A thread terminates (i.e. returns).
@@ -64,7 +65,7 @@ const bool operator==(Events lhs, T rhs) noexcept {
 template <typename T>
 constexpr inline
 const bool operator==(T lhs, Events rhs) noexcept {
-	return rhs == lhs;
+    return rhs == lhs;
 }
 
 /// @brief Unequality operator: negates `operator==(Events, T)`.
@@ -72,7 +73,7 @@ const bool operator==(T lhs, Events rhs) noexcept {
 template <typename T>
 constexpr inline
 const bool operator!=(Events lhs, T rhs) noexcept {
-	return !(lhs == rhs);
+    return !(lhs == rhs);
 }
 
 /// @brief Unequality operator (make it commutative).
@@ -80,31 +81,24 @@ const bool operator!=(Events lhs, T rhs) noexcept {
 template <typename T>
 constexpr inline
 const bool operator!=(T lhs, Events rhs) noexcept {
-	return rhs != lhs;
+    return rhs != lhs;
 }
 
-///// Converts a time in the format `YYYY-MM-DD|T|hh:mm:ss|.|CLOCK|Z| into 
-///// a `TIME` variable (i.e. `clock_t`)
-//inline
-//const TIME timeStringToTime(const TIME_STRING& t) {
-//	int found = t.find_last_of('.');
-//	return static_cast<TIME>(atoi(t.substr(found + 1).c_str()));
-//}
-
+/// @ingroup events
 /// @brief Abstract event.
 /// @details Base class for all the `*Event` classes.
 /// @attention Event is not copyable nor moveable! So its inherited classes will be.
 template <typename InfoType>
 class Event {
 public:
-	/// Constructor.
+    /// Constructor.
     /// @param  thread The thread the event was triggered from.
     /// @tparam info   The event information.
-	Event(const ShadowThread* thread, const InfoType* info) :
-		Thread_(thread), Info_(info) {};
+    explicit Event(const ShadowThread* thread, const InfoType* info) :
+        Thread_(thread), Info_(info) {};
 
-	/// _Default_ destructor.
-	virtual ~Event() = default;
+    /// _Default_ destructor.
+    virtual ~Event() = default;
 
     /// _Deleted_ copy constructor.
     Event(const Event&)            = delete;
@@ -116,7 +110,7 @@ public:
     Event& operator=(Event&&)      = delete;
 
     /// Acesses the thread information.
-	decltype(auto) getThread() const
+    decltype(auto) getThread() const
     { return Thread_; };
 
     /// Access the event information.
@@ -124,11 +118,11 @@ public:
     { return Info_; };
 
     /// Returns the event type.
-	virtual Events getEventType() const = 0;
+    virtual Events getEventType() const = 0;
 
 private:
-	/// @todo Should this be a `unique_ptr`?
-	const ShadowThread* const Thread_;
+    /// @todo Should this be a `unique_ptr`?
+    const ShadowThread* const Thread_;
 
     /// The event information.
     const InfoType* const Info_;

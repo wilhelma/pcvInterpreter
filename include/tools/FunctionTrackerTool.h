@@ -24,6 +24,9 @@
 #include <string>
 #include <vector>
 
+/// @ingroup observers
+/// @brief Makes a `.dot` graph of the called functions.
+/// @todo Delete this (unfinished?) class.
 class FunctionTrackerTool: public Tool {
 	public:
 		FunctionTrackerTool (std::string outFileName = "functionGraph.dot", std::string graphName = "graph");

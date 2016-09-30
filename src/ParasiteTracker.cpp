@@ -22,8 +22,10 @@ ParasiteTracker::ParasiteTracker() {
 ParasiteTracker::~ParasiteTracker() {}
 
 std::shared_ptr<function_frame_t> ParasiteTracker::function_push(FUN_SG funSg,
-							   									 CALLSITE callsiteID) {
-	return function_stack->push(funSg, callsiteID);
+							   									 CALLSITE callsiteID,
+							   									 int topCall,
+							   									 int topCallOnThread) {
+	return function_stack->push(funSg, callsiteID, topCall, topCallOnThread);
 }
 
 void ParasiteTracker::function_pop(){

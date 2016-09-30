@@ -17,14 +17,15 @@
 
 #include "Event.h"
 
-/// Event for function returns.
+/// @ingroup events
+/// @brief Event for function returns.
 class ReturnEvent final : public Event<ReturnInfo> {
 public:
-	/// Constructor.
+    /// @brief Constructor.
     /// @param  thread The thread the event was triggered from.
     /// @tparam info   The return event information.
-	ReturnEvent(const ShadowThread* thread, const ReturnInfo* info) :
-		Event(thread, info) {};
+    explicit ReturnEvent(const ShadowThread* thread, const ReturnInfo* info) :
+        Event(thread, info) {};
 
     /// Returns the event type.
     virtual Events getEventType() const override

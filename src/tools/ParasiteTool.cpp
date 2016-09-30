@@ -60,12 +60,17 @@ void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
 void ParasiteTool::add_down_stack(TIME local_work) {
 
 	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
-		work.add_to_call_site(stacks.functionAt(i)->call_site,
+
+		if (stacks.functionAt(i)->topCall) {
+			work.add_to_call_site(stacks.functionAt(i)->call_site,
 						  	   stacks.functionAt(i)->function_signature,
 						  	   local_work);
+		}
 	
-		stacks.bottomThread()->continuation.add_to_call_site(
+		if (stacks.functionAt(i)->topCallOnThread) {
+			stacks.bottomThread()->continuation.add_to_call_site(
 			   					stacks.functionAt(i)->call_site, local_work);
+		}
 	}
 }
 
@@ -187,14 +192,21 @@ void ParasiteTool::Call(const CallEvent* e) {
     work.record_call_site(_info->siteId, _info->fnSignature);
     add_start_time(_info->siteId, concur(_info->callTime));
 
-    int alreadyCalled = std::count(already_called_list.begin(), already_called_list.end(), _info->siteId); 
-    if (!alreadyCalled) {
+	int topCall = !std::count(already_called_list.begin(), 
+							 already_called_list.end(),
+						     _info->siteId);
+	if (topCall) {
     	already_called_list.push_back(_info->siteId);
-		stacks.function_push(_info->fnSignature, _info->siteId);
-		top_level_check_stack.push_back(1);
 	}
-	else 
-		top_level_check_stack.push_back(0);
+
+	int topCallOnThread = !std::count(stacks.bottomThread()->already_called_list.begin(), 
+									 stacks.bottomThread()->already_called_list.end(),
+									 _info->siteId);
+	if (topCallOnThread) {
+    	stacks.bottomThread()->already_called_list.push_back(_info->siteId);
+	}
+
+	stacks.function_push(_info->fnSignature, _info->siteId, topCall, topCallOnThread);
 	print_event_end("CALL");
 }
 
@@ -266,10 +278,8 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	if (stacks.bottomFunctionIndex() == 0) 
 		return;
 								
-	//stacks.bottomParentFunction()->add_locks(returned_function);
-    if (top_level_check_stack.at(top_level_check_stack.size() - 1) == 1)
-		stacks.function_pop();
-	top_level_check_stack.pop_back();
+	stacks.bottomParentFunction()->add_locks(returned_function);
+	stacks.function_pop();
 	print_event_end("RETURN");
 }
 

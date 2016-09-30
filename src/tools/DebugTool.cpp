@@ -86,7 +86,8 @@ void DebugTool::Return(const ReturnEvent* event) {
 	const ReturnInfo& ri = *(event->getInfo());
 	BOOST_LOG_TRIVIAL(debug) 
 		<< "ReturnEvent:\n"
-		<< " > Call ID: " << ri.call << "\n"
+    << " > Call ID: " << ri.call << "\n"
+    << " > Function ID: " << ri.function << "\n"
 		<< " > End time: " << ri.endTime << "\n";
 }
 

@@ -16,10 +16,13 @@
 
 typedef struct ReturnInfo {
   CAL_ID call;
+  FUN_ID function;
   TIME   endTime;
 
-  explicit ReturnInfo(const CAL_ID& call, const TIME& endTime) noexcept
-    : call(call), endTime(endTime)
+  explicit ReturnInfo(const CAL_ID& call,
+                      const FUN_ID function,
+                      const TIME& endTime) noexcept
+    : call(call), function(function), endTime(endTime)
   {}
 } ReturnInfo;
 
