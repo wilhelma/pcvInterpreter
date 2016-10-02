@@ -188,6 +188,9 @@ void ParasiteTool::Call(const CallEvent* e) {
 																	     _info->fnSignature;
 	if (stacks.bottomFunctionIndex() > -1)	
 		add_local_work(_info->callTime, call_label);
+	else
+		last_event_time = _info->callTime;
+	
     stacks.bottomThread()->continuation.init_call_site(_info->siteId);
     work.record_call_site(_info->siteId, _info->fnSignature);
     add_start_time(_info->siteId, concur(_info->callTime));
