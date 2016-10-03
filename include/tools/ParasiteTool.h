@@ -60,7 +60,7 @@ class ParasiteTool : public Tool {
 	static const bool DEBUG_OUTPUT = PRINT;
 	static const bool COMMAND_LINE_OUTPUT = 1;
 	static const bool JSON_OUTPUT = 1;
-	static const bool GRAPH_OUTPUT = 1;
+	static const bool GRAPH_OUTPUT = 0;
 
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
@@ -88,7 +88,7 @@ class ParasiteTool : public Tool {
 	void printOverallProfile();
 
 
-	vertex_descr_type add_edge(std::string end_vertex_label);
+	void add_edge(std::string end_vertex_label);
 
 	void add_join_edges(vertex_descr_type start, std::string label);
 

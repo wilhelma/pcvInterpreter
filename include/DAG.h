@@ -49,7 +49,7 @@ class DAG {
  public:
 	DAG(std::string _name_);
 	~DAG();
-	vertex_descr_type add_edge(vertex_descr_type start, TIME length,
+	void add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label);
 	void add_join_edge(vertex_descr_type start, vertex_descr_type end);
 

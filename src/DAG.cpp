@@ -23,7 +23,7 @@ DAG::DAG(std::string _name_) : vertex_count(1), name(_name_){
 
 DAG::~DAG() {}
 
-vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
+void DAG::add_edge(vertex_descr_type start, TIME length,
 								std::string end_vertex_label) {
 
 	if (GRAPH) {
@@ -34,10 +34,7 @@ vertex_descr_type DAG::add_edge(vertex_descr_type start, TIME length,
 				   static_cast<double>(SCALING_FACTOR);
 		bgl::add_edge(start, end, EdgeWeightProp(lngth), *dag);
 		last_vertex = end;
-		return end;
 	}
-	else 
-		return NULL;
 }
 
 void DAG::add_join_edge(vertex_descr_type start, vertex_descr_type end) {

@@ -40,15 +40,13 @@ ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(
 	jsonWriter.name = name;
 }
 
-vertex_descr_type ParasiteTool::add_edge(std::string end_vertex_label) {
+void ParasiteTool::add_edge(std::string end_vertex_label) {
 
-	vertex_descr_type new_vertex = 
-		thread_graph.add_edge(stacks.bottomThread()->last_vertex,
+	thread_graph.add_edge(stacks.bottomThread()->last_vertex,
 							  stacks.bottomThread()->current_edge_length,
 							  end_vertex_label);
 	stacks.bottomThread()->current_edge_length = static_cast<TIME>(0);
-	stacks.bottomThread()->last_vertex = new_vertex;
-	return new_vertex;
+	//stacks.bottomThread()->last_vertex = new_vertex;
 }
 
 void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
@@ -221,7 +219,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 		stacks.bottomThread()->spawned_children_count += 1;
 		std::string new_thread_label = "TS_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId));
 		add_local_work(_info->startTime, new_thread_label);
-		thread_start_vertex = add_edge(new_thread_label);
+		add_edge(new_thread_label); // thread_starT_vertex =
 	} else {
 		thread_start_vertex = thread_graph.last_vertex;
 		last_event_time = _info->startTime;
@@ -246,7 +244,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	add_local_work(_info->joinTime, join_label);				  
 	add_join_edges(bottom_thread->join_vertex_list.front(), join_label);
 	if (bottom_thread->join_vertex_list.size())
-		bottom_thread->join_vertex_list.pop_front();
+		//bottom_thread->join_vertex_list.pop_front();
 
 	if (bottom_thread->spawned_children_count == 0) {
 	 
