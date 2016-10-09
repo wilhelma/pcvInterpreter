@@ -16,6 +16,7 @@
 #include "LoopExecution.h"
 #include "Types.h"
 
+/// @ingroup tables
 class LoopExecutionTable final: public DBTable<LOE_ID, const loopExecution_t> {
 };
 

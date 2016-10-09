@@ -10,6 +10,7 @@
 
 #include "Types.h"
 
+/// @ingroup shadows
 /// @todo Document this!
 /// @todo Complete implementation: it doesn't make sense to
 /// define comparison operators if threadId is publicly accessible!

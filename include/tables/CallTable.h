@@ -19,6 +19,7 @@
 
 #include <map>
 
+/// @ingroup tables
 /// @brief Associates each call ID to the `call_t` that contains the information.
 /// @details The class also contains a map between the instruction ID on which the call was
 /// issued and the (issued) call ID.

@@ -16,6 +16,7 @@
 #include "Thread.h"
 #include "Types.h"
 
+/// @ingroup tables
 class ThreadTable final: public DBTable<TRD_ID, const thread_t> {
 };
 

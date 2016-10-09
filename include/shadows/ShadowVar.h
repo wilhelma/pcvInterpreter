@@ -11,6 +11,7 @@
 #include "Reference.h"
 #include "Types.h"
 
+/// @ingroup shadows
 /// @todo Document this!
 struct ShadowVar {
 	/// @bug Dangling pointer! It points nowhere!

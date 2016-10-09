@@ -16,6 +16,7 @@
 #include "Function.h"
 #include "Types.h"
 
+/// @ingroup tables
 class FunctionTable final: public DBTable<FUN_ID, const function_t> {
 //	public:
 //		virtual const std::pair<FunctionTable::iterator, bool> insert(const function_t& entry) override final

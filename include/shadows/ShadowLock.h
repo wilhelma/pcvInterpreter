@@ -10,6 +10,11 @@
 
 #include "Types.h"
 
+/// @defgroup shadows
+/// @brief 
+/// @todo What are the shadows?
+
+/// @ingroup shadows
 /// @todo Document this!
 /// @todo Complete implementation: it doesn't make sense to
 /// define comparison operators if LockId_ is publicly accessible!

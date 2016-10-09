@@ -16,6 +16,7 @@
 #include "Reference.h"
 #include "Types.h"
 
+/// @ingroup tables
 class ReferenceTable final: public DBTable<REF_ID, const reference_t> {
 };
 

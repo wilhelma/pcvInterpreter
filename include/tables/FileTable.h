@@ -16,6 +16,7 @@
 #include "File.h"
 #include "Types.h"
 
+/// @ingroup tables
 class FileTable final: public DBTable<FIL_ID, const file_t> {
 //	public:
 //		virtual const std::pair<FileTable::iterator, bool> insert(const file_t& entry) override final
