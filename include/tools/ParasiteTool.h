@@ -76,6 +76,8 @@ class ParasiteTool : public Tool {
 	void add_local_work(TIME strand_end_time, 
 	  				   	std::string end_vertex_label);
 
+	void add_lock_wait_time_down_stack(TIME wait_time);
+
 	void add_start_time(CALLSITE call_site, TIME start_time);
 
 	void endProfileCalculations();

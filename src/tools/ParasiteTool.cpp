@@ -72,6 +72,18 @@ void ParasiteTool::add_down_stack(TIME local_work) {
 	}
 }
 
+void ParasiteTool::add_lock_wait_time_down_stack(TIME wait_time) {
+
+	for (int i = 0; i <= stacks.bottomFunctionIndex(); i++) {
+	
+		if (stacks.functionAt(i)->topCallOnThread) {
+
+			stacks.bottomThread()->continuation.add_lock_wait_time(
+				stacks.functionAt(i)->call_site, wait_time);
+		}
+	}
+}
+
 void ParasiteTool::add_start_time(CALLSITE call_site, TIME start_time) {
 	std::pair<CALLSITE, TIME> newPair(call_site, start_time);
 	start_time_hashtable.insert(newPair);
@@ -273,9 +285,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 								+ std::to_string(static_cast<unsigned>(returned_function->call_site))
 							    + "_" + fun_sg;
 	add_local_work(_info->endTime, return_label);
-	stacks.bottomThread()->continuation.
-						    add_lock_wait_time(returned_function->call_site, 
-									           returned_function->lock_wait_time());
+	add_lock_wait_time_down_stack(returned_function->lock_wait_time());
 	if (stacks.bottomFunctionIndex() == 0) 
 		return;
 								

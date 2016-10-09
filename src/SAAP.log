@@ -1,0 +1,11 @@
+1: <trace> Rows in Access:        0
+2: <trace> Rows in Call:          1
+3: <trace> Rows in File:          1
+4: <trace> Rows in Function:      1
+5: <trace> Rows in Instruction:   0
+6: <trace> Rows in Loop:          0
+7: <trace> Rows in LoopExecution: 0
+8: <trace> Rows in LoopIteration: 0
+9: <trace> Rows in Reference:     0
+10: <trace> Rows in Segment:       1
+11: <trace> Rows in Thread:        1
