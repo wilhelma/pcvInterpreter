@@ -5,5 +5,5 @@ var searchData=
   ['reference_5fid',['reference_id',['../structaccess__t.html#a28e51c1c13ebd8eeb4eae107641158f9',1,'access_t']]],
   ['referencetable_5f',['ReferenceTable_',['../classDBInterpreter.html#a1c065193dbdec4c57c476a033c3921a9',1,'DBInterpreter']]],
   ['releasetime',['releaseTime',['../structReleaseInfo.html#aa60f7db019cdb64f92f14de13d3da210',1,'ReleaseInfo']]],
-  ['runtime',['runtime',['../structCallInfo.html#aaf6afed850ba9f2b4141324d6eef6928',1,'CallInfo::runtime()'],['../structNewThreadInfo.html#ae822d27ba668a88d35828217b235b327',1,'NewThreadInfo::runTime()']]]
+  ['runtime',['runTime',['../structNewThreadInfo.html#ae822d27ba668a88d35828217b235b327',1,'NewThreadInfo::runTime()'],['../structCallInfo.html#aaf6afed850ba9f2b4141324d6eef6928',1,'CallInfo::runtime()']]]
 ];

@@ -12,7 +12,7 @@ var searchData=
   ['dbmanager',['DBManager',['../classDBManager.html',1,'DBManager'],['../classDBManager.html#afb4f09d26522754aab71b801716a8325',1,'DBManager::DBManager()']]],
   ['dbmanager_2ecpp',['DBManager.cpp',['../DBManager_8cpp.html',1,'']]],
   ['dbmanager_2eh',['DBManager.h',['../DBManager_8h.html',1,'']]],
-  ['dbtable',['DBTable',['../classDBTable.html',1,'DBTable&lt; IdT, T &gt;'],['../classDBTable.html#a7149c41a174f4b56a25b8553ccb6bde1',1,'DBTable::DBTable()'],['../classDBTable.html#a789080a4c75ae41f0898fc5073d677d3',1,'DBTable::DBTable(const DBTable &amp;)']]],
+  ['dbtable',['DBTable',['../classDBTable.html',1,'DBTable&lt; IdT, T &gt;'],['../classDBTable.html#a7ba46bf3101644a24ec14aaa98a18808',1,'DBTable::DBTable()=default'],['../classDBTable.html#acb96848a11391297884dccd020c89eba',1,'DBTable::DBTable(const DBTable &amp;)=delete'],['../classDBTable.html#a28926fa9e0f537a3b7da37fea0328147',1,'DBTable::DBTable(DBTable &amp;&amp;)=delete']]],
   ['dbtable_2eh',['DBTable.h',['../fwd_2DBTable_8h.html',1,'']]],
   ['dbtable_2eh',['DBTable.h',['../DBTable_8h.html',1,'']]],
   ['dbtable_3c_20acc_5fid_2c_20const_20access_5ft_20_3e',['DBTable&lt; ACC_ID, const access_t &gt;',['../classDBTable.html',1,'']]],
@@ -27,8 +27,8 @@ var searchData=
   ['dbtable_3c_20seg_5fid_2c_20const_20segment_5ft_20_3e',['DBTable&lt; SEG_ID, const segment_t &gt;',['../classDBTable.html',1,'']]],
   ['dbtable_3c_20trd_5fid_2c_20const_20thread_5ft_20_3e',['DBTable&lt; TRD_ID, const thread_t &gt;',['../classDBTable.html',1,'']]],
   ['debug_5foutput',['DEBUG_OUTPUT',['../classParasiteTool.html#a6fd372e70e94d5c1de3c639740e49eef',1,'ParasiteTool']]],
-  ['debugtool',['DebugTool',['../classDebugTool.html',1,'']]],
+  ['debugtool',['DebugTool',['../classDebugTool.html',1,'DebugTool'],['../classDebugTool.html#a97fcddb783ff86781ccd7204741a79fe',1,'DebugTool::DebugTool()']]],
   ['debugtool_2ecpp',['DebugTool.cpp',['../DebugTool_8cpp.html',1,'']]],
   ['debugtool_2eh',['DebugTool.h',['../DebugTool_8h.html',1,'']]],
-  ['dumpraceentries',['dumpRaceEntries',['../classLockSetChecker.html#afe62f1f950e59b2ea4d24e07a94b26b7',1,'LockSetChecker::dumpRaceEntries()'],['../classRaceDetectionTool.html#a909d29900ac01d1a014e42c79b64a2fa',1,'RaceDetectionTool::dumpRaceEntries()']]]
+  ['dumpraceentries',['dumpRaceEntries',['../classLockSetChecker.html#ae23ca8d482befa8a9b999911eeacf140',1,'LockSetChecker::dumpRaceEntries()'],['../classRaceDetectionTool.html#aaf3c62b9c5fc2aeb547f6ba221e93fa4',1,'RaceDetectionTool::dumpRaceEntries()']]]
 ];

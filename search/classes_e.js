@@ -25,8 +25,8 @@ var searchData=
   ['strongtypedef_3c_20id_2c_209_20_3e',['StrongTypedef&lt; ID, 9 &gt;',['../structStrongTypedef.html',1,'']]],
   ['strongtypedef_3c_20size_5ft_2c_2013_20_3e',['StrongTypedef&lt; size_t, 13 &gt;',['../structStrongTypedef.html',1,'']]],
   ['strongtypedef_3c_20size_5ft_2c_2015_20_3e',['StrongTypedef&lt; size_t, 15 &gt;',['../structStrongTypedef.html',1,'']]],
+  ['strongtypedef_3c_20uint64_5ft_2c_2012_20_3e',['StrongTypedef&lt; uint64_t, 12 &gt;',['../structStrongTypedef.html',1,'']]],
   ['strongtypedef_3c_20unsigned_2c_2011_20_3e',['StrongTypedef&lt; unsigned, 11 &gt;',['../structStrongTypedef.html',1,'']]],
-  ['strongtypedef_3c_20unsigned_2c_2012_20_3e',['StrongTypedef&lt; unsigned, 12 &gt;',['../structStrongTypedef.html',1,'']]],
   ['strongtypedef_3c_20unsigned_2c_2014_20_3e',['StrongTypedef&lt; unsigned, 14 &gt;',['../structStrongTypedef.html',1,'']]],
   ['strongtypedef_3c_20unsigned_2c_2016_20_3e',['StrongTypedef&lt; unsigned, 16 &gt;',['../structStrongTypedef.html',1,'']]]
 ];

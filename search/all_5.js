@@ -24,14 +24,13 @@ var searchData=
   ['event_3c_20releaseinfo_20_3e',['Event&lt; ReleaseInfo &gt;',['../classEvent.html',1,'']]],
   ['event_3c_20returninfo_20_3e',['Event&lt; ReturnInfo &gt;',['../classEvent.html',1,'']]],
   ['event_3c_20threadendinfo_20_3e',['Event&lt; ThreadEndInfo &gt;',['../classEvent.html',1,'']]],
-  ['events',['events',['../structObserver.html#a85e27631224e023bcdf6ce9af35e90fc',1,'Observer::events()'],['../Event_8h.html#a2c5dfa8c8d1949f69e5c812038bc83cd',1,'Events():&#160;Event.h']]],
+  ['events',['events',['../structObserver.html#a85e27631224e023bcdf6ce9af35e90fc',1,'Observer::events()'],['../group__events.html#ga2c5dfa8c8d1949f69e5c812038bc83cd',1,'Events():&#160;Event.h'],['../group__events.html',1,'(Global Namespace)']]],
   ['eventservice',['EventService',['../classEventService.html',1,'EventService'],['../classEventService.html#ac7e4bb0dc82d548b86bbffaa8d8ae9ab',1,'EventService::EventService()=default'],['../classEventService.html#a6fb70ee4ce806c75c2840e7bd171aef0',1,'EventService::EventService(const EventService &amp;)=delete'],['../classEventService.html#a40958c5bb63ef7fb569501d05c7c4393',1,'EventService::EventService(EventService &amp;&amp;)=delete']]],
   ['eventservice_2ecpp',['EventService.cpp',['../EventService_8cpp.html',1,'']]],
-  ['eventservice_2eh',['EventService.h',['../fwd_2EventService_8h.html',1,'']]],
   ['eventservice_2eh',['EventService.h',['../EventService_8h.html',1,'']]],
+  ['eventservice_2eh',['EventService.h',['../fwd_2EventService_8h.html',1,'']]],
   ['eventservice_5f',['EventService_',['../classDBInterpreter.html#abaa0263abc23715dd4d0286329255d40',1,'DBInterpreter']]],
   ['exclusive',['EXCLUSIVE',['../Access_8h.html#a694a72c55d2ab3ed1e67765871d48e8caf45c3a0bb3687ed8e221253b3fd4a2ce',1,'Access.h']]],
   ['exit_5froutine',['EXIT_ROUTINE',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a85414e7f3b82e4913ba67182a2ebd41d',1,'Function.h']]],
-  ['external',['EXTERNAL',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a3932d629fb5e2be9d09b3a4485b3cc9d',1,'Function.h']]],
-  ['externalproject_5fadd',['ExternalProject_Add',['../CMakeLists_8txt.html#a65e421b4830a19b8a58b0a0cbcb0930f',1,'CMakeLists.txt']]]
+  ['external',['EXTERNAL',['../Function_8h.html#aef2a7812d1f2564c010000bcdf5b2341a3932d629fb5e2be9d09b3a4485b3cc9d',1,'Function.h']]]
 ];

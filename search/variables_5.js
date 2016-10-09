@@ -13,6 +13,7 @@ var searchData=
   ['fnsignature',['fnSignature',['../structCallInfo.html#aabbc8a091749af770d61eb4165ea3f4e',1,'CallInfo']]],
   ['fntype',['fnType',['../structCallInfo.html#a65003c8b0a31b8be0ec7f56ff8e36523',1,'CallInfo']]],
   ['fromscratch',['fromScratch',['../classParasiteJsonWriter.html#acabd0e74144ea2e9d171e3290325c71f',1,'ParasiteJsonWriter']]],
+  ['function',['function',['../structReturnInfo.html#a3b224e0ec53f94d86c5c23992fab71f3',1,'ReturnInfo']]],
   ['function_5fid',['function_id',['../structcall__t.html#a768b8b0609416e8435d9b2b630724a6d',1,'call_t']]],
   ['function_5fsignature',['function_signature',['../structfunction__frame__t.html#ab766a1fb9cfbea8cd38ccfd289137bb6',1,'function_frame_t::function_signature()'],['../classCallSiteProfile.html#a404e7c8c9ab90f04b9de617ac0ee3b7b',1,'CallSiteProfile::function_signature()'],['../classCallSiteWorkProfile.html#aaab10a703b98de02e16bfacb87d8ff7d',1,'CallSiteWorkProfile::function_signature()']]],
   ['function_5fstack',['function_stack',['../classParasiteTracker.html#af0875dc315a47965b806a116652d7e2c',1,'ParasiteTracker']]],
