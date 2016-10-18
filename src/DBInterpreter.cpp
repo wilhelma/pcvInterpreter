@@ -10,18 +10,27 @@
 #include "fwd/ShadowThread.h"
 #include "fwd/ShadowVar.h"
 
+#include "SQLException.h"
+
 #include <iostream>
 #include <string>
 #include <functional>
 #include <cassert>
 
-#include "SQLStatementIterator.h"
-
-#include "DBTable.h"
-#include "DBManager.h"
-
 #include "LockMgr.h"
 #include "ThreadMgr.h"
+
+#include "Access.h"
+#include "Call.h"
+#include "File.h"
+#include "Function.h"
+#include "Instruction.h"
+#include "Loop.h"
+#include "LoopExecution.h"
+#include "LoopIteration.h"
+#include "Reference.h"
+#include "Segment.h"
+#include "Thread.h"
 
 #include "AccessEvent.h"
 #include "AccessInfo.h"
@@ -40,8 +49,10 @@
 #include "ThreadEndEvent.h"
 #include "ThreadEndInfo.h"
 
+#include "Database.h"
+
 #include "EventService.h"
-#include "AccessInfo.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -87,52 +98,12 @@ DBInterpreter::DBInterpreter(std::string&& logFile,
 	initialize_logger(std::move(logFile));
 }
 
-template<typename IdT, typename T>
-inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
-	std::copy(SQLStatementIterator<T>(db.query(query_string)),
-			  SQLStatementIterator<T>::end(), inserter(table));
-}
-
-void DBInterpreter::importDB(const std::string& DBPath) { 
-	// try to open the database
-	DBManager db;
-	try {
-		db.open(DBPath);
-	} catch (const SQLException& e) {
-		BOOST_LOG_TRIVIAL(fatal) << e.what();
-		std::abort();
-	}
-
-    // Read from all the tables in the database
-    fill("SELECT * from Access;",        db, AccessTable_);
-    fill("SELECT * from Call;",          db, CallTable_);
-    fill("SELECT * from File;",          db, FileTable_);
-    fill("SELECT * from Function;",      db, FunctionTable_);
-    fill("SELECT * from Instruction;",   db, InstructionTable_);
-    fill("SELECT * from Loop;",          db, LoopTable_);
-    fill("SELECT * from LoopExecution;", db, LoopExecutionTable_);
-    fill("SELECT * from LoopIteration;", db, LoopIterationTable_);
-    fill("SELECT * from Reference;",     db, ReferenceTable_);
-    fill("SELECT * from Segment;",       db, SegmentTable_);
-    fill("SELECT * from Thread;",        db, ThreadTable_);
-
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << AccessTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << CallTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << FileTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << FunctionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << InstructionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << LoopTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << LoopExecutionTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << LoopIterationTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << ReferenceTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << SegmentTable_.size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << ThreadTable_.size();
-}
+DBInterpreter::~DBInterpreter() = default;
 
 ErrorCode DBInterpreter::process(const std::string& DBPath) {
 	// fill internal tables with the database entries
 	try {
-		importDB(DBPath);
+		Database_ = load_database(DBPath);
 	} catch (const SQLException& e) {
 		// this should only happen if the database can't be closed
 		BOOST_LOG_TRIVIAL(fatal) << e.what();
@@ -143,7 +114,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
     processStart();
 
     // process database entries
-    for (const auto& instruction : InstructionTable_)
+    for (const auto& instruction : database()->instructionTable())
         processInstruction(instruction.second);
 
     // handle end of main routine
@@ -152,12 +123,11 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
     return ErrorCode::OK;
 }
 
-
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = SegmentTable_.find(ins.segment_id);
-	if (search == SegmentTable_.cend()) {
+	auto search = Database_->segmentTable().find(ins.segment_id);
+	if (search == Database_->segmentTable().cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
-			<< " not found in SegmentTable_";
+			<< " not found in SegmentTable";
 		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
 	return search->second.call_id;
@@ -167,11 +137,11 @@ const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 /// the input database was inconsistent. Anyway, here the return value is both
 /// the call_id and (in case of error) the ErrorCode. __That's bad design__
 const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
-    return CallTable_.getInstructionCaller(ins);
+    return database()->callTable().getInstructionCaller(ins);
 //    // look for the call id of the instruction
 //    CAL_ID call_id(0);
 //    bool found = false;
-//    for (const auto& it : CallTable_) {
+//    for (const auto& it : database()->callTable()) {
 //        // if there's a call whose instruction id is the same as
 //        // ins.id, get its id
 //        if (it.second.instruction_id == ins.id) {
@@ -199,8 +169,8 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
 
   CAL_ID topCallId =CallStack_.top();
   while (!CallStack_.isEmpty() && call.id != topCallId) {
-    auto callIt = CallTable_.find(topCallId);
-    if (callIt != CallTable_.end()) {
+    auto callIt = database()->callTable().find(topCallId);
+    if (callIt != database()->callTable().end()) {
       const call_t& topCall = callIt->second;
 
       if (returnThread != NO_TRD_ID && returnThread != topCall.thread_id) {
@@ -239,8 +209,8 @@ ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
 }
 
 ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
-  auto threadIt = ThreadTable_.find(threadId);
-  if (threadIt != ThreadTable_.end()) {
+  auto threadIt = database()->threadTable().find(threadId);
+  if (threadIt != database()->threadTable().end()) {
     const thread_t& thread = threadIt->second;
     const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
     assert(lastEventTime_ <= threadEndTime);
@@ -262,12 +232,12 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
                                  const call_t& call,
                                  processAccess_t accessFunc) {
   // loop over all memory accesses of the instruction
-  const AccessTable::insAccessMap_t& insAccessMap = AccessTable_.getInsAccessMap();
+  const AccessTable::insAccessMap_t& insAccessMap = Database_->accessTable().getInsAccessMap();
   const auto& avIt = insAccessMap.find(instruction.id);
   if (avIt != insAccessMap.end()) {
     for (const auto& it : avIt->second) {
-      auto accessIt = AccessTable_.find(it);
-      if (accessIt != AccessTable_.end()) {
+      auto accessIt = Database_->accessTable().find(it);
+      if (accessIt != Database_->accessTable().end()) {
         const access_t& access = accessIt->second;
         processAccessGeneric(access.id,
                              access,
@@ -287,11 +257,11 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
 ErrorCode DBInterpreter::processStart() {
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto callIt = CallTable_.find(call_t::MAIN);
-  if (callIt != CallTable_.end()) {
+  auto callIt = database()->callTable().find(call_t::MAIN);
+  if (callIt != database()->callTable().end()) {
     const call_t& call = callIt->second;
-    auto threadIt = ThreadTable_.find(call.thread_id);
-    if (threadIt != ThreadTable_.end()) {
+    auto threadIt = database()->threadTable().find(call.thread_id);
+    if (threadIt != database()->threadTable().end()) {
       const thread_t& thread = threadIt->second;
       processFork(thread);
       processCall(call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));
@@ -308,15 +278,15 @@ ErrorCode DBInterpreter::processEnd() {
   // close final calls
   while (!CallStack_.isEmpty()) {
     const CAL_ID topCallId = CallStack_.pop();
-    auto callIt = CallTable_.find(topCallId);
-    if (callIt != CallTable_.end()) {
+    auto callIt = database()->callTable().find(topCallId);
+    if (callIt != database()->callTable().end()) {
       const call_t& call = callIt->second;
       auto sThread = getThread(call.thread_id);
 
       if (call.thread_id != lastThreadId) {
         // publish a thread end event
-        auto threadIt = ThreadTable_.find(lastThreadId);
-        if (threadIt != ThreadTable_.end()) {
+        auto threadIt = database()->threadTable().find(lastThreadId);
+        if (threadIt != database()->threadTable().end()) {
           const thread_t& thread = threadIt->second;
           ThreadEndInfo end_info(static_cast<TIME>(
                                  thread.start_cycle + thread.num_cycles),
@@ -340,12 +310,12 @@ ErrorCode DBInterpreter::processEnd() {
 ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto segmentIt = SegmentTable_.find(ins.segment_id);
-  if (segmentIt != SegmentTable_.end()) {
+  auto segmentIt = Database_->segmentTable().find(ins.segment_id);
+  if (segmentIt != Database_->segmentTable().end()) {
     const segment_t& segment = segmentIt->second;
     
-    auto callIt = CallTable_.find(segment.call_id);
-    if (callIt != CallTable_.end()) {
+    auto callIt = database()->callTable().find(segment.call_id);
+    if (callIt != database()->callTable().end()) {
       const call_t& call = callIt->second;
 
       // handle call/thread stack returns
@@ -365,7 +335,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
         ret = processRelease(ins);
         break;
       case InstructionType::FORK:
-        for (const auto& it : ThreadTable_) {
+        for (const auto& it : database()->threadTable()) {
           const thread_t& thread = it.second;
           if (ins.id == thread.create_instruction_id) {
             ret = processFork(thread);
@@ -373,7 +343,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
         }
         break;
       case InstructionType::JOIN:
-        for (const auto& it : ThreadTable_) {
+        for (const auto& it : database()->threadTable()) {
           const thread_t& thread = it.second;
           if (ins.id == thread.join_instruction_id) {
               ret = processJoin(ins, thread);
@@ -393,8 +363,8 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
 //                                  const segment_t& seg,
 //                                  const instruction_t& ins) {
 //
-//    auto search = CallTable_.find(seg.call_id);
-//    if (search != CallTable_.end()) {
+//    auto search = database()->callTable().find(seg.call_id);
+//    if (search != database()->callTable().end()) {
 //        if (!processCall(seg.call_id, search->second, seg, ins))
 //            return 1;
 //    } else {
@@ -410,8 +380,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
 
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto functionIt = FunctionTable_.find(call.function_id);
-  if (functionIt != FunctionTable_.end()) {
+  auto functionIt = database()->functionTable().find(call.function_id);
+  if (functionIt != database()->functionTable().end()) {
     const function_t& function = functionIt->second;
 
     switch(function.type) {
@@ -419,8 +389,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
     case FunctionType::METHOD:
     {
       // serch for the file where the call has happened from
-      auto fileIt = FileTable_.find(function.file_id);
-      if (fileIt != FileTable_.end()) {
+      auto fileIt = database()->fileTable().find(function.file_id);
+      if (fileIt != database()->fileTable().end()) {
         const file_t& file = fileIt->second;
 
         CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
@@ -452,8 +422,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
 ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto callIt = CallTable_.find(getCallID(ins));
-  if (callIt != CallTable_.end()) {
+  auto callIt = database()->callTable().find(getCallID(ins));
+  if (callIt != database()->callTable().end()) {
     const call_t& call = callIt->second;
     ret = processCall(call, ins.line_number, ins.segment_id);
   }
@@ -469,8 +439,8 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
                                         processAccess_t func) {
 
     REF_ID refId = access.reference_id;
-    auto search = ReferenceTable_.find(refId);
-    if ( search == ReferenceTable_.end() ) {
+    auto search = database()->referenceTable().find(refId);
+    if ( search == database()->referenceTable().end() ) {
         BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
         return ErrorCode::NO_ENTRY;
 	}
@@ -510,14 +480,14 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
-    auto callIt = CallTable_.find(getCallID(ins));
-    if (callIt != CallTable_.end()) {
+    auto callIt = database()->callTable().find(getCallID(ins));
+    if (callIt != database()->callTable().end()) {
       const call_t& call = callIt->second;
       assert(lastEventTime_ <= call.start_time);
-      for (auto accIt : AccessTable_) {
+      for (auto accIt : Database_->accessTable()) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
-          auto refIt = ReferenceTable_.find(access.reference_id);
+          auto refIt = database()->referenceTable().find(access.reference_id);
           auto lock = getLock(refIt->second.id);
           if (lock != nullptr) {
             auto thread = getThread(call.thread_id);
@@ -535,14 +505,14 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
-  auto callIt = CallTable_.find(getCallID(ins));
-  if (callIt != CallTable_.end()) {
+  auto callIt = database()->callTable().find(getCallID(ins));
+  if (callIt != database()->callTable().end()) {
     const call_t& call = callIt->second;
     assert(lastEventTime_ <= call.start_time);
-    for (auto accIt : AccessTable_) {
+    for (auto accIt : Database_->accessTable()) {
       const access_t& access = accIt.second;
       if (access.instruction_id == ins.id) {
-        auto refIt = ReferenceTable_.find(access.reference_id);
+        auto refIt = database()->referenceTable().find(access.reference_id);
         auto lock = getLock(refIt->second.id);
         if (lock != nullptr) {
           auto thread = getThread(call.thread_id);

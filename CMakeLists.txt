@@ -72,3 +72,15 @@ if (GIT_FOUND)
 else (GIT_FOUND)
     message(FATAL "Git not found: cannot download rapidjson. Please install git.")
 endif (GIT_FOUND)
+
+
+# Check for GTest libs and includes
+find_library(GTEST_LIB gtest)
+find_path(GTEST_INC_PATH gtest/gtest.h)
+
+if (GTEST_LIB AND GTEST_INC_PATH)
+    # Add test target
+    enable_testing()
+else ()
+    message(WARNING "GTest not found: please install it if you want to run the tests.")
+endif ()

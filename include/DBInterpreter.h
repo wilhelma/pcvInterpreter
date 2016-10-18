@@ -13,33 +13,23 @@
 #include "fwd/Call.h"
 #include "fwd/File.h"
 #include "fwd/Function.h"
-#include "fwd/Instruction.h"
+#include "Instruction.h" // < Contains InstructionType!
 #include "fwd/Loop.h"
 #include "fwd/LoopExecution.h"
 #include "fwd/LoopIteration.h"
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
-#include "fwd/Thread.h"
-
+#include "Thread.h" // < Contains NO_TRD_ID static variable (move to source!)
+ 
 #include "fwd/EventService.h"
 #include "LockMgr.h"
 #include "ThreadMgr.h"
 
 #include "CallStack.h"
 
-#include "DBTable.h"
+#include "fwd/Database.h"
+
 #include "ShadowVar.h"
-#include "AccessTable.h"
-#include "CallTable.h"
-#include "FileTable.h"
-#include "FunctionTable.h"
-#include "InstructionTable.h"
-#include "LoopTable.h"
-#include "LoopExecutionTable.h"
-#include "LoopIterationTable.h"
-#include "ReferenceTable.h"
-#include "SegmentTable.h"
-#include "ThreadTable.h"
 
 #include <map>
 #include <memory>
@@ -75,8 +65,10 @@ public:
     DBInterpreter& operator=(const DBInterpreter&) = delete;
     /// _Deleted_ move assignment operator.
     DBInterpreter& operator=(DBInterpreter&&)      = delete;
-    /// _Default_ destructor.
-    ~DBInterpreter()                               = default;
+    /// @brief _Default_ destructor.
+    /// @attention It's defaulted in the source to allow the _pointer
+    /// to implementation_ idiom with `unique_ptr`s.
+    ~DBInterpreter();
 
     /// @brief Processes the database.
     /// @details After importing the database entries, starts looping
@@ -100,29 +92,38 @@ private:
 
     typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
-    // members-----------------------------------------------------------------
-    /// Map from the Access IDs to the Access-table rows imported from the DB.
-    AccessTable        AccessTable_;
-    /// Map from the Call IDs to the Call-table rows imported from the DB.
-    CallTable          CallTable_;
-    /// Map from the File IDs to the File-table rows imported from the DB.
-    FileTable          FileTable_;
-    /// Map from the Function IDs to the Function-table rows imported from the DB.
-    FunctionTable      FunctionTable_;
-    /// Map from the Instruction IDs to the Instruction-table rows imported from the DB.
-    InstructionTable   InstructionTable_;
-    /// Map from the Loop IDs to the Loop-table rows imported from the DB.
-    LoopTable          LoopTable_;
-    /// Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.
-    LoopExecutionTable LoopExecutionTable_;
-    /// Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.
-    LoopIterationTable LoopIterationTable_;
-    /// Map from the Reference IDs to the Reference-table rows imported from the DB.
-    ReferenceTable     ReferenceTable_;
-    /// Map from the Segment IDs to the Segment-table rows imported from the DB.
-    SegmentTable       SegmentTable_;
-    /// Map from the Thread IDs to the Thread-table rows imported from the DB.
-    ThreadTable        ThreadTable_;
+protected:
+//    // This section is protected for testing purposes
+//
+//    /// Map from the Access IDs to the Access-table rows imported from the DB.
+//    AccessTable        AccessTable_;
+//    /// Map from the Call IDs to the Call-table rows imported from the DB.
+//    CallTable          CallTable_;
+//    /// Map from the File IDs to the File-table rows imported from the DB.
+//    FileTable          FileTable_;
+//    /// Map from the Function IDs to the Function-table rows imported from the DB.
+//    FunctionTable      FunctionTable_;
+//    /// Map from the Instruction IDs to the Instruction-table rows imported from the DB.
+//    InstructionTable   InstructionTable_;
+//    /// Map from the Loop IDs to the Loop-table rows imported from the DB.
+//    LoopTable          LoopTable_;
+//    /// Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.
+//    LoopExecutionTable LoopExecutionTable_;
+//    /// Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.
+//    LoopIterationTable LoopIterationTable_;
+//    /// Map from the Reference IDs to the Reference-table rows imported from the DB.
+//    ReferenceTable     ReferenceTable_;
+//    /// Map from the Segment IDs to the Segment-table rows imported from the DB.
+//    SegmentTable       SegmentTable_;
+//    /// Map from the Thread IDs to the Thread-table rows imported from the DB.
+//    ThreadTable        ThreadTable_;
+
+    /// Content of the input database.
+    std::unique_ptr<const Database> Database_;
+    const std::unique_ptr<const Database>& database() const noexcept
+    { return Database_; }
+
+private:
 
     /// Stack of call IDs.
     CallStack CallStack_;
@@ -151,9 +152,9 @@ private:
     static InstructionType transformInstrType(const instruction_t& ins);
     static ReferenceType getVarType(ReferenceType memType);
 
-    /// @brief Imports the database in the tables.
-    /// @param DBPath The name of the database to import.
-    void importDB(const std::string& DBPath);
+//    /// @brief Imports the database in the tables.
+//    /// @param DBPath The name of the database to import.
+//    void importDB(const std::string& DBPath);
 
     ErrorCode processAccess(const instruction_t& instruction,
             const segment_t& segment,

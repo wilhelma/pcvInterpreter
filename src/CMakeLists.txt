@@ -43,6 +43,7 @@ set(SRC_LIST
     Work.cpp)
 
 set(SRC_LIST ${SRC_LIST}
+    database/Database.cpp
     database/DBManager.cpp
     database/QueryResult.cpp)
 
