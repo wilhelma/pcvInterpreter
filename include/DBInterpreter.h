@@ -80,6 +80,10 @@ public:
     /// @todo Bad interface design! This pointer shouldn't be accessible outside!
     decltype(auto) getEventService() { return EventService_; };
 
+    /// Helper function to access the database in a read-only way.
+    const std::unique_ptr<const Database>& database() const noexcept
+    { return Database_; }
+
 private:
 
     // types-------------------------------------------------------------------
@@ -92,38 +96,9 @@ private:
 
     typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
 
-protected:
-//    // This section is protected for testing purposes
-//
-//    /// Map from the Access IDs to the Access-table rows imported from the DB.
-//    AccessTable        AccessTable_;
-//    /// Map from the Call IDs to the Call-table rows imported from the DB.
-//    CallTable          CallTable_;
-//    /// Map from the File IDs to the File-table rows imported from the DB.
-//    FileTable          FileTable_;
-//    /// Map from the Function IDs to the Function-table rows imported from the DB.
-//    FunctionTable      FunctionTable_;
-//    /// Map from the Instruction IDs to the Instruction-table rows imported from the DB.
-//    InstructionTable   InstructionTable_;
-//    /// Map from the Loop IDs to the Loop-table rows imported from the DB.
-//    LoopTable          LoopTable_;
-//    /// Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.
-//    LoopExecutionTable LoopExecutionTable_;
-//    /// Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.
-//    LoopIterationTable LoopIterationTable_;
-//    /// Map from the Reference IDs to the Reference-table rows imported from the DB.
-//    ReferenceTable     ReferenceTable_;
-//    /// Map from the Segment IDs to the Segment-table rows imported from the DB.
-//    SegmentTable       SegmentTable_;
-//    /// Map from the Thread IDs to the Thread-table rows imported from the DB.
-//    ThreadTable        ThreadTable_;
-
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
-    const std::unique_ptr<const Database>& database() const noexcept
-    { return Database_; }
 
-private:
 
     /// Stack of call IDs.
     CallStack CallStack_;
@@ -151,10 +126,6 @@ private:
     // private methods---------------------------------------------------------
     static InstructionType transformInstrType(const instruction_t& ins);
     static ReferenceType getVarType(ReferenceType memType);
-
-//    /// @brief Imports the database in the tables.
-//    /// @param DBPath The name of the database to import.
-//    void importDB(const std::string& DBPath);
 
     ErrorCode processAccess(const instruction_t& instruction,
             const segment_t& segment,

@@ -124,8 +124,8 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 }
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = Database_->segmentTable().find(ins.segment_id);
-	if (search == Database_->segmentTable().cend()) {
+	auto search = database()->segmentTable().find(ins.segment_id);
+	if (search == database()->segmentTable().cend()) {
 		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
 			<< " not found in SegmentTable";
 		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
@@ -232,12 +232,12 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
                                  const call_t& call,
                                  processAccess_t accessFunc) {
   // loop over all memory accesses of the instruction
-  const AccessTable::insAccessMap_t& insAccessMap = Database_->accessTable().getInsAccessMap();
+  const AccessTable::insAccessMap_t& insAccessMap = database()->accessTable().getInsAccessMap();
   const auto& avIt = insAccessMap.find(instruction.id);
   if (avIt != insAccessMap.end()) {
     for (const auto& it : avIt->second) {
-      auto accessIt = Database_->accessTable().find(it);
-      if (accessIt != Database_->accessTable().end()) {
+      auto accessIt = database()->accessTable().find(it);
+      if (accessIt != database()->accessTable().end()) {
         const access_t& access = accessIt->second;
         processAccessGeneric(access.id,
                              access,
@@ -310,8 +310,8 @@ ErrorCode DBInterpreter::processEnd() {
 ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
   auto ret = ErrorCode::NO_ENTRY;
 
-  auto segmentIt = Database_->segmentTable().find(ins.segment_id);
-  if (segmentIt != Database_->segmentTable().end()) {
+  auto segmentIt = database()->segmentTable().find(ins.segment_id);
+  if (segmentIt != database()->segmentTable().end()) {
     const segment_t& segment = segmentIt->second;
     
     auto callIt = database()->callTable().find(segment.call_id);
@@ -484,7 +484,7 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     if (callIt != database()->callTable().end()) {
       const call_t& call = callIt->second;
       assert(lastEventTime_ <= call.start_time);
-      for (auto accIt : Database_->accessTable()) {
+      for (auto accIt : database()->accessTable()) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
           auto refIt = database()->referenceTable().find(access.reference_id);
@@ -509,7 +509,7 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
   if (callIt != database()->callTable().end()) {
     const call_t& call = callIt->second;
     assert(lastEventTime_ <= call.start_time);
-    for (auto accIt : Database_->accessTable()) {
+    for (auto accIt : database()->accessTable()) {
       const access_t& access = accIt.second;
       if (access.instruction_id == ins.id) {
         auto refIt = database()->referenceTable().find(access.reference_id);
