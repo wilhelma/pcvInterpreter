@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef  FWD_ACCESS_H_
-#define  FWD_ACCESS_H_
+#ifndef  FWD_THREAD_H_
+#define  FWD_THREAD_H_
 
 struct thread_t;
 
