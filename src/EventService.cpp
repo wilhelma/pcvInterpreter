@@ -6,11 +6,30 @@
  */
 
 #include "EventService.h"
-#include "Tool.h"
+
 #include "Event.h"
+#include "Observer.h"
+#include "Tool.h"
+
+// Events ---------------------
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ThreadEndEvent.h"
+// ----------------------------
+
+#include "fwd/Observer.h"
+
+EventService::EventService() :
+    ObserverList_(std::make_shared<const ObserverList>())
+{}
 
 bool EventService::publish(const NewThreadEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::NEWTHREAD) != 0) 
             it.tool->NewThread(event);
 
@@ -18,7 +37,7 @@ bool EventService::publish(const NewThreadEvent *event) const {
 }
 
 bool EventService::publish(const ThreadEndEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::THREADEND) != 0)
             it.tool->ThreadEnd(event);
 
@@ -26,7 +45,7 @@ bool EventService::publish(const ThreadEndEvent *event) const {
 }
 
 bool EventService::publish(const JoinEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::JOIN) != 0)
             it.tool->Join(event);
 
@@ -34,7 +53,7 @@ bool EventService::publish(const JoinEvent *event) const {
 }
 
 bool EventService::publish(const AcquireEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::ACQUIRE) != 0)
             it.tool->Acquire(event);
 
@@ -42,7 +61,7 @@ bool EventService::publish(const AcquireEvent *event) const {
 }
 
 bool EventService::publish(const ReleaseEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::RELEASE) != 0)
             it.tool->Release(event);
 
@@ -50,7 +69,7 @@ bool EventService::publish(const ReleaseEvent *event) const {
 }
 
 bool EventService::publish(const ReturnEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::RETURN) != 0)
             it.tool->Return(event);
 
@@ -58,7 +77,7 @@ bool EventService::publish(const ReturnEvent *event) const {
 }
 
 bool EventService::publish(const AccessEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::ACCESS) != 0)
             it.tool->Access(event);
 
@@ -66,7 +85,7 @@ bool EventService::publish(const AccessEvent *event) const {
 }
 
 bool EventService::publish(const CallEvent *event) const {
-    for (const auto& it : ObserverList_)
+    for (const auto& it : *observerList())
         if ((it.events & Events::CALL) != 0)
             it.tool->Call(event);
 

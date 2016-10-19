@@ -53,8 +53,8 @@ class DBInterpreter {
 public:
     /// Constructor.
     explicit DBInterpreter(std::shared_ptr<EventService> service,
-                           std::unique_ptr<LockMgr>&&   lockMgr,
-                           std::unique_ptr<ThreadMgr>&& threadMgr);
+                           std::unique_ptr<LockMgr>&&    lockMgr,
+                           std::unique_ptr<ThreadMgr>&&  threadMgr);
 
     /// _Deleted_ copy constructor.
     DBInterpreter(const DBInterpreter&)            = delete;
@@ -77,7 +77,8 @@ public:
 
     /// Returns a pointer to `EventService_`.
     /// @todo Bad interface design! This pointer shouldn't be accessible outside!
-    decltype(auto) getEventService() { return EventService_; };
+    const std::shared_ptr<const EventService>& eventService() const noexcept
+    { return EventService_; };
 
     /// Helper function to access the database in a read-only way.
     const std::unique_ptr<const Database>& database() const noexcept
@@ -105,7 +106,9 @@ private:
     TIME lastEventTime_;
     TRD_ID lastThreadId = NO_TRD_ID;
   
-    std::shared_ptr<EventService> EventService_;
+    /// Constant pointer to the EventService.
+    const std::shared_ptr<const EventService> EventService_;
+
     shadowVarMap_t _shadowVarMap;
 
     std::unique_ptr<LockMgr>   lockMgr_;

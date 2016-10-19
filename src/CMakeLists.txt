@@ -44,19 +44,20 @@ set(pcv_INCLUDES ${pcv_INCLUDES} ${source_dir}/src)
 
 include_directories(${pcv_INCLUDES})
 set(SRC_LIST
-    DBInterpreter.cpp
     DAG.cpp
+    DBInterpreter.cpp
     EventService.cpp
     FunctionStack.cpp
     LockIntervals.cpp
     LockMgr.cpp
-    main.cpp
     ParasiteJsonWriter.cpp
     ParasiteTracker.cpp
+    SAAPRunner.cpp
+    Span.cpp
     ThreadMgr.cpp
     ThreadStack.cpp
-    Span.cpp
-    Work.cpp)
+    Work.cpp
+    main.cpp)
 
 set(SRC_LIST ${SRC_LIST}
     database/Database.cpp

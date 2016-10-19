@@ -15,4 +15,6 @@
 template <typename InfoType>
 class Event;
 
+enum class Events: unsigned char;
+
 #endif

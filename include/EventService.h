@@ -19,24 +19,18 @@
 #include "fwd/ThreadEndEvent.h"
 // ----------------------------
 
-#include "fwd/Filter.h"
-#include "fwd/SAAPRunner.h"
-#include "fwd/Tool.h"
+#include "fwd/Observer.h"
 
-#include "Event.h"
-#include "Observer.h"
-
-#include <list>
 #include <memory>
 
 /// @brief The observable: keeps track of the register observed and
 /// `publish()`es them the Event's received from the DBInterpreter.
 class EventService {
 public:
-    /// _Default_ constructor.
-    explicit EventService() = default;
+    /// Constructor.
+    explicit EventService();
     /// _Default_ destructor.
-    ~EventService()                   = default;
+    ~EventService() = default;
 
     /// _Deleted_ copy constructor.
     EventService(const EventService&)            = delete;
@@ -79,33 +73,13 @@ public:
     /// @param event The event to publish.
     bool publish(const ThreadEndEvent *event) const;
 
-    /// @brief Grant SAAPRunner the permission to access subscribe and unsubscribe.
-    /// @todo Give SAAPRunner only access to subscribe and unsubscribe
-    /// @todo Give DBInterpreter only access to publish functions
-    friend SAAPRunner;
+    /// Return the list of observers.
+    const std::shared_ptr<const ObserverList>& observerList() const noexcept
+    { return ObserverList_; }
 
 private:
-
-    /// @brief Subscribes a tool to the observable.
-    /// @param tool   The Tool to subscribe.
-    /// @param filter The Filter for the events.
-    /// @param events The Events the Tool is registered to.
-    /// @return A reference to the inserted element.
-    decltype(auto) subscribe(std::unique_ptr<Tool>&& tool,
-                             std::unique_ptr<Filter>&& filter,
-                             Events&& events)
-    { return ObserverList_.emplace(ObserverList_.cend(), Observer(std::move(tool), std::move(filter), std::move(events))); }
-
-    /// @brief Unsubscribes a tool to the `EventService`.
-    /// @param tool Iterator to the tool to remove.
-    /// @attention The Tool iterator is given when registering
-    /// the Tool to the SAAPRunner.
-    void unsubscribe(std::list<Observer>::const_iterator tool)
-    { ObserverList_.erase(tool); }
-
     /// List of registered observers.
-    std::list<Observer> ObserverList_;
+    const std::shared_ptr<const ObserverList> ObserverList_;
 };
 
-
-#endif /* EVENTSERVICE_H_ */
+#endif

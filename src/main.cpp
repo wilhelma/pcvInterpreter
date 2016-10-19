@@ -5,14 +5,14 @@
  *      Author: wilhelma
  */
 
-
 #include "DBInterpreter.h"
 #include "DebugTool.h"
-#include "ParasiteTool.h"
-//#include "RaceDetectionTool.h"
-//#include "LockSetChecker.h"
+#include "Filter.h"
 #include "FunctionTrackerTool.h"
+#include "ParasiteTool.h"
 #include "SAAPRunner.h"
+//#include "LockSetChecker.h"
+//#include "RaceDetectionTool.h"
 
 // Loggin system
 #include "easylogging++.h"
