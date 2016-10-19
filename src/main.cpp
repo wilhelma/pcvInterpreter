@@ -8,15 +8,16 @@
 
 #include "DBInterpreter.h"
 #include "DebugTool.h"
-//#include "EventService.h"
 #include "ParasiteTool.h"
 //#include "RaceDetectionTool.h"
 //#include "LockSetChecker.h"
 #include "FunctionTrackerTool.h"
-//#include "LockMgr.h"
 #include "SAAPRunner.h"
-//#include "ThreadMgr.h"
-#include <boost/log/trivial.hpp>
+
+// Loggin system
+#include "easylogging++.h"
+
+INITIALIZE_EASYLOGGINGPP
 
 /// @brief The main routine.
 /// @attention The file name of the database to interpret is ___mandatory!___
@@ -26,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     // check arguments
     if (argc < 2) {
-        BOOST_LOG_TRIVIAL(fatal) << "No database name provided!";
+        LOG(FATAL) << "No database name provided!";
         return 1;
     }
 

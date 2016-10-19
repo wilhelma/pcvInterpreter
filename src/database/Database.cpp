@@ -33,11 +33,7 @@
 #include <string>
 
 // logging system
-#include <boost/log/core.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
+#include "easylogging++.h"
 
 // Helper function to fill the tables
 template<typename IdT, typename T>
@@ -52,7 +48,7 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath) {
 	try {
 		sql_input_db.open(DBPath);
 	} catch (const SQLException& e) {
-		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		LOG(FATAL) <<e.what();
 		std::abort();
 	}
 
@@ -71,17 +67,17 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath) {
     fill("SELECT * from Segment;",       sql_input_db, db->segmentTable());
     fill("SELECT * from Thread;",        sql_input_db, db->threadTable());
 
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Access:        " << db->accessTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Call:          " << db->callTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in File:          " << db->fileTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Function:      " << db->functionTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Instruction:   " << db->instructionTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Loop:          " << db->loopTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopExecution: " << db->loopExecutionTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in LoopIteration: " << db->loopIterationTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Reference:     " << db->referenceTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Segment:       " << db->segmentTable().size();
-    BOOST_LOG_TRIVIAL(trace) << "Rows in Thread:        " << db->threadTable().size();
+    LOG(TRACE) << "Rows in Access:        " << db->accessTable().size();
+    LOG(TRACE) << "Rows in Call:          " << db->callTable().size();
+    LOG(TRACE) << "Rows in File:          " << db->fileTable().size();
+    LOG(TRACE) << "Rows in Function:      " << db->functionTable().size();
+    LOG(TRACE) << "Rows in Instruction:   " << db->instructionTable().size();
+    LOG(TRACE) << "Rows in Loop:          " << db->loopTable().size();
+    LOG(TRACE) << "Rows in LoopExecution: " << db->loopExecutionTable().size();
+    LOG(TRACE) << "Rows in LoopIteration: " << db->loopIterationTable().size();
+    LOG(TRACE) << "Rows in Reference:     " << db->referenceTable().size();
+    LOG(TRACE) << "Rows in Segment:       " << db->segmentTable().size();
+    LOG(TRACE) << "Rows in Thread:        " << db->threadTable().size();
 
     return std::unique_ptr<const Database>(std::move(db));
 }

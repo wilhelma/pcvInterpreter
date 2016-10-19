@@ -57,30 +57,26 @@
 #include <memory>
 
 // logging system
-#include <boost/log/core.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
+#include "easylogging++.h"
 
-// Helper function to initialize the log.
-void initialize_logger(std::string&& logFileName) {
-	namespace logging = boost::log;
-	namespace expr    = boost::log::expressions;
-
-	logging::add_file_log(
-			logging::keywords::file_name = logFileName,
-			logging::keywords::format = (
-				expr::stream
-				<< expr::attr< unsigned int >("LineID")
-				<< ": <" << logging::trivial::severity
-				<< "> " << expr::smessage
-				)	
-			);
-
-	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
-	logging::add_common_attributes();
-}
+//// Helper function to initialize the log.
+//void initialize_logger(std::string&& logFileName) {
+//	namespace logging = boost::log;
+//	namespace expr    = boost::log::expressions;
+//
+//	logging::add_file_log(
+//			logging::keywords::file_name = logFileName,
+//			logging::keywords::format = (
+//				expr::stream
+//				<< expr::attr< unsigned int >("LineID")
+//				<< ": <" << logging::trivial::severity
+//				<< "> " << expr::smessage
+//				)	
+//			);
+//
+//	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
+//	logging::add_common_attributes();
+//}
 
 size_t getHash(unsigned funId, unsigned lineNo) {
     size_t h1 = std::hash<unsigned>()(funId);
@@ -94,9 +90,7 @@ DBInterpreter::DBInterpreter(std::string&& logFile,
 							 std::unique_ptr<ThreadMgr>&& threadMgr) :
   lastEventTime_(0), EventService_(service), lockMgr_(std::move(lockMgr)),
   threadMgr_(std::move(threadMgr))
-{
-	initialize_logger(std::move(logFile));
-}
+{}
 
 DBInterpreter::~DBInterpreter() = default;
 
@@ -106,7 +100,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 		Database_ = load_database(DBPath);
 	} catch (const SQLException& e) {
 		// this should only happen if the database can't be closed
-		BOOST_LOG_TRIVIAL(fatal) << e.what();
+		LOG(FATAL) << e.what();
 		std::abort();
 	}
 
@@ -126,7 +120,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
 	auto search = database()->segmentTable().find(ins.segment_id);
 	if (search == database()->segmentTable().cend()) {
-		BOOST_LOG_TRIVIAL(error) << "Segment " << ins.segment_id
+		LOG(ERROR) << "Segment " << ins.segment_id
 			<< " not found in SegmentTable";
 		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 	}
@@ -153,7 +147,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 //
 //    // if the iterator reached the end, no entry has been found in callT_
 //    if (!found) {
-//        BOOST_LOG_TRIVIAL(error) << "Call table has no element whose instruction id is: "
+//        LOG(ERROR) << "Call table has no element whose instruction id is: "
 //            << ins.id;
 //        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 //    }
@@ -246,7 +240,7 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
                              call,
                              accessFunc);
       } else {
-        BOOST_LOG_TRIVIAL(error) << "Access not found: " << it;
+        LOG(ERROR) << "Access not found: " << it;
         return ErrorCode::NO_ENTRY;
       }
     }
@@ -368,7 +362,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
 //        if (!processCall(seg.call_id, search->second, seg, ins))
 //            return 1;
 //    } else {
-//        BOOST_LOG_TRIVIAL(error) << "Call not found: " << seg.call_id;
+//        LOG(ERROR) << "Call not found: " << seg.call_id;
 //        return 1;
 //    }
 //
@@ -441,7 +435,7 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
     REF_ID refId = access.reference_id;
     auto search = database()->referenceTable().find(refId);
     if ( search == database()->referenceTable().end() ) {
-        BOOST_LOG_TRIVIAL(error) << "Reference not found: " << access.reference_id;
+        LOG(ERROR) << "Reference not found: " << access.reference_id;
         return ErrorCode::NO_ENTRY;
 	}
 
