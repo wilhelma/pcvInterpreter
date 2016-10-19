@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     std::cout << "STARTING PARCEIVE " << std::endl;
 
     // Create a SAAPRunner
-    auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter("SAAP.log")));
+    auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter()));
 
     // Create and register the tool
     const auto& debug_tool_it = runner->registerTool(

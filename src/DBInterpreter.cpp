@@ -59,50 +59,33 @@
 // logging system
 #include "easylogging++.h"
 
-//// Helper function to initialize the log.
-//void initialize_logger(std::string&& logFileName) {
-//	namespace logging = boost::log;
-//	namespace expr    = boost::log::expressions;
-//
-//	logging::add_file_log(
-//			logging::keywords::file_name = logFileName,
-//			logging::keywords::format = (
-//				expr::stream
-//				<< expr::attr< unsigned int >("LineID")
-//				<< ": <" << logging::trivial::severity
-//				<< "> " << expr::smessage
-//				)	
-//			);
-//
-//	logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::trace);
-//	logging::add_common_attributes();
-//}
-
 size_t getHash(unsigned funId, unsigned lineNo) {
     size_t h1 = std::hash<unsigned>()(funId);
     size_t h2 = std::hash<unsigned>()(lineNo);
     return h1 ^ (h2 << 1);
 }
 
-DBInterpreter::DBInterpreter(std::string&& logFile,
-                             std::shared_ptr<EventService> service,
-							 std::unique_ptr<LockMgr>&&   lockMgr,
-							 std::unique_ptr<ThreadMgr>&& threadMgr) :
-  lastEventTime_(0), EventService_(service), lockMgr_(std::move(lockMgr)),
-  threadMgr_(std::move(threadMgr))
-{}
+DBInterpreter::DBInterpreter(std::shared_ptr<EventService> service,
+                             std::unique_ptr<LockMgr>&&   lockMgr,
+                             std::unique_ptr<ThreadMgr>&& threadMgr) :
+        lastEventTime_(0),
+        EventService_(service),
+        lockMgr_(std::move(lockMgr)),
+        threadMgr_(std::move(threadMgr))
+    {}
 
+// Default the destructor here to allow the Ptr to Impl idiom.
 DBInterpreter::~DBInterpreter() = default;
 
 ErrorCode DBInterpreter::process(const std::string& DBPath) {
-	// fill internal tables with the database entries
-	try {
-		Database_ = load_database(DBPath);
-	} catch (const SQLException& e) {
-		// this should only happen if the database can't be closed
-		LOG(FATAL) << e.what();
-		std::abort();
-	}
+    // fill internal tables with the database entries
+    try {
+        Database_ = load_database(DBPath);
+    } catch (const SQLException& e) {
+        // this should only happen if the database can't be closed
+        LOG(FATAL) << e.what();
+        std::abort();
+    }
 
     // handle start of main routine
     processStart();
@@ -118,13 +101,13 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 }
 
 const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-	auto search = database()->segmentTable().find(ins.segment_id);
-	if (search == database()->segmentTable().cend()) {
-		LOG(ERROR) << "Segment " << ins.segment_id
-			<< " not found in SegmentTable";
-		return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
-	}
-	return search->second.call_id;
+    auto search = database()->segmentTable().find(ins.segment_id);
+    if (search == database()->segmentTable().cend()) {
+        LOG(ERROR) << "Segment " << ins.segment_id
+            << " not found in SegmentTable";
+        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
+    }
+    return search->second.call_id;
 }
 
 /// @todo If the ID isn't found the program should probably crash. This means
@@ -152,7 +135,7 @@ const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
 //        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
 //    }
 //
-//    //	std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
+//    //    std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
 //    return call_id;
 }
 
@@ -187,7 +170,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
   if (returnThread != NO_TRD_ID)
     publishThreadReturn(returnThread);
 
-	return ErrorCode::OK;
+    return ErrorCode::OK;
 }
 
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
@@ -437,7 +420,7 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
     if ( search == database()->referenceTable().end() ) {
         LOG(ERROR) << "Reference not found: " << access.reference_id;
         return ErrorCode::NO_ENTRY;
-	}
+    }
 
     return (this->* func)(accessId, access, instruction, segment,
                        call, search->second);
@@ -549,8 +532,9 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
     return ErrorCode::OK;
 }
 
-std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName) {
-	return std::make_unique<DBInterpreter>(
-			std::move(logFileName), std::make_shared<EventService>(),
-			std::make_unique<LockMgr>(), std::make_unique<ThreadMgr>());
+std::unique_ptr<DBInterpreter> make_DBInterpreter() {
+    return std::make_unique<DBInterpreter>(
+            std::make_shared<EventService>(),
+            std::make_unique<LockMgr>(),
+            std::make_unique<ThreadMgr>());
 }

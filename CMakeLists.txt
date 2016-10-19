@@ -70,7 +70,7 @@ find_package(Git)
 if (GIT_FOUND)
     add_subdirectory(src)
 else (GIT_FOUND)
-    message(FATAL "Git not found: cannot download rapidjson. Please install git.")
+    message(FATAL "Git not found: cannot download rapidjson nor EasyLogging++. Please install git.")
 endif (GIT_FOUND)
 
 

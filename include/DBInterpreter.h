@@ -52,10 +52,9 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
     /// Constructor.
-    DBInterpreter(std::string&& logFile, 
-                  std::shared_ptr<EventService> service,
-                  std::unique_ptr<LockMgr>&&   lockMgr,
-                  std::unique_ptr<ThreadMgr>&& threadMgr);
+    explicit DBInterpreter(std::shared_ptr<EventService> service,
+                           std::unique_ptr<LockMgr>&&   lockMgr,
+                           std::unique_ptr<ThreadMgr>&& threadMgr);
 
     /// _Deleted_ copy constructor.
     DBInterpreter(const DBInterpreter&)            = delete;
@@ -172,9 +171,7 @@ private:
   const CAL_ID getCallID(const instruction_t& ins) const;
 };
 
-/// @brief Helper function to create a `DBInterpreter`.
-/// @param logFileName The name of the log file.
-/// @return A `std::unique_ptr` to a `DBInterpreter`.
-std::unique_ptr<DBInterpreter> make_DBInterpreter(std::string&& logFileName);
+/// Creates a unique pointer to an istance of the DBInterpreter.
+std::unique_ptr<DBInterpreter> make_DBInterpreter();
 
 #endif /* DBINTERPRETER_H_ */
