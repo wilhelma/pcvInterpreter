@@ -123,9 +123,6 @@ private:
     { return threadMgr_->getThread(thread_id); }
 
     // private methods---------------------------------------------------------
-    static InstructionType transformInstrType(const instruction_t& ins);
-    static ReferenceType getVarType(ReferenceType memType);
-
     ErrorCode processAccess(const instruction_t& instruction,
             const segment_t& segment,
             const call_t& call,
