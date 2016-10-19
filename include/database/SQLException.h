@@ -22,23 +22,19 @@ public:
     /// Constructor.
     /// @param what_arg  String descripting exception
     /// @param func_name Name of the function originating the exception
-    SQLException(const std::string& what_arg, const std::string& func_name):
-//      std::exception(), What_(what_arg), WhatReturn_(nullptr), Function_(func_name)
-        std::exception(), WhatReturn_((what_arg + (func_name.empty() ? "" : (" from " + func_name))).c_str())
+    SQLException(std::string&& what_arg, std::string&& func_name):
+        std::exception(),
+        What_(what_arg + (func_name.empty() ? "" : (" from " + func_name)))
     {}
 
-    /// @return A `const char*` with the exception description
+    /// Exception description.
     virtual const char* what() const noexcept override final {
-//      WhatReturn_ = (What_ + (Function_.empty() ? "" : (" from " + Function_))).c_str();
-        return WhatReturn_;
+        return What_.c_str();
     }
 
 protected:
-//  std::string What_;
-//  std::string Function_;
-
-    /// In order to prevent what() to deallocate the memory before it's accessed.
-    const char* WhatReturn_;
+    /// The exeption message: ''<_error_> from <_function_>''.
+    const std::string What_;
 };
 
 #endif
