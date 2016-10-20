@@ -15,7 +15,7 @@ pcv.log
 *.json
 
 # Ignore databases
-*.db
+#*.db
 
 # Ignore build files
 build*/
