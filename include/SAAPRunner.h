@@ -21,10 +21,9 @@
 class SAAPRunner {
 public:
 	/// Constructor.
-    /// @param interpreter Pointer to the database interpreter.
-	explicit SAAPRunner(std::unique_ptr<DBInterpreter>&& interpreter);
+	explicit SAAPRunner();
 	/// _Default_ destructor.
-	~SAAPRunner() = default;
+	~SAAPRunner();
 
 	/// _Deleted_ copy constructor.
 	SAAPRunner(const SAAPRunner&)            = delete;
@@ -58,12 +57,12 @@ public:
 	void interpret(const std::string& DBPath) const;
 
 private:
+    /// _Non-constant_ pointer to the observer list.
+    std::shared_ptr<ObserverList> ObserverList_;
+
 	/// @brief Pointer to the database interpreter.
     /// @todo Try to make this constant!
 	std::unique_ptr<DBInterpreter> DBInterpreter_;
-
-    /// _Non-constant_ pointer to the observer list.
-    std::shared_ptr<ObserverList> ObserverList_;
 };
 
 #endif

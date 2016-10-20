@@ -24,8 +24,8 @@
 
 #include "fwd/Observer.h"
 
-EventService::EventService() :
-    ObserverList_(std::make_shared<const ObserverList>())
+EventService::EventService(const std::shared_ptr<const ObserverList>& observer_list) :
+    ObserverList_(observer_list)
 {}
 
 bool EventService::publish(const NewThreadEvent *event) const {

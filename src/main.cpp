@@ -5,7 +5,6 @@
  *      Author: wilhelma
  */
 
-#include "DBInterpreter.h"
 #include "DebugTool.h"
 #include "Filter.h"
 #include "FunctionTrackerTool.h"
@@ -34,7 +33,7 @@ int main(int argc, char* argv[]) {
     std::cout << "STARTING PARCEIVE " << std::endl;
 
     // Create a SAAPRunner
-    auto runner(std::make_unique<SAAPRunner>(make_DBInterpreter()));
+    auto runner(std::make_unique<SAAPRunner>());
 
     // Create and register the tool
     const auto& debug_tool_it = runner->registerTool(

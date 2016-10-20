@@ -22,14 +22,24 @@
 #include <list>
 #include <memory>
 
-SAAPRunner::SAAPRunner(std::unique_ptr<DBInterpreter>&& interpreter) :
-    DBInterpreter_(std::move(interpreter)),
-    ObserverList_(std::const_pointer_cast<ObserverList>(DBInterpreter_->eventService()->observerList()))
+// Helper function to create the DBInterpreter
+std::unique_ptr<DBInterpreter> make_DBInterpreter(const std::shared_ptr<const ObserverList>& ol) {
+    return std::make_unique<DBInterpreter>(
+            std::make_unique<EventService>(ol),
+            std::make_unique<LockMgr>(),
+            std::make_unique<ThreadMgr>());
+}
+
+SAAPRunner::SAAPRunner() :
+    ObserverList_(std::make_shared<ObserverList>()),
+    DBInterpreter_(make_DBInterpreter(ObserverList_))
     {}
 
+SAAPRunner::~SAAPRunner() = default;
+
 const ObserverList::const_iterator SAAPRunner::registerTool(std::unique_ptr<Tool>&& tool,
-                                                      std::unique_ptr<Filter>&& filter,
-                                                      Events&& events) const
+                                                            std::unique_ptr<Filter>&& filter,
+                                                            Events&& events) const
 {
     return ObserverList_->emplace(ObserverList_->cend(),
                                   Observer(std::move(tool), std::move(filter), std::move(events)));

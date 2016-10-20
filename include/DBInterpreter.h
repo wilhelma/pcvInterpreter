@@ -52,7 +52,7 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
     /// Constructor.
-    explicit DBInterpreter(std::shared_ptr<EventService> service,
+    explicit DBInterpreter(std::unique_ptr<EventService> service,
                            std::unique_ptr<LockMgr>&&    lockMgr,
                            std::unique_ptr<ThreadMgr>&&  threadMgr);
 
@@ -77,7 +77,7 @@ public:
 
     /// Returns a pointer to `EventService_`.
     /// @todo Bad interface design! This pointer shouldn't be accessible outside!
-    const std::shared_ptr<const EventService>& eventService() const noexcept
+    const std::unique_ptr<const EventService>& eventService() const noexcept
     { return EventService_; };
 
     /// Helper function to access the database in a read-only way.
@@ -107,7 +107,7 @@ private:
     TRD_ID lastThreadId = NO_TRD_ID;
   
     /// Constant pointer to the EventService.
-    const std::shared_ptr<const EventService> EventService_;
+    const std::unique_ptr<const EventService> EventService_;
 
     shadowVarMap_t _shadowVarMap;
 
@@ -170,8 +170,5 @@ private:
   /// @todo Properly implement error handling.
   const CAL_ID getCallID(const instruction_t& ins) const;
 };
-
-/// Creates a unique pointer to an istance of the DBInterpreter.
-std::unique_ptr<DBInterpreter> make_DBInterpreter();
 
 #endif /* DBINTERPRETER_H_ */

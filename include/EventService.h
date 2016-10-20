@@ -27,8 +27,9 @@
 /// `publish()`es them the Event's received from the DBInterpreter.
 class EventService {
 public:
-    /// Constructor.
-    explicit EventService();
+    /// @brief Constructor.
+    /// @param observer_list The observer list provided by the SAAPRunner.
+    explicit EventService(const std::shared_ptr<const ObserverList>& observer_list);
     /// _Default_ destructor.
     ~EventService() = default;
 

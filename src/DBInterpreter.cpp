@@ -65,11 +65,11 @@ size_t getHash(unsigned funId, unsigned lineNo) {
     return h1 ^ (h2 << 1);
 }
 
-DBInterpreter::DBInterpreter(std::shared_ptr<EventService> service,
+DBInterpreter::DBInterpreter(std::unique_ptr<EventService> service,
         std::unique_ptr<LockMgr>&&   lockMgr,
         std::unique_ptr<ThreadMgr>&& threadMgr) :
     lastEventTime_(0),
-    EventService_(service),
+    EventService_(std::move(service)),
     lockMgr_(std::move(lockMgr)),
     threadMgr_(std::move(threadMgr))
 {}
@@ -530,11 +530,4 @@ ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
     lastThreadId = thread.parent_thread_id;
 
     return ErrorCode::OK;
-}
-
-std::unique_ptr<DBInterpreter> make_DBInterpreter() {
-    return std::make_unique<DBInterpreter>(
-            std::make_shared<EventService>(),
-            std::make_unique<LockMgr>(),
-            std::make_unique<ThreadMgr>());
 }
