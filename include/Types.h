@@ -15,6 +15,8 @@
 #include <string>
 #include <limits>
 
+#include <type_traits>
+
 /// Struct to prevent implicit conversion among types.
 /// @tparam T The type
 /// @tparam n A dumb integer to prevent casts
@@ -22,28 +24,30 @@
 ///// `string` methods cannot be called.
 template <typename T, size_t n>
 struct StrongTypedef {
-	/// @brief Constructor.
-	/// @details It's `explicit` in order to prevent implicit casts.
-	constexpr explicit StrongTypedef(T value) noexcept
-		: Value_(value)
-		{}
+    /// @brief Constructor.
+    /// @details It's `explicit` in order to prevent implicit casts.
+    constexpr explicit StrongTypedef(T value) noexcept
+        : Value_(value)
+        {}
 
-	/// @brief Copy constructor
-	constexpr StrongTypedef(const StrongTypedef<T,n>& input) noexcept
-		: Value_(input.Value_)
-		{}
+    /// @brief Copy constructor
+    constexpr StrongTypedef(const StrongTypedef<T,n>& input) noexcept
+        : Value_(input.Value_)
+        {}
 
-	/// @brief Implicit conversion operator.
-	/// @details A return by value is used sice I assume the
-	/// underlying type should be a primitive.
-	operator const T() const { return Value_; }
+    /// @brief Implicit conversion operator.
+    /// @return By value, if `T` is fundamental, by reference otherwise.
+    constexpr operator
+        std::conditional_t<std::is_fundamental<T>::value, const T, const T&> () const noexcept
+    { return Value_; }
 
-	/// \brief This is called when operator++ is
-	/// called on the object.
-	operator T&() { return Value_; }
+    /// \brief This is called when operator++ is
+    /// called on the object.
+    /// @attention Needed for TRD_ID.
+    constexpr operator T&() noexcept { return Value_; }
 
-	private: 
-	 T Value_;
+    private: 
+        T Value_;
 };
 
 
