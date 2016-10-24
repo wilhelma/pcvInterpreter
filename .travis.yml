@@ -18,6 +18,8 @@ addons:
             - cmake
             - sqlite3
             - libboost-all-dev
+            # Google test headers (they need to be compiled)
+            - libgtest-dev
             # Install GCC 6 to support C++14 from the above repository
             - gcc-6
             - g++-6
@@ -30,6 +32,12 @@ notification:
 
 # Build
 script:
+    # Manually download the database (otherwise, Git LFS needs to be installed)
+    - wget https://github.com/wilhelma/pcvInterpreter/raw/test/test/databases/integration_test.db -O test/databases/integration_test.db
+      ## Compile Google Test
+    # Compile Google Test
+    - ./travisCI/gtest_compile.sh
     - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
     - mkdir build && cd build
-    - cmake .. && make -j
+    - cmake .. && make -j && ./src/pcv ../test/databases/integration_test.db
+    - make pcv_test -j && ./test/pcv_test

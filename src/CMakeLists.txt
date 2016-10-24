@@ -6,13 +6,12 @@ set(pcv_INCLUDES ${pcv_SOURCE_DIR}/include/
                  ${pcv_SOURCE_DIR}/include/profiles/
                  ${pcv_SOURCE_DIR}/include/shadows/
                  ${pcv_SOURCE_DIR}/include/tables/
-                 ${pcv_SOURCE_DIR}/include/tools/)
+                 ${pcv_SOURCE_DIR}/include/tools/
+                 ${EasyLoggingpp_INCLUDES})
 
 # Download rapidjson from its Github repository
-include(ExternalProject)
 set(RAPIDJSON_SOURCE_DIR ${pcv_SOURCE_DIR}/external/rapidjson)
-ExternalProject_Add(
-    rapidjson
+ExternalProject_Add(rapidjson
     DOWNLOAD_DIR      ${RAPIDJSON_SOURCE_DIR}
     GIT_REPOSITORY    https://github.com/miloyip/rapidjson
     UPDATE_COMMAND    ${GIT_EXECUTABLE} pull origin master
@@ -25,22 +24,6 @@ ExternalProject_Get_Property(rapidjson source_dir)
 
 # Add rapidjson's includes
 set(pcv_INCLUDES ${pcv_INCLUDES} ${source_dir}/include)
-
-# Download EasyLogging++ from its Github repository
-set(EASYLOGGINGPP_SOURCE_DIR ${pcv_SOURCE_DIR}/external/easyloggingpp)
-ExternalProject_Add(
-    easyloggingpp
-    DOWNLOAD_DIR      ${EASYLOGGINGPP_SOURCE_DIR}
-    GIT_REPOSITORY    https://github.com/easylogging/easyloggingpp
-    UPDATE_COMMAND    ${GIT_EXECUTABLE} pull origin master
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND     ""
-    INSTALL_COMMAND   ""
-    LOG_DOWNLOAD      ON)
-set_target_properties(easyloggingpp PROPERTIES EXCLUDE_FROM_ALL TRUE)
-ExternalProject_Get_Property(easyloggingpp source_dir)
-# Add EasyLogging++'s includes
-set(pcv_INCLUDES ${pcv_INCLUDES} ${source_dir}/src)
 
 include_directories(${pcv_INCLUDES})
 set(SRC_LIST
@@ -59,10 +42,19 @@ set(SRC_LIST
     Work.cpp
     main.cpp)
 
-set(SRC_LIST ${SRC_LIST}
+set(DB_SOURCES 
+    tables/Call.cpp
+    tables/File.cpp
     database/Database.cpp
     database/DBManager.cpp
     database/QueryResult.cpp)
+
+# Add a rule to compile the database part in a shared library
+add_library(SQL_DB SHARED EXCLUDE_FROM_ALL ${DB_SOURCES})
+add_dependencies(SQL_DB easyloggingpp)
+target_link_libraries(SQL_DB "sqlite3")
+
+#set(SRC_LIST ${SRC_LIST} ${DB_SOURCES})
 
 set(SRC_LIST ${SRC_LIST}
     profiles/CallSiteProfile.cpp
@@ -81,4 +73,4 @@ set(SRC_LIST ${SRC_LIST}
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 add_dependencies(${PROJECT_NAME} rapidjson easyloggingpp)
-target_link_libraries(${PROJECT_NAME} "sqlite3" ${Boost_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} -lpthread SQL_DB)
