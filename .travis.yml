@@ -17,7 +17,8 @@ addons:
         packages:
             - cmake
             - sqlite3
-            - libboost-all-dev
+            # Without Boost, ParasiteTool is not compilable
+            #- libboost-all-dev
             # Google test headers (they need to be compiled)
             - libgtest-dev
             # Install GCC 6 to support C++14 from the above repository

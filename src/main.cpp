@@ -6,11 +6,12 @@
  */
 
 #include "DebugTool.h"
+#include "Event.h"
 #include "Filter.h"
-#include "FunctionTrackerTool.h"
-#include "ParasiteTool.h"
 #include "SAAPRunner.h"
+//#include "FunctionTrackerTool.h"
 //#include "LockSetChecker.h"
+//#include "ParasiteTool.h"
 //#include "RaceDetectionTool.h"
 
 // Loggin system
