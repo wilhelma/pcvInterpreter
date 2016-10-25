@@ -11,6 +11,7 @@
 
 #include "Database.h"
 
+#include "DatabaseException.h"
 #include "DBManager.h"
 #include "SQLException.h"
 #include "SQLStatementIterator.h"
@@ -166,11 +167,62 @@ const file_t& file_of(const function_t& fun, const Database& db) noexcept {
 const function_t& function_of(const call_t& call, const Database& db) noexcept {
     const auto& fun_of_call = db.functionTable().find(call.function_id);
     if (fun_of_call == db.functionTable().cend()) {
-        // If this happens, the database is corrupted
+        // if this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: FunctionTable has no entry "
                    << call.function_id;
         std::abort();
     }
 
     return fun_of_call->second;
+}
+
+const thread_t& thread_of(const call_t& call, const Database& db) noexcept {
+    const auto& fun_of_call = db.threadTable().find(call.thread_id);
+    if (fun_of_call == db.threadTable().cend()) {
+        // if this happens, the database is corrupted
+        LOG(FATAL) << "Database is corrupted: ThreadTable has no entry "
+                   << call.thread_id;
+        std::abort();
+    }
+
+    return fun_of_call->second;
+}
+
+const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Database& db) noexcept {
+    const auto& acc_ids_of_ins = db.accessTable().getInsAccessMap().find(ins.id);
+    if (acc_ids_of_ins == db.accessTable().getInsAccessMap().cend()) {
+        // If this happens, the database is corrupted
+        LOG(FATAL) << "Database is corrupted: InsAccessMaps has no entry "
+                   << ins.id;
+        std::abort();
+    }
+
+    return acc_ids_of_ins->second;
+}
+
+const access_t& access_with_id(const ACC_ID& acc_id, const Database& db) {
+    const auto& access = db.accessTable().find(acc_id);
+    if (access == db.accessTable().cend())
+        throw DatabaseException("AccessTable has no entry with id " + std::to_string(acc_id),
+                                "access_with_id");
+
+    return access->second;
+}
+
+const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db) {
+    const auto& thread = db.threadTable().find(trd_id);
+    if (thread == db.threadTable().cend())
+        throw DatabaseException("ThreadTable has no entry with id " + std::to_string(trd_id),
+                                "thread_with_id");
+
+    return thread->second;
+}
+
+const call_t& call_with_id(const CAL_ID& cal_id, const Database& db) {
+    const auto& call = db.callTable().find(cal_id);
+    if (call == db.callTable().cend())
+        throw DatabaseException("CallTable has no entry with id " + std::to_string(cal_id),
+                                "call_with_id");
+
+    return call->second;
 }

@@ -197,4 +197,32 @@ const file_t& file_of(const function_t& fun, const Database& db) noexcept;
 /// @param db   The database to look in.
 const function_t& function_of(const call_t& call, const Database& db) noexcept;
 
+/// @brief The thread in which the call runs.
+/// @param call The call.
+/// @param db   The database to look in.
+const thread_t& thread_of(const call_t& call, const Database &db) noexcept;
+
+/// @brief IDs of the memory accesses on an instruction.
+/// @param ins The accessing instruction.
+/// @param db  The database to look in.
+const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Database& db) noexcept;
+
+/// @brief Return the access with a specified access ID.
+/// @param acc_id The access ID.
+/// @param db     The database to look in.
+/// @throw DatabaseException If the entry is not found.
+const access_t& access_with_id(const ACC_ID& acc_id, const Database& db);
+
+/// @brief Return the thread with a specified thread ID.
+/// @param trd_id The thread ID.
+/// @param db     The database to look in.
+/// @throw DatabaseException If the entry is not found.
+const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db);
+
+/// @brief Return the call with a specified call ID.
+/// @param cal_id The call ID.
+/// @param db     The database to look in.
+/// @throw DatabaseException If the entry is not found.
+const call_t& call_with_id(const CAL_ID& cal_id, const Database& db);
+
 #endif
