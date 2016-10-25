@@ -81,3 +81,96 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath) {
 
     return std::unique_ptr<const Database>(std::move(db));
 }
+
+const segment_t& segment_of(const instruction_t& ins, const Database& db) noexcept {
+    const auto& seg_of_ins = db.segmentTable().find(ins.segment_id);
+    if (seg_of_ins == db.segmentTable().cend()) {
+        // If this happens, the database is corrupted.
+        LOG(FATAL) << "Database is corrupted: SegmentTable has no entry "
+                   << ins.segment_id;
+        std::abort();
+    }
+
+    return seg_of_ins->second;
+}
+
+const CAL_ID& caller_id_of(const instruction_t& ins, const Database& db) noexcept
+{ return segment_of(ins, db).call_id; }
+
+const call_t& caller_of(const instruction_t& ins, const Database& db) noexcept {
+    return call_of(segment_of(ins, db), db);
+}
+
+const CAL_ID& call_id_of(const instruction_t& ins, const Database& db) {
+    const auto& id_call_of_ins = db.callTable().instructionToCall().find(ins.id);
+    if (id_call_of_ins == db.callTable().instructionToCall().cend()) {
+        // If this happens, the database is corrupted.
+        LOG(FATAL) << "Database is corrupted: InstructionToCall has no entry "
+                   << ins.id;
+        std::abort();
+    }
+
+    return id_call_of_ins->second;
+}
+
+const call_t& call_of(const segment_t& seg, const Database& db) noexcept {
+    const auto& call_of_seg = db.callTable().find(seg.call_id);
+    if (call_of_seg == db.callTable().cend()) {
+        // If this happens, the database is corrupted.
+        LOG(FATAL) << "Database is corrupted: CallTable has no entry "
+                   << seg.call_id;
+        std::abort();
+    }
+
+    return call_of_seg->second;
+}
+
+const call_t& call_of(const instruction_t& ins, const Database& db) noexcept {
+    const auto& call_id_of_ins = call_id_of(ins, db); // may throw
+
+    const auto& call_of_ins = db.callTable().find(call_id_of_ins);
+    if (call_of_ins == db.callTable().cend()) {
+        // If this happens, the database is corrupted.
+        LOG(FATAL) << "Database is corrupted: CallTable has no entry "
+                   << call_id_of_ins;
+        std::abort();
+    }
+    
+    return call_of_ins->second;
+}
+
+const reference_t& reference_of(const access_t& acc, const Database& db) noexcept {
+    const auto& ref_of_acc = db.referenceTable().find(acc.reference_id);
+    if (ref_of_acc == db.referenceTable().cend()) {
+        // If this happens, the database is corrupted
+        LOG(FATAL) << "Database is corrupted: ReferenceTable has no entry "
+                   << acc.reference_id;
+        std::abort();
+    }
+
+    return ref_of_acc->second;
+}
+
+const file_t& file_of(const function_t& fun, const Database& db) noexcept {
+    const auto& file_of_fun = db.fileTable().find(fun.file_id);
+    if (file_of_fun == db.fileTable().cend()) {
+        // If this happens, the database is corrupted
+        LOG(FATAL) << "Database is corrupted: FileTable has no entry "
+                   << fun.file_id;
+        std::abort();
+    }
+
+    return file_of_fun->second;
+}
+
+const function_t& function_of(const call_t& call, const Database& db) noexcept {
+    const auto& fun_of_call = db.functionTable().find(call.function_id);
+    if (fun_of_call == db.functionTable().cend()) {
+        // If this happens, the database is corrupted
+        LOG(FATAL) << "Database is corrupted: FunctionTable has no entry "
+                   << call.function_id;
+        std::abort();
+    }
+
+    return fun_of_call->second;
+}

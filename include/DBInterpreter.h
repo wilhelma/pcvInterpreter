@@ -158,17 +158,6 @@ private:
 
     ErrorCode publishCallReturn(const call_t& topCall);
     ErrorCode publishThreadReturn(TRD_ID threadId);
-
-  /// Parent call ID of an instruction
-  /// @return The call ID, if it's found in `segmentT_`
-  /// or `IN_NO_ENTRY` otherwise.
-  /// @todo Properly implement error handling.
-  const CAL_ID getCallerID(const instruction_t& ins) const;
-  /// Call ID of a call instruction
-  /// @return The call ID, if it's found in `callT_`
-  /// or `IN_NO_ENTRY` otherwise.
-  /// @todo Properly implement error handling.
-  const CAL_ID getCallID(const instruction_t& ins) const;
 };
 
 #endif /* DBINTERPRETER_H_ */

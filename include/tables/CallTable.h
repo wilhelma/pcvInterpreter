@@ -37,14 +37,8 @@ class CallTable final: public DBTable<CAL_ID, const call_t> {
             return Map_.insert(hint, typename std::map<CAL_ID, const call_t>::value_type(entry.id, entry));
         }
 
-        const CAL_ID getInstructionCaller(const instruction_t& ins) const
-        {
-            const auto& instr_caller = InstructionToCall_.find(ins.id);
-            if (instr_caller == InstructionToCall_.cend())
-                std::abort();
-
-            return instr_caller->second; 
-        }
+        const std::map<INS_ID, CAL_ID>& instructionToCall() const noexcept
+        { return InstructionToCall_; }
 
     private:
         std::map<INS_ID, CAL_ID> InstructionToCall_;

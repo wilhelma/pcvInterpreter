@@ -100,46 +100,6 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
     return ErrorCode::OK;
 }
 
-const CAL_ID DBInterpreter::getCallerID(const instruction_t& ins) const {
-    auto search = database()->segmentTable().find(ins.segment_id);
-    if (search == database()->segmentTable().cend()) {
-        LOG(ERROR) << "Segment " << ins.segment_id
-            << " not found in SegmentTable";
-        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
-    }
-    return search->second.call_id;
-}
-
-/// @todo If the ID isn't found the program should probably crash. This means
-/// the input database was inconsistent. Anyway, here the return value is both
-/// the call_id and (in case of error) the ErrorCode. __That's bad design__
-const CAL_ID DBInterpreter::getCallID(const instruction_t& ins) const {
-    return database()->callTable().getInstructionCaller(ins);
-    //    // look for the call id of the instruction
-    //    CAL_ID call_id(0);
-    //    bool found = false;
-    //    for (const auto& it : database()->callTable()) {
-    //        // if there's a call whose instruction id is the same as
-    //        // ins.id, get its id
-    //        if (it.second.instruction_id == ins.id) {
-    //            call_id = it.second.id;
-    //            found = true;
-    //            break;
-    //        }
-    //    }
-    //
-    //    // if the iterator reached the end, no entry has been found in callT_
-    //    if (!found) {
-    //        LOG(ERROR) << "Call table has no element whose instruction id is: "
-    //            << ins.id;
-    //        return static_cast<CAL_ID>(static_cast<unsigned>(ErrorCode::NO_ENTRY));
-    //    }
-    //
-    //    //    std::cerr << "[getCallID]     call_id = " << call_id << std::endl;
-    //    return call_id;
-}
-
-
 ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
         const call_t& call) {
     TRD_ID returnThread = NO_TRD_ID;
@@ -285,55 +245,47 @@ ErrorCode DBInterpreter::processEnd() {
 }
 
 ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
-    auto ret = ErrorCode::NO_ENTRY;
+    // Segment containing the instruction
+    const auto& seg_of_ins  = segment_of(ins, *database());
+    const auto& call_of_seg = call_of(seg_of_ins, *database());
 
-    auto segmentIt = database()->segmentTable().find(ins.segment_id);
-    if (segmentIt != database()->segmentTable().end()) {
-        const segment_t& segment = segmentIt->second;
+    // handle call/thread stack returns
+    processReturn(ins, call_of_seg);
 
-        auto callIt = database()->callTable().find(segment.call_id);
-        if (callIt != database()->callTable().end()) {
-            const call_t& call = callIt->second;
+    switch (ins.instruction_type) {
+        case InstructionType::CALL:
+            return processCall(ins);
 
-            // handle call/thread stack returns
-            processReturn(ins, call);
+        case InstructionType::ACCESS:
+            return processAccess(ins, seg_of_ins, call_of_seg, &DBInterpreter::processMemAccess);
 
-            switch (ins.instruction_type) {
-                case InstructionType::CALL:
-                    ret = processCall(ins);
-                    break;
-                case InstructionType::ACCESS:
-                    ret = processAccess(ins, segment, call, &DBInterpreter::processMemAccess);
-                    break;
-                case InstructionType::ACQUIRE:
-                    ret = processAcquire(ins);
-                    break;
-                case InstructionType::RELEASE:
-                    ret = processRelease(ins);
-                    break;
-                case InstructionType::FORK:
-                    for (const auto& it : database()->threadTable()) {
-                        const thread_t& thread = it.second;
-                        if (ins.id == thread.create_instruction_id) {
-                            ret = processFork(thread);
-                        }
-                    }
-                    break;
-                case InstructionType::JOIN:
-                    for (const auto& it : database()->threadTable()) {
-                        const thread_t& thread = it.second;
-                        if (ins.id == thread.join_instruction_id) {
-                            ret = processJoin(ins, thread);
-                        }
-                    }
-                    break;
-                default:
-                    ret = ErrorCode::NO_ENTRY;
+        case InstructionType::ACQUIRE:
+            return processAcquire(ins);
+
+        case InstructionType::RELEASE:
+            return processRelease(ins);
+
+        case InstructionType::FORK:
+            for (const auto& it : database()->threadTable()) {
+                const thread_t& thread = it.second;
+                if (ins.id == thread.create_instruction_id)
+                    return processFork(thread);
             }
-        }
+            break;
+
+        case InstructionType::JOIN:
+            for (const auto& it : database()->threadTable()) {
+                const thread_t& thread = it.second;
+                if (ins.id == thread.join_instruction_id)
+                    return processJoin(ins, thread);
+            }
+            break;
+
+        default:
+            return ErrorCode::NO_ENTRY;
     }
 
-    return ret;
+    return ErrorCode::NO_ENTRY;
 }
 
 //int DBInterpreter::processSegment(SEG_ID segmentId,
@@ -357,55 +309,40 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
 
     auto ret = ErrorCode::NO_ENTRY;
 
-    auto functionIt = database()->functionTable().find(call.function_id);
-    if (functionIt != database()->functionTable().end()) {
-        const function_t& function = functionIt->second;
+    const auto& fun_of_call = function_of(call, *database());
 
-        switch(function.type) {
-            case FunctionType::FUNCTION:
-            case FunctionType::METHOD:
-                {
-                    // serch for the file where the call has happened from
-                    auto fileIt = database()->fileTable().find(function.file_id);
-                    if (fileIt != database()->fileTable().end()) {
-                        const file_t& file = fileIt->second;
+    switch(fun_of_call.type) {
+        case FunctionType::FUNCTION:
+        case FunctionType::METHOD:
+        {
+            const auto& file_of_fun = file_of(fun_of_call, *database());
+            CallInfo info(static_cast<CALLSITE>(getHash(call.function_id, line)),
+                    call.start_time,
+                    static_cast<TIME>(call.end_time - call.start_time),
+                    fun_of_call.name,
+                    segId,
+                    fun_of_call.type,
+                    file_of_fun.file_name,
+                    file_of_fun.file_path);
 
-                        CallInfo info( static_cast<CALLSITE>(getHash(call.function_id, line)),
-                                call.start_time,
-                                static_cast<TIME>(call.end_time - call.start_time),
-                                function.name,
-                                segId,
-                                function.type,
-                                file.file_name,
-                                file.file_path);
-
-                        auto thread = getThread(call.thread_id);
-                        CallEvent event(thread, &info);
-                        eventService()->publish(&event);
-                        lastEventTime_ = call.start_time;
-                        CallStack_.push(call.id);
-                        ret = ErrorCode::OK;
-                    }
-                    break;
-                }
-            default:
-                break;
+            auto thread = getThread(call.thread_id);
+            CallEvent event(thread, &info);
+            eventService()->publish(&event);
+            lastEventTime_ = call.start_time;
+            CallStack_.push(call.id);
+            ret = ErrorCode::OK;
+            break;
         }
+        default:
+            break;
     }
 
     return ret;
 }
 
 ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
-    auto ret = ErrorCode::NO_ENTRY;
-
-    auto callIt = database()->callTable().find(getCallID(ins));
-    if (callIt != database()->callTable().end()) {
-        const call_t& call = callIt->second;
-        ret = processCall(call, ins.line_number, ins.segment_id);
-    }
-
-    return ret;
+    // This will throw or abort in case of failure
+    return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
 }
 
 ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
@@ -415,15 +352,9 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
         const call_t& call,
         processAccess_t func) {
 
-    REF_ID refId = access.reference_id;
-    auto search = database()->referenceTable().find(refId);
-    if ( search == database()->referenceTable().end() ) {
-        LOG(ERROR) << "Reference not found: " << access.reference_id;
-        return ErrorCode::NO_ENTRY;
-    }
-
+    const auto& ref_of_acc = reference_of(access, *database());
     return (this->* func)(accessId, access, instruction, segment,
-            call, search->second);
+            call, ref_of_acc);
 }
 
 ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
@@ -457,51 +388,51 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
-    auto callIt = database()->callTable().find(getCallID(ins));
-    if (callIt != database()->callTable().end()) {
-        const call_t& call = callIt->second;
-        assert(lastEventTime_ <= call.start_time);
-        for (auto accIt : database()->accessTable()) {
-            const access_t& access = accIt.second;
-            if (access.instruction_id == ins.id) {
-                auto refIt = database()->referenceTable().find(access.reference_id);
-                auto lock = getLock(refIt->second.id);
-                if (lock != nullptr) {
-                    auto thread = getThread(call.thread_id);
-                    AcquireInfo info(lock, call.start_time);
-                    AcquireEvent event( thread, &info );
-                    eventService()->publish( &event );
-                    lastEventTime_ = call.start_time;
-                    return ErrorCode::OK;
-                }
+    // This will throw or abort in case of failure
+    const auto& call_of_ins = call_of(ins, *database());
+
+    assert(lastEventTime_ <= call_of_ins.start_time);
+    for (const auto& accIt : database()->accessTable()) {
+        const auto& access = accIt.second;
+        if (access.instruction_id == ins.id) {
+            const auto& ref_of_acc = reference_of(access, *database());
+            const auto& lock = getLock(ref_of_acc.id);
+            if (lock != nullptr) {
+                const auto& thread = getThread(call_of_ins.thread_id);
+                AcquireInfo info(lock, call_of_ins.start_time);
+                AcquireEvent event(thread, &info);
+                eventService()->publish(&event);
+                lastEventTime_ = call_of_ins.start_time;
+                return ErrorCode::OK;
             }
         }
     }
+
     return ErrorCode::NO_ENTRY;
 }
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
-    auto callIt = database()->callTable().find(getCallID(ins));
-    if (callIt != database()->callTable().end()) {
-        const call_t& call = callIt->second;
-        assert(lastEventTime_ <= call.start_time);
-        for (auto accIt : database()->accessTable()) {
-            const access_t& access = accIt.second;
-            if (access.instruction_id == ins.id) {
-                auto refIt = database()->referenceTable().find(access.reference_id);
-                auto lock = getLock(refIt->second.id);
-                if (lock != nullptr) {
-                    auto thread = getThread(call.thread_id);
-                    ReleaseInfo info(lock, call.start_time);
-                    ReleaseEvent event( thread, &info );
-                    eventService()->publish( &event );
-                    lastEventTime_ = call.start_time;
-                    return ErrorCode::OK;
-                }
+    // This will throw or abort in case of failure
+    const auto& call_of_ins = call_of(ins, *database());
+
+    assert(lastEventTime_ <= call_of_ins.start_time);
+    for (auto accIt : database()->accessTable()) {
+        const access_t& access = accIt.second;
+        if (access.instruction_id == ins.id) {
+            const auto& ref_of_acc = reference_of(access, *database());
+            const auto& lock = getLock(ref_of_acc.id);
+            if (lock != nullptr) {
+                auto thread = getThread(call_of_ins.thread_id);
+                ReleaseInfo info(lock, call_of_ins.start_time);
+                ReleaseEvent event( thread, &info );
+                eventService()->publish( &event );
+                lastEventTime_ = call_of_ins.start_time;
+                return ErrorCode::OK;
             }
         }
     }
+
     return ErrorCode::NO_ENTRY;
 }
 

@@ -150,4 +150,51 @@ private:
 /// Fill the Database tables.
 std::unique_ptr<const Database> load_database(const std::string& DBPath);
 
+/// @brief Segment containing the instruction.
+/// @param ins The called instruction.
+/// @param db  The database to look in.
+const segment_t& segment_of(const instruction_t& ins, const Database& db) noexcept;
+
+/// @brief ID of the parent call of an instruction.
+/// @param ins The called instruction.
+/// @param db  The database to look in.
+const CAL_ID& caller_id_of(const instruction_t ins, const Database& db) noexcept;
+
+/// @brief Parent call of an instruction.
+/// @param ins The called instruction.
+/// @param db  The database to look in.
+const call_t& caller_of(const instruction_t ins, const Database& db) noexcept;
+
+/// @brief ID of the call_t that was called on an instruction.
+/// @param ins The call instruction.
+/// @param db  The database to look in.
+/// @exception DatabaseException Throws if the entry is not found!
+const CAL_ID& call_id_of(const instruction_t& ins, const Database& db);
+
+/// @brief The call_t that was called on an instruction.
+/// @param ins The call instruction.
+/// @param db  The database to look in.
+const call_t& call_of(const instruction_t& ins, const Database& db) noexcept;
+
+/// @brief The call that spanned a segment.
+/// @param seg The segment.
+/// @param db  The database to look in.
+const call_t& call_of(const segment_t& seg, const Database& db) noexcept;
+
+/// @brief The reference of the memory access.
+/// @param acc The memory access.
+/// @param db  The database to look in.
+const reference_t& reference_of(const access_t& acc, const Database& db) noexcept;
+
+/// @brief The file a function belongs to.
+/// @param fun The function.
+/// @param db  The database to look in.
+const file_t& file_of(const function_t& fun, const Database& db) noexcept;
+
+/// @brief The function issued by the call.
+/// @todo verify this description.
+/// @param call The call.
+/// @param db   The database to look in.
+const function_t& function_of(const call_t& call, const Database& db) noexcept;
+
 #endif
