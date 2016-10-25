@@ -104,27 +104,22 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
         const call_t& call) {
     TRD_ID returnThread = NO_TRD_ID;
 
-    CAL_ID topCallId =CallStack_.top();
+    CAL_ID topCallId = CallStack_.top();
     while (!CallStack_.isEmpty() && call.id != topCallId) {
-        auto callIt = database()->callTable().find(topCallId);
-        if (callIt != database()->callTable().end()) {
-            const call_t& topCall = callIt->second;
+        const auto& topCall = call_with_id(topCallId, *database()); // may throw
 
-            if (returnThread != NO_TRD_ID && returnThread != topCall.thread_id) {
-                publishThreadReturn(topCall.thread_id);
-                returnThread = NO_TRD_ID;
-            }
-
-            publishCallReturn(topCall);
-
-            if (call.thread_id != topCall.thread_id)
-                returnThread = topCall.thread_id;
-
-            CallStack_.pop();
-            topCallId = CallStack_.top();
-        } else {
-            return ErrorCode::NO_ENTRY;
+        if (returnThread != NO_TRD_ID && returnThread != topCall.thread_id) {
+            publishThreadReturn(topCall.thread_id);
+            returnThread = NO_TRD_ID;
         }
+
+        publishCallReturn(topCall);
+
+        if (call.thread_id != topCall.thread_id)
+            returnThread = topCall.thread_id;
+
+        CallStack_.pop();
+        topCallId = CallStack_.top();
     }
 
     if (returnThread != NO_TRD_ID)
@@ -146,20 +141,15 @@ ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
 }
 
 ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
-    auto threadIt = database()->threadTable().find(threadId);
-    if (threadIt != database()->threadTable().end()) {
-        const thread_t& thread = threadIt->second;
-        const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
-        assert(lastEventTime_ <= threadEndTime);
-        ThreadEndInfo  end_info(threadEndTime, threadId);
-        auto sThread = getThread(threadId);
-        ThreadEndEvent end_event(sThread, &end_info);
-        eventService()->publish(&end_event);
-        lastEventTime_ = threadEndTime;
-        lastThreadId = thread.parent_thread_id;
-    } else {
-        return ErrorCode::NO_ENTRY;
-    }
+    const auto& thread = thread_with_id(threadId, *database());
+    const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
+    assert(lastEventTime_ <= threadEndTime);
+    ThreadEndInfo  end_info(threadEndTime, threadId);
+    auto sThread = getThread(threadId);
+    ThreadEndEvent end_event(sThread, &end_info);
+    eventService()->publish(&end_event);
+    lastEventTime_ = threadEndTime;
+    lastThreadId = thread.parent_thread_id;
 
     return ErrorCode::OK;
 }
@@ -168,45 +158,22 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
         const segment_t& segment,
         const call_t& call,
         processAccess_t accessFunc) {
-    // loop over all memory accesses of the instruction
-    const AccessTable::insAccessMap_t& insAccessMap = database()->accessTable().getInsAccessMap();
-    const auto& avIt = insAccessMap.find(instruction.id);
-    if (avIt != insAccessMap.end()) {
-        for (const auto& it : avIt->second) {
-            auto accessIt = database()->accessTable().find(it);
-            if (accessIt != database()->accessTable().end()) {
-                const access_t& access = accessIt->second;
-                processAccessGeneric(access.id,
-                        access,
-                        instruction,
-                        segment,
-                        call,
-                        accessFunc);
-            } else {
-                LOG(ERROR) << "Access not found: " << it;
-                return ErrorCode::NO_ENTRY;
-            }
-        }
+
+    // loop over the memory accesses of the instruction
+    for (const auto& acc_id : access_ids_of(instruction, *database())) {
+        const auto& access = access_with_id(acc_id, *database()); // may throw!
+        processAccessGeneric(access.id, access, instruction, segment, call, accessFunc);
     }
+
     return ErrorCode::OK;
 }
 
 ErrorCode DBInterpreter::processStart() {
-    auto ret = ErrorCode::NO_ENTRY;
-
-    auto callIt = database()->callTable().find(call_t::MAIN);
-    if (callIt != database()->callTable().end()) {
-        const call_t& call = callIt->second;
-        auto threadIt = database()->threadTable().find(call.thread_id);
-        if (threadIt != database()->threadTable().end()) {
-            const thread_t& thread = threadIt->second;
-            processFork(thread);
-            processCall(call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));
-            ret = ErrorCode::OK;
-        }
-    }
-
-    return ret;
+    const auto& main_call        = call_with_id(call_t::MAIN, *database()); // may throw
+    const auto& main_call_thread = thread_of(main_call, *database());
+    processFork(main_call_thread);
+    processCall(main_call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));
+    return ErrorCode::OK;
 }
 
 ErrorCode DBInterpreter::processEnd() {
@@ -214,31 +181,22 @@ ErrorCode DBInterpreter::processEnd() {
 
     // close final calls
     while (!CallStack_.isEmpty()) {
-        const CAL_ID topCallId = CallStack_.pop();
-        auto callIt = database()->callTable().find(topCallId);
-        if (callIt != database()->callTable().end()) {
-            const call_t& call = callIt->second;
-            auto sThread = getThread(call.thread_id);
+        const auto& top_call = call_with_id(CallStack_.pop(), *database()); // may trow
+        auto sThread         = getThread(top_call.thread_id);
 
-            if (call.thread_id != lastThreadId) {
-                // publish a thread end event
-                auto threadIt = database()->threadTable().find(lastThreadId);
-                if (threadIt != database()->threadTable().end()) {
-                    const thread_t& thread = threadIt->second;
-                    ThreadEndInfo end_info(static_cast<TIME>(
-                                thread.start_cycle + thread.num_cycles),
-                            thread.id);
-                    ThreadEndEvent end_event(sThread, &end_info);
-                    eventService()->publish(&end_event);
-                    lastThreadId = call.thread_id;
-                }
-            }
-
-            ReturnInfo info (call.id, call.function_id, call.end_time);
-            ReturnEvent event(sThread, &info);
-            eventService()->publish(&event);
-            ret = ErrorCode::OK;
+        if (top_call.thread_id != lastThreadId) {
+            const auto& last_thread = thread_with_id(lastThreadId, *database());
+            ThreadEndInfo end_info(last_thread.start_cycle + last_thread.num_cycles,
+                                   last_thread.id);
+            ThreadEndEvent end_event(sThread, &end_info);
+            eventService()->publish(&end_event);
+            lastThreadId = top_call.thread_id;
         }
+
+        ReturnInfo info (top_call.id, top_call.function_id, top_call.end_time);
+        ReturnEvent event(sThread, &info);
+        eventService()->publish(&event);
+        ret = ErrorCode::OK;
     }
 
     return ret;
@@ -288,22 +246,6 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
     return ErrorCode::NO_ENTRY;
 }
 
-//int DBInterpreter::processSegment(SEG_ID segmentId,
-//                                  const segment_t& seg,
-//                                  const instruction_t& ins) {
-//
-//    auto search = database()->callTable().find(seg.call_id);
-//    if (search != database()->callTable().end()) {
-//        if (!processCall(seg.call_id, search->second, seg, ins))
-//            return 1;
-//    } else {
-//        LOG(ERROR) << "Call not found: " << seg.call_id;
-//        return 1;
-//    }
-//
-//    return 0;
-//}
-
 ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
     assert(lastEventTime_ <= call.start_time);
 
@@ -341,7 +283,6 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
 }
 
 ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
-    // This will throw or abort in case of failure
     return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
 }
 
@@ -353,8 +294,7 @@ ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
         processAccess_t func) {
 
     const auto& ref_of_acc = reference_of(access, *database());
-    return (this->* func)(accessId, access, instruction, segment,
-            call, ref_of_acc);
+    return (this->* func)(accessId, access, instruction, segment, call, ref_of_acc);
 }
 
 ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
@@ -377,11 +317,9 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
     }
 
     auto thread = getThread(call.thread_id);
-    AccessInfo info( access.access_type,
-            var,
-            instruction.id);
-    AccessEvent event( thread, &info );
-    eventService()->publish( &event );
+    AccessInfo info(access.access_type, var, instruction.id);
+    AccessEvent event(thread, &info);
+    eventService()->publish(&event);
 
     return ErrorCode::OK;
 }
