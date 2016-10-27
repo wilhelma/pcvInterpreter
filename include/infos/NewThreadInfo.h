@@ -16,18 +16,31 @@
 
 #include "Types.h"
 
+#include <memory>
+
+/// Information about a thread creation.
 struct NewThreadInfo {
-	const ShadowThread* const childThread;
-	const ShadowThread* const parentThread;
+    /// The created thread.
+	std::shared_ptr<const ShadowThread> childThread;
+    /// The parent thread.
+	std::shared_ptr<const ShadowThread> parentThread;
 	TIME startTime;
 	TIME runTime;
 
-	explicit NewThreadInfo(const ShadowThread* const childThread,
-			const ShadowThread* const parentThread,
-			const TIME& startTime,
-			const TIME& runTime) noexcept
-		: childThread(childThread), parentThread(parentThread),
-		 startTime(startTime), runTime(runTime) {}
+    /// @brief Constructor.
+    /// @param child_trd
+    /// @param parent_trd
+    /// @param start_time
+    /// @param run_time
+	explicit NewThreadInfo(std::shared_ptr<const ShadowThread> child_thread,
+                           std::shared_ptr<const ShadowThread> parent_thread,
+			               const TIME& start_time,
+			               const TIME& run_time) noexcept
+		: childThread(child_thread),
+          parentThread(parent_thread),
+		  startTime(start_time),
+          runTime(run_time)
+        {}
 };
 
 #endif

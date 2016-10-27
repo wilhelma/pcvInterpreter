@@ -17,6 +17,11 @@
 #include <climits>
 #include "ParasiteTool.h"
 
+//#include "AcquireEvent.h"
+//#include "AcquireInfo.h"
+#include "ReleaseEvent.h"
+#include "ReleaseInfo.h"
+
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
 							 jsonWriter(random_string(5)), last_event_time(0) {
 	thread_graph.name = name;
@@ -147,7 +152,7 @@ ParasiteTool::~ParasiteTool() {
 void ParasiteTool::Call(const CallEvent* e) {
 
 	print_event_start("CALL");
-	const CallInfo* _info(e->getInfo());
+	const auto& _info = e->info();
 	last_event_time = _info->callTime;
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting call Event with signature " <<
@@ -162,7 +167,7 @@ void ParasiteTool::Call(const CallEvent* e) {
 
 void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
-	const NewThreadInfo* const _info = e->getInfo();
+	const auto& _info = e->info();
 	vertex_descr_type thread_start_vertex;
 	if (stacks.bottomThreadIndex() != -1) {
 		stacks.bottomThread()->spawned_children_count += 1;
@@ -217,7 +222,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 // Called G returns to F
 void ParasiteTool::Return(const ReturnEvent* e) {
 
-	const ReturnInfo* _info(e->getInfo());
+	const auto& _info = e->info();
 	add_local_work(_info->endTime, "R");
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting return Event with signature " <<
@@ -238,7 +243,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
-	const ThreadEndInfo* _info(e->getInfo());
+	const auto& _info = e->info();
 	add_local_work(_info->endTime, "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->continuation.add(ending_thread->lock_wait_time());
@@ -273,7 +278,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 void ParasiteTool::Acquire(const AcquireEvent* e) {
 
 	print_event_start("ACQUIRE");
-	const AcquireInfo* _info(e->getInfo());
+	const auto& _info = e->info();
 	TIME acquire_time = _info->acquireTime;
 	_info->lock->last_acquire_time = acquire_time;
 	print_event_end("ACQUIRE");
@@ -282,7 +287,7 @@ void ParasiteTool::Acquire(const AcquireEvent* e) {
 void ParasiteTool::Release(const ReleaseEvent* e) {
 
 	print_event_start("RELEASE");
-	const ReleaseInfo* _info(e->getInfo());
+	const auto& _info = e->info();
 	TIME release_time = _info->releaseTime;
 	assert(static_cast<double>(release_time) >
 		   static_cast<double>(_info->lock->last_acquire_time));

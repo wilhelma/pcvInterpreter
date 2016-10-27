@@ -37,67 +37,57 @@
 //#include <iostream>
 
 void DebugTool::Access(const AccessEvent* event) {
-	const AccessInfo& ai = *(event->getInfo());
 	LOG(DEBUG) 
 		<< "AccessEvent:\n"
-		<< " > Access Type:  " << static_cast<unsigned>(ai.type) << "\n"
-		<< " > Instruct. id: " << ai.instructionID << "\n";
+		<< " > Access Type:  " << static_cast<unsigned>(event->info()->type) << "\n"
+		<< " > Instruct. id: " << event->info()->instructionID << std::endl;
 }
 
 void DebugTool::Acquire(const AcquireEvent* event) {
-  const AcquireInfo& ai = *(event->getInfo());
-	LOG(DEBUG) 
-    << "AcquireEvent:" << ai.acquireTime << std::endl;
+	LOG(DEBUG) << "AcquireEvent:" << event->info()->acquireTime << std::endl;
 }
 
 void DebugTool::Call(const CallEvent* event) {
-	const CallInfo& ci = *(event->getInfo());
 	LOG(DEBUG) 
 		<< "CallEvent:\n"
-        << " > Call Site:  " << ci.siteId << "\n"
-        << " > Start Time  " << ci.callTime << "\n"
-        << " > Runtime:    " << ci.runtime << "\n"
-		<< " > Fun. sig.:  " << ci.fnSignature << "\n"
-		<< " > Fun. type:  " << static_cast<unsigned>(ci.fnType) << "\n"
-		<< " > File name:  " << ci.fileName << "\n"
-		<< " > File path:  " << ci.filePath << "\n";
+        << " > Call Site:  " << event->info()->siteId << "\n"
+        << " > Start Time  " << event->info()->callTime << "\n"
+        << " > Runtime:    " << event->info()->runtime << "\n"
+		<< " > Fun. sig.:  " << event->info()->fnSignature << "\n"
+		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->fnType) << "\n"
+		<< " > File name:  " << event->info()->fileName << "\n"
+		<< " > File path:  " << event->info()->filePath << std::endl;
 }
 
 
 void DebugTool::Join(const JoinEvent* event) {
 //	const JoinInfo& ji = *(event->getInfo());
-	LOG(DEBUG) 
-		<< "JoinEvent:";
+	LOG(DEBUG) << "JoinEvent:" << std::endl;
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {
-	const NewThreadInfo& nti = *(event->getInfo());
 	LOG(DEBUG) 
 		<< "NewThreadEvent:\n"
-        << " > Thread id: " << nti.childThread->threadId << std::endl
-        << " > Start time:  " << nti.startTime << "\n"
-        << " > Runtime      " << nti.runTime << "\n";
+        << " > Thread id:   " << event->info()->childThread->threadId << std::endl
+        << " > Start time:  " << event->info()->startTime << "\n"
+        << " > Runtime      " << event->info()->runTime << std::endl;
 }
 
 void DebugTool::Release(const ReleaseEvent* event) {
-  const ReleaseInfo& ri = *(event->getInfo());
-	LOG(DEBUG) 
-    << "ReleaseEvent:" << ri.releaseTime << std::endl;
+	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime << std::endl;
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
-	const ReturnInfo& ri = *(event->getInfo());
 	LOG(DEBUG) 
-		<< "ReturnEvent:\n"
-    << " > Call ID: " << ri.call << "\n"
-    << " > Function ID: " << ri.function << "\n"
-		<< " > End time: " << ri.endTime << "\n";
+        << "ReturnEvent:\n"
+        << " > Call ID:     " << event->info()->call << "\n"
+        << " > Function ID: " << event->info()->function << "\n"
+        << " > End time:    " << event->info()->endTime << std::endl;
 }
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
-	const ThreadEndInfo& tei = *(event->getInfo());
 	LOG(DEBUG) 
         << "ThreadEndEvent:\n"
-		<< " > Thread ID: " << tei.id << "\n"
-		<< " > End time:  " << tei.endTime << "\n";
+		<< " > Thread ID: " << event->info()->id << "\n"
+		<< " > End time:  " << event->info()->endTime << std::endl;
 }

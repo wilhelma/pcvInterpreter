@@ -20,6 +20,20 @@
 #include "LockMgr.h"
 #include "ThreadMgr.h"
 
+// Database tables
+#include "AccessTable.h"
+#include "CallTable.h"
+#include "FileTable.h"
+#include "FunctionTable.h"
+#include "InstructionTable.h"
+#include "LoopTable.h"
+#include "LoopExecutionTable.h"
+#include "LoopIterationTable.h"
+#include "ReferenceTable.h"
+#include "SegmentTable.h"
+#include "ThreadTable.h"
+#include "DBTable.h"
+
 #include "Access.h"
 #include "Call.h"
 #include "File.h"
@@ -70,8 +84,8 @@ DBInterpreter::DBInterpreter(std::unique_ptr<EventService> service,
         std::unique_ptr<ThreadMgr>&& threadMgr) :
     lastEventTime_(0),
     EventService_(std::move(service)),
-    lockMgr_(std::move(lockMgr)),
-    threadMgr_(std::move(threadMgr))
+    LockMgr_(std::move(lockMgr)),
+    ThreadMgr_(std::move(threadMgr))
 {}
 
 // Default the destructor here to allow the Ptr to Impl idiom.
@@ -91,7 +105,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
     processStart();
 
     // process database entries
-    for (const auto& instruction : database()->instructionTable())
+    for (const auto& instruction : *database()->instructionTable())
         processInstruction(instruction.second);
 
     // handle end of main routine
@@ -131,9 +145,8 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
     assert(lastEventTime_ <= topCall.end_time);
 
-    auto sThread = getThread(topCall.thread_id);
-    ReturnInfo info(topCall.id, topCall.function_id, topCall.end_time);
-    ReturnEvent event(sThread, &info);
+    ReturnEvent event(ThreadMgr_->getThread(topCall.thread_id),
+                      std::make_unique<const ReturnInfo>(topCall.id, topCall.function_id, topCall.end_time));
     eventService()->publish(&event);
     lastEventTime_ = topCall.end_time;
 
@@ -141,13 +154,14 @@ ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
 }
 
 ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
-    const auto& thread = thread_with_id(threadId, *database());
+    const auto& thread = thread_with_id(threadId, *database()); // may throw
     const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
     assert(lastEventTime_ <= threadEndTime);
-    ThreadEndInfo  end_info(threadEndTime, threadId);
-    auto sThread = getThread(threadId);
-    ThreadEndEvent end_event(sThread, &end_info);
+
+    ThreadEndEvent end_event(ThreadMgr_->getThread(threadId),
+                             std::make_unique<const ThreadEndInfo>(threadEndTime, threadId));
     eventService()->publish(&end_event);
+
     lastEventTime_ = threadEndTime;
     lastThreadId = thread.parent_thread_id;
 
@@ -182,20 +196,21 @@ ErrorCode DBInterpreter::processEnd() {
     // close final calls
     while (!CallStack_.isEmpty()) {
         const auto& top_call = call_with_id(CallStack_.pop(), *database()); // may trow
-        auto sThread         = getThread(top_call.thread_id);
+        const auto& sThread  = ThreadMgr_->getThread(top_call.thread_id);
 
         if (top_call.thread_id != lastThreadId) {
             const auto& last_thread = thread_with_id(lastThreadId, *database());
-            ThreadEndInfo end_info(last_thread.start_cycle + last_thread.num_cycles,
-                                   last_thread.id);
-            ThreadEndEvent end_event(sThread, &end_info);
+
+            ThreadEndEvent end_event(sThread,
+                                     std::make_unique<const ThreadEndInfo>(last_thread.start_cycle + last_thread.num_cycles, last_thread.id));
             eventService()->publish(&end_event);
             lastThreadId = top_call.thread_id;
         }
 
-        ReturnInfo info (top_call.id, top_call.function_id, top_call.end_time);
-        ReturnEvent event(sThread, &info);
+        ReturnEvent event(sThread,
+                          std::make_unique<const ReturnInfo>(top_call.id, top_call.function_id, top_call.end_time));
         eventService()->publish(&event);
+
         ret = ErrorCode::OK;
     }
 
@@ -224,7 +239,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
             return processRelease(ins);
 
         case InstructionType::FORK:
-            for (const auto& it : database()->threadTable()) {
+            for (const auto& it : *database()->threadTable()) {
                 const thread_t& thread = it.second;
                 if (ins.id == thread.create_instruction_id)
                     return processFork(thread);
@@ -232,7 +247,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
             break;
 
         case InstructionType::JOIN:
-            for (const auto& it : database()->threadTable()) {
+            for (const auto& it : *database()->threadTable()) {
                 const thread_t& thread = it.second;
                 if (ins.id == thread.join_instruction_id)
                     return processJoin(ins, thread);
@@ -258,7 +273,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         case FunctionType::METHOD:
         {
             const auto& file_of_fun = file_of(fun_of_call, *database());
-            CallInfo info(static_cast<CALLSITE>(getHash(call.function_id, line)),
+            auto info = std::make_unique<const CallInfo>(
+                    static_cast<CALLSITE>(getHash(call.function_id, line)),
                     call.start_time,
                     static_cast<TIME>(call.end_time - call.start_time),
                     fun_of_call.name,
@@ -267,8 +283,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     file_of_fun.file_name,
                     file_of_fun.file_path);
 
-            auto thread = getThread(call.thread_id);
-            CallEvent event(thread, &info);
+            CallEvent event(ThreadMgr_->getThread(call.thread_id),
+                            std::move(info));
             eventService()->publish(&event);
             lastEventTime_ = call.start_time;
             CallStack_.push(call.id);
@@ -316,9 +332,8 @@ ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
         _shadowVarMap[reference.id] = var;
     }
 
-    auto thread = getThread(call.thread_id);
-    AccessInfo info(access.access_type, var, instruction.id);
-    AccessEvent event(thread, &info);
+    AccessEvent event(std::make_unique<const ShadowThread>(call.thread_id),
+                      std::make_unique<const AccessInfo>(access.access_type, var, instruction.id));
     eventService()->publish(&event);
 
     return ErrorCode::OK;
@@ -330,16 +345,16 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     const auto& call_of_ins = call_of(ins, *database());
 
     assert(lastEventTime_ <= call_of_ins.start_time);
-    for (const auto& accIt : database()->accessTable()) {
+    for (const auto& accIt : *database()->accessTable()) {
         const auto& access = accIt.second;
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = getLock(ref_of_acc.id);
+            const auto& lock = LockMgr_->getLock(ref_of_acc.id);
             if (lock != nullptr) {
-                const auto& thread = getThread(call_of_ins.thread_id);
-                AcquireInfo info(lock, call_of_ins.start_time);
-                AcquireEvent event(thread, &info);
+                AcquireEvent event(ThreadMgr_->getThread(call_of_ins.thread_id),
+                                   std::make_unique<const AcquireInfo>(lock, call_of_ins.start_time));
                 eventService()->publish(&event);
+
                 lastEventTime_ = call_of_ins.start_time;
                 return ErrorCode::OK;
             }
@@ -355,15 +370,14 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     const auto& call_of_ins = call_of(ins, *database());
 
     assert(lastEventTime_ <= call_of_ins.start_time);
-    for (auto accIt : database()->accessTable()) {
+    for (const auto& accIt : *database()->accessTable()) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = getLock(ref_of_acc.id);
+            const auto& lock = LockMgr_->getLock(ref_of_acc.id);
             if (lock != nullptr) {
-                auto thread = getThread(call_of_ins.thread_id);
-                ReleaseInfo info(lock, call_of_ins.start_time);
-                ReleaseEvent event( thread, &info );
+                ReleaseEvent event(ThreadMgr_->getThread(call_of_ins.thread_id),
+                                   std::make_unique<const ReleaseInfo>(lock, call_of_ins.start_time));
                 eventService()->publish( &event );
                 lastEventTime_ = call_of_ins.start_time;
                 return ErrorCode::OK;
@@ -377,11 +391,13 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
     assert (lastEventTime_ <= thread.start_cycle);
-    auto pT = getThread(thread.parent_thread_id);
-    auto cT = getThread(thread.id);
-    NewThreadInfo info(cT, pT, thread.start_cycle, thread.num_cycles);
-    NewThreadEvent event( pT, &info );
+    auto pT = ThreadMgr_->getThread(thread.parent_thread_id);
+    auto cT = ThreadMgr_->getThread(thread.id);
+
+    NewThreadEvent event(pT,
+                         std::make_unique<const NewThreadInfo>(cT, pT, thread.start_cycle, thread.num_cycles));
     eventService()->publish( &event );
+
     lastEventTime_ = thread.start_cycle;
     lastThreadId = thread.id;
     return ErrorCode::OK;
@@ -391,11 +407,13 @@ ErrorCode DBInterpreter::processFork(const thread_t& thread) {
 ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
         const thread_t& thread) {
 
-    auto pT = getThread(thread.parent_thread_id);
-    auto cT = getThread(thread.id);
-    JoinInfo info(cT, pT, lastEventTime_);
-    JoinEvent event( pT, &info );
+    auto pT = ThreadMgr_->getThread(thread.parent_thread_id);
+    auto cT = ThreadMgr_->getThread(thread.id);
+
+    JoinEvent event(pT,
+                    std::make_unique<const JoinInfo>(cT, pT, lastEventTime_));
     eventService()->publish( &event );
+
     lastThreadId = thread.parent_thread_id;
 
     return ErrorCode::OK;

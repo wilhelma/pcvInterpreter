@@ -12,7 +12,9 @@
 #ifndef  ACCESS_TABLE_H_
 #define  ACCESS_TABLE_H_
 
-#include "Access.h"
+#include "fwd/Access.h"
+#include "fwd/AccessTable.h"
+
 #include "DBTable.h"
 #include "Types.h"
 
@@ -20,31 +22,26 @@
 #include <vector>
 
 /// @ingroup tables
-/// @brief Table of `access_t`'s.
+/// @brief Table of _Accesses_.
+/// @details It also keeps a map between instruction IDs and their respective memory accesses.
 class AccessTable final: public DBTable<ACC_ID, const access_t> {
-    public:
-        virtual const std::pair<AccessTable::iterator, bool> insert(const access_t& entry) override final
-        {
-            InsAccessMap_[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-            return Map_.insert(typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
-        }
+public:
+    /// @brief Inserts an entry in the table.
+    /// @param entry The element to insert.
+    virtual const std::pair<AccessTable::iterator, bool> insert(const access_t& entry) override final;
 
-        virtual AccessTable::iterator insert(AccessTable::iterator hint, const access_t& entry) override final
-        {
-            InsAccessMap_[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-            return Map_.insert(hint, typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
-        }
+    /// @brief Inserts entry in the position _hint_.
+    /// @param hint  The iterator to the insertion position.
+    /// @param entry The element to insert.
+    virtual AccessTable::iterator insert(AccessTable::iterator hint, const access_t& entry) override final;
 
-        typedef std::vector<ACC_ID> accessVector_t;
-        typedef std::map<INS_ID, accessVector_t> insAccessMap_t;
+    /// Returns the internal map between instruction IDs and access IDs.
+    const InstructionToAccessaVectorMap& getInsAccessMap() const noexcept
+    { return InstructionToAccessaVectorMap_; }; 
 
-        /// Returns the internal map from the _instruction ID_ to the _access IDs_.
-        const insAccessMap_t& getInsAccessMap() const noexcept
-        { return InsAccessMap_; }; 
-
-    private:
-        /// Maps an intruction ID _I_ to the vectors of access IDs happening at the instruction _I_.
-        insAccessMap_t InsAccessMap_;
+private:
+    /// Map an instruction ID to the IDs of its memory accesses.
+    InstructionToAccessaVectorMap InstructionToAccessaVectorMap_;
 };
 
 #endif

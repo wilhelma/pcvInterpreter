@@ -30,31 +30,36 @@
 
 #define THREADS 100
 
+/// The race-condition type.
+enum class RaceType {
+    WRITE_READ  = 1, ///< Read after write (RAW).
+    READ_WRITE  = 2, ///< Write after read (WAR).
+    WRITE_WRITE = 3	 ///< Write after write (WAW).
+};
+
 /// @ingroup observers
+/// @todo Change LockSet_ as it prevents the proper use of `unique_ptr`s!
 class LockSetChecker : public Tool {
 public:
+    /// Constructor.
 	LockSetChecker(const char* outFile);
 
-	void Access(const AccessEvent* event) override final;
-	void Acquire(const AcquireEvent* event) override final;
-	void NewThread(const NewThreadEvent* event) override final;
-	void Release(const ReleaseEvent* event) override final;
+	void Access(const AccessEvent* event) final;
+	void Acquire(const AcquireEvent* event) final;
+	void NewThread(const NewThreadEvent* event) final;
+	void Release(const ReleaseEvent* event) final;
 
+    /// Destructor.
 	~LockSetChecker();
-
-	typedef enum { WRITE_READ = 1,		// read after write (RAW)
-				   READ_WRITE = 2,		// write after read (WAR)
-				   WRITE_WRITE = 3		// write after write (WAW)
-	} RaceType;
 
 //	static Decoration<ShadowThread, Set> locksheld;
 	
 private:
 
-	virtual void Join(const JoinEvent* event) override final {};
-	virtual void Call(const CallEvent* event) override final {};
-	virtual void Return(const ReturnEvent* event) override final {};
-	virtual void ThreadEnd(const ThreadEndEvent* event) override final {};
+	void Join(const JoinEvent* event) final           {};
+	void Call(const CallEvent* event) final           {};
+	void Return(const ReturnEvent* event) final       {};
+	void ThreadEnd(const ThreadEndEvent* event) final {};
 
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {
@@ -71,12 +76,12 @@ private:
 	inline void lsIntersect(LockSet_& lhs, const LockSet_& rhs) const;
 
 	
-	typedef struct VarSet_ {
+	struct VarSet_ {
 		LockSet_ lockset;
 		INS_ID instruction;
 
 		VarSet_() : instruction(0) {}
-	} VarSet_;
+	};
 
 	typedef std::map<TRD_ID, VarSet_> ThreadVarSet_;
 	typedef std::map<REF_ID, ThreadVarSet_> ReadVarSet_;
@@ -87,7 +92,7 @@ private:
 	// general ----------------------------------------------------------------
 	const char* outFile_;
 
-	typedef struct RaceEntry_ {
+	struct RaceEntry_ {
 		const RaceType type;
 		const INS_ID firstInstruction;
 		const INS_ID secondInstruction;
@@ -100,16 +105,17 @@ private:
 			firstInstruction(firstInstruction),
 			secondInstruction(secondInstruction),
 			id(id) {}
-	} RaceEntry_;
+	};
 
 	typedef std::vector< std::unique_ptr<RaceEntry_> > RaceEntries_;
 	RaceEntries_ raceEntries_;
 
 	void dumpRaceEntries(const char *fileName) const;
 
-	// prevent generated functions --------------------------------------------
-	LockSetChecker(const LockSetChecker&);
-	LockSetChecker& operator=(const LockSetChecker&);
+    /// _Deleted_ copy constructor.
+	LockSetChecker(const LockSetChecker&)            = delete;
+    /// _Deleted_ copy assignment operator.
+	LockSetChecker& operator=(const LockSetChecker&) = delete;
 };
 
 

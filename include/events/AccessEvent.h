@@ -17,6 +17,8 @@
 
 #include "Event.h"
 
+#include <memory>
+
 /// @ingroup events
 /// @brief Event for memory access.
 class AccessEvent final : public Event<AccessInfo> {
@@ -24,11 +26,16 @@ public:
     /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The access event information.
-    explicit AccessEvent(const ShadowThread* thread, const AccessInfo* info) :
-        Event(thread, info) {};
+    explicit AccessEvent(std::shared_ptr<const ShadowThread> thread,
+                         std::unique_ptr<const AccessInfo>&& info)
+        : Event(thread, std::move(info))
+    {};
+
+    /// _Default_ destructor.
+    ~AccessEvent() = default;
 
     /// Return the event type.
-    virtual Events getEventType() const override
+    Events type() const final
     { return Events::ACCESS; };
 };
 

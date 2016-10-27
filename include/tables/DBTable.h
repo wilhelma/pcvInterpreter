@@ -9,6 +9,7 @@
 #define DBTABLE_H_
 
 #include <map>
+#include <memory>
 
 /// @defgroup tables
 /// @ingroup database
@@ -26,6 +27,10 @@ public:
     /// @typedef DBTable::value_type
     /// @brief Convenience definition to use `std::inserter`.
     using value_type     = T;
+
+    /// @typedef DBTable::value_type
+    /// @brief Convenience definition to optionally activate the inserter.
+    using key_type       = IdT;
 
     /// @typedef DBTable::iterator
     /// @brief Convenience definition to use `std::inserter`.
@@ -62,11 +67,6 @@ public:
     /// `std::copy` to be used on `DBTable`.
     virtual DBTable::iterator insert(DBTable::iterator hint, const T& entry)
     { return Map_.insert(hint, typename std::map<IdT, T>::value_type(entry.id, entry)); }
-
-    /// Inserter to allow `std::copy`.
-    /// @param table The `DBtable` to operate upon.
-    friend std::insert_iterator<DBTable> inserter(DBTable& table)
-    { return std::insert_iterator<DBTable>(table, table.end()); }
     
     /// Find `id` in the map.
     iterator find(const IdT& id)
@@ -109,5 +109,15 @@ protected:
     std::map<IdT, T> Map_;
 };
 
+/// @brief Helper function to allow `std::copy` on the table.
+/// @param table Pointer to the `DBtable` to operate upon.
+/// @tparam T The table type (must inherit from DBTable).
+/// @attention The second parameter argument will only check that
+/// T actually inherits from DBTable. If not, a compile-time error
+/// will be issued.
+template <typename T,
+          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::key_type, typename T::value_type>, T>::value>>
+std::insert_iterator<T> inserter(T* table) noexcept
+{ return std::insert_iterator<T>(*table, table->end()); }
 
 #endif /* DBTABLE_H_ */

@@ -12,8 +12,9 @@
 #ifndef  INSTRUCTION_TABLE_H_
 #define  INSTRUCTION_TABLE_H_
 
+#include "fwd/Instruction.h"
+
 #include "DBTable.h"
-#include "Instruction.h"
 #include "Types.h"
 
 /// @ingroup tables

@@ -17,6 +17,8 @@
 
 #include "Event.h"
 
+#include <memory>
+
 /// @ingroup events
 /// @brief Event for joining threads.
 class JoinEvent final : public Event<JoinInfo> {
@@ -24,11 +26,12 @@ public:
     ///@brief  Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The join event information.
-    explicit JoinEvent(const ShadowThread* thread, const JoinInfo* info) :
-        Event(thread, info) {};
+    explicit JoinEvent(std::shared_ptr<const ShadowThread> thread,
+                       std::unique_ptr<const JoinInfo>&& info) :
+        Event(thread, std::move(info)) {};
 
     /// Returns the event type.
-    virtual Events getEventType() const override
+    Events type() const final
     { return Events::JOIN; };
 };
 

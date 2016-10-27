@@ -8,17 +8,23 @@
 #ifndef THREAD_MGR_H_
 #define THREAD_MGR_H_
 
-#include <map>
-#include "ShadowThread.h"
+#include "fwd/ShadowThread.h"
+
 #include "Types.h"
 
-/// @todo Document this!
+#include <map>
+#include <memory>
+
+/// @brief Maps a thread ID to the corresponding ShadowThread.
 class ThreadMgr {
 public:
-	/// _Default_ constructor.
-  explicit ThreadMgr() = default;
+	/// Constructor.
+    explicit ThreadMgr() noexcept
+        : CurrentThreadId_(0)
+    {};
+
 	/// _Default_ destructor.
-	~ThreadMgr()                   = default;
+	~ThreadMgr()         = default;
 
 	/// _Deleted_ copy constructor.
 	ThreadMgr(const ThreadMgr&)            = delete;
@@ -29,26 +35,25 @@ public:
 	/// _Deleted_ move assignment operator.
 	ThreadMgr& operator=(ThreadMgr&&)      = delete;
 
+
 	/// @brief Get a pointer to the `ShadowThread` associated with `threadId`.
-	/// @details Looks for `threadId` in the map. If it's found, returns
-	/// the `ShadowThread` associated with it; otherwise makes a new entry
-	/// in the maps and increments `currentThreadId_`.
-	const ShadowThread* const getThread(const TRD_ID& threadId);
+    /// @details If no entry with the queried thread ID exist, create a new
+    /// one and return that one.
+    /// @param thread_id The thread ID to query for.
+	const std::shared_ptr<const ShadowThread> getThread(const TRD_ID& threadId) noexcept;
 
 	/// @brief `delete`s the `ShadowThread` associated with the `threadId`
 	/// and deletes the entry from the map.
+    /// @throw Whatever The queried thread ID is not in the map.
+    /// @throw Whatever The pointer corresponding to the thread ID hasn't expired.
 	void threadJoined(const TRD_ID& threadId);
 
 private:
-	/// @todo Document this!
-	static TRD_ID currentThreadId_;
+    /// The current thread ID.
+	TRD_ID CurrentThreadId_;
 
-	/// @typedef TIdThreadMap.
-	/// A map from the thread ID to the corresponding
-	/// `ShadowThread` pointer.
-	using TIdThreadMap_ = std::map<TRD_ID, const ShadowThread* const>;
-	TIdThreadMap_ tIdThreadMap_;
+	/// Map the thread ID to the corresponding `ShadowThread` pointer.
+    std::map<const TRD_ID, const std::shared_ptr<const ShadowThread>> ThreadIdToShadowThread_;
 };
 
-
-#endif /* THREADMGR_H_ */
+#endif

@@ -22,8 +22,8 @@
 #include "Thread.h" // < Contains NO_TRD_ID static variable (move to source!)
  
 #include "fwd/EventService.h"
-#include "LockMgr.h"
-#include "ThreadMgr.h"
+#include "fwd/LockMgr.h"
+#include "fwd/ThreadMgr.h"
 
 #include "CallStack.h"
 
@@ -95,10 +95,10 @@ private:
                                                   const reference_t& reference);
 
     typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
+    shadowVarMap_t _shadowVarMap;
 
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
-
 
     /// Stack of call IDs.
     CallStack CallStack_;
@@ -109,21 +109,11 @@ private:
     /// Constant pointer to the EventService.
     const std::unique_ptr<const EventService> EventService_;
 
-    shadowVarMap_t _shadowVarMap;
 
-    std::unique_ptr<LockMgr>   lockMgr_;
-    /// @brief Helper function to hide `lockMgr_` name in the source file.
-    /// @param reference_id The reference ID.
-    /// @return The `ShadowLock` pointer associated to the reference ID.
-    decltype(auto) getLock(const REF_ID& reference_id)
-    { return lockMgr_->getLock(reference_id); }
+    const std::unique_ptr<LockMgr>   LockMgr_;
 
-    std::unique_ptr<ThreadMgr> threadMgr_;
-    /// @brief Helper function to hide `threadMgr_` name in the source file.
-    /// @param thread_id The thread ID.
-    /// @return The `ShadowThread` pointer associated to the `thread_id`.
-    decltype(auto) getThread(const TRD_ID& thread_id)
-    { return threadMgr_->getThread(thread_id); }
+    /// @brief Maps a thread ID to its ShadowThread.
+    const std::unique_ptr<ThreadMgr> ThreadMgr_;
 
     // private methods---------------------------------------------------------
     ErrorCode processAccess(const instruction_t& instruction,

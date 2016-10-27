@@ -12,8 +12,9 @@
 #ifndef  SEGMENT_TABLE_H_
 #define  SEGMENT_TABLE_H_
 
+#include "fwd/Segment.h"
+
 #include "DBTable.h"
-#include "Segment.h"
 #include "Types.h"
 
 /// @ingroup tables

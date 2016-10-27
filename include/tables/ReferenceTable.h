@@ -12,8 +12,9 @@
 #ifndef  REFERENCE_TABLE_H_
 #define  REFERENCE_TABLE_H_
 
+#include "fwd/Reference.h"
+
 #include "DBTable.h"
-#include "Reference.h"
 #include "Types.h"
 
 /// @ingroup tables

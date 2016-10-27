@@ -15,9 +15,11 @@
 #include "fwd/Filter.h"
 
 #include "DBInterpreter.h"
-#include "EventService.h"
 #include "Event.h"
+#include "EventService.h"
+#include "LockMgr.h"
 #include "Observer.h"
+#include "ThreadMgr.h"
 
 #include <list>
 #include <memory>

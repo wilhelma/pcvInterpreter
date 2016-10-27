@@ -17,6 +17,8 @@
 
 #include "Event.h"
 
+#include <memory>
+
 /// @ingroup events
 /// @todo What is this for?
 class AcquireEvent final : public Event<AcquireInfo> {
@@ -24,11 +26,13 @@ public:
     /// @brief Constructor.
     /// @param thread The thread the event was triggered from.
     /// @param info   The acquire event information.
-    explicit AcquireEvent(const ShadowThread* thread, const AcquireInfo* info) :
-        Event(thread, info) {};
+    explicit AcquireEvent(std::shared_ptr<const ShadowThread> thread,
+                          std::unique_ptr<const AcquireInfo>&& info)
+        : Event(thread, std::move(info))
+    {};
 
     /// Return the event type.
-    virtual Events getEventType() const override
+    Events type() const final
     { return Events::ACQUIRE; };
 };
 

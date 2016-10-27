@@ -12,8 +12,9 @@
 #ifndef  LOOP_TABLE_H_
 #define  LOOP_TABLE_H_
 
+#include "fwd/Loop.h"
+
 #include "DBTable.h"
-#include "Loop.h"
 #include "Types.h"
 
 /// @ingroup tables

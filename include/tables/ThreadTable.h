@@ -12,8 +12,9 @@
 #ifndef  THREAD_TABLE_H_
 #define  THREAD_TABLE_H_
 
+#include "fwd/Thread.h"
+
 #include "DBTable.h"
-#include "Thread.h"
 #include "Types.h"
 
 /// @ingroup tables

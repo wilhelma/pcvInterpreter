@@ -26,7 +26,9 @@ set(DB_SOURCES
     database/Database.cpp
     database/DBManager.cpp
     database/QueryResult.cpp
+    tables/AccessTable.cpp
     tables/Call.cpp
+    tables/CallTable.cpp
     tables/File.cpp)
 
 # Add a rule to compile the database part in a shared library

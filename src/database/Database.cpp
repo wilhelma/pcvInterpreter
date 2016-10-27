@@ -30,62 +30,87 @@
 #include "ThreadTable.h"
 #include "DBTable.h"
 
+// Database rows
+#include "Access.h"
+#include "Call.h"
+#include "File.h"
+#include "Function.h"
+#include "Instruction.h"
+#include "Loop.h"
+#include "LoopExecution.h"
+#include "LoopIteration.h"
+#include "Reference.h"
+#include "Segment.h"
+#include "Thread.h"
+
+#include "Types.h"
+
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <string>
+#include <type_traits>
+#include <vector>
 
 // logging system
 #include "easylogging++.h"
 
+// Default destructor.
+Database::~Database() = default;
+
 // Helper function to fill the tables
-template<typename IdT, typename T>
-inline void fill(const std::string& query_string, const DBManager& db, DBTable<IdT, T>& table) {
-	std::copy(SQLStatementIterator<T>(db.query(query_string)),
-			  SQLStatementIterator<T>::end(), inserter(table));
+template<typename T,
+         typename = std::enable_if_t<std::is_base_of<DBTable<typename T::key_type, typename T::value_type>, T>::value>>
+std::unique_ptr<const T> load_table(const std::string& query_string, const DBManager& db) {
+    T* table = new T();
+    std::copy(SQLStatementIterator<typename T::value_type>(db.query(query_string)),
+              SQLStatementIterator<typename T::value_type>::end(), inserter<T>(table));
+
+    return std::unique_ptr<const T>(static_cast<const T*>(table));
 }
 
 std::unique_ptr<const Database> load_database(const std::string& DBPath) {
-	// try to open the database
-	DBManager sql_input_db;
-	try {
-		sql_input_db.open(DBPath);
-	} catch (const SQLException& e) {
-		LOG(FATAL) <<e.what();
-		std::abort();
-	}
+    // try to open the database
+    DBManager sql_input_db;
+    try {
+        sql_input_db.open(DBPath);
+    } catch (const SQLException& e) {
+        LOG(FATAL) <<e.what();
+        std::abort();
+    }
 
-    auto db = std::make_unique<Database>();
+    // Create the database
+    auto db = std::make_unique<const Database>(
+            load_table<AccessTable>("SELECT * from Access;", sql_input_db),
+            load_table<CallTable>("SELECT * from Call;", sql_input_db),
+            load_table<FileTable>("SELECT * from File;", sql_input_db),
+            load_table<FunctionTable>("SELECT * from Function;", sql_input_db),
+            load_table<InstructionTable>("SELECT * from Instruction;", sql_input_db),
+            load_table<LoopTable>("SELECT * from Loop;", sql_input_db),
+            load_table<LoopExecutionTable>("SELECT * from LoopExecution;", sql_input_db),
+            load_table<LoopIterationTable>("SELECT * from LoopIteration;", sql_input_db),
+            load_table<ReferenceTable>("SELECT * from Reference;", sql_input_db),
+            load_table<SegmentTable>("SELECT * from Segment;", sql_input_db),
+            load_table<ThreadTable>("SELECT * from Thread;", sql_input_db));
 
-    // Read from all the tables in the database
-    fill("SELECT * from Access;",        sql_input_db, db->accessTable());
-    fill("SELECT * from Call;",          sql_input_db, db->callTable());
-    fill("SELECT * from File;",          sql_input_db, db->fileTable());
-    fill("SELECT * from Function;",      sql_input_db, db->functionTable());
-    fill("SELECT * from Instruction;",   sql_input_db, db->instructionTable());
-    fill("SELECT * from Loop;",          sql_input_db, db->loopTable());
-    fill("SELECT * from LoopExecution;", sql_input_db, db->loopExecutionTable());
-    fill("SELECT * from LoopIteration;", sql_input_db, db->loopIterationTable());
-    fill("SELECT * from Reference;",     sql_input_db, db->referenceTable());
-    fill("SELECT * from Segment;",       sql_input_db, db->segmentTable());
-    fill("SELECT * from Thread;",        sql_input_db, db->threadTable());
+    LOG(TRACE) << "Rows in Access:        " << db->accessTable()->size();
+    LOG(TRACE) << "Rows in Call:          " << db->callTable()->size();
+    LOG(TRACE) << "Rows in File:          " << db->fileTable()->size();
+    LOG(TRACE) << "Rows in Function:      " << db->functionTable()->size();
+    LOG(TRACE) << "Rows in Instruction:   " << db->instructionTable()->size();
+    LOG(TRACE) << "Rows in Loop:          " << db->loopTable()->size();
+    LOG(TRACE) << "Rows in LoopExecution: " << db->loopExecutionTable()->size();
+    LOG(TRACE) << "Rows in LoopIteration: " << db->loopIterationTable()->size();
+    LOG(TRACE) << "Rows in Reference:     " << db->referenceTable()->size();
+    LOG(TRACE) << "Rows in Segment:       " << db->segmentTable()->size();
+    LOG(TRACE) << "Rows in Thread:        " << db->threadTable()->size();
 
-    LOG(TRACE) << "Rows in Access:        " << db->accessTable().size();
-    LOG(TRACE) << "Rows in Call:          " << db->callTable().size();
-    LOG(TRACE) << "Rows in File:          " << db->fileTable().size();
-    LOG(TRACE) << "Rows in Function:      " << db->functionTable().size();
-    LOG(TRACE) << "Rows in Instruction:   " << db->instructionTable().size();
-    LOG(TRACE) << "Rows in Loop:          " << db->loopTable().size();
-    LOG(TRACE) << "Rows in LoopExecution: " << db->loopExecutionTable().size();
-    LOG(TRACE) << "Rows in LoopIteration: " << db->loopIterationTable().size();
-    LOG(TRACE) << "Rows in Reference:     " << db->referenceTable().size();
-    LOG(TRACE) << "Rows in Segment:       " << db->segmentTable().size();
-    LOG(TRACE) << "Rows in Thread:        " << db->threadTable().size();
-
-    return std::unique_ptr<const Database>(std::move(db));
+    return db;
 }
 
 const segment_t& segment_of(const instruction_t& ins, const Database& db) noexcept {
-    const auto& seg_of_ins = db.segmentTable().find(ins.segment_id);
-    if (seg_of_ins == db.segmentTable().cend()) {
+    const auto& seg_of_ins = db.segmentTable()->find(ins.segment_id);
+    if (seg_of_ins == db.segmentTable()->cend()) {
         // If this happens, the database is corrupted.
         LOG(FATAL) << "Database is corrupted: SegmentTable has no entry "
                    << ins.segment_id;
@@ -103,8 +128,8 @@ const call_t& caller_of(const instruction_t& ins, const Database& db) noexcept {
 }
 
 const CAL_ID& call_id_of(const instruction_t& ins, const Database& db) {
-    const auto& id_call_of_ins = db.callTable().instructionToCall().find(ins.id);
-    if (id_call_of_ins == db.callTable().instructionToCall().cend()) {
+    const auto& id_call_of_ins = db.callTable()->instructionToCall().find(ins.id);
+    if (id_call_of_ins == db.callTable()->instructionToCall().cend()) {
         // If this happens, the database is corrupted.
         LOG(FATAL) << "Database is corrupted: InstructionToCall has no entry "
                    << ins.id;
@@ -115,8 +140,8 @@ const CAL_ID& call_id_of(const instruction_t& ins, const Database& db) {
 }
 
 const call_t& call_of(const segment_t& seg, const Database& db) noexcept {
-    const auto& call_of_seg = db.callTable().find(seg.call_id);
-    if (call_of_seg == db.callTable().cend()) {
+    const auto& call_of_seg = db.callTable()->find(seg.call_id);
+    if (call_of_seg == db.callTable()->cend()) {
         // If this happens, the database is corrupted.
         LOG(FATAL) << "Database is corrupted: CallTable has no entry "
                    << seg.call_id;
@@ -129,8 +154,8 @@ const call_t& call_of(const segment_t& seg, const Database& db) noexcept {
 const call_t& call_of(const instruction_t& ins, const Database& db) noexcept {
     const auto& call_id_of_ins = call_id_of(ins, db); // may throw
 
-    const auto& call_of_ins = db.callTable().find(call_id_of_ins);
-    if (call_of_ins == db.callTable().cend()) {
+    const auto& call_of_ins = db.callTable()->find(call_id_of_ins);
+    if (call_of_ins == db.callTable()->cend()) {
         // If this happens, the database is corrupted.
         LOG(FATAL) << "Database is corrupted: CallTable has no entry "
                    << call_id_of_ins;
@@ -141,8 +166,8 @@ const call_t& call_of(const instruction_t& ins, const Database& db) noexcept {
 }
 
 const reference_t& reference_of(const access_t& acc, const Database& db) noexcept {
-    const auto& ref_of_acc = db.referenceTable().find(acc.reference_id);
-    if (ref_of_acc == db.referenceTable().cend()) {
+    const auto& ref_of_acc = db.referenceTable()->find(acc.reference_id);
+    if (ref_of_acc == db.referenceTable()->cend()) {
         // If this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: ReferenceTable has no entry "
                    << acc.reference_id;
@@ -153,8 +178,8 @@ const reference_t& reference_of(const access_t& acc, const Database& db) noexcep
 }
 
 const file_t& file_of(const function_t& fun, const Database& db) noexcept {
-    const auto& file_of_fun = db.fileTable().find(fun.file_id);
-    if (file_of_fun == db.fileTable().cend()) {
+    const auto& file_of_fun = db.fileTable()->find(fun.file_id);
+    if (file_of_fun == db.fileTable()->cend()) {
         // If this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: FileTable has no entry "
                    << fun.file_id;
@@ -165,8 +190,8 @@ const file_t& file_of(const function_t& fun, const Database& db) noexcept {
 }
 
 const function_t& function_of(const call_t& call, const Database& db) noexcept {
-    const auto& fun_of_call = db.functionTable().find(call.function_id);
-    if (fun_of_call == db.functionTable().cend()) {
+    const auto& fun_of_call = db.functionTable()->find(call.function_id);
+    if (fun_of_call == db.functionTable()->cend()) {
         // if this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: FunctionTable has no entry "
                    << call.function_id;
@@ -177,8 +202,8 @@ const function_t& function_of(const call_t& call, const Database& db) noexcept {
 }
 
 const thread_t& thread_of(const call_t& call, const Database& db) noexcept {
-    const auto& fun_of_call = db.threadTable().find(call.thread_id);
-    if (fun_of_call == db.threadTable().cend()) {
+    const auto& fun_of_call = db.threadTable()->find(call.thread_id);
+    if (fun_of_call == db.threadTable()->cend()) {
         // if this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: ThreadTable has no entry "
                    << call.thread_id;
@@ -189,8 +214,8 @@ const thread_t& thread_of(const call_t& call, const Database& db) noexcept {
 }
 
 const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Database& db) noexcept {
-    const auto& acc_ids_of_ins = db.accessTable().getInsAccessMap().find(ins.id);
-    if (acc_ids_of_ins == db.accessTable().getInsAccessMap().cend()) {
+    const auto& acc_ids_of_ins = db.accessTable()->getInsAccessMap().find(ins.id);
+    if (acc_ids_of_ins == db.accessTable()->getInsAccessMap().cend()) {
         // If this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: InsAccessMaps has no entry "
                    << ins.id;
@@ -201,8 +226,8 @@ const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Databas
 }
 
 const access_t& access_with_id(const ACC_ID& acc_id, const Database& db) {
-    const auto& access = db.accessTable().find(acc_id);
-    if (access == db.accessTable().cend())
+    const auto& access = db.accessTable()->find(acc_id);
+    if (access == db.accessTable()->cend())
         throw DatabaseException("AccessTable has no entry with id " + std::to_string(acc_id),
                                 "access_with_id");
 
@@ -210,8 +235,8 @@ const access_t& access_with_id(const ACC_ID& acc_id, const Database& db) {
 }
 
 const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db) {
-    const auto& thread = db.threadTable().find(trd_id);
-    if (thread == db.threadTable().cend())
+    const auto& thread = db.threadTable()->find(trd_id);
+    if (thread == db.threadTable()->cend())
         throw DatabaseException("ThreadTable has no entry with id " + std::to_string(trd_id),
                                 "thread_with_id");
 
@@ -219,8 +244,8 @@ const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db) {
 }
 
 const call_t& call_with_id(const CAL_ID& cal_id, const Database& db) {
-    const auto& call = db.callTable().find(cal_id);
-    if (call == db.callTable().cend())
+    const auto& call = db.callTable()->find(cal_id);
+    if (call == db.callTable()->cend())
         throw DatabaseException("CallTable has no entry with id " + std::to_string(cal_id),
                                 "call_with_id");
 

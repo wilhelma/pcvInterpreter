@@ -39,47 +39,47 @@ LockSetChecker::~LockSetChecker() {
 }
 
 void LockSetChecker::NewThread(const NewThreadEvent* event) {
-   	auto childThread = event->getInfo()->childThread;
+   	auto childThread = event->info()->childThread;
 	// LockSet_u = set of all possible locks
-	lockSet_[childThread] =  lockSet_[event->getThread()];
+	lockSet_[childThread.get()] =  lockSet_[event->thread().get()];
 }
 
 void LockSetChecker::Acquire(const AcquireEvent* event) {
 	// LockSet_t = LockSet_t + {lock}	
-	lockSet_[event->getThread()].insert(event->getInfo()->lock);
+	lockSet_[event->thread().get()].insert(event->info()->lock);
 }
 
 void LockSetChecker::Release(const ReleaseEvent* event) {
 	// LockSet_t = LockSet_t - {lock}
-//	auto lock = ((AcquireEvent*)e)->getInfo()->lock;
-	auto lock = event->getInfo()->lock;
-	lockSet_[event->getThread()].erase(lock); 
+//	auto lock = ((AcquireEvent*)e)->info()->lock;
+	auto lock = event->info()->lock;
+	lockSet_[event->thread().get()].erase(lock); 
 }
 
 void LockSetChecker::Access(const AccessEvent* event) {
-	const REF_ID ref = event->getInfo()->var->id;
-	const TRD_ID threadId = event->getThread()->threadId;
+	const REF_ID ref = event->info()->var->id;
+	const TRD_ID threadId = event->thread()->threadId;
 
-	if (event->getInfo()->var->type == ReferenceType::STACK)
+	if (event->info()->var->type == ReferenceType::STACK)
 		return;
 
-	switch(event->getInfo()->type) {
+	switch(event->info()->type) {
 	case AccessType::READ:
 		{
 			readVarSet_[ref][threadId].instruction = 
-				event->getInfo()->instructionID;
+				event->info()->instructionID;
 
 			// R_x[t].lockset = LockSet_t
-			readVarSet_[ref][threadId].lockset = lockSet_[event->getThread()];
+			readVarSet_[ref][threadId].lockset = lockSet_[event->thread().get()];
 
 			if (lsIsEmptySet( readVarSet_[ref][threadId].lockset,
 								  writeVarSet_[ref].lockset) ) {
 
 					raceEntries_.push_back(
 							std::unique_ptr<RaceEntry_>(new RaceEntry_(
-									WRITE_READ,
+									 RaceType::WRITE_READ,
 									writeVarSet_[ref].instruction,
-									event->getInfo()->instructionID,
+									event->info()->instructionID,
 									ref)
 							));
 					std::cout << "race detected..1" << std::endl;
@@ -90,16 +90,16 @@ void LockSetChecker::Access(const AccessEvent* event) {
 	case AccessType::WRITE:
 		{	
 			// W_x.lockset = W_x.lockset intersect Lockset_t
-			lsIntersect(writeVarSet_[ref].lockset, lockSet_[event->getThread()]);
+			lsIntersect(writeVarSet_[ref].lockset, lockSet_[event->thread().get()]);
 
 			// check W_x.lockset = empty
 			if (writeVarSet_[ref].lockset.empty())	{
 
 				raceEntries_.push_back(
 						std::unique_ptr<RaceEntry_>(new RaceEntry_(
-								WRITE_WRITE,
+								 RaceType::WRITE_WRITE,
 								writeVarSet_[ref].instruction,
-								event->getInfo()->instructionID,
+								event->info()->instructionID,
 								ref)
 						));
 				std::cout << "race detected..2" << std::endl;
@@ -123,7 +123,7 @@ void LockSetChecker::dumpRaceEntries(const char* fileName) const {
     for (const auto& race : raceEntries_) {
 
     	rapidjson::Value object(rapidjson::kObjectType);
-    	object.AddMember("type", race->type, allocator);
+    	object.AddMember("type", static_cast<std::underlying_type_t<RaceType>>(race->type), allocator);
     	object.AddMember("1st", race->firstInstruction, allocator);
     	object.AddMember("2nd", race->secondInstruction, allocator);
     	object.AddMember("id", race->id, allocator);

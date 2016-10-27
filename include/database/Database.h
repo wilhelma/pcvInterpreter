@@ -12,142 +12,155 @@
 #ifndef DATABASE_H_
 #define DATABASE_H_
 
-#include "AccessTable.h"
-#include "CallTable.h"
-#include "FileTable.h"
-#include "FunctionTable.h"
-#include "InstructionTable.h"
-#include "LoopTable.h"
-#include "LoopExecutionTable.h"
-#include "LoopIterationTable.h"
-#include "ReferenceTable.h"
-#include "SegmentTable.h"
-#include "ThreadTable.h"
+// Database tables
+#include "fwd/AccessTable.h"
+#include "fwd/CallTable.h"
+#include "fwd/FileTable.h"
+#include "fwd/FunctionTable.h"
+#include "fwd/InstructionTable.h"
+#include "fwd/LoopTable.h"
+#include "fwd/LoopExecutionTable.h"
+#include "fwd/LoopIterationTable.h"
+#include "fwd/ReferenceTable.h"
+#include "fwd/SegmentTable.h"
+#include "fwd/ThreadTable.h"
+
+// Database rows
+#include "fwd/Access.h"
+#include "fwd/Call.h"
+#include "fwd/File.h"
+#include "fwd/Function.h"
+#include "fwd/Instruction.h"
+#include "fwd/Loop.h"
+#include "fwd/LoopExecution.h"
+#include "fwd/LoopIteration.h"
+#include "fwd/Reference.h"
+#include "fwd/Segment.h"
+#include "fwd/Thread.h"
+
+#include "Types.h"
 
 #include <memory>
+#include <vector>
 
 /// @ingroup database
-/// @brief Mimic the structure of a database.
+/// @brief Mimic the structure of a database, being a read-only collection of tables.
 class Database
 {
 public:
-    /// _Default_ constructor.
-    explicit Database() = default;
+    /// @brief Constructor.
+    /// @details The database tables are supposed to be loaded by an external
+    /// function as this class doesn't provide any method to do it. The table
+    /// ownership must then be transferred to Database through this constructor.
+    /// @param access_table         The AccessTable pointer.
+    /// @param call_table           The CallTable pointer.
+    /// @param file_table           The FileTable pointer.
+    /// @param function_table       The FunctionTable pointer.
+    /// @param instruction_table    The InstructionTable pointer.
+    /// @param loop_table           The LoopTable pointer.
+    /// @param loop_execution_table The LoopExecutionTable pointer.
+    /// @param loop_iteration_table The LoopIterationTable pointer.
+    /// @param reference_table      The ReferenceTable pointer.
+    /// @param segment_table        The SegmentTable pointer.
+    /// @param thread_table         The ThreadTable pointer.
+    explicit Database(std::unique_ptr<const AccessTable>&& access_table,
+                      std::unique_ptr<const CallTable>&& call_table,
+                      std::unique_ptr<const FileTable>&& file_table,
+                      std::unique_ptr<const FunctionTable>&& function_table,
+                      std::unique_ptr<const InstructionTable>&& instruction_table,
+                      std::unique_ptr<const LoopTable>&& loop_table,
+                      std::unique_ptr<const LoopExecutionTable>&& loop_execution_table,
+                      std::unique_ptr<const LoopIterationTable>&& loop_iteration_table,
+                      std::unique_ptr<const ReferenceTable>&& reference_table,
+                      std::unique_ptr<const SegmentTable>&& segment_table,
+                      std::unique_ptr<const ThreadTable>&& thread_table) :
+        AccessTable_(std::move(access_table)),
+        CallTable_(std::move(call_table)),
+        FileTable_(std::move(file_table)),
+        FunctionTable_(std::move(function_table)),
+        InstructionTable_(std::move(instruction_table)),
+        LoopTable_(std::move(loop_table)),
+        LoopExecutionTable_(std::move(loop_execution_table)),
+        LoopIterationTable_(std::move(loop_iteration_table)),
+        ReferenceTable_(std::move(reference_table)),
+        SegmentTable_(std::move(segment_table)),
+        ThreadTable_(std::move(thread_table))
+    {}
+
+    /// _Default_ destructor.
+    ~Database();
 
     /// Return the database AccessTable_.
-    const AccessTable& accessTable() const noexcept
-    { return AccessTable_; }
-
-    /// Access the database AccessTable_.
-    AccessTable& accessTable() noexcept
+    const std::unique_ptr<const AccessTable>& accessTable() const noexcept
     { return AccessTable_; }
 
     /// Return the database CallTable_.
-    const CallTable& callTable() const noexcept
-    { return CallTable_; }
-
-    /// Access the database CallTable_.
-    CallTable& callTable() noexcept
+    const std::unique_ptr<const CallTable>& callTable() const noexcept
     { return CallTable_; }
 
     /// Return the database FileTable_.
-    const FileTable& fileTable() const noexcept
+    const std::unique_ptr<const FileTable>& fileTable() const noexcept
     { return FileTable_; }
     
-    /// Access the database FileTable_.
-    FileTable& fileTable() noexcept
-    { return FileTable_; }
-
     /// Return the database FunctionTable_.
-    const FunctionTable& functionTable() const noexcept
-    { return FunctionTable_; }
-
-    /// Access the database FunctionTable_.
-    FunctionTable& functionTable() noexcept
+    const std::unique_ptr<const FunctionTable>& functionTable() const noexcept
     { return FunctionTable_; }
 
     /// Return the database InstructionTable_.
-    const InstructionTable& instructionTable() const noexcept
-    { return InstructionTable_; }
-
-    /// Access the database InstructionTable_.
-    InstructionTable& instructionTable() noexcept
+    const std::unique_ptr<const InstructionTable>& instructionTable() const noexcept
     { return InstructionTable_; }
 
     /// Return the database LoopTable_.
-    const LoopTable& loopTable() const noexcept
-    { return LoopTable_; }
-
-    /// Access the database LoopTable_.
-    LoopTable& loopTable() noexcept
+    const std::unique_ptr<const LoopTable>& loopTable() const noexcept
     { return LoopTable_; }
 
     /// Return the database LoopExecutionTable_.
-    const LoopExecutionTable& loopExecutionTable() const noexcept
-    { return LoopExecutionTable_; }
-
-    /// Access the database LoopExecutionTable_.
-    LoopExecutionTable& loopExecutionTable() noexcept
+    const std::unique_ptr<const LoopExecutionTable>& loopExecutionTable() const noexcept
     { return LoopExecutionTable_; }
 
     /// Return the database LoopIterationTable_.
-    const LoopIterationTable& loopIterationTable() const noexcept
-    { return LoopIterationTable_; }
-
-    /// Access the database LoopIterationTable_.
-    LoopIterationTable& loopIterationTable() noexcept
+    const std::unique_ptr<const LoopIterationTable>& loopIterationTable() const noexcept
     { return LoopIterationTable_; }
 
     /// Return the database ReferenceTable_.
-    const ReferenceTable& referenceTable() const noexcept
-    { return ReferenceTable_; }
-
-    /// Access the database ReferenceTable_.
-    ReferenceTable& referenceTable() noexcept
+    const std::unique_ptr<const ReferenceTable>& referenceTable() const noexcept
     { return ReferenceTable_; }
 
     /// Return the database SegmentTable_.
-    const SegmentTable& segmentTable() const noexcept
-    { return SegmentTable_; }
-
-    /// Access the database SegmentTable_.
-    SegmentTable& segmentTable() noexcept
+    const std::unique_ptr<const SegmentTable>& segmentTable() const noexcept
     { return SegmentTable_; }
 
     /// Return the database ThreadTable_.
-    const ThreadTable& threadTable() const noexcept
-    { return ThreadTable_; }
-
-    /// Access the database ThreadTable_.
-    ThreadTable& threadTable() noexcept
+    const std::unique_ptr<const ThreadTable>& threadTable() const noexcept
     { return ThreadTable_; }
 
 private:
     /// Map from the Access IDs to the Access-table rows imported from the DB.
-    AccessTable        AccessTable_;
+    const std::unique_ptr<const AccessTable>        AccessTable_;
     /// Map from the Call IDs to the Call-table rows imported from the DB.
-    CallTable          CallTable_;
+    const std::unique_ptr<const CallTable>          CallTable_;
     /// Map from the File IDs to the File-table rows imported from the DB.
-    FileTable          FileTable_;
+    const std::unique_ptr<const FileTable>          FileTable_;
     /// Map from the Function IDs to the Function-table rows imported from the DB.
-    FunctionTable      FunctionTable_;
+    const std::unique_ptr<const FunctionTable>      FunctionTable_;
     /// Map from the Instruction IDs to the Instruction-table rows imported from the DB.
-    InstructionTable   InstructionTable_;
+    const std::unique_ptr<const InstructionTable>   InstructionTable_;
     /// Map from the Loop IDs to the Loop-table rows imported from the DB.
-    LoopTable          LoopTable_;
+    const std::unique_ptr<const LoopTable>          LoopTable_;
     /// Map from the Loop Execution IDs to the Loop-Execution-table rows imported from the DB.
-    LoopExecutionTable LoopExecutionTable_;
+    const std::unique_ptr<const LoopExecutionTable> LoopExecutionTable_;
     /// Map from the Loop Iteration IDs to the Loop-Iteration-table rows imported from the DB.
-    LoopIterationTable LoopIterationTable_;
+    const std::unique_ptr<const LoopIterationTable> LoopIterationTable_;
     /// Map from the Reference IDs to the Reference-table rows imported from the DB.
-    ReferenceTable     ReferenceTable_;
+    const std::unique_ptr<const ReferenceTable>     ReferenceTable_;
     /// Map from the Segment IDs to the Segment-table rows imported from the DB.
-    SegmentTable       SegmentTable_;
+    const std::unique_ptr<const SegmentTable>       SegmentTable_;
     /// Map from the Thread IDs to the Thread-table rows imported from the DB.
-    ThreadTable        ThreadTable_;
+    const std::unique_ptr<const ThreadTable>        ThreadTable_;
 };
 
-/// Fill the Database tables.
+/// @brief Fill the Database tables.
+/// @param DBPath The database path.
 std::unique_ptr<const Database> load_database(const std::string& DBPath);
 
 /// @brief Segment containing the instruction.

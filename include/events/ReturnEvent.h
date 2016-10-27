@@ -17,6 +17,8 @@
 
 #include "Event.h"
 
+#include <memory>
+
 /// @ingroup events
 /// @brief Event for function returns.
 class ReturnEvent final : public Event<ReturnInfo> {
@@ -24,11 +26,13 @@ public:
     /// @brief Constructor.
     /// @param  thread The thread the event was triggered from.
     /// @tparam info   The return event information.
-    explicit ReturnEvent(const ShadowThread* thread, const ReturnInfo* info) :
-        Event(thread, info) {};
+    explicit ReturnEvent(std::shared_ptr<const ShadowThread> thread,
+                         std::unique_ptr<const ReturnInfo>&& info)
+        : Event(thread, std::move(info))
+    {};
 
     /// Returns the event type.
-    virtual Events getEventType() const override
+    Events type() const final
     { return Events::RETURN; }
 };
 

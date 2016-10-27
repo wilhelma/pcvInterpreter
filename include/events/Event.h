@@ -3,8 +3,15 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 
-#include "fwd/ShadowThread.h"
+#include "ShadowThread.h"
 
+// -----------------------------------------------------
+// Include these otherwise I get error from Parasite (?)
+#include "AccessInfo.h"
+#include "JoinInfo.h"
+// -----------------------------------------------------
+
+#include <memory>
 #include <type_traits>
 
 /// @defgroup events
@@ -94,8 +101,10 @@ public:
     /// Constructor.
     /// @param  thread The thread the event was triggered from.
     /// @tparam info   The event information.
-    explicit Event(const ShadowThread* thread, const InfoType* info) :
-        Thread_(thread), Info_(info) {};
+    explicit Event(std::shared_ptr<const ShadowThread> thread,
+                   std::unique_ptr<const InfoType>&& info)
+        : Thread_(thread), Info_(std::move(info))
+    {};
 
     /// _Default_ destructor.
     virtual ~Event() = default;
@@ -110,22 +119,22 @@ public:
     Event& operator=(Event&&)      = delete;
 
     /// Acesses the thread information.
-    decltype(auto) getThread() const
+    const std::shared_ptr<const ShadowThread>& thread() const
     { return Thread_; };
 
     /// Access the event information.
-    decltype(auto) getInfo() const
+    const std::unique_ptr<const InfoType>& info() const
     { return Info_; };
 
     /// Returns the event type.
-    virtual Events getEventType() const = 0;
+    virtual Events type() const = 0;
 
 private:
-    /// @todo Should this be a `unique_ptr`?
-    const ShadowThread* const Thread_;
+    /// Pointer to the ShadowThread (shared among several events).
+    const std::shared_ptr<const ShadowThread> Thread_;
 
     /// The event information.
-    const InfoType* const Info_;
+    const std::unique_ptr<const InfoType> Info_;
 };
 
 #endif /* EVENT_H_ */
