@@ -52,10 +52,6 @@ struct thread_frame_t {
 		child_lock_intervals.add(child_thread->lock_intervals);
 	}
 
-	vertex_descr_type first_vertex;
-	vertex_descr_type last_vertex;
-
-	std::list<vertex_descr_type> join_vertex_list;
 
 	/**
 	*    @var prefix
@@ -101,8 +97,7 @@ class ThreadStack {
 					thread stack, and head function index head_function_index.
 		*/
 		void init_frame(int thread_index, int head_function_index, 
-										  TRD_ID thread,
-										  vertex_descr_type first_vertex);
+										  TRD_ID thread);
 
 		/**
 		*    @fn push()
@@ -110,8 +105,7 @@ class ThreadStack {
 					vector.
 		*/
 		std::shared_ptr<thread_frame_t> push(int head_function_index,
-											 TRD_ID thread_id,
-											 vertex_descr_type first_vertex);
+											 TRD_ID thread_id);
 
 		/**
 		*    @fn pop()

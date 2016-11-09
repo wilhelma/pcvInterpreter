@@ -33,26 +33,10 @@
 #include "ThreadEndEvent.h"
 #include "ThreadEndInfo.h"
 
-ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
+ParasiteTool::ParasiteTool():name(random_string(5)), 
 							 jsonWriter(random_string(5)), last_event_time(static_cast<TIME>(0)),
 							 concurrency_offset(static_cast<TIME>(0)) {
-	thread_graph.name = name;
 	jsonWriter.name = name;
-}
-
-void ParasiteTool::add_edge(std::string end_vertex_label) {
-
-	thread_graph.add_edge(stacks.bottomThread()->last_vertex,
-							  stacks.bottomThread()->current_edge_length,
-							  end_vertex_label);
-	stacks.bottomThread()->current_edge_length = static_cast<TIME>(0);
-	//stacks.bottomThread()->last_vertex = new_vertex;
-}
-
-void ParasiteTool::add_join_edges(vertex_descr_type start, std::string label) {
-
-	add_edge(label);
-	thread_graph.add_join_edge(start, stacks.bottomThread()->last_vertex);
 }
 
 void ParasiteTool::add_down_stack(TIME local_work) {
@@ -93,27 +77,19 @@ TIME ParasiteTool::concur(TIME serial_time) {
 	return serial_time - concurrency_offset;
 }
 
-void ParasiteTool::add_local_work(TIME strand_end_time, 
-	  						                   std::string end_vertex_label) {
+void ParasiteTool::add_local_work(TIME strand_end_time) {
 
-	print_event_start(end_vertex_label);
-	print_time("strand_end_time", strand_end_time);
-	print_time("last_event_time", last_event_time);
 	assert(strand_end_time >= last_event_time);
 	TIME local_work = strand_end_time - last_event_time;
 	last_event_time = strand_end_time;
 	work.add(local_work);
 	stacks.bottomThread()->continuation.add(local_work);
-	stacks.bottomThread()->current_edge_length += local_work;
 	add_down_stack(local_work);
-	print_time("local work", local_work);
 }
 
 void ParasiteTool::endProfileCalculations() {
 
-	std::cout << "BOTTOM THREAD INDEX AT END IS " << stacks.bottomFunctionIndex() << std::endl;
 	assert(stacks.bottomThreadIndex() == 0);
-	std::cout << "BOTTOM FUNCTION INDEX AT END IS " << stacks.bottomFunctionIndex() << std::endl;
 	assert(stacks.bottomFunctionIndex() == 0);
 
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
@@ -142,24 +118,8 @@ void ParasiteTool::endProfileCalculations() {
 }
 
 
-void ParasiteTool::printOverallProfile() {
-
-	std::cout << "PARALLELISM " << parasite_profile.parallelism << std::endl;
-	print_time("WORK",  parasite_profile.work);
-	print_time("SPAN",  parasite_profile.span);
-	print_time("LOCK WAIT TIME",  parasite_profile.lock_wait_time);
-	std::cout << "LOCK WAIT TIME IS " << 
-						static_cast<double>(parasite_profile.lock_wait_time) /
-						static_cast<double>(parasite_profile.span) <<
-							                            " OF SPAN" << std::endl;
-}
-
 void ParasiteTool::outputOverallProfile() {
-
-	if (COMMAND_LINE_OUTPUT)
-		printOverallProfile();
-	if (JSON_OUTPUT)
-		jsonWriter.writeOverallProfile(parasite_profile);
+	jsonWriter.writeOverallProfile(parasite_profile);
 }
 
 void ParasiteTool::outputCallSites() {
@@ -172,23 +132,17 @@ void ParasiteTool::outputCallSites() {
 					(new CallSiteProfile(span.hashtable->at(key),
 										 work.hashtable->at(key),
 										 start_time_hashtable.at(key)));
-			if (JSON_OUTPUT)
-				jsonWriter.writeCallSite(currentProfile);
-			if (COMMAND_LINE_OUTPUT)
-				currentProfile->print();
+
+			jsonWriter.writeCallSite(currentProfile);
 		}
 	}
 }
 
 ParasiteTool::~ParasiteTool() {
 
-	std::cout << "Calling destructor" << std::endl;
-	thread_graph.sink = thread_graph.last_vertex;
 	endProfileCalculations();
 	outputCallSites();
 	outputOverallProfile();
-	if (GRAPH_OUTPUT)
-		thread_graph.write_dot_file();
 }
 
 void ParasiteTool::Call(const CallEvent* e) {
@@ -220,47 +174,34 @@ void ParasiteTool::Call(const CallEvent* e) {
 	}
 
 	stacks.function_push(_info->fnSignature, _info->siteId, topCall, topCallOnThread);
-	print_event_end("CALL");
 }
 
 void ParasiteTool::NewThread(const NewThreadEvent* e) {
 
 	const NewThreadInfo* const _info = e->getInfo();
-	vertex_descr_type thread_start_vertex;
 	if (stacks.bottomThreadIndex() != -1) {
 		stacks.bottomThread()->spawned_children_count += 1;
 		std::string new_thread_label = "TS_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId));
 		add_local_work(_info->startTime, new_thread_label);
-		add_edge(new_thread_label); // thread_starT_vertex =
 	} else {
-		thread_start_vertex = thread_graph.last_vertex;
 		last_event_time = _info->startTime;
 	}
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
-		                _info->childThread->threadId, 
-		                thread_start_vertex);
-
-	print_event_end("NEW THREAD");
+		                _info->childThread->threadId);
 }
 
 void ParasiteTool::Join(const JoinEvent* e) {
 
 	const JoinInfo* const _info = e->getInfo();
-	print_event_start("JOIN");
 	std::shared_ptr<thread_frame_t> bottom_thread = stacks.bottomThread();
 	bottom_thread->spawned_children_count -= 1;
 	std::string join_label = "JOIN_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId)) + "_" + 
 								  std::to_string(static_cast<unsigned>(_info->parentThread->threadId));
 	
 	add_local_work(_info->joinTime, join_label);				  
-	add_join_edges(bottom_thread->join_vertex_list.front(), join_label);
-	if (bottom_thread->join_vertex_list.size())
-		//bottom_thread->join_vertex_list.pop_front();
 
 	if (bottom_thread->spawned_children_count == 0) {
-	 
-		print_event_start("SYNC");
 
 		// If critical path goes through spawned child
 		if (bottom_thread->longest_child() > bottom_thread->continuation())
@@ -270,9 +211,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 
 		bottom_thread->continuation.clear();
 		bottom_thread->longest_child.clear();
-		print_event_end("SYNC");
 	}
-	print_event_end("JOIN");
 }
 
 // Called G returns to F
@@ -306,7 +245,6 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	}
 
 	stacks.function_pop();
-	print_event_end("RETURN");
 }
 
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
@@ -314,7 +252,6 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	const ThreadEndInfo* _info(e->getInfo());
 	std::string thread_end_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
 	add_local_work(_info->endTime, thread_end_label); 
-	add_edge(thread_end_label);
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 
@@ -323,16 +260,12 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 	}
 
 	std::shared_ptr<thread_frame_t> parent_thread(stacks.bottomParentThread());
-	parent_thread->join_vertex_list.push_back(ending_thread->last_vertex);
 	concurrency_offset += ending_thread->prefix();
 
 	// if the ending thread is the longest child encountered so far
 	if (ending_thread->prefix() + parent_thread->continuation() 
 			                       > parent_thread->longest_child()) {
 
-		if (DEBUG_OUTPUT) {
-			std::cout << "ending thread is longest child encountered so far " << std::endl;
-		}
 		parent_thread->longest_child.set(&(ending_thread->prefix));
 		parent_thread->prefix.add(&(parent_thread->continuation));
 		parent_thread->continuation.clear();
@@ -341,21 +274,17 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	parent_thread->add_child_locks(ending_thread);
 	stacks.thread_pop();
-	print_event_end("THREAD END");
 }
 
 void ParasiteTool::Acquire(const AcquireEvent* e) {
 
-	print_event_start("ACQUIRE");
 	const AcquireInfo* _info(e->getInfo());
 	TIME acquire_time = _info->acquireTime;
 	_info->lock->last_acquire_time = acquire_time;
-	print_event_end("ACQUIRE");
 }
 
 void ParasiteTool::Release(const ReleaseEvent* e) {
 
-	print_event_start("RELEASE");
 	const ReleaseInfo* _info(e->getInfo());
 	TIME release_time = _info->releaseTime;
 	assert(static_cast<double>(release_time) >
@@ -371,7 +300,6 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 		lock_intervals.addInterval(
 					 concur(_info->lock->last_acquire_time), 
 					 concur(release_time), lockId);
-	print_event_end("RELEASE");
 }
 
 void ParasiteTool::Access(const AccessEvent* e) {}
