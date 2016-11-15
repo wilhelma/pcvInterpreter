@@ -1,6 +1,6 @@
 /**
  *
- *    @file  ThreadManagerException.h
+ *    @file  ShadowMapException.h
  *   @brief  
  *
  *    @date  11/07/16
@@ -15,13 +15,13 @@
 #include <exception>
 #include <string>
 
-/// @brief Exception class for the ThreadMgr class.
-class ThreadManagerException : public std::exception {
+/// @brief Exception class for the ShadowMap class.
+class ShadowMapException : public std::exception {
 public:
     /// Constructor.
     /// @param what_arg  String descripting the exception.
     /// @param func_name Name of the function originating the exception.
-    ThreadManagerException(std::string&& what_arg, std::string&& func_name) :
+    ShadowMapException(std::string&& what_arg, std::string&& func_name) :
         std::exception(),
         What_(what_arg + (func_name.empty() ? "" : (" from " + func_name)))
     {}

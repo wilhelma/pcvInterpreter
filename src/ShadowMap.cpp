@@ -10,6 +10,7 @@
  */
 
 #include "ShadowMap.h"
+#include "ShadowMapException.h"
 
 #include <iterator>
 #include <map>
@@ -22,7 +23,7 @@
 // ---------------------------------------
 
 template <typename IdT, typename T>
-const std::shared_ptr<const T> ShadowMap<IdT, T>::getShadow(const IdT id) noexcept {
+const std::shared_ptr<const T> ShadowMap<IdT, T>::getShadow(const IdT& id) noexcept {
     // Get the Shadow corresponding to id
     const auto& shadow_it = Map_.find(id);
     if (shadow_it != std::cend(Map_))
@@ -33,6 +34,23 @@ const std::shared_ptr<const T> ShadowMap<IdT, T>::getShadow(const IdT id) noexce
     Map_.insert(std::make_pair(id, shadow)); 
 
     return shadow;
+}
+
+template <typename IdT, typename T>
+void ShadowMap<IdT, T>::remove(const IdT& id) {
+    const auto& shadow_it = Map_.find(id);
+
+    // In this case, the interpreter is probably buggy
+    if (shadow_it == std::cend(Map_))
+        throw ShadowMapException("Entry " + std::to_string(id) + " not found",
+                                 "ShadowMap::remove");
+
+    // In this case, the pointer is still in use somewhere
+    if (!shadow_it->second.unique())
+        throw ShadowMapException("Pointer to Shadow " + std::to_string(id) + " still in use",
+                                 "ShadowMap::remove");
+
+    Map_.erase(shadow_it);
 }
 
 // Instantiation for the ShadowThreadMap

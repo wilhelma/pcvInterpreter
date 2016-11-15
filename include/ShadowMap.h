@@ -38,7 +38,12 @@ public:
     /// @details If no entry esists with the queried ID, create a new one 
     /// and return that one.
     /// @param id The ID of the `Shadow` to query for.
-    const std::shared_ptr<const T> getShadow(const IdT id) noexcept;
+    const std::shared_ptr<const T> getShadow(const IdT& id) noexcept;
+
+    /// @brief Remove an entry from the internal map.
+    /// @throw ShadowMapException If the queried ID is not in the map.
+    /// @throw ShadowMapException If the pointer corresponding to the ID is still in use.
+    void remove(const IdT& id);
 
 private:
     /// Map the ID to the corresponding `Shadow` pointer.
