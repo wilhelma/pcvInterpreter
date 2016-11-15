@@ -16,13 +16,20 @@
 
 #include "Types.h"
 
+#include <memory>
+
 /// @struct AcquireInfo
 struct AcquireInfo {
-  ShadowLock *lock;
-  TIME acquireTime;
+    /// The lock that is being held.
+    std::shared_ptr<const ShadowLock> lock;
+    /// When was the lock acquired.
+    TIME acquireTime;
 
-  explicit AcquireInfo(ShadowLock *lock, TIME acquireTime) noexcept
-    : lock(lock), acquireTime(acquireTime) {}
+    explicit AcquireInfo(std::shared_ptr<const ShadowLock> lock,
+                         TIME acquireTime) noexcept
+        : lock(lock),
+          acquireTime(acquireTime)
+        {}
 };
 
 #endif

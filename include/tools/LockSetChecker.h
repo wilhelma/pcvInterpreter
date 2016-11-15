@@ -68,7 +68,7 @@ private:
 		}
 	};
 	
-	typedef std::set<ShadowLock*, ShadowLockPtrComp> LockSet_;
+	typedef std::set<const ShadowLock*, ShadowLockPtrComp> LockSet_;
 	typedef std::map<const ShadowThread*, LockSet_> ThreadLockSet_;
 	ThreadLockSet_ lockSet_;
 

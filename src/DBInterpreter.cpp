@@ -17,8 +17,8 @@
 #include <functional>
 #include <cassert>
 
-#include "LockMgr.h"
-#include "ThreadMgr.h"
+#include "ShadowLockMap.h"
+#include "ShadowThreadMap.h"
 
 // Database tables
 #include "AccessTable.h"
@@ -79,13 +79,13 @@ size_t getHash(unsigned funId, unsigned lineNo) {
     return h1 ^ (h2 << 1);
 }
 
-DBInterpreter::DBInterpreter(std::unique_ptr<EventService> service,
-        std::unique_ptr<LockMgr>&&   lockMgr,
-        std::unique_ptr<ThreadMgr>&& threadMgr) :
+DBInterpreter::DBInterpreter(std::unique_ptr<EventService>&& service,
+        std::unique_ptr<ShadowLockMap>&&   lockMgr,
+        std::unique_ptr<ShadowThreadMap>&& threadMgr) :
     lastEventTime_(0),
     EventService_(std::move(service)),
-    LockMgr_(std::move(lockMgr)),
-    ThreadMgr_(std::move(threadMgr))
+    ShadowLockMap_(std::move(lockMgr)),
+    ShadowThreadMap_(std::move(threadMgr))
 {}
 
 // Default the destructor here to allow the Ptr to Impl idiom.
@@ -145,7 +145,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
     assert(lastEventTime_ <= topCall.end_time);
 
-    ReturnEvent event(ThreadMgr_->getThread(topCall.thread_id),
+    ReturnEvent event(ShadowThreadMap_->getShadow(topCall.thread_id),
                       std::make_unique<const ReturnInfo>(topCall.id, topCall.function_id, topCall.end_time));
     eventService()->publish(&event);
     lastEventTime_ = topCall.end_time;
@@ -158,7 +158,7 @@ ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
     const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
     assert(lastEventTime_ <= threadEndTime);
 
-    ThreadEndEvent end_event(ThreadMgr_->getThread(threadId),
+    ThreadEndEvent end_event(ShadowThreadMap_->getShadow(threadId),
                              std::make_unique<const ThreadEndInfo>(threadEndTime, threadId));
     eventService()->publish(&end_event);
 
@@ -196,7 +196,7 @@ ErrorCode DBInterpreter::processEnd() {
     // close final calls
     while (!CallStack_.isEmpty()) {
         const auto& top_call = call_with_id(CallStack_.pop(), *database()); // may trow
-        const auto& sThread  = ThreadMgr_->getThread(top_call.thread_id);
+        const auto& sThread  = ShadowThreadMap_->getShadow(top_call.thread_id);
 
         if (top_call.thread_id != lastThreadId) {
             const auto& last_thread = thread_with_id(lastThreadId, *database());
@@ -283,7 +283,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     file_of_fun.file_name,
                     file_of_fun.file_path);
 
-            CallEvent event(ThreadMgr_->getThread(call.thread_id),
+            CallEvent event(ShadowThreadMap_->getShadow(call.thread_id),
                             std::move(info));
             eventService()->publish(&event);
             lastEventTime_ = call.start_time;
@@ -349,9 +349,9 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
         const auto& access = accIt.second;
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = LockMgr_->getLock(ref_of_acc.id);
+            const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);
             if (lock != nullptr) {
-                AcquireEvent event(ThreadMgr_->getThread(call_of_ins.thread_id),
+                AcquireEvent event(ShadowThreadMap_->getShadow(call_of_ins.thread_id),
                                    std::make_unique<const AcquireInfo>(lock, call_of_ins.start_time));
                 eventService()->publish(&event);
 
@@ -374,9 +374,9 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
         const access_t& access = accIt.second;
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = LockMgr_->getLock(ref_of_acc.id);
+            const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);
             if (lock != nullptr) {
-                ReleaseEvent event(ThreadMgr_->getThread(call_of_ins.thread_id),
+                ReleaseEvent event(ShadowThreadMap_->getShadow(call_of_ins.thread_id),
                                    std::make_unique<const ReleaseInfo>(lock, call_of_ins.start_time));
                 eventService()->publish( &event );
                 lastEventTime_ = call_of_ins.start_time;
@@ -391,8 +391,8 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
     assert (lastEventTime_ <= thread.start_cycle);
-    auto pT = ThreadMgr_->getThread(thread.parent_thread_id);
-    auto cT = ThreadMgr_->getThread(thread.id);
+    auto pT = ShadowThreadMap_->getShadow(thread.parent_thread_id);
+    auto cT = ShadowThreadMap_->getShadow(thread.id);
 
     NewThreadEvent event(pT,
                          std::make_unique<const NewThreadInfo>(cT, pT, thread.start_cycle, thread.num_cycles));
@@ -407,8 +407,8 @@ ErrorCode DBInterpreter::processFork(const thread_t& thread) {
 ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
         const thread_t& thread) {
 
-    auto pT = ThreadMgr_->getThread(thread.parent_thread_id);
-    auto cT = ThreadMgr_->getThread(thread.id);
+    auto pT = ShadowThreadMap_->getShadow(thread.parent_thread_id);
+    auto cT = ShadowThreadMap_->getShadow(thread.id);
 
     JoinEvent event(pT,
                     std::make_unique<const JoinInfo>(cT, pT, lastEventTime_));

@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_THREAD_MGR_INC
-#define  FWD_THREAD_MGR_INC
+#ifndef  FWD_SHADOW_THREAD_MAP_H_
+#define  FWD_SHADOW_THREAD_MAP_H_
 
-class ThreadMgr;
+class ShadowThreadMap;
 
 #endif

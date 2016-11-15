@@ -46,14 +46,12 @@ void LockSetChecker::NewThread(const NewThreadEvent* event) {
 
 void LockSetChecker::Acquire(const AcquireEvent* event) {
 	// LockSet_t = LockSet_t + {lock}	
-	lockSet_[event->thread().get()].insert(event->info()->lock);
+	lockSet_[event->thread().get()].insert(event->info()->lock.get());
 }
 
 void LockSetChecker::Release(const ReleaseEvent* event) {
 	// LockSet_t = LockSet_t - {lock}
-//	auto lock = ((AcquireEvent*)e)->info()->lock;
-	auto lock = event->info()->lock;
-	lockSet_[event->thread().get()].erase(lock); 
+	lockSet_[event->thread().get()].erase(event->info()->lock.get()); 
 }
 
 void LockSetChecker::Access(const AccessEvent* event) {

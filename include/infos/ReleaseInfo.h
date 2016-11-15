@@ -17,11 +17,16 @@
 #include "Types.h"
 
 struct ReleaseInfo {
-  ShadowLock *lock;
-  TIME releaseTime;
+    /// @brief The lock that is released.
+    std::shared_ptr<const ShadowLock> lock;
+    /// When was the lock released.
+    TIME releaseTime;
 
-  explicit ReleaseInfo(ShadowLock* lock, TIME releaseTime) noexcept
-    : lock(lock), releaseTime(releaseTime) {}
+    explicit ReleaseInfo(std::shared_ptr<const ShadowLock> lock,
+                         TIME releaseTime) noexcept
+        : lock(lock),
+          releaseTime(releaseTime)
+        {}
 };
 
 #endif

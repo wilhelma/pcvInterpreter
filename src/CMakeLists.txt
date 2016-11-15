@@ -41,9 +41,8 @@ target_link_libraries(SQL_DB sqlite3)
 set(INTERPRETER_SOURCES
     DBInterpreter.cpp
     EventService.cpp
-    LockMgr.cpp
     SAAPRunner.cpp
-    ThreadMgr.cpp)
+    ShadowMap.cpp)
 
 # Add a rule to compile the interpreter part in a static library
 add_library(Interpreter STATIC EXCLUDE_FROM_ALL ${INTERPRETER_SOURCES})

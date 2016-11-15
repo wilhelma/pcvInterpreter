@@ -1,6 +1,6 @@
 /**
  *
- *    @file  LockMgr.h
+ *    @file  ShadowLockMap.h
  *   @brief  
  *
  *    @date  07/13/16
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_LOCK_MGR_INC
-#define  FWD_LOCK_MGR_INC
+#ifndef  FWD_SHADOW_LOCK_MAP_H_
+#define  FWD_SHADOW_LOCK_MAP_H_
 
-class LockMgr;
+class ShadowLockMap;
 
 #endif

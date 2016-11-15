@@ -15,6 +15,7 @@
 #include <utility>
 #include <limits>
 #include <climits>
+#include <memory>
 #include "ParasiteTool.h"
 
 //#include "AcquireEvent.h"
@@ -280,7 +281,7 @@ void ParasiteTool::Acquire(const AcquireEvent* e) {
 	print_event_start("ACQUIRE");
 	const auto& _info = e->info();
 	TIME acquire_time = _info->acquireTime;
-	_info->lock->last_acquire_time = acquire_time;
+    std::const_pointer_cast<ShadowLock>(_info->lock)->last_acquire_time = acquire_time;
 	print_event_end("ACQUIRE");
 }
 

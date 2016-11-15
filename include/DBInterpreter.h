@@ -22,8 +22,8 @@
 #include "Thread.h" // < Contains NO_TRD_ID static variable (move to source!)
  
 #include "fwd/EventService.h"
-#include "fwd/LockMgr.h"
-#include "fwd/ThreadMgr.h"
+#include "fwd/ShadowLockMap.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "CallStack.h"
 
@@ -52,9 +52,9 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
     /// Constructor.
-    explicit DBInterpreter(std::unique_ptr<EventService> service,
-                           std::unique_ptr<LockMgr>&&    lockMgr,
-                           std::unique_ptr<ThreadMgr>&&  threadMgr);
+    explicit DBInterpreter(std::unique_ptr<EventService>&&    service,
+                           std::unique_ptr<ShadowLockMap>&&   lockMgr,
+                           std::unique_ptr<ShadowThreadMap>&& threadMgr);
 
     /// _Deleted_ copy constructor.
     DBInterpreter(const DBInterpreter&)            = delete;
@@ -108,12 +108,10 @@ private:
   
     /// Constant pointer to the EventService.
     const std::unique_ptr<const EventService> EventService_;
-
-
-    const std::unique_ptr<LockMgr>   LockMgr_;
-
-    /// @brief Maps a thread ID to its ShadowThread.
-    const std::unique_ptr<ThreadMgr> ThreadMgr_;
+    /// Maps a reference ID to its ShadowLock.
+    const std::unique_ptr<ShadowLockMap>   ShadowLockMap_;
+    /// Maps a thread ID to its ShadowThread.
+    const std::unique_ptr<ShadowThreadMap> ShadowThreadMap_;
 
     // private methods---------------------------------------------------------
     ErrorCode processAccess(const instruction_t& instruction,

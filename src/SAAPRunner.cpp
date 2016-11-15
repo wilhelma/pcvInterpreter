@@ -17,9 +17,9 @@
 #include "DBInterpreter.h"
 #include "Event.h"
 #include "EventService.h"
-#include "LockMgr.h"
 #include "Observer.h"
-#include "ThreadMgr.h"
+#include "ShadowLockMap.h"
+#include "ShadowThreadMap.h"
 
 #include <list>
 #include <memory>
@@ -28,8 +28,8 @@
 std::unique_ptr<DBInterpreter> make_DBInterpreter(const std::shared_ptr<const ObserverList>& ol) {
     return std::make_unique<DBInterpreter>(
             std::make_unique<EventService>(ol),
-            std::make_unique<LockMgr>(),
-            std::make_unique<ThreadMgr>());
+            std::make_unique<ShadowLockMap>(),
+            std::make_unique<ShadowThreadMap>());
 }
 
 SAAPRunner::SAAPRunner() :
