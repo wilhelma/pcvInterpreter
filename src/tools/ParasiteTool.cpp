@@ -151,7 +151,7 @@ void ParasiteTool::Call(const CallEvent* e) {
 	std::string call_label = "CALL_" + std::to_string(static_cast<unsigned>(_info->siteId)) + "_" +
 																	     _info->fnSignature;
 	if (stacks.bottomFunctionIndex() > -1)	
-		add_local_work(_info->callTime, call_label);
+		add_local_work(_info->callTime);
 	else
 		last_event_time = _info->callTime;
 	
@@ -182,7 +182,7 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	if (stacks.bottomThreadIndex() != -1) {
 		stacks.bottomThread()->spawned_children_count += 1;
 		std::string new_thread_label = "TS_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId));
-		add_local_work(_info->startTime, new_thread_label);
+		add_local_work(_info->startTime);
 	} else {
 		last_event_time = _info->startTime;
 	}
@@ -199,7 +199,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 	std::string join_label = "JOIN_" + std::to_string(static_cast<unsigned>(_info->childThread->threadId)) + "_" + 
 								  std::to_string(static_cast<unsigned>(_info->parentThread->threadId));
 	
-	add_local_work(_info->joinTime, join_label);				  
+	add_local_work(_info->joinTime);				  
 
 	if (bottom_thread->spawned_children_count == 0) {
 
@@ -223,7 +223,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 	std::string return_label = "R_"
 								+ std::to_string(static_cast<unsigned>(returned_function->call_site))
 							    + "_" + fun_sg;
-	add_local_work(_info->endTime, return_label);
+	add_local_work(_info->endTime);
 	add_lock_wait_time_down_stack(returned_function->lock_wait_time());
 	if (stacks.bottomFunctionIndex() == 0) 
 		return;
@@ -251,7 +251,7 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	const ThreadEndInfo* _info(e->getInfo());
 	std::string thread_end_label = "TE_" + std::to_string(static_cast<unsigned>(_info->id));
-	add_local_work(_info->endTime, thread_end_label); 
+	add_local_work(_info->endTime); 
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->prefix.add(&(ending_thread->continuation));
 

@@ -29,7 +29,6 @@ include_directories(${INCLUDE_DIRECTORIES} ${source_dir}/include)
 
 set(SRC_LIST
     DBInterpreter.cpp
-    DAG.cpp
     EventService.cpp
     FunctionStack.cpp
     LockIntervals.cpp
@@ -58,7 +57,7 @@ set(SRC_LIST ${SRC_LIST}
 set(SRC_LIST ${SRC_LIST}
     tools/DebugTool.cpp
     tools/FunctionTrackerTool.cpp
-    tools/LockSetChecker.cpp
+    # tools/LockSetChecker.cpp
     tools/SequenceTool.cpp
     tools/ParasiteTool.cpp)
 

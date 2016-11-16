@@ -48,13 +48,9 @@ void CallSiteProfile::print() {
 	std::cout << " ======================================================== " << std::endl;
 	std::cout << "CALL SITE " <<  static_cast<int>(call_site) << std::endl;
 	std::cout << "FUNCTION SIGNATURE is " <<  function_signature.c_str() << std::endl;
-	print_time("WORK", work);
-	print_time("LOCK_WAIT_TIME", lock_wait_time);
-	print_time("SPAN", span);
 	std::cout << "LOCK WAIT TIME PERCENTAGE OF SPAN " <<  static_cast<double>(lock_wait_time) / 
 									     	  		      static_cast<double>(span) << std::endl;
 	std::cout << "COUNT " <<  count << std::endl;
-	print_time("START TIME", start);
 	std::cout << "PARALLELISM " <<  static_cast<double>(work)/static_cast<double>(span) << std::endl;
 	std::cout << " ======================================================== " << std::endl;
 }

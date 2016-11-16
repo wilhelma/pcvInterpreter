@@ -28,8 +28,6 @@ void CallSiteSpanProfile::init(CALLSITE cll_site) {
 void CallSiteSpanProfile::print() {
 	std::cout << " ================ \n" << std::endl;
 	std::cout << "CALL SITE " << static_cast<int>(call_site) << std::endl;
-	print_time("SPAN", span);
-	print_time("LOCK WAIT TIME", lock_wait_time);
 	std::cout << "LOCK SPAN FRACTION of SPAN \n" << 
 									static_cast<double>(lock_wait_time) / 
 								    static_cast<double>(span) << std::endl;

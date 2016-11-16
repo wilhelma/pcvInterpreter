@@ -48,7 +48,6 @@ struct function_frame_t {
 
 	TIME lock_wait_time(){
 		TIME wait_time = lock_intervals.waitTime();
-		print_time("calculated lock wait time as", wait_time);
 		return wait_time;
 	}
 

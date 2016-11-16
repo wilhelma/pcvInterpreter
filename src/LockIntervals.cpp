@@ -80,11 +80,8 @@ TIME LockIntervals::waitTime() {
         return static_cast<TIME>(0);
 
     TIME unordered_span = span(intervals);
-    print_time("unordered_span", unordered_span);
     order();
     TIME ordered_span = span(ordered_intervals);
-    print_time("ordered_span", ordered_span);
-    print_time("waitTime", ordered_span - unordered_span);
     return ordered_span - unordered_span;
 }
 

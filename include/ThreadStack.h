@@ -16,7 +16,6 @@
 #include <vector> 
 
 #include "Span.h"
-#include "DAG.h"
 #include "LockIntervals.h"
 #include "Types.h"
 #include "Utility.h"

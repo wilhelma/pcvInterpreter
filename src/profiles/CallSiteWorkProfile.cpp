@@ -32,7 +32,6 @@ void CallSiteWorkProfile::print() {
 	std::cout << " ================" << std::endl;
 	std::cout << "CALL SITE is " << static_cast<int>(call_site) << std::endl;
 	std::cout << "FUNCTION SIGNATURE is " <<  function_signature.c_str() << std::endl;
-	print_time("WORK", work);
 	std::cout << "COUNT is " <<  count << std::endl;
 	std::cout << "================" << std::endl;
 }
