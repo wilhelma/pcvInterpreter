@@ -19,34 +19,29 @@
 #include <unordered_map>
 #include <vector>
 
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "AcquireInfo.h"
-#include "CallEvent.h"
-#include "CallInfo.h"
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ThreadEndEvent.h"
+
 #include "CallSiteProfile.h"
 #include "CallSiteSpanProfile.h"
-#include "Work.h"
 #include "CallSiteWorkProfile.h"
-#include "DAG.h"
 #include "Event.h"
-#include "JoinEvent.h"
 #include "LockIntervals.h"
-#include "NewThreadEvent.h"
-#include "NewThreadInfo.h"
 #include "ParasiteJsonWriter.h"
 #include "ParasiteProfile.h"
 #include "ParasiteTracker.h"
-#include "ReturnEvent.h"
-#include "ReturnInfo.h"
-#include "ReleaseEvent.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
 #include "ShadowVar.h"
-#include "ThreadEndEvent.h"
-#include "ThreadEndInfo.h"
 #include "Tool.h"
 #include "Utility.h"
+#include "Work.h"
 
 /**
 *
@@ -61,11 +56,6 @@ class ParasiteTool : public Tool {
 	ParasiteTool();
 	~ParasiteTool();
 
-	static const bool DEBUG_OUTPUT = 1;
-	static const bool COMMAND_LINE_OUTPUT = 1;
-	static const bool JSON_OUTPUT = 1;
-	static const bool GRAPH_OUTPUT = 1;
-
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
     void Call(const CallEvent* e) override;
@@ -75,10 +65,13 @@ class ParasiteTool : public Tool {
 	void Return(const ReturnEvent* e) override;
 	void ThreadEnd(const ThreadEndEvent* e) override;
 
-	void add_down_stack(TIME local_work, TIME strand_end_time);
+	void add_down_stack(TIME local_work);
 	
-	vertex_descr_type add_local_work(TIME strand_end_time, 
-	  				   				 std::string end_vertex_label);
+	void add_local_work(TIME strand_end_time);
+
+	void add_lock_wait_time_down_stack(TIME wait_time);
+
+	void add_start_time(CALLSITE call_site, TIME start_time);
 
 	void endProfileCalculations();
 
@@ -88,11 +81,6 @@ class ParasiteTool : public Tool {
 		 @todo Decide on format to print out profile information.
 	*/
 	void printOverallProfile();
-
-
-	vertex_descr_type add_edge(TIME length, std::string end_vertex_label);
-
-	void add_join_edges(vertex_descr_type start);
 
 	TIME concur(TIME serial_time);
 
@@ -113,20 +101,26 @@ class ParasiteTool : public Tool {
 	parasite_profile_t parasite_profile;
 
 	Work work;
-
-	DAG thread_graph;
+	Span span;
 
 	std::string name;
 
 	ParasiteJsonWriter jsonWriter;
 
+	std::vector<CALLSITE> already_called_list;
+	
 	/**
 	*    @var last_lock_start_time
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
 
+	TIME concurrency_offset;
+
  private:
+
+ 	std::unordered_map<CALLSITE, TIME, CallSiteHash, CallSiteEqual> start_time_hashtable;
+
 	// prevent generated functions --------------------------------------------
 	ParasiteTool(const ParasiteTool&);
 	ParasiteTool& operator=(const ParasiteTool&);

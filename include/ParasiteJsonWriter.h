@@ -12,11 +12,11 @@
 #ifndef PARASITE_JSON_WRITER_H_
 #define PARASITE_JSON_WRITER_H_
 
-#include "rapidjson/document.h"
-#include "rapidjson/filewritestream.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
+// #include "rapidjson/document.h"
+// #include "rapidjson/filewritestream.h"
+// #include "rapidjson/prettywriter.h"
+// #include "rapidjson/writer.h"
+// #include "rapidjson/stringbuffer.h"
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -35,9 +35,9 @@ class ParasiteJsonWriter {
 	FILE* file_pointer;
 
 	// document is the root of a json message
-    rapidjson::Document fromScratch;
+    // rapidjson::Document fromScratch;
 
-    rapidjson::Value callSiteArray;
+    // rapidjson::Value callSiteArray;
 
     std::string name;
 

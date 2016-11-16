@@ -60,9 +60,11 @@ class Span {
 	*    @brief Adds work and span to the profile for
 			    call_site contained in hashtable.
 	*/
-	void add_to_call_site(CALLSITE call_site, TIME span, TIME end_time);
+	void add_to_call_site(CALLSITE call_site, TIME span);
 
-	void init_call_site(CALLSITE call_site, TIME start_time);
+	void collect(Span* other_span);
+
+	void init_call_site(CALLSITE call_site);
 
 	void add_lock_wait_time(CALLSITE call_site, TIME lock_wait_time);
 

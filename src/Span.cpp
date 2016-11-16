@@ -32,6 +32,16 @@ TIME Span::operator()() {
 	return total;
 }
 
+void Span::collect(Span* other_span) {
+
+	for (auto const &it : *(other_span->hashtable)) {
+		CALLSITE call_site = it.first;
+		std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile> > 
+                            newPair(call_site, other_span->hashtable->at(call_site));
+		hashtable->insert(newPair);
+	}
+}
+
 std::shared_ptr<CallSiteSpanProfile> Span::profileAt(CALLSITE call_site) {
 
 	if (!hashtable->count(call_site)) {
@@ -64,11 +74,10 @@ void Span::add(Span* other_span) {
 	}
 }
 
-void Span::add_to_call_site(CALLSITE call_site, TIME span, TIME end_time) {
+void Span::add_to_call_site(CALLSITE call_site, TIME span) {
 	if (!hashtable->count(call_site))
-		init_call_site(call_site, end_time);
+		init_call_site(call_site);
 	profileAt(call_site)->span += span;
-	profileAt(call_site)->start = std::min(profileAt(call_site)->start, end_time);
 }
 
 void Span::clear() {
@@ -77,13 +86,15 @@ void Span::clear() {
 }
 
 
-void Span::init_call_site(CALLSITE call_site, TIME start_time) {
+void Span::init_call_site(CALLSITE call_site) {
 
-	std::shared_ptr<CallSiteSpanProfile> new_profile(new CallSiteSpanProfile());
-	new_profile->init(call_site, start_time);
-	std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile>> 
+	if (!hashtable->count(call_site)) {
+		std::shared_ptr<CallSiteSpanProfile> new_profile(new CallSiteSpanProfile());
+		new_profile->init(call_site);
+		std::pair<CALLSITE, std::shared_ptr<CallSiteSpanProfile>> 
                                     newPair(call_site, new_profile);
-	hashtable->insert(newPair);
+		hashtable->insert(newPair);
+	}
 }
 
 

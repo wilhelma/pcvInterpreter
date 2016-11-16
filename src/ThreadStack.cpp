@@ -27,21 +27,17 @@ void ThreadStack::pop() {
 }
 
 void ThreadStack::init_frame(int thread_index, int head_function_index, 
-											   TRD_ID thread_id,
-											   vertex_descr_type first_vertex) {
+											   TRD_ID thread_id) {
 	assert(thread_index >= 0);
 	stack.at(thread_index)->head_function_index = head_function_index;
 	stack.at(thread_index)->thread = thread_id;
-	stack.at(thread_index)->first_vertex = first_vertex;
-	stack.at(thread_index)->last_vertex = first_vertex;
 }
 
 std::shared_ptr<thread_frame_t> ThreadStack::push(int head_function_index, 
-	 											  TRD_ID thread_id,
-	 											  vertex_descr_type first_vertex) {
+	 											  TRD_ID thread_id) {
 	stack.push_back(std::shared_ptr<thread_frame_t> (new thread_frame_t));
 	int bottom_index = stack.size() - 1;
-	init_frame(bottom_index, head_function_index, thread_id, first_vertex);
+	init_frame(bottom_index, head_function_index, thread_id);
 	assert(bottom_index >= 0);
 	return stack.at(bottom_index);
 }

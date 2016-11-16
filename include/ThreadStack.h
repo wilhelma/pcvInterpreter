@@ -16,7 +16,6 @@
 #include <vector> 
 
 #include "Span.h"
-#include "DAG.h"
 #include "LockIntervals.h"
 #include "Types.h"
 #include "Utility.h"
@@ -43,10 +42,6 @@ struct thread_frame_t {
 	LockIntervals child_lock_intervals;
 	LockIntervals lock_intervals;
 
-	TIME lock_wait_time(){
-		return lock_intervals.waitTime();
-	}
-
 	void absorb_child_locks() {
 		lock_intervals.add(child_lock_intervals);
 		child_lock_intervals.clear();
@@ -56,21 +51,6 @@ struct thread_frame_t {
 		child_lock_intervals.add(child_thread->lock_intervals);
 	}
 
-	void correct_prefix(TIME correction) {
-		prefix.total = prefix.total + correction;
-		print_time("subtracting lock wait time from prefix", correction);
-	}
-
-	/**
-	*    @var longest_child_lock_wait_time
-	*    @brief Lock span of the longest spawned child of this thread.
-	*/
-	TIME longest_child_lock_wait_time;
-
-	vertex_descr_type first_vertex;
-	vertex_descr_type last_vertex;
-
-	std::list<vertex_descr_type> join_vertex_list;
 
 	/**
 	*    @var prefix
@@ -90,16 +70,17 @@ struct thread_frame_t {
 	*/
 	Span continuation;
 
-	TIME concurrency_offset;
-
 	int spawned_children_count;
 
-	thread_frame_t():thread(0),
-					 longest_child_lock_wait_time(0), 
+	TIME current_edge_length;
+
+	std::vector<CALLSITE> already_called_list;
+
+	thread_frame_t():thread(static_cast<TIME>(0)),
 					 prefix(Span()), 
 					 longest_child(Span()),
 					 continuation(Span()),
-					 concurrency_offset(0) {}
+					 current_edge_length(static_cast<TIME>(0)) {}
 };
 
 class ThreadStack {
@@ -115,8 +96,7 @@ class ThreadStack {
 					thread stack, and head function index head_function_index.
 		*/
 		void init_frame(int thread_index, int head_function_index, 
-										  TRD_ID thread,
-										  vertex_descr_type first_vertex);
+										  TRD_ID thread);
 
 		/**
 		*    @fn push()
@@ -124,8 +104,7 @@ class ThreadStack {
 					vector.
 		*/
 		std::shared_ptr<thread_frame_t> push(int head_function_index,
-											 TRD_ID thread_id,
-											 vertex_descr_type first_vertex);
+											 TRD_ID thread_id);
 
 		/**
 		*    @fn pop()
