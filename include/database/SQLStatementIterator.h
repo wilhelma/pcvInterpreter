@@ -87,7 +87,7 @@ inline const bool operator!=(const SQLStatementIterator<T>& lhs, const SQLStatem
 
 /// Deference operator (`const access_t` specialization).
 template<>
-inline const access_t SQLStatementIterator<const access_t>::operator*() const {
+inline access_t SQLStatementIterator<access_t>::operator*() const {
     ACC_ID                id(Query_->get<ACC_ID>(0));
     INS_ID       instruction(Query_->get<INS_ID>(1));
     POS             position(Query_->get<POS>(2));
@@ -100,7 +100,7 @@ inline const access_t SQLStatementIterator<const access_t>::operator*() const {
 
 /// Deference operator (`const call_t` specialization).
 template<>
-inline const call_t SQLStatementIterator<const call_t>::operator*() const {
+inline call_t SQLStatementIterator<call_t>::operator*() const {
     CAL_ID             id(Query_->get<CAL_ID>(0));
     TRD_ID      thread_id(Query_->get<TRD_ID>(1));
     FUN_ID    function_id(Query_->get<FUN_ID>(2));
@@ -113,7 +113,7 @@ inline const call_t SQLStatementIterator<const call_t>::operator*() const {
 
 /// Deference operator (`const file_t` specialization).
 template<>
-inline const file_t SQLStatementIterator<const file_t>::operator*() const {
+inline file_t SQLStatementIterator<file_t>::operator*() const {
     FIL_ID        id(Query_->get<FIL_ID>(0));
     FIL_PT file_path(Query_->get<FIL_PT>(1));
 
@@ -122,7 +122,7 @@ inline const file_t SQLStatementIterator<const file_t>::operator*() const {
 
 /// Deference operator (`const function_t` specialization).
 template<>
-inline const function_t SQLStatementIterator<const function_t>::operator*() const {
+inline function_t SQLStatementIterator<function_t>::operator*() const {
     FUN_ID          id(Query_->get<FUN_ID>(0));
     FUN_NM        name(Query_->get<FUN_SG>(1));
     FUN_SG   signature(Query_->get<FUN_SG>(2));
@@ -135,7 +135,7 @@ inline const function_t SQLStatementIterator<const function_t>::operator*() cons
 
 /// Deference operator (`const instruction_t` specialization).
 template<>
-inline const instruction_t SQLStatementIterator<const instruction_t>::operator*() const {
+inline instruction_t SQLStatementIterator<instruction_t>::operator*() const {
     INS_ID            id(Query_->get<INS_ID>(0));
     SEG_ID       segment(Query_->get<SEG_ID>(1));
     InstructionType type(Query_->get<InstructionType>(2));
@@ -147,7 +147,7 @@ inline const instruction_t SQLStatementIterator<const instruction_t>::operator*(
 /// @brief Deference operator (`const loopExecution_t` specialization).
 /// @todo Define types for `parent` and `duration`
 template<>
-inline const loopExecution_t SQLStatementIterator<const loopExecution_t>::operator*() const {
+inline loopExecution_t SQLStatementIterator<loopExecution_t>::operator*() const {
     LOE_ID   id(Query_->get<LOE_ID>(0));
     LOE_ID loop(Query_->get<LOE_ID>(1));
     // TODO Define types for these variables!
@@ -159,7 +159,7 @@ inline const loopExecution_t SQLStatementIterator<const loopExecution_t>::operat
 
 /// Deference operator (`const loopIteration_t` specialization).
 template<>
-inline const loopIteration_t SQLStatementIterator<const loopIteration_t>::operator*() const {
+inline loopIteration_t SQLStatementIterator<loopIteration_t>::operator*() const {
     LOI_ID            id(Query_->get<LOI_ID>(0));
     LOE_ID loopExecution(Query_->get<LOE_ID>(1));
     LOI_ID loopIteration(Query_->get<LOI_ID>(2));
@@ -169,7 +169,7 @@ inline const loopIteration_t SQLStatementIterator<const loopIteration_t>::operat
 
 /// Deference operator (`const loop_t` specialization).
 template<>
-inline const loop_t SQLStatementIterator<const loop_t>::operator*() const {
+inline loop_t SQLStatementIterator<loop_t>::operator*() const {
     LOP_ID   id(Query_->get<LOP_ID>(0));
     LIN_NO line(Query_->get<LIN_NO>(1));
 
@@ -178,7 +178,7 @@ inline const loop_t SQLStatementIterator<const loop_t>::operator*() const {
 
 /// Deference operator (`const reference_t` specialization).
 template<>
-inline const reference_t SQLStatementIterator<const reference_t>::operator*() const {
+inline reference_t SQLStatementIterator<reference_t>::operator*() const {
     REF_ID          id(Query_->get<REF_ID>(0));
     REF_SIZE      size(Query_->get<REF_SIZE>(1));
     ReferenceType type(Query_->get<ReferenceType>(2));
@@ -190,7 +190,7 @@ inline const reference_t SQLStatementIterator<const reference_t>::operator*() co
 
 /// Deference operator (`const segment_t` specialization).
 template<>
-inline const segment_t SQLStatementIterator<const segment_t>::operator*() const {
+inline segment_t SQLStatementIterator<segment_t>::operator*() const {
     SEG_ID           id(Query_->get<SEG_ID>(0));
     CAL_ID         call(Query_->get<CAL_ID>(1));
     SegmentType    type(Query_->get<SegmentType>(2));
@@ -201,7 +201,7 @@ inline const segment_t SQLStatementIterator<const segment_t>::operator*() const 
 
 /// Deference operator (`const thread_t` specialization).
 template<>
-inline const thread_t SQLStatementIterator<const thread_t>::operator*() const {
+inline thread_t SQLStatementIterator<thread_t>::operator*() const {
     TRD_ID               id(Query_->get<TRD_ID>(0));
     TIME_STRING  start_time(Query_->get<TIME_STRING>(1));
     TIME_STRING    end_time(Query_->get<TIME_STRING>(2));

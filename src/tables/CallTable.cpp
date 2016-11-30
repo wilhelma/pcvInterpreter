@@ -15,12 +15,9 @@
 #include "Instruction.h"
 #include "Types.h"
 
-const std::pair<CallTable::iterator, bool> CallTable::insert(const call_t& entry) {
-    InstructionToCall_.insert(typename std::map<INS_ID, CAL_ID>::value_type(entry.instruction_id, entry.id));
-    return Map_.insert(typename std::map<CAL_ID, const call_t>::value_type(entry.id, entry));
-}
+#include <vector>
 
-CallTable::iterator CallTable::insert(CallTable::iterator hint, const call_t& entry) {
+CallTable::iterator CallTable::insert(CallTable::iterator hint, call_t&& entry) {
     InstructionToCall_.insert(typename std::map<INS_ID, CAL_ID>::value_type(entry.instruction_id, entry.id));
-    return Map_.insert(hint, typename std::map<CAL_ID, const call_t>::value_type(entry.id, entry));
+    return Vector_.emplace(hint, std::forward<call_t>(entry));
 }

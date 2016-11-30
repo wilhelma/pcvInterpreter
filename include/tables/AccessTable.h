@@ -24,16 +24,13 @@
 /// @ingroup tables
 /// @brief Table of _Accesses_.
 /// @details It also keeps a map between instruction IDs and their respective memory accesses.
-class AccessTable final: public DBTable<ACC_ID, const access_t> {
+class AccessTable final: public DBTable<ACC_ID, access_t> {
 public:
-    /// @brief Inserts an entry in the table.
-    /// @param entry The element to insert.
-    virtual const std::pair<AccessTable::iterator, bool> insert(const access_t& entry) override final;
 
-    /// @brief Inserts entry in the position _hint_.
+    /// @brief Inserts entry in the position before _hint_.
     /// @param hint  The iterator to the insertion position.
     /// @param entry The element to insert.
-    virtual AccessTable::iterator insert(AccessTable::iterator hint, const access_t& entry) override final;
+    virtual AccessTable::iterator insert(AccessTable::iterator hint, access_t&& entry) final;
 
     /// Returns the internal map between instruction IDs and access IDs.
     const InstructionToAccessaVectorMap& getInsAccessMap() const noexcept

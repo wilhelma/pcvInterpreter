@@ -8,8 +8,7 @@
 #ifndef DBTABLE_H_
 #define DBTABLE_H_
 
-#include <map>
-#include <memory>
+#include <vector>
 
 /// @defgroup tables
 /// @ingroup database
@@ -24,22 +23,23 @@
 template<typename IdT, typename T>
 class DBTable {
 public:
-    /// @typedef DBTable::value_type
-    /// @brief Convenience definition to use `std::inserter`.
-    using value_type     = T;
+    /// @brief The size type of the table.
+    using size_type = typename std::vector<T>::size_type;
 
-    /// @typedef DBTable::value_type
-    /// @brief Convenience definition to optionally activate the inserter.
-    using key_type       = IdT;
+    /// @brief The database row type.
+    using value_type = T;
+
+    /// @brief The database ID.
+    using index_type = IdT;
 
     /// @typedef DBTable::iterator
     /// @brief Convenience definition to use `std::inserter`.
-    using iterator       = typename std::map<IdT, T>::iterator;
+    using iterator       = typename std::vector<T>::iterator;
 
     /// @typedef DBTable::const_iterator
     /// @brief Convenience definition to use `std::inserter`.
     /// @todo Is this needed?
-    using const_iterator = typename std::map<IdT, T>::const_iterator;
+    using const_iterator = typename std::vector<T>::const_iterator;
 
     /// _Default_ constructor.
     constexpr explicit DBTable() = default;
@@ -48,76 +48,81 @@ public:
     virtual ~DBTable() = default;
 
     /// _Deleted_ copy constructor.
-    DBTable(const DBTable&)            = delete;
+    DBTable(const DBTable&) = delete;
     /// _Deleted_ move constructor.
-    DBTable(DBTable&&)                 = delete;
+    DBTable(DBTable&&)      = delete;
     /// _Deleted_ copy assignment operator.
     DBTable& operator=(const DBTable&) = delete;
     /// _Deleted_ move assignment operator.
     DBTable& operator=(DBTable&&)      = delete;
 
-    /// Inserts the entry in the maps creating a `pair(id, entry)`.
-    virtual const std::pair<iterator, bool> insert(const T& entry)
-    { return Map_.insert(typename std::map<IdT, T>::value_type(entry.id, entry)); }
-
-    /// @brief Inserts the `entry` in the position pointed to by `hint`.
-    /// @param hint  Iterator pointing to the position where to insert `entry`.
+    /// @brief Inserts the _entry_ in the position before the one pointed to by _hint_.
+    /// @param hint  Iterator pointing to the position where to insert.
     /// @param entry The entry to insert.
-    /// @attention This is a convenience function only needed to allow
-    /// `std::copy` to be used on `DBTable`.
-    virtual DBTable::iterator insert(DBTable::iterator hint, const T& entry)
-    { return Map_.insert(hint, typename std::map<IdT, T>::value_type(entry.id, entry)); }
+    virtual iterator insert(iterator hint, value_type&& entry)
+    { return Vector_.emplace(hint, std::forward<value_type>(entry)); }
     
-    /// Find `id` in the map.
-    iterator find(const IdT& id)
-    { return Map_.find(id); };
-    
-    /// Find `id` in the map.
-    const_iterator find(const IdT& id) const
-    { return Map_.find(id); };
-    
+    /// @brief Constructor.
+    /// @param new_cap The capacity to reserve for the internal vector.
+    void reserve(size_type new_cap)
+    { Vector_.reserve(new_cap); }
+
+    /// @brief Returns the element with database ID _pos_.
+    /// @param pos The database ID to query for.
+    const_iterator operator[](const index_type& pos) const noexcept
+    { return Vector_[idToVectorIndex(pos)]; }
+
+    /// @brief Returns the element with database ID _pos_ (with boundary checking).
+    /// @param pos The database ID to query for.
+    /// @throws std::out_of_range If _pos_ is not smaller than _size()_.
+    const value_type& at(const index_type& pos) const
+    { return Vector_.at(idToVectorIndex(pos)); }
+
     /// Size of the internal map.
     const std::size_t size() const noexcept
-    { return Map_.size(); };
+    { return Vector_.size(); };
 
     /// Begin iterator.
     iterator begin() noexcept
-    { return Map_.begin(); };
+    { return Vector_.begin(); };
 
     /// End iterator.
     iterator end() noexcept
-    { return Map_.end(); };
+    { return Vector_.end(); };
 
     /// Begin const_iterator.
     const_iterator begin() const noexcept
-    { return Map_.begin(); };
+    { return Vector_.begin(); };
 
     /// End const_iterator.
     const_iterator end() const noexcept
-    { return Map_.end(); };
+    { return Vector_.end(); };
 
     /// Begin const_iterator.
     const_iterator cbegin() const noexcept
-    { return Map_.cbegin(); };
+    { return Vector_.cbegin(); };
     
     /// End const_iterator.
     const_iterator cend() const noexcept
-    { return Map_.cend(); };
+    { return Vector_.cend(); };
 
 protected:                                  
-    /// The map associating IDs to database table entries.
-    std::map<IdT, T> Map_;
+    /// The vector of database rows.
+    std::vector<T> Vector_;
+
+    /// @brief Helper function to convert database ID's to vector indices.
+    /// @attention ID's start at 1, so far!
+    virtual const size_type idToVectorIndex(const index_type& id) const
+    { return static_cast<size_type>(id) - 1; }
 };
 
-/// @brief Helper function to allow `std::copy` on the table.
+/// @brief Helper function to allow `std::copy`ing on the table.
 /// @param table Pointer to the `DBtable` to operate upon.
 /// @tparam T The table type (must inherit from DBTable).
-/// @attention The second parameter argument will only check that
-/// T actually inherits from DBTable. If not, a compile-time error
-/// will be issued.
+/// @tparam enable Will be empty if _T_ doesn't inherit from _DBTable_, thus aborting the compilation.
 template <typename T,
-          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::key_type, typename T::value_type>, T>::value>>
+          typename enable = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::insert_iterator<T> inserter(T* table) noexcept
 { return std::insert_iterator<T>(*table, table->end()); }
 
-#endif /* DBTABLE_H_ */
+#endif

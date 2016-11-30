@@ -14,15 +14,9 @@
 #include "Access.h"
 #include "Types.h"
 
-#include <map>
 #include <vector>
 
-const std::pair<AccessTable::iterator, bool> AccessTable::insert(const access_t& entry) {
+AccessTable::iterator AccessTable::insert(AccessTable::iterator hint, access_t&& entry) {
     InstructionToAccessaVectorMap_[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-    return Map_.insert(typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
-}
-
-AccessTable::iterator AccessTable::insert(AccessTable::iterator hint, const access_t& entry) {
-    InstructionToAccessaVectorMap_[entry.instruction_id].push_back(entry.id); // create 1:n associations 
-    return Map_.insert(hint, typename std::map<ACC_ID, const access_t>::value_type(entry.id, entry));
+    return Vector_.emplace(hint, std::forward<access_t>(entry));
 }

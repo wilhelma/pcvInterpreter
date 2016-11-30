@@ -18,7 +18,10 @@
 #include "Types.h"
 
 /// @ingroup tables
-class ThreadTable final: public DBTable<TRD_ID, const thread_t> {
+class ThreadTable final: public DBTable<TRD_ID, thread_t> {
+private:
+    const size_type idToVectorIndex(const index_type& id) const final
+    { return static_cast<size_type>(id); }
 };
 
 #endif

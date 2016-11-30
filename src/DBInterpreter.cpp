@@ -106,7 +106,7 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 
     // process database entries
     for (const auto& instruction : *database()->instructionTable())
-        processInstruction(instruction.second);
+        processInstruction(instruction);
 
     // handle end of main routine
     processEnd();
@@ -239,19 +239,15 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
             return processRelease(ins);
 
         case InstructionType::FORK:
-            for (const auto& it : *database()->threadTable()) {
-                const thread_t& thread = it.second;
-                if (ins.id == thread.create_instruction_id)
-                    return processFork(thread);
-            }
+            for (const auto& trd: *database()->threadTable())
+                if (ins.id == trd.create_instruction_id)
+                    return processFork(trd);
             break;
 
         case InstructionType::JOIN:
-            for (const auto& it : *database()->threadTable()) {
-                const thread_t& thread = it.second;
-                if (ins.id == thread.join_instruction_id)
-                    return processJoin(ins, thread);
-            }
+            for (const auto& trd : *database()->threadTable())
+                if (ins.id == trd.join_instruction_id)
+                    return processJoin(ins, trd);
             break;
 
         default:
@@ -345,8 +341,7 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     const auto& call_of_ins = call_of(ins, *database());
 
     assert(lastEventTime_ <= call_of_ins.start_time);
-    for (const auto& accIt : *database()->accessTable()) {
-        const auto& access = accIt.second;
+    for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
             const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);
@@ -370,8 +365,7 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     const auto& call_of_ins = call_of(ins, *database());
 
     assert(lastEventTime_ <= call_of_ins.start_time);
-    for (const auto& accIt : *database()->accessTable()) {
-        const access_t& access = accIt.second;
+    for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
             const auto& ref_of_acc = reference_of(access, *database());
             const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);

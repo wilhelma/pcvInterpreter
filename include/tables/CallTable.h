@@ -25,16 +25,13 @@
 /// @brief Associates each call ID to the `call_t` that contains the information.
 /// @details The class also contains a map between the instruction ID on which the call was
 /// issued and the issued call ID.
-class CallTable final: public DBTable<CAL_ID, const call_t> {
+class CallTable final: public DBTable<CAL_ID, call_t> {
 public:
-    /// @brief Inserts an entry in the table.
-    /// @param entry The element to insert.
-    virtual const std::pair<CallTable::iterator, bool> insert(const call_t& entry) override final;
 
     /// @brief Inserts entry in the position _hint_.
     /// @param hint  The iterator to the insertion position.
     /// @param entry The element to insert.
-    virtual CallTable::iterator insert(CallTable::iterator hint, const call_t& entry) override final;
+    virtual CallTable::iterator insert(CallTable::iterator hint, call_t&& entry) final;
 
     /// Returns the internal map between the instruction ID and the call ID.
     const InstructionToCallMap& instructionToCall() const noexcept

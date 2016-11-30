@@ -18,7 +18,10 @@
 #include "Types.h"
 
 /// @ingroup tables
-class FileTable final: public DBTable<FIL_ID, const file_t> {
+class FileTable final: public DBTable<FIL_ID, file_t> {
+private:
+    const size_type idToVectorIndex(const index_type& id) const final
+    { return static_cast<size_type>(id); }
 };
 
 #endif

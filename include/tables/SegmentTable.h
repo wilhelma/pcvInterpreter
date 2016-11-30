@@ -18,7 +18,7 @@
 #include "Types.h"
 
 /// @ingroup tables
-class SegmentTable final: public DBTable<SEG_ID, const segment_t> {
+class SegmentTable final: public DBTable<SEG_ID, segment_t> {
 };
 
 #endif

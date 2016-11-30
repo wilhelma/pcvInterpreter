@@ -166,17 +166,20 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath);
 /// @brief Segment containing the instruction.
 /// @param ins The called instruction.
 /// @param db  The database to look in.
-const segment_t& segment_of(const instruction_t& ins, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding segment is not found.
+const segment_t& segment_of(const instruction_t& ins, const Database& db);
 
 /// @brief ID of the parent call of an instruction.
 /// @param ins The called instruction.
 /// @param db  The database to look in.
-const CAL_ID& caller_id_of(const instruction_t ins, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding call is not found.
+const CAL_ID& caller_id_of(const instruction_t ins, const Database& db);
 
 /// @brief Parent call of an instruction.
 /// @param ins The called instruction.
 /// @param db  The database to look in.
-const call_t& caller_of(const instruction_t ins, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding call is not found.
+const call_t& caller_of(const instruction_t ins, const Database& db);
 
 /// @brief ID of the call_t that was called on an instruction.
 /// @param ins The call instruction.
@@ -187,33 +190,39 @@ const CAL_ID& call_id_of(const instruction_t& ins, const Database& db);
 /// @brief The call_t that was called on an instruction.
 /// @param ins The call instruction.
 /// @param db  The database to look in.
-const call_t& call_of(const instruction_t& ins, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding call is not found.
+const call_t& call_of(const instruction_t& ins, const Database& db);
 
 /// @brief The call that spanned a segment.
 /// @param seg The segment.
 /// @param db  The database to look in.
-const call_t& call_of(const segment_t& seg, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding call is not found.
+const call_t& call_of(const segment_t& seg, const Database& db);
 
 /// @brief The reference of the memory access.
 /// @param acc The memory access.
 /// @param db  The database to look in.
-const reference_t& reference_of(const access_t& acc, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding reference is not found.
+const reference_t& reference_of(const access_t& acc, const Database& db);
 
 /// @brief The file a function belongs to.
 /// @param fun The function.
 /// @param db  The database to look in.
-const file_t& file_of(const function_t& fun, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding file is not found.
+const file_t& file_of(const function_t& fun, const Database& db);
 
 /// @brief The function issued by the call.
 /// @todo verify this description.
 /// @param call The call.
 /// @param db   The database to look in.
-const function_t& function_of(const call_t& call, const Database& db) noexcept;
+/// @throws std::out_of_range If the corresponding function is not found.
+const function_t& function_of(const call_t& call, const Database& db);
 
 /// @brief The thread in which the call runs.
 /// @param call The call.
 /// @param db   The database to look in.
-const thread_t& thread_of(const call_t& call, const Database &db) noexcept;
+/// @throws std::out_of_range If the corresponding thread is not found.
+const thread_t& thread_of(const call_t& call, const Database &db);
 
 /// @brief IDs of the memory accesses on an instruction.
 /// @param ins The accessing instruction.

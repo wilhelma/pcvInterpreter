@@ -18,7 +18,7 @@
 #include "Types.h"
 
 /// @ingroup tables
-class LoopIterationTable final: public DBTable<LOI_ID, const loopIteration_t> {
+class LoopIterationTable final: public DBTable<LOI_ID, loopIteration_t> {
 };
 
 #endif
