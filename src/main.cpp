@@ -17,19 +17,38 @@
 // Loggin system
 #include "easylogging++.h"
 
+#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
 INITIALIZE_EASYLOGGINGPP
+
+const auto  main_start = std::chrono::system_clock::now();
+std::string elapsed_time = "";
+
+const char* time_from_main(void) {
+    using namespace std::chrono;
+    const auto elapsed = duration_cast<milliseconds>(system_clock::now() - main_start).count();
+    std::ostringstream output;
+    output << std::setw(6) << std::right << elapsed << " ms";
+    elapsed_time = output.str();
+    return elapsed_time.c_str();
+}
 
 /// @brief The main routine.
 /// @attention The file name of the database to interpret is ___mandatory!___
 /// @param argv[0] The name of the executable.
 /// @param argv[1] The name of the database to interpret.
 int main(int argc, char* argv[]) {
-
     // check arguments
     if (argc < 2) {
         LOG(FATAL) << "No database name provided!";
         return 1;
     }
+
+    el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%runtime", time_from_main));
+    el::Loggers::reconfigureAllLoggers(el::ConfigurationType::Format, "%runtime : %level >> %msg"); 
 
     std::cout << "STARTING PARCEIVE " << std::endl;
 

@@ -56,6 +56,8 @@
 // logging system
 #include "easylogging++.h"
 
+#include <iomanip>
+
 // Default destructor.
 Database::~Database() = default;
 
@@ -73,7 +75,8 @@ std::unique_ptr<const T> load_table(const std::string& table_name, const DBManag
               SQLStatementIterator<typename T::value_type>::end(), inserter<T>(table));
 
     // Log the number of entries
-    LOG(TRACE) << "Rows in " + table_name + ": " << table->size();
+    LOG(TRACE) << std::setw(24) << std::left
+               << "Rows in " + table_name + ": " << table->size();
 
     return std::unique_ptr<const T>(static_cast<const T*>(table));
 }
@@ -84,7 +87,7 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath) {
     try {
         sql_input_db.open(DBPath);
     } catch (const SQLException& e) {
-        LOG(FATAL) <<e.what();
+        LOG(FATAL) << e.what();
         std::abort();
     }
 
