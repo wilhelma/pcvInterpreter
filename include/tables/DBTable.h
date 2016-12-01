@@ -19,26 +19,19 @@
 
 /// @ingroup tables
 /// @brief Base class (default implementation) for all the tables.
-/// @todo The ID in the record is redundant. Consider removing it.
+/// @todo The ID in the record is redundant. Consider removing it and use the vector index, instead.
 template<typename IdT, typename T>
 class DBTable {
 public:
     /// @brief The size type of the table.
-    using size_type = typename std::vector<T>::size_type;
-
+    using size_type  = typename std::vector<T>::size_type;
     /// @brief The database row type.
     using value_type = T;
-
     /// @brief The database ID.
     using index_type = IdT;
-
-    /// @typedef DBTable::iterator
-    /// @brief Convenience definition to use `std::inserter`.
+    /// @brief The iterator on the table entries.
     using iterator       = typename std::vector<T>::iterator;
-
-    /// @typedef DBTable::const_iterator
-    /// @brief Convenience definition to use `std::inserter`.
-    /// @todo Is this needed?
+    /// @brief The constant iterator on the table entries.
     using const_iterator = typename std::vector<T>::const_iterator;
 
     /// _Default_ constructor.
@@ -62,15 +55,10 @@ public:
     virtual iterator insert(iterator hint, value_type&& entry)
     { return Vector_.emplace(hint, std::forward<value_type>(entry)); }
     
-    /// @brief Constructor.
-    /// @param new_cap The capacity to reserve for the internal vector.
+    /// @brief Reserve memory for the internal vector.
+    /// @param new_cap The number of elements to reserve.
     void reserve(size_type new_cap)
     { Vector_.reserve(new_cap); }
-
-    /// @brief Returns the element with database ID _pos_.
-    /// @param pos The database ID to query for.
-    const_iterator operator[](const index_type& pos) const noexcept
-    { return Vector_[idToVectorIndex(pos)]; }
 
     /// @brief Returns the element with database ID _pos_ (with boundary checking).
     /// @param pos The database ID to query for.
