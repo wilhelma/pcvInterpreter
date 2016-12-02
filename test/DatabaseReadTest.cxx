@@ -47,13 +47,15 @@
 class DatabaseReadTest : public ::testing::Test {
 };
 
+std::string db_file_name = "../test/databases/integration_test.db";
+
 TEST_F(DatabaseReadTest, DatabaseProperlyRead) {
 
     auto start_db = std::chrono::system_clock::now();
     
     std::unique_ptr<const Database> db;
     // Throws if database can't be closed
-    EXPECT_NO_THROW(db = load_database("../test/databases/integration_test.db"));
+    EXPECT_NO_THROW(db = load_database(db_file_name));
 
     auto elapsed_db = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_db);
     std::cout << std::endl
@@ -79,6 +81,8 @@ TEST_F(DatabaseReadTest, DatabaseProperlyRead) {
 INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char *argv[]) {
+    if (argc == 2)
+        db_file_name = std::string(argv[1]);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
