@@ -15,14 +15,14 @@
 #include "Types.h"
 
 /// @brief The type of the access.
-enum class AccessType {
+enum class AccessType : unsigned char {
 	READ  = 1, ///< Read access.
 	WRITE = 2  ///< Write access.
 };
 
 /// @brief The state of the access.
 /// @todo What are these states?
-enum class AccessState {
+enum class AccessState : unsigned char {
     INIT              = 0,
     EXCLUSIVE         = 1,
     READ_SHARED       = 2,

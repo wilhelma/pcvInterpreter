@@ -29,6 +29,7 @@
 #include "ThreadEndInfo.h"
 
 #include "ShadowThread.h"
+#include "ShadowLock.h"
 
 // Loggin system
 #include "easylogging++.h"
@@ -37,6 +38,7 @@
 //#include <iostream>
 
 void DebugTool::Access(const AccessEvent* event) {
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //		<< "AccessEvent:\n"
 //		<< " > Access Type:  " << static_cast<unsigned>(event->info()->type) << "\n"
@@ -45,6 +47,16 @@ void DebugTool::Access(const AccessEvent* event) {
 
 void DebugTool::Acquire(const AcquireEvent* event) {
 //	LOG(DEBUG) << "AcquireEvent:" << event->info()->acquireTime << std::endl;
+=======
+	LOG(DEBUG) 
+		<< "AccessEvent:\n"
+		<< " > Access Type:  " << static_cast<unsigned>(event->info()->accessType()) << "\n"
+		<< " > Instruct. id: " << event->info()->instructionId() << std::endl;
+}
+
+void DebugTool::Acquire(const AcquireEvent* event) {
+	LOG(DEBUG) << "AcquireEvent:" << event->info()->acquireTime() << std::endl;
+>>>>>>> [EventGenerator] creates and publishes events
 }
 
 void DebugTool::Call(const CallEvent* event) {
@@ -66,6 +78,7 @@ void DebugTool::Join(const JoinEvent* event) {
 }
 
 void DebugTool::NewThread(const NewThreadEvent* event) {
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //		<< "NewThreadEvent:\n"
 //        << " > Thread id:   " << event->info()->childThread->threadId << std::endl
@@ -75,6 +88,17 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 
 void DebugTool::Release(const ReleaseEvent* event) {
 //	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime << std::endl;
+=======
+	LOG(DEBUG) 
+		<< "NewThreadEvent:\n"
+        << " > Thread id:   " << event->info()->childThreadId() << std::endl
+        << " > Start time:  " << event->info()->startTime() << "\n"
+        << " > Runtime      " << event->info()->runTime() << std::endl;
+}
+
+void DebugTool::Release(const ReleaseEvent* event) {
+	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime() << std::endl;
+>>>>>>> [EventGenerator] creates and publishes events
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
@@ -86,8 +110,15 @@ void DebugTool::Return(const ReturnEvent* event) {
 }
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //        << "ThreadEndEvent:\n"
 //		<< " > Thread ID: " << event->info()->id << "\n"
 //		<< " > End time:  " << event->info()->endTime << std::endl;
+=======
+	LOG(DEBUG) 
+        << "ThreadEndEvent:\n"
+		<< " > Thread ID: " << event->info()->childThreadId() << "\n"
+		<< " > End time:  " << event->info()->endTime() << std::endl;
+>>>>>>> [EventGenerator] creates and publishes events
 }

@@ -42,7 +42,7 @@
 #include "ReleaseEvent.h"
 #include "ShadowLock.h"
 #include "ShadowThread.h"
-#include "ShadowVar.h"
+#include "ShadowVariable.h"
 #include "ThreadEndEvent.h"
 #include "ThreadEndInfo.h"
 #include "Tool.h"

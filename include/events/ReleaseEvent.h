@@ -13,9 +13,10 @@
 #define  RELEASE_EVENT_H_
 
 #include "fwd/ReleaseInfo.h"
-#include "fwd/ShadowLock.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -24,15 +25,15 @@
 class ReleaseEvent final : public Event<ReleaseInfo> {
 public:
     /// @brief Constructor.
-    /// @param thread The thread the event was triggered from.
-    /// @param info   The release event information.
-    explicit ReleaseEvent(std::shared_ptr<const ShadowThread> thread,
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The release event information.
+    explicit ReleaseEvent(ShadowThreadMap::const_iterator shadow_thread,
                           std::unique_ptr<const ReleaseInfo>&& info)
-        : Event(thread, std::move(info))
+        : Event(shadow_thread, std::move(info))
     {}; 
 
     /// Returns the event type.
-    Events type() const final
+    Events type() const noexcept final
     { return Events::RELEASE; }; 
 };
 

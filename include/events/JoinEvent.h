@@ -13,9 +13,10 @@
 #define  JOIN_EVENT_H_
 
 #include "fwd/JoinInfo.h"
-#include "fwd/ShadowThread.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -23,12 +24,13 @@
 /// @brief Event for joining threads.
 class JoinEvent final : public Event<JoinInfo> {
 public:
-    ///@brief  Constructor.
-    /// @param thread The thread the event was triggered from.
-    /// @param info   The join event information.
-    explicit JoinEvent(std::shared_ptr<const ShadowThread> thread,
-                       std::unique_ptr<const JoinInfo>&& info) :
-        Event(thread, std::move(info)) {};
+    /// @brief  Constructor.
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The join event information.
+    explicit JoinEvent(ShadowThreadMap::const_iterator shadow_thread,
+                       std::unique_ptr<const JoinInfo>&& info)
+        : Event(shadow_thread, std::move(info))
+    {}
 
     /// Returns the event type.
     Events type() const final

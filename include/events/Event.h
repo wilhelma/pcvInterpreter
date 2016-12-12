@@ -4,6 +4,8 @@
 #define EVENT_H_
 
 #include "ShadowThread.h"
+#include "ShadowThreadMap.h"
+#include "Types.h"
 
 // -----------------------------------------------------
 // Include these otherwise I get error from Parasite (?)
@@ -93,34 +95,45 @@ const bool operator!=(T lhs, Events rhs) noexcept {
 
 /// @ingroup events
 /// @brief Abstract event.
+/// @tparam The information type.
 /// @details Base class for all the `*Event` classes.
-/// @attention Event is not copyable nor moveable! So its inherited classes will be.
 template <typename InfoType>
 class Event {
 public:
     /// Constructor.
-    /// @param  thread The thread the event was triggered from.
-    /// @tparam info   The event information.
-    explicit Event(std::shared_ptr<const ShadowThread> thread,
-                   std::unique_ptr<const InfoType>&& info)
-        : Thread_(thread), Info_(std::move(info))
-    {};
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info          The event information.
+    explicit Event(ShadowThreadMap::const_iterator shadow_thread,
+                   std::unique_ptr<const InfoType>&& info) noexcept
+        : Thread_(shadow_thread),
+          Info_(std::move(info))
+    {
+//        // If the element was not in the map, make a new one and insert it
+//        if (Thread_ == std::cend(s_thread_map)) {
+//            auto&& entry = std::make_pair(thread_id, std::make_shared<const ShadowThread>(thread_id));
+//            Thread_ = s_thread_map.insert(entry).first;
+//        }
+    };
 
     /// _Default_ destructor.
     virtual ~Event() = default;
 
     /// _Deleted_ copy constructor.
-    Event(const Event&)            = delete;
+    Event(const Event&) = delete;
     /// _Deleted_ move constructor.
-    Event(Event&&)                 = delete;
+    Event(Event&&)      = delete;
     /// _Deleted_ copy assignment operator.
     Event& operator=(const Event&) = delete;
     /// _Deleted_ move assignment operator.
     Event& operator=(Event&&)      = delete;
 
+    /// Acesses the thread ID.
+    const TRD_ID& threadId() const
+    { return Thread_->first; }
+
     /// Acesses the thread information.
     const std::shared_ptr<const ShadowThread>& thread() const
-    { return Thread_; };
+    { return Thread_->second; };
 
     /// Access the event information.
     const std::unique_ptr<const InfoType>& info() const
@@ -131,10 +144,10 @@ public:
 
 private:
     /// Pointer to the ShadowThread (shared among several events).
-    const std::shared_ptr<const ShadowThread> Thread_;
+    ShadowThreadMap::const_iterator Thread_;
 
     /// The event information.
     const std::unique_ptr<const InfoType> Info_;
 };
 
-#endif /* EVENT_H_ */
+#endif

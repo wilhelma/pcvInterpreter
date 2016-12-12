@@ -21,17 +21,11 @@
 #include "fwd/Segment.h"
 #include "Thread.h" // < Contains NO_TRD_ID static variable (move to source!)
  
-#include "fwd/EventService.h"
-#include "fwd/ShadowLockMap.h"
-#include "fwd/ShadowThreadMap.h"
-
 #include "CallStack.h"
 
 #include "fwd/Database.h"
+#include "fwd/EventGenerator.h"
 
-#include "ShadowVar.h"
-
-#include <map>
 #include <memory>
 #include <string>
 
@@ -47,55 +41,42 @@ enum class ErrorCode {
 
 /// @ingroup database
 /// @brief Database interpreter: produces Event's from the database types (e.g. access_t, call_t and so on).
-/// @details Processes the database rows turning them into Event's.
-/// To `publish()` them, the Event's are then passed to the EventService.
 class DBInterpreter {
 public:
-    /// Constructor.
-    explicit DBInterpreter(std::unique_ptr<EventService>&&    service,
-                           std::unique_ptr<ShadowLockMap>&&   lockMgr,
-                           std::unique_ptr<ShadowThreadMap>&& threadMgr);
+    /// @brief Constructor.
+    /// @param e_generator The event generator to create and publish the events.
+    explicit DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator);
 
     /// _Deleted_ copy constructor.
-    DBInterpreter(const DBInterpreter&)            = delete;
+    DBInterpreter(const DBInterpreter&) = delete;
     /// _Deleted_ move constructor.
-    DBInterpreter(DBInterpreter&&)                 = delete;
+    DBInterpreter(DBInterpreter&&)      = delete;
     /// _Deleted_ copy assignment operator.
     DBInterpreter& operator=(const DBInterpreter&) = delete;
     /// _Deleted_ move assignment operator.
     DBInterpreter& operator=(DBInterpreter&&)      = delete;
+
     /// @brief _Default_ destructor.
-    /// @attention It's defaulted in the source to allow the _pointer
-    /// to implementation_ idiom with `unique_ptr`s.
     ~DBInterpreter();
 
-    /// @brief Processes the database.
-    /// @details After importing the database entries, starts looping
-    /// over the `InstructionTable_`.
+    /// @brief Processes the database by looping over the instruction table.
     /// @param DBPath The database to process.
     ErrorCode process(const std::string& DBPath);
 
-    /// Returns a pointer to `EventService_`.
-    /// @todo Bad interface design! This pointer shouldn't be accessible outside!
-    const std::unique_ptr<const EventService>& eventService() const noexcept
-    { return EventService_; };
 
+private:
     /// Helper function to access the database in a read-only way.
     const std::unique_ptr<const Database>& database() const noexcept
     { return Database_; }
 
-private:
+    /// Returns a pointer to the event generator.
+    const std::unique_ptr<EventGenerator>& eventGenerator() const noexcept
+    { return EventGenerator_; };
+
+    /// Constant pointer to the EventGenerator.
+    const std::unique_ptr<EventGenerator> EventGenerator_;
 
     // types-------------------------------------------------------------------
-    typedef ErrorCode (DBInterpreter::*processAccess_t)(ACC_ID accessID,
-                                                  const access_t& access,
-                                                  const instruction_t& instruction,
-                                                  const segment_t& segment,
-                                                  const call_t& call,
-                                                  const reference_t& reference);
-
-    typedef std::map<REF_ID, ShadowVar*> shadowVarMap_t;
-    shadowVarMap_t _shadowVarMap;
 
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
@@ -106,18 +87,10 @@ private:
     TIME lastEventTime_;
     TRD_ID lastThreadId = NO_TRD_ID;
   
-    /// Constant pointer to the EventService.
-    const std::unique_ptr<const EventService> EventService_;
-    /// Maps a reference ID to its ShadowLock.
-    const std::unique_ptr<ShadowLockMap>   ShadowLockMap_;
-    /// Maps a thread ID to its ShadowThread.
-    const std::unique_ptr<ShadowThreadMap> ShadowThreadMap_;
 
     // private methods---------------------------------------------------------
-    ErrorCode processAccess(const instruction_t& instruction,
-            const segment_t& segment,
-            const call_t& call,
-            processAccess_t accessFunc);
+    ErrorCode processAccess(const instruction_t& instruction, const TRD_ID& thread_id);
+    ErrorCode processMemAccess(const access_t& access, const TRD_ID& reference);
 
 
     ErrorCode processReturn(const instruction_t& ins, const call_t& call);
@@ -126,18 +99,6 @@ private:
     ErrorCode processInstruction(const instruction_t& instruction);
     ErrorCode processCall(const instruction_t& instruction);
     ErrorCode processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
-    ErrorCode processAccessGeneric(ACC_ID accessId,
-                             const access_t& access,
-                             const instruction_t& instruction,
-                             const segment_t& segment,
-                             const call_t& call,
-                             processAccess_t func);
-    ErrorCode processMemAccess(ACC_ID accessId,
-                         const access_t& access,
-                         const instruction_t& instruction,
-                         const segment_t& segment,
-                         const call_t& call,
-                         const reference_t& reference);
     ErrorCode processAcquire(const instruction_t& instruction);
     ErrorCode processRelease(const instruction_t& instruction);
     ErrorCode processJoin(const instruction_t& instruction,

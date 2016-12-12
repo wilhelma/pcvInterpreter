@@ -6,19 +6,12 @@
  */
 #include "DBInterpreter.h"
 
-#include "fwd/ShadowLock.h"
-#include "fwd/ShadowThread.h"
-#include "fwd/ShadowVar.h"
-
 #include "SQLException.h"
 
 #include <iostream>
 #include <string>
 #include <functional>
 #include <cassert>
-
-#include "ShadowLockMap.h"
-#include "ShadowThreadMap.h"
 
 // Database tables
 #include "AccessTable.h"
@@ -65,7 +58,7 @@
 
 #include "Database.h"
 
-#include "EventService.h"
+#include "EventGenerator.h"
 #include "Types.h"
 
 #include <memory>
@@ -79,13 +72,9 @@ size_t getHash(unsigned funId, unsigned lineNo) {
     return h1 ^ (h2 << 1);
 }
 
-DBInterpreter::DBInterpreter(std::unique_ptr<EventService>&& service,
-        std::unique_ptr<ShadowLockMap>&&   lockMgr,
-        std::unique_ptr<ShadowThreadMap>&& threadMgr) :
-    lastEventTime_(0),
-    EventService_(std::move(service)),
-    ShadowLockMap_(std::move(lockMgr)),
-    ShadowThreadMap_(std::move(threadMgr))
+DBInterpreter::DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) :
+    EventGenerator_(std::move(event_generator)),
+    lastEventTime_(0)
 {}
 
 // Default the destructor here to allow the Ptr to Impl idiom.
@@ -145,11 +134,9 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
     assert(lastEventTime_ <= topCall.end_time);
 
-    ReturnEvent event(ShadowThreadMap_->getShadow(topCall.thread_id),
-                      std::make_unique<const ReturnInfo>(topCall.id, topCall.function_id, topCall.end_time));
-    eventService()->publish(&event);
-    lastEventTime_ = topCall.end_time;
+    EventGenerator_->returnEvent(topCall.thread_id, topCall.id, topCall.function_id, topCall.end_time);
 
+    lastEventTime_ = topCall.end_time;
     return ErrorCode::OK;
 }
 
@@ -158,9 +145,11 @@ ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
     const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
     assert(lastEventTime_ <= threadEndTime);
 
-    ThreadEndEvent end_event(ShadowThreadMap_->getShadow(threadId),
-                             std::make_unique<const ThreadEndInfo>(threadEndTime, threadId));
-    eventService()->publish(&end_event);
+    // XXX parent and child threads are the same!
+    EventGenerator_->threadEndEvent(threadId, threadId, threadEndTime);
+//    ThreadEndEvent end_event(threadId, *ShadowThreadMap_,
+//                             std::make_unique<const ThreadEndInfo>(threadEndTime, threadId));
+//    eventService()->publish(&end_event);
 
     lastEventTime_ = threadEndTime;
     lastThreadId = thread.parent_thread_id;
@@ -169,15 +158,27 @@ ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
 }
 
 ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
-        const segment_t& segment,
-        const call_t& call,
-        processAccess_t accessFunc) {
+        const TRD_ID& thread_id) {
 
     // loop over the memory accesses of the instruction
     for (const auto& acc_id : access_ids_of(instruction, *database())) {
         const auto& access = access_with_id(acc_id, *database()); // may throw!
-        processAccessGeneric(access.id, access, instruction, segment, call, accessFunc);
+        processMemAccess(access, thread_id);
     }
+
+    return ErrorCode::OK;
+}
+
+// Probably a ShadowVariableMap is not needed as the ShadowVariable
+// can be discarded as soon as it's used.
+ErrorCode DBInterpreter::processMemAccess(const access_t& access,
+                                          const TRD_ID& thread_id) {
+
+    const auto& ref_of_acc = reference_of(access, *database());
+    EventGenerator_->accessEvent(thread_id, ref_of_acc, access.instruction_id, access.access_type);
+//    auto&& access_info = ShadowVariableMap_->accessInfo(ref_of_acc, access.instruction_id, access.access_type);
+//    AccessEvent event(thread_id, *ShadowThreadMap_, std::move(access_info));
+//    eventService()->publish(&event);
 
     return ErrorCode::OK;
 }
@@ -196,20 +197,21 @@ ErrorCode DBInterpreter::processEnd() {
     // close final calls
     while (!CallStack_.isEmpty()) {
         const auto& top_call = call_with_id(CallStack_.pop(), *database()); // may trow
-        const auto& sThread  = ShadowThreadMap_->getShadow(top_call.thread_id);
 
         if (top_call.thread_id != lastThreadId) {
             const auto& last_thread = thread_with_id(lastThreadId, *database());
 
-            ThreadEndEvent end_event(sThread,
-                                     std::make_unique<const ThreadEndInfo>(last_thread.start_cycle + last_thread.num_cycles, last_thread.id));
-            eventService()->publish(&end_event);
+            EventGenerator_->threadEndEvent(top_call.thread_id, last_thread.id, last_thread.start_cycle + last_thread.num_cycles);
+//            ThreadEndEvent end_event(top_call.thread_id, *ShadowThreadMap_,
+//                                     std::make_unique<const ThreadEndInfo>(last_thread.start_cycle + last_thread.num_cycles, last_thread.id));
+//            eventService()->publish(&end_event);
             lastThreadId = top_call.thread_id;
         }
 
-        ReturnEvent event(sThread,
-                          std::make_unique<const ReturnInfo>(top_call.id, top_call.function_id, top_call.end_time));
-        eventService()->publish(&event);
+        EventGenerator_->returnEvent(top_call.thread_id, top_call.id, top_call.function_id, top_call.end_time);
+//        ReturnEvent event(top_call.thread_id, *ShadowThreadMap_,
+//                          std::make_unique<const ReturnInfo>(top_call.id, top_call.function_id, top_call.end_time));
+//        eventService()->publish(&event);
 
         ret = ErrorCode::OK;
     }
@@ -227,10 +229,12 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
 
     switch (ins.instruction_type) {
         case InstructionType::CALL:
+            // TODO Replace with a direct call
+            // return processCall(call_of_seg, ins.line_number, ins.segment_id);
             return processCall(ins);
 
         case InstructionType::ACCESS:
-            return processAccess(ins, seg_of_ins, call_of_seg, &DBInterpreter::processMemAccess);
+            return processAccess(ins, call_of_seg.thread_id); 
 
         case InstructionType::ACQUIRE:
             return processAcquire(ins);
@@ -269,7 +273,8 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         case FunctionType::METHOD:
         {
             const auto& file_of_fun = file_of(fun_of_call, *database());
-            auto info = std::make_unique<const CallInfo>(
+            EventGenerator_->callEvent(
+                    call.thread_id,
                     static_cast<CALLSITE>(getHash(call.function_id, line)),
                     call.start_time,
                     static_cast<TIME>(call.end_time - call.start_time),
@@ -278,10 +283,18 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     fun_of_call.type,
                     file_of_fun.file_name,
                     file_of_fun.file_path);
-
-            CallEvent event(ShadowThreadMap_->getShadow(call.thread_id),
-                            std::move(info));
-            eventService()->publish(&event);
+//            auto info = std::make_unique<const CallInfo>(
+//                    static_cast<CALLSITE>(getHash(call.function_id, line)),
+//                    call.start_time,
+//                    static_cast<TIME>(call.end_time - call.start_time),
+//                    fun_of_call.name,
+//                    segId,
+//                    fun_of_call.type,
+//                    file_of_fun.file_name,
+//                    file_of_fun.file_path);
+//
+//            CallEvent event(call.thread_id, *ShadowThreadMap_, std::move(info));
+//            eventService()->publish(&event);
             lastEventTime_ = call.start_time;
             CallStack_.push(call.id);
             ret = ErrorCode::OK;
@@ -298,43 +311,6 @@ ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
     return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
 }
 
-ErrorCode DBInterpreter::processAccessGeneric(ACC_ID accessId,
-        const access_t& access,
-        const instruction_t& instruction,
-        const segment_t& segment,
-        const call_t& call,
-        processAccess_t func) {
-
-    const auto& ref_of_acc = reference_of(access, *database());
-    return (this->* func)(accessId, access, instruction, segment, call, ref_of_acc);
-}
-
-ErrorCode DBInterpreter::processMemAccess(ACC_ID accessId,
-        const access_t& access,
-        const instruction_t& instruction,
-        const segment_t& segment,
-        const call_t& call,
-        const reference_t& reference) {
-
-    ShadowVar *var = 0;
-    auto searchVar = _shadowVarMap.find(reference.id);
-    if ( searchVar != _shadowVarMap.end() ) {
-        var = searchVar->second;
-    } else {
-        var = new ShadowVar(reference.memory_type,
-                reference.id,
-                reference.size,
-                reference.name);
-        _shadowVarMap[reference.id] = var;
-    }
-
-    AccessEvent event(std::make_unique<const ShadowThread>(call.thread_id),
-                      std::make_unique<const AccessInfo>(access.access_type, var, instruction.id));
-    eventService()->publish(&event);
-
-    return ErrorCode::OK;
-}
-
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     // This will throw or abort in case of failure
@@ -343,16 +319,13 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     assert(lastEventTime_ <= call_of_ins.start_time);
     for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
-            const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);
-            if (lock != nullptr) {
-                AcquireEvent event(ShadowThreadMap_->getShadow(call_of_ins.thread_id),
-                                   std::make_unique<const AcquireInfo>(lock, call_of_ins.start_time));
-                eventService()->publish(&event);
+            EventGenerator_->acquireEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
+//            auto&& acquire_info = ShadowLockMap_->acquireInfo(access.reference_id, call_of_ins.start_time);
+//            AcquireEvent event(call_of_ins.thread_id, *ShadowThreadMap_, std::move(acquire_info));
+//            eventService()->publish(&event);
 
-                lastEventTime_ = call_of_ins.start_time;
-                return ErrorCode::OK;
-            }
+            lastEventTime_ = call_of_ins.start_time;
+            return ErrorCode::OK;
         }
     }
 
@@ -367,15 +340,16 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     assert(lastEventTime_ <= call_of_ins.start_time);
     for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
-            const auto& ref_of_acc = reference_of(access, *database());
-            const auto& lock = ShadowLockMap_->getShadow(ref_of_acc.id);
-            if (lock != nullptr) {
-                ReleaseEvent event(ShadowThreadMap_->getShadow(call_of_ins.thread_id),
-                                   std::make_unique<const ReleaseInfo>(lock, call_of_ins.start_time));
-                eventService()->publish( &event );
-                lastEventTime_ = call_of_ins.start_time;
-                return ErrorCode::OK;
-            }
+            EventGenerator_->releaseEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
+//            auto release_info = ShadowLockMap_->releaseInfo(access.reference_id, call_of_ins.start_time);
+////            auto release_info = std::make_unique<const ReleaseInfo>(access.reference_id,
+////                                                                    call_of_ins.start_time,
+////                                                                    *ShadowLockMap_);
+//
+//            ReleaseEvent event(call_of_ins.thread_id, *ShadowThreadMap_, std::move(release_info));
+//            eventService()->publish( &event );
+            lastEventTime_ = call_of_ins.start_time;
+            return ErrorCode::OK;
         }
     }
 
@@ -385,12 +359,12 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
     assert (lastEventTime_ <= thread.start_cycle);
-    auto pT = ShadowThreadMap_->getShadow(thread.parent_thread_id);
-    auto cT = ShadowThreadMap_->getShadow(thread.id);
 
-    NewThreadEvent event(pT,
-                         std::make_unique<const NewThreadInfo>(cT, pT, thread.start_cycle, thread.num_cycles));
-    eventService()->publish( &event );
+    EventGenerator_->newThreadEvent(thread.parent_thread_id, thread.id, thread.start_cycle, thread.num_cycles);
+//    auto&& new_thread_info = ShadowThreadMap_->newThreadInfo(thread.id, thread.start_cycle, thread.num_cycles);
+////    auto new_thread_info = std::make_unique<const NewThreadInfo>(thread.id, thread.start_cycle, thread.num_cycles, *ShadowThreadMap_);
+//    NewThreadEvent event(thread.parent_thread_id, *ShadowThreadMap_, std::move(new_thread_info));
+//    eventService()->publish( &event );
 
     lastEventTime_ = thread.start_cycle;
     lastThreadId = thread.id;
@@ -401,12 +375,11 @@ ErrorCode DBInterpreter::processFork(const thread_t& thread) {
 ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
         const thread_t& thread) {
 
-    auto pT = ShadowThreadMap_->getShadow(thread.parent_thread_id);
-    auto cT = ShadowThreadMap_->getShadow(thread.id);
-
-    JoinEvent event(pT,
-                    std::make_unique<const JoinInfo>(cT, pT, lastEventTime_));
-    eventService()->publish( &event );
+    EventGenerator_->joinEvent(thread.parent_thread_id, thread.id, lastEventTime_);
+//    auto&& join_info = ShadowThreadMap_->joinInfo(thread.id, lastEventTime_);
+////    auto join_thread = std::make_unique<const JoinInfo>(thread.id, lastEventTime_, *ShadowThreadMap_);
+//    JoinEvent event(thread.parent_thread_id, *ShadowThreadMap_, std::move(join_info));
+//    eventService()->publish( &event );
 
     lastThreadId = thread.parent_thread_id;
 

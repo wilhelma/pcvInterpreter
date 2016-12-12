@@ -172,14 +172,14 @@ void ParasiteTool::NewThread(const NewThreadEvent* e) {
 	vertex_descr_type thread_start_vertex;
 	if (stacks.bottomThreadIndex() != -1) {
 		stacks.bottomThread()->spawned_children_count += 1;
-		thread_start_vertex = add_local_work(_info->startTime, "TS");
+		thread_start_vertex = add_local_work(_info->startTime(), "TS");
 	} else {
 		thread_start_vertex = thread_graph.last_vertex;
-		last_event_time = _info->startTime;
+		last_event_time = _info->startTime();
 	}
 
 	stacks.thread_push(stacks.bottomFunctionIndex(),     
-		                _info->childThread->threadId, 
+		                _info->childThreadId(), 
 		                thread_start_vertex);
 
 	print_event_end("NEW THREAD");
@@ -245,7 +245,7 @@ void ParasiteTool::Return(const ReturnEvent* e) {
 void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 
 	const auto& _info = e->info();
-	add_local_work(_info->endTime, "TE");
+	add_local_work(_info->endTime(), "TE");
 	std::shared_ptr<thread_frame_t> ending_thread(stacks.bottomThread());
 	ending_thread->continuation.add(ending_thread->lock_wait_time());
 	ending_thread->prefix.add(&(ending_thread->continuation));
@@ -279,9 +279,10 @@ void ParasiteTool::ThreadEnd(const ThreadEndEvent* e) {
 void ParasiteTool::Acquire(const AcquireEvent* e) {
 
 	print_event_start("ACQUIRE");
-	const auto& _info = e->info();
-	TIME acquire_time = _info->acquireTime;
-    std::const_pointer_cast<ShadowLock>(_info->lock)->last_acquire_time = acquire_time;
+    // XXX This shouldn't be necessary as the time is now set on AcquireInfo construction.
+//	const auto& _info = e->info();
+//	const auto& acquire_time = _info->lock->second->acquire_time;
+//    std::const_pointer_cast<ShadowLock>(_info->lock)->last_acquire_time = acquire_time;
 	print_event_end("ACQUIRE");
 }
 
@@ -289,19 +290,19 @@ void ParasiteTool::Release(const ReleaseEvent* e) {
 
 	print_event_start("RELEASE");
 	const auto& _info = e->info();
-	TIME release_time = _info->releaseTime;
+	TIME release_time = _info->releaseTime();
 	assert(static_cast<double>(release_time) >
-		   static_cast<double>(_info->lock->last_acquire_time));
+		   static_cast<double>(_info->acquireTime()));
 	
-	unsigned int lockId = _info->lock->lockId;
+	unsigned int lockId = _info->lockId();
 
 	stacks.bottomThread()->
 		lock_intervals.addInterval(
-					 concur(_info->lock->last_acquire_time), 
+					 concur(_info->acquireTime()), 
 					 concur(release_time), lockId);
 	stacks.bottomFunction()->
 		lock_intervals.addInterval(
-					 concur(_info->lock->last_acquire_time), 
+					 concur(_info->acquireTime()), 
 					 concur(release_time), lockId);
 	print_event_end("RELEASE");
 }

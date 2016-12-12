@@ -17,7 +17,7 @@
 #include "fwd/NewThreadEvent.h"
 
 #include "fwd/ShadowThread.h"
-#include "fwd/ShadowVar.h"
+#include "fwd/ShadowVariable.h"
 
 #include "ShadowLock.h"
 
@@ -64,7 +64,7 @@ private:
 	// Lock Set ---------------------------------------------------------------
 	struct ShadowLockPtrComp {
 		bool operator()(const ShadowLock* lhs, const ShadowLock* rhs) const {
-			return lhs->lockId < rhs->lockId;
+			return *lhs < *rhs;
 		}
 	};
 	

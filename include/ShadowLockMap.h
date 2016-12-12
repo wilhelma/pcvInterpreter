@@ -13,7 +13,8 @@
 
 #include "fwd/ShadowLock.h"
 
+/// @ingroup shadows
 /// @brief Maps a reference ID to the corresponding ShadowLock.
-class ShadowLockMap : public ShadowMap<REF_ID, ShadowLock> {};
+class ShadowLockMap final : public ShadowMap<REF_ID, ShadowLock> {};
 
 #endif

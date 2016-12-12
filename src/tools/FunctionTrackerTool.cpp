@@ -48,8 +48,8 @@ FunctionTrackerTool::~FunctionTrackerTool() {
 } 
 
 void FunctionTrackerTool::NewThread(const NewThreadEvent* e ) {
-  std::cerr << "New Thread... parent: " << e->info()->parentThread->threadId
-            << " child: " << e->info()->childThread->threadId;
+  std::cerr << "New Thread... parent: " << e->threadId()
+            << " child: " << e->info()->childThreadId();
             // << " runtime: " << info->runtime << std::endl;
 }
 

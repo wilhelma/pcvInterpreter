@@ -12,6 +12,8 @@
 #ifndef  FWD_ACCESS_H_
 #define  FWD_ACCESS_H_
 
+enum class AccessType  : unsigned char;
+enum class AccessState : unsigned char; 
 struct access_t;
 
 #endif

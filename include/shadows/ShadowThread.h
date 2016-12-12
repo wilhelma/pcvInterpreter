@@ -15,13 +15,15 @@
 /// @todo Complete implementation: it doesn't make sense to
 /// define comparison operators if threadId is publicly accessible!
 struct ShadowThread {
-	const TRD_ID threadId;
+//	const TRD_ID threadId;
 //	CALLSITE currentCallSiteID;
 //	FUN_SG currentFunctionSignature; 
 
+    TIME StartTime_;
+
 	/// Constructor.
-	explicit ShadowThread(TRD_ID threadId) noexcept
-		: threadId(threadId)
+	explicit ShadowThread(const TIME& start_time) noexcept
+		: StartTime_(start_time)//threadId(threadId)
 	{};
 	/// _Default_ destructor.
 	~ShadowThread() = default;
@@ -35,20 +37,20 @@ struct ShadowThread {
 	/// _Deleted_ move assignment operator.
 	ShadowThread& operator=(ShadowThread&&)      = delete;
 
-	/// @brief Less-than operator.
-	/// @details Compares the `ThreadId_`s.
-	friend const bool operator<(const ShadowThread& lhs, const ShadowThread& rhs)
-	{ return lhs.threadId < rhs.threadId; };
-
-	/// @brief Equality operator.
-	/// @details Compares the `ThreadId_`s.
-	friend const bool operator==(const ShadowThread& lhs, const ShadowThread& rhs)
-	{ return lhs.threadId == rhs.threadId; };
+//	/// @brief Less-than operator.
+//	/// @details Compares the `ThreadId_`s.
+//	friend const bool operator<(const ShadowThread& lhs, const ShadowThread& rhs)
+//	{ return lhs.threadId < rhs.threadId; };
+//
+//	/// @brief Equality operator.
+//	/// @details Compares the `ThreadId_`s.
+//	friend const bool operator==(const ShadowThread& lhs, const ShadowThread& rhs)
+//	{ return lhs.threadId == rhs.threadId; };
 };
 
-/// @brief Equal-or-greater-than operator.
-/// @return Negation of operator `ShadowThread::operator<()`.
-inline const bool operator>=(const ShadowThread& lhs, const ShadowThread& rhs)
-{ return !(lhs < rhs); }
+///// @brief Equal-or-greater-than operator.
+///// @return Negation of operator `ShadowThread::operator<()`.
+//inline const bool operator>=(const ShadowThread& lhs, const ShadowThread& rhs)
+//{ return !(lhs < rhs); }
 
 #endif /* SHADOWTHREAD_H_ */

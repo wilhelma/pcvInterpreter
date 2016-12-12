@@ -13,9 +13,10 @@
 #define  ACCESS_EVENT_H_
 
 #include "fwd/AccessInfo.h"
-#include "fwd/ShadowThread.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -24,11 +25,11 @@
 class AccessEvent final : public Event<AccessInfo> {
 public:
     /// @brief Constructor.
-    /// @param thread The thread the event was triggered from.
-    /// @param info   The access event information.
-    explicit AccessEvent(std::shared_ptr<const ShadowThread> thread,
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The access event information.
+    explicit AccessEvent(ShadowThreadMap::const_iterator shadow_thread,
                          std::unique_ptr<const AccessInfo>&& info)
-        : Event(thread, std::move(info))
+        : Event(shadow_thread, std::move(info))
     {};
 
     /// _Default_ destructor.

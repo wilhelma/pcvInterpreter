@@ -1,6 +1,6 @@
 /**
  *
- *    @file  ShadowVar.h
+ *    @file  ShadowVariable.h
  *   @brief  Forward header.
  *
  *    @date  07/06/16
@@ -9,9 +9,9 @@
  *
  */
 
-#ifndef  FWD_SHADOW_VAR_H_
-#define  FWD_SHADOW_VAR_H_
+#ifndef  FWD_SHADOW_VARIABLE_H_
+#define  FWD_SHADOW_VARIABLE_H_
 
-struct ShadowVar;
+struct ShadowVariable;
 
 #endif

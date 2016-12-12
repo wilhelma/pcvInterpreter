@@ -12,6 +12,9 @@
 #ifndef  FWD_FUNCTION_H_
 #define  FWD_FUNCTION_H_
 
+#include <cstdint>
+
+enum class FunctionType : uint32_t;
 struct function_t;
 
 #endif

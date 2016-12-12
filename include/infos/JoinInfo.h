@@ -12,24 +12,32 @@
 #ifndef  JOIN_INFO_H_
 #define  JOIN_INFO_H_
 
-#include "fwd/ShadowThread.h"
+#include "fwd/ShadowThreadMap.h"
+
+#include "ChildThreadInfo.h"
 #include "Types.h"
 
-#include <memory>
-
-/// Information about a thread join.
-struct JoinInfo {
-    std::shared_ptr<const ShadowThread> childThread;
-    std::shared_ptr<const ShadowThread> parentThread;
-    TIME joinTime;
-
-    explicit JoinInfo(std::shared_ptr<const ShadowThread> child_thread,
-                      std::shared_ptr<const ShadowThread> parent_thread,
+/// @ingroup info
+/// @brief Information about a thread join.
+/// @todo Remove child thread from the map on destruction.
+class JoinInfo : public ChildThreadInfo {
+public:
+    /// @brief Constructor.
+    /// @param child_thread_info The information about the joined thread.
+    /// @param join_time         The time when the child thread was joined to the parent one.
+    explicit JoinInfo(ShadowThreadMap::const_iterator child_thread_info,
                       const TIME& join_time) noexcept
-        : childThread(child_thread),
-          parentThread(parent_thread),
-          joinTime(join_time)
+        : ChildThreadInfo(child_thread_info),
+          JoinTime_(join_time)
         {}
+
+    /// Return the time when the thread was joined.
+    const TIME& joinTime() const noexcept
+    { return JoinTime_; }
+
+private:
+    /// Time when the child thread was joined to the parent one.
+    TIME JoinTime_;
 };
 
 #endif

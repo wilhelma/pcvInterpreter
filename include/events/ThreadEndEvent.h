@@ -16,6 +16,7 @@
 #include "fwd/ThreadEndInfo.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -24,11 +25,11 @@
 class ThreadEndEvent final : public Event<ThreadEndInfo> {
 public:
     /// @brief Constructor.
-    /// @param  thread The thread the event was triggered from.
-    /// @tparam info   The thread end event information.
-    explicit ThreadEndEvent(std::shared_ptr<const ShadowThread> thread,
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The thread end event information.
+    explicit ThreadEndEvent(ShadowThreadMap::const_iterator shadow_thread,
                             std::unique_ptr<const ThreadEndInfo>&& info)
-        : Event(thread, std::move(info))
+        : Event(shadow_thread, std::move(info))
     {};
 
     /// Returns the event type.

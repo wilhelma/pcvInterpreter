@@ -13,9 +13,10 @@
 #define  CALL_EVENT_H_
 
 #include "fwd/CallInfo.h"
-#include "fwd/ShadowThread.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -24,11 +25,11 @@
 class CallEvent final : public Event<CallInfo> {
 public:
     /// @brief Constructor.
-    /// @param thread The thread the event was triggered from.
-    /// @param info   The call event information.
-    explicit CallEvent(std::shared_ptr<const ShadowThread> thread,
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The call event information.
+    explicit CallEvent(ShadowThreadMap::const_iterator shadow_thread,
                        std::unique_ptr<const CallInfo>&& info)
-        : Event(thread, std::move(info))
+        : Event(shadow_thread, std::move(info))
     {};
 
     /// Return the event type.

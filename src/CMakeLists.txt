@@ -40,9 +40,21 @@ target_link_libraries(SQL_DB sqlite3)
 # > libInterpreter.a ----------------------------------------------
 set(INTERPRETER_SOURCES
     DBInterpreter.cpp
+    EventGenerator.cpp
     EventService.cpp
     SAAPRunner.cpp
-    ShadowMap.cpp)
+    ShadowMap.cpp
+    ShadowLockMap.cpp
+    ShadowThreadMap.cpp
+    ShadowVariableMap.cpp)
+
+set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
+    infos/AccessInfo.cpp
+    infos/LockInfo.cpp
+    infos/ChildThreadInfo.cpp)
+
+#    infos/ReleaseInfo.cpp
+#    infos/AcquireInfo.cpp
 
 # Add a rule to compile the interpreter part in a static library
 add_library(Interpreter STATIC EXCLUDE_FROM_ALL ${INTERPRETER_SOURCES})
@@ -54,6 +66,7 @@ target_link_libraries(Interpreter SQL_DB)
 set(DEBUG_TOOL_SOURCES tools/DebugTool.cpp)
 add_library(DebugTool STATIC EXCLUDE_FROM_ALL ${DEBUG_TOOL_SOURCES})
 add_dependencies(DebugTool easyloggingpp)
+target_link_libraries(DebugTool Interpreter)
 # Link DebugTool into main
 set(LINKED_TOOLS ${LINKED_TOOLS} DebugTool)
 # < libDebugTool.a ------------------------------------------------
@@ -62,6 +75,7 @@ set(LINKED_TOOLS ${LINKED_TOOLS} DebugTool)
 set(FUNCTION_TRACKER_SOURCES tools/FunctionTrackerTool.cpp)
 add_library(FunctionTrackerTool STATIC EXCLUDE_FROM_ALL ${FUNCTION_TRACKER_SOURCES})
 add_dependencies(FunctionTrackerTool easyloggingpp)
+target_link_libraries(FunctionTrackerTool Interpreter)
 # Link FunctionTrackerTool into main
 set(LINKED_TOOLS ${LINKED_TOOLS} FunctionTrackerTool)
 # < libFunctionTrackerTool.a --------------------------------------
@@ -86,6 +100,7 @@ include_directories(${source_dir}/include)
 set(LOCK_SET_CHECKER_SOURCES tools/LockSetChecker.cpp)
 add_library(LockSetChecker STATIC EXCLUDE_FROM_ALL ${LOCK_SET_CHECKER_SOURCES})
 add_dependencies(LockSetChecker easyloggingpp rapidjson)
+target_link_libraries(LockSetChecker Interpreter)
 # Link LockSetChecker into main
 set(LINKED_TOOLS ${LINKED_TOOLS} LockSetChecker)
 # < libLockSetChecker.a -------------------------------------------
@@ -125,6 +140,7 @@ else(NOT BOOST_PATH)
 
     add_library(ParasiteTool STATIC EXCLUDE_FROM_ALL ${PARASITE_SOURCES})
     add_dependencies(ParasiteTool easyloggingpp rapidjson)
+    target_link_libraries(ParasiteTool Interpreter)
 
     # Link ParasiteTool into main
     set(LINKED_TOOLS ${LINKED_TOOLS} ParasiteTool)

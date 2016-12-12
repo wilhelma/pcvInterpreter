@@ -13,9 +13,10 @@
 #define  NEW_THREAD_EVENT_H_
 
 #include "fwd/NewThreadInfo.h"
-#include "fwd/ShadowThread.h"
+#include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
+#include "Types.h"
 
 #include <memory>
 
@@ -24,11 +25,11 @@
 class NewThreadEvent final : public Event<NewThreadInfo> {
 public:
     /// @brief Constructor.
-    /// @param thread The thread the event was triggered from.
-    /// @param info   The new thread event information.
-    explicit NewThreadEvent(std::shared_ptr<const ShadowThread> thread,
+    /// @param shadow_thread The shadow information of the thread that triggered the event.
+    /// @param info         The new thread event information.
+    explicit NewThreadEvent(ShadowThreadMap::const_iterator shadow_thread,
                             std::unique_ptr<const NewThreadInfo>&& info)
-        : Event(thread, std::move(info))
+        : Event(shadow_thread, std::move(info))
     {};
 
     /// Returns the event type.
