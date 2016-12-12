@@ -21,7 +21,7 @@
 class FunctionTable final: public DBTable<FUN_ID, function_t> {
 private:
     const size_type idToVectorIndex(const index_type& id) const final
-    { return static_cast<size_type>(id) - 2; }
+    { return static_cast<size_type>(id) - 1; }
 };
 
 #endif

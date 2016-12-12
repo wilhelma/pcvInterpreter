@@ -66,11 +66,11 @@ template<typename T,
          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::unique_ptr<const T> load_table(const std::string& table_name, const DBManager& db) {
     // Query the number of entries in the database table
-    const auto entries = db.query("select count(*) from " + table_name + ";")->get<std::size_t>(0);
+    const auto numEntries = db.query("select max(Id) from " + table_name + ";")->getSingle<std::size_t>(0) + 1;
 
     // Create the new table
     T* table = new T();
-    table->reserve(entries);
+    table->reserve(numEntries);
     std::copy(SQLStatementIterator<typename T::value_type>(db.query("select * from " + table_name + ";")),
               SQLStatementIterator<typename T::value_type>::end(), inserter<T>(table));
 
@@ -151,7 +151,7 @@ const thread_t& thread_of(const call_t& call, const Database& db)
 
 const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Database& db) noexcept {
     const auto& acc_ids_of_ins = db.accessTable()->getInsAccessMap().find(ins.id);
-    if (acc_ids_of_ins == std::cend(db.accessTable()->getInsAccessMap())) {
+    if (acc_ids_of_ins == end(db.accessTable()->getInsAccessMap())) {
         // If this happens, the database is corrupted
         LOG(FATAL) << "Database is corrupted: InsAccessMaps has no entry "
                    << ins.id;
