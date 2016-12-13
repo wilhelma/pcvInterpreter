@@ -16,7 +16,7 @@
 
 /// @ingroup types
 /// @brief The type of the reference.
-enum class ReferenceType {
+enum class ReferenceType : unsigned char {
     STACK     = (1 << 0), ///< Reference to a stack variable.
     HEAP      = (1 << 1), ///< Reference to a heap variable.
     STATICVAR = (1 << 2), ///< Reference to a static variable.

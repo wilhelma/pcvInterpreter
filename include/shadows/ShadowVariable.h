@@ -5,10 +5,10 @@
  *      Author: wilhelma
  */
 
-#ifndef SHADOW_VAR_H_
-#define SHADOW_VAR_H_
+#ifndef SHADOW_VARIABLE_H_
+#define SHADOW_VARIABLE_H_
 
-#include "Reference.h"
+#include "fwd/Reference.h"
 #include "Types.h"
 
 /// @ingroup shadows
@@ -17,15 +17,10 @@ class ShadowVariable {
 public:
     /// @brief Constructor.
     /// @param var_reference The information about the accessed variable.
-    explicit ShadowVariable(const reference_t& var_reference) noexcept
-        : Type_(var_reference.memory_type),
-          Size_(var_reference.size),
-          Name_(var_reference.name)
-        {}
+    explicit ShadowVariable(const reference_t& var_reference) noexcept;
 
 	/// _Default_ destructor.
 	~ShadowVariable() = default;
-
 
 	/// _Deleted_ copy constructor.
 	ShadowVariable(const ShadowVariable&) = delete;

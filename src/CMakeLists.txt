@@ -42,19 +42,15 @@ set(INTERPRETER_SOURCES
     DBInterpreter.cpp
     EventGenerator.cpp
     EventService.cpp
-    SAAPRunner.cpp
-    ShadowMap.cpp
-    ShadowLockMap.cpp
-    ShadowThreadMap.cpp
-    ShadowVariableMap.cpp)
+    SAAPRunner.cpp)
 
 set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
     infos/AccessInfo.cpp
     infos/LockInfo.cpp
     infos/ChildThreadInfo.cpp)
 
-#    infos/ReleaseInfo.cpp
-#    infos/AcquireInfo.cpp
+set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
+    shadows/ShadowVariable.cpp)
 
 # Add a rule to compile the interpreter part in a static library
 add_library(Interpreter STATIC EXCLUDE_FROM_ALL ${INTERPRETER_SOURCES})

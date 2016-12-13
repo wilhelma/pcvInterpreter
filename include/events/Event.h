@@ -107,13 +107,7 @@ public:
                    std::unique_ptr<const InfoType>&& info) noexcept
         : Thread_(shadow_thread),
           Info_(std::move(info))
-    {
-//        // If the element was not in the map, make a new one and insert it
-//        if (Thread_ == std::cend(s_thread_map)) {
-//            auto&& entry = std::make_pair(thread_id, std::make_shared<const ShadowThread>(thread_id));
-//            Thread_ = s_thread_map.insert(entry).first;
-//        }
-    };
+    {}
 
     /// _Default_ destructor.
     virtual ~Event() = default;
@@ -133,11 +127,11 @@ public:
 
     /// Acesses the thread information.
     const std::shared_ptr<const ShadowThread>& thread() const
-    { return Thread_->second; };
+    { return Thread_->second; }
 
     /// Access the event information.
     const std::unique_ptr<const InfoType>& info() const
-    { return Info_; };
+    { return Info_; }
 
     /// Returns the event type.
     virtual Events type() const = 0;

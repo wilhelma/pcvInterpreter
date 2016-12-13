@@ -12,6 +12,8 @@
 #ifndef  FWD_REFERENCE_H_
 #define  FWD_REFERENCE_H_
 
+enum class ReferenceType : unsigned char;
+
 struct reference_t;
 
 #endif

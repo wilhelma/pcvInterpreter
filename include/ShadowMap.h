@@ -97,29 +97,4 @@ private:
     std::map<key_type, mapped_type> Map_;
 };
 
-/// @brief Get the `Shadow` pointer associated to the ID.
-/// @details Look for _id_ in the map and, if it's found, return the associated `Shadow` pointer.
-/// If the entry is not there, a new one will be created and returned.
-/// @param id The key id to look for.
-/// @param sm The `ShadowMap` to look in.
-/// @param db Database reference to fetch information in if a new element has to be created.
-/// @tparam SMap     The shadow-map type.
-/// @tparam activate A template expression that will cause the compilation to fail if `SMap` 
-///                  does not inherit from `ShadowMap`.
-template <typename SMap,
-          typename activate = std::enable_if_t<std::is_base_of<ShadowMap<typename SMap::key_type, typename SMap::shadow_type>, SMap>::value>>
-typename SMap::mapped_type get_shadow(const typename SMap::key_type& id, SMap& sm, const Database& db) noexcept
-{
-    // Get the Shadow corresponding to id
-    const auto& shadow_it = sm.find(id);
-    if (shadow_it != std::cend(sm))
-        return shadow_it->second;
-
-    // If the entry is not in the map, make a new one
-    typename SMap::mapped_type& shadow = sm.new_entry(id, db);
-    sm.insert(std::make_pair(id, shadow)); 
-
-    return shadow;
-}
-
 #endif
