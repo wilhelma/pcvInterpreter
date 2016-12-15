@@ -69,14 +69,8 @@ private:
     const std::unique_ptr<const Database>& database() const noexcept
     { return Database_; }
 
-    /// Returns a pointer to the event generator.
-    const std::unique_ptr<EventGenerator>& eventGenerator() const noexcept
-    { return EventGenerator_; };
-
     /// Constant pointer to the EventGenerator.
     const std::unique_ptr<EventGenerator> EventGenerator_;
-
-    // types-------------------------------------------------------------------
 
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
@@ -90,7 +84,6 @@ private:
 
     // private methods---------------------------------------------------------
     ErrorCode processAccess(const instruction_t& instruction, const TRD_ID& thread_id);
-    ErrorCode processMemAccess(const access_t& access, const TRD_ID& reference);
 
 
     ErrorCode processReturn(const instruction_t& ins, const call_t& call);
