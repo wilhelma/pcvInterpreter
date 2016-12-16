@@ -15,7 +15,7 @@
 #include "Types.h"
 
 /// @brief The type of the instruction.
-enum class InstructionType {
+enum class InstructionType : unsigned char {
     CALL    = 0, ///< Function call.
     ACCESS  = 1, ///< Memory access.
     ALLOC   = 2, ///< Memory allocation.
@@ -48,8 +48,7 @@ struct instruction_t {
                   LIN_NO lineNumber) noexcept
                   : id(instructionId), segment_id(segmentId),
                   instruction_type(instructionType), line_number(lineNumber)
-    {
-    }
+    {}
 };
 
 #endif

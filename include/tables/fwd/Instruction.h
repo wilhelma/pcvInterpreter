@@ -12,6 +12,8 @@
 #ifndef  FWD_INSTRUCTION_H_
 #define  FWD_INSTRUCTION_H_
 
+enum class InstructionType : unsigned char;
+
 struct instruction_t;
 
 #endif

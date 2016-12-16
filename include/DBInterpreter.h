@@ -13,13 +13,13 @@
 #include "fwd/Call.h"
 #include "fwd/File.h"
 #include "fwd/Function.h"
-#include "Instruction.h" // < Contains InstructionType!
+#include "fwd/Instruction.h"
 #include "fwd/Loop.h"
 #include "fwd/LoopExecution.h"
 #include "fwd/LoopIteration.h"
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
-#include "Thread.h" // < Contains NO_TRD_ID static variable (move to source!)
+#include "fwd/Thread.h"
  
 #include "CallStack.h"
 
@@ -77,10 +77,6 @@ private:
 
     /// Stack of call IDs.
     CallStack CallStack_;
-
-    TIME lastEventTime_;
-    TRD_ID lastThreadId = NO_TRD_ID;
-  
 
     // private methods---------------------------------------------------------
     ErrorCode processAccess(const instruction_t& instruction, const TRD_ID& thread_id);

@@ -73,8 +73,7 @@ size_t getHash(unsigned funId, unsigned lineNo) {
 }
 
 DBInterpreter::DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) :
-    EventGenerator_(std::move(event_generator)),
-    lastEventTime_(0)
+    EventGenerator_(std::move(event_generator))
 {}
 
 // Default the destructor here to allow the Ptr to Impl idiom.
@@ -105,15 +104,15 @@ ErrorCode DBInterpreter::process(const std::string& DBPath) {
 
 ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
         const call_t& call) {
-    TRD_ID returnThread = NO_TRD_ID;
+    TRD_ID returnThread = thread_t::no_id();
 
     CAL_ID topCallId = CallStack_.top();
     while (!CallStack_.isEmpty() && call.id != topCallId) {
         const auto& topCall = call_with_id(topCallId, *database()); // may throw
 
-        if (returnThread != NO_TRD_ID && returnThread != topCall.thread_id) {
+        if (returnThread != thread_t::no_id() && returnThread != topCall.thread_id) {
             publishThreadReturn(topCall.thread_id);
-            returnThread = NO_TRD_ID;
+            returnThread = thread_t::no_id();
         }
 
         publishCallReturn(topCall);
@@ -125,30 +124,22 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
         topCallId = CallStack_.top();
     }
 
-    if (returnThread != NO_TRD_ID)
+    if (returnThread != thread_t::no_id())
         publishThreadReturn(returnThread);
 
     return ErrorCode::OK;
 }
 
+// TODO remove this function and call returnEvent directly
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
-    assert(lastEventTime_ <= topCall.end_time);
-
     EventGenerator_->returnEvent(topCall.thread_id, topCall.id, topCall.function_id, topCall.end_time);
-
-    lastEventTime_ = topCall.end_time;
     return ErrorCode::OK;
 }
 
 ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
-    const auto& thread = thread_with_id(threadId, *database()); // may throw
+    const auto& thread       = thread_with_id(threadId, *database()); // may throw
     const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
-    assert(lastEventTime_ <= threadEndTime);
-
     EventGenerator_->threadEndEvent(thread.parent_thread_id, thread.id, threadEndTime);
-
-    lastEventTime_ = threadEndTime;
-    lastThreadId = thread.parent_thread_id;
 
     return ErrorCode::OK;
 }
@@ -181,11 +172,9 @@ ErrorCode DBInterpreter::processEnd() {
     while (!CallStack_.isEmpty()) {
         const auto& top_call = call_with_id(CallStack_.pop(), *database()); // may trow
 
-        if (top_call.thread_id != lastThreadId) {
-            const auto& last_thread = thread_with_id(lastThreadId, *database());
-
+        if (top_call.thread_id != EventGenerator_->lastThreadId()) {
+            const auto& last_thread = thread_with_id(EventGenerator_->lastThreadId(), *database());
             EventGenerator_->threadEndEvent(top_call.thread_id, last_thread.id, last_thread.start_cycle + last_thread.num_cycles);
-            lastThreadId = top_call.thread_id;
         }
 
         EventGenerator_->returnEvent(top_call.thread_id, top_call.id, top_call.function_id, top_call.end_time);
@@ -239,8 +228,6 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
 }
 
 ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
-    assert(lastEventTime_ <= call.start_time);
-
     auto ret = ErrorCode::NO_ENTRY;
 
     const auto& fun_of_call = function_of(call, *database());
@@ -260,7 +247,6 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     fun_of_call.type,
                     file_of_fun.file_name,
                     file_of_fun.file_path);
-            lastEventTime_ = call.start_time;
             CallStack_.push(call.id);
             ret = ErrorCode::OK;
             break;
@@ -281,12 +267,9 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     // This will throw or abort in case of failure
     const auto& call_of_ins = call_of(ins, *database());
 
-    assert(lastEventTime_ <= call_of_ins.start_time);
     for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
             EventGenerator_->acquireEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-
-            lastEventTime_ = call_of_ins.start_time;
             return ErrorCode::OK;
         }
     }
@@ -299,11 +282,9 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     // This will throw or abort in case of failure
     const auto& call_of_ins = call_of(ins, *database());
 
-    assert(lastEventTime_ <= call_of_ins.start_time);
     for (const auto& access : *database()->accessTable()) {
         if (access.instruction_id == ins.id) {
             EventGenerator_->releaseEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-            lastEventTime_ = call_of_ins.start_time;
             return ErrorCode::OK;
         }
     }
@@ -311,24 +292,22 @@ ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     return ErrorCode::NO_ENTRY;
 }
 
-/// @todo Code duplication! Candidate for template!
+/// TODO Code duplication! Candidate for template!
+/// TODO Remove function. Call directly.
 ErrorCode DBInterpreter::processFork(const thread_t& thread) {
-    assert (lastEventTime_ <= thread.start_cycle);
 
     // XXX Consider changing prototype to newThreadEvent(const thread_t&)
     EventGenerator_->newThreadEvent(thread.parent_thread_id, thread.id, thread.start_cycle, thread.num_cycles);
 
-    lastEventTime_ = thread.start_cycle;
-    lastThreadId = thread.id;
     return ErrorCode::OK;
 }
 
-/// @todo Code duplication! Candidate for template!
+/// TODO Code duplication! Candidate for template!
+/// TODO Remove function. Call directly.
 ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
         const thread_t& thread) {
 
-    EventGenerator_->joinEvent(thread.parent_thread_id, thread.id, lastEventTime_);
+    EventGenerator_->joinEvent(thread.parent_thread_id, thread.id, EventGenerator_->lastEventTime());
 
-    lastThreadId = thread.parent_thread_id;
     return ErrorCode::OK;
 }

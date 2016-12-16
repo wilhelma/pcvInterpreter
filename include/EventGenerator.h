@@ -98,7 +98,7 @@ public:
     /// @param end_time         The time when the child thread has finished its work.
     void threadEndEvent(const TRD_ID& parent_thread_id,
                         const TRD_ID& child_thread_id,
-                        const TIME& end_time) const;
+                        const TIME& end_time);
 
     /// @brief Creates and delivers a JoinEvent to the event service.
     /// @param parent_thread_id The ID of the parent thread.
@@ -117,14 +117,21 @@ public:
                    const SEG_ID& Segment,
                    FunctionType FnType,
                    const FIL_PT& FileName,
-                   const FIL_PT& FilePath) const;
+                   const FIL_PT& FilePath);
 
     /// Creates and delivers a ReturnEvent to the event service.
+    /// @param return_time The time when the call returns.
     void returnEvent(const TRD_ID& parent_thread_id,
                      const CAL_ID& call,
                      const FUN_ID function,
-                     const TIME& endTime) const;
+                     const TIME& return_ime);
 
+    /// Returns the last (called?, created?) thread ID.
+    const TRD_ID& lastThreadId() const noexcept
+    { return LastThreadId_; }
+
+    const TIME& lastEventTime() const noexcept
+    { return LastEventTime_; }
 private:
     /// Constant pointer to the EventService.
     const std::unique_ptr<const EventService> EventService_;
@@ -135,6 +142,10 @@ private:
     /// Maps a reference ID to its ShadowVariable.
     const std::unique_ptr<ShadowVariableMap>  ShadowVariableMap_;
 
+    /// The ID of the thread at the top of the stack.
+    TRD_ID LastThreadId_;
+    /// The time when last event happened.
+    TIME   LastEventTime_;
 
     /// @brief Creates a new lock-acquire information class.
     /// @param lock_id      The ID of the acquired lock.

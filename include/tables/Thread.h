@@ -15,11 +15,8 @@
 
 #include "Types.h"
 
-static const TRD_ID NO_TRD_ID = static_cast<TRD_ID>(NO_ID);
-
 /// @ingroup records
-/// @brief Holds the information contained in one row of the _Thread_
-/// database table.
+/// @brief Holds the information contained in one row of the _Thread_ database table.
 /// @todo document this
 struct thread_t {
     /// SQL ID of the thread.
@@ -28,8 +25,11 @@ struct thread_t {
     TIME_STRING end_time;
     TIME start_cycle;
     TIME num_cycles;
+    /// ID of the instruction where it was created.
     INS_ID create_instruction_id;
+    /// ID of the instruction where it was joined.
     INS_ID join_instruction_id;
+    /// ID of the parent thread.
     TRD_ID parent_thread_id;
     PID process_id;
     CAL_ID call_id;
@@ -51,6 +51,10 @@ struct thread_t {
         parent_thread_id(parentThreadId), process_id(processId),
         call_id(callId)
         {}
+
+    /// Returns an ID for a thread that doesn't have one (i.e. the parent of the master).
+    static constexpr const TRD_ID no_id() noexcept
+{ return static_cast<TRD_ID>(NO_ID); }
 };
 
 #endif
