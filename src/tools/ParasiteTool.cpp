@@ -224,7 +224,7 @@ void ParasiteTool::Join(const JoinEvent* e) {
 void ParasiteTool::Return(const ReturnEvent* e) {
 
 	const auto& _info = e->info();
-	add_local_work(_info->endTime, "R");
+	add_local_work(_info->endTime(), "R");
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting return Event with signature " <<
 			stacks.bottomFunction()->function_signature.c_str() << std::endl;

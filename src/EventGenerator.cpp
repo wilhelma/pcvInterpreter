@@ -31,6 +31,8 @@
 #include "ThreadEndInfo.h"
 
 #include "EventService.h"
+#include "ShadowCall.h"
+#include "ShadowCallMap.h"
 #include "ShadowLock.h"
 #include "ShadowLockMap.h"
 #include "ShadowThread.h"
@@ -211,13 +213,14 @@ std::unique_ptr<const CallInfo> EventGenerator::callInfo(const CAL_ID& call_id,
                                                          const CALLSITE& site_id,
                                                          const TIME& call_time,
                                                          const TIME& runtime,
+                                                         const FUN_ID& function_id,
                                                          const FUN_SG& function_signature,
-                                                         const SEG_ID& segment_id,
-                                                         FunctionType function_type)
+                                                         FunctionType function_type,
+                                                         const SEG_ID& segment_id)
 {
     // make sure the entry is not yet in the map
     assert(ShadowCallMap_->find(call_id) == std::cend(*ShadowCallMap_));
-    auto call_entry = std::make_shared<const ShadowCall>(call_time, runtime, segment_id, function_type);
+    auto call_entry = std::make_shared<const ShadowCall>(call_time, runtime, function_id, function_type, segment_id);
     const auto& call_it = ShadowCallMap_->insert(std::make_pair(call_id, call_entry)).first;
 
     return std::make_unique<const CallInfo>(call_it, site_id, function_signature);
@@ -228,14 +231,15 @@ void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
                                const CALLSITE& site_id,
                                const TIME& call_time,
                                const TIME& runtime,
+                               const FUN_ID& function_id,
                                const FUN_SG& function_signature,
-                               const SEG_ID& segment_id,
-                               FunctionType function_type)
+                               FunctionType function_type,
+                               const SEG_ID& segment_id)
 {
     assert(LastEventTime_ <= call_time);
 
     const auto& parent_thread_it = get_iterator(parent_thread_id, *ShadowThreadMap_);
-    auto&& call_info = callInfo(call_id, site_id, call_time, runtime, function_signature, segment_id, function_type);
+    auto&& call_info = callInfo(call_id, site_id, call_time, runtime, function_id, function_signature, function_type, segment_id);
     CallEvent call_event(parent_thread_it, std::move(call_info));
     EventService_->publish(&call_event);
 
@@ -243,16 +247,17 @@ void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
 }
 
 void EventGenerator::returnEvent(const TRD_ID& parent_thread_id,
-                                 const CAL_ID& call,
-                                 const FUN_ID function,
+                                 const CAL_ID& call_id,
                                  const TIME& return_time)
 {
     assert(LastEventTime_ <= return_time);
 
     const auto& parent_thread_it = get_iterator(parent_thread_id, *ShadowThreadMap_);
-    auto&& return_info = std::make_unique<const ReturnInfo>(call, function, return_time);
+    const auto& call_it = get_iterator(call_id, *ShadowCallMap_);
+    auto&& return_info = std::make_unique<const ReturnInfo>(call_it, return_time);
     ReturnEvent return_event(parent_thread_it, std::move(return_info));
     EventService_->publish(&return_event);
 
+    ShadowCallMap_->erase(call_it);
     LastEventTime_ = return_time;
 }

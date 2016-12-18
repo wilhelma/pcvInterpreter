@@ -132,7 +132,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
 
 // TODO remove this function and call returnEvent directly
 ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
-    EventGenerator_->returnEvent(topCall.thread_id, topCall.id, topCall.function_id, topCall.end_time);
+    EventGenerator_->returnEvent(topCall.thread_id, topCall.id, topCall.end_time);
     return ErrorCode::OK;
 }
 
@@ -177,7 +177,7 @@ ErrorCode DBInterpreter::processEnd() {
             EventGenerator_->threadEndEvent(top_call.thread_id, last_thread.id, last_thread.start_cycle + last_thread.num_cycles);
         }
 
-        EventGenerator_->returnEvent(top_call.thread_id, top_call.id, top_call.function_id, top_call.end_time);
+        EventGenerator_->returnEvent(top_call.thread_id, top_call.id, top_call.end_time);
 
         ret = ErrorCode::OK;
     }
@@ -242,9 +242,10 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     static_cast<CALLSITE>(getHash(call.function_id, line)),
                     call.start_time,
                     static_cast<TIME>(call.end_time - call.start_time),
+                    fun_of_call.id,
                     fun_of_call.name,
-                    segId,
-                    fun_of_call.type);
+                    fun_of_call.type,
+                    segId);
             CallStack_.push(call.id);
             ret = ErrorCode::OK;
             break;

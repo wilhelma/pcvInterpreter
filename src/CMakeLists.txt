@@ -47,6 +47,7 @@ set(INTERPRETER_SOURCES
 set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
     infos/AccessInfo.cpp
     infos/LockInfo.cpp
+    infos/FunctionInfo.cpp
     infos/ChildThreadInfo.cpp)
 
 set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}

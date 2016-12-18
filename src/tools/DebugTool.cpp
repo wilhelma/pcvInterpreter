@@ -112,11 +112,19 @@ void DebugTool::Release(const ReleaseEvent* event) {
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //        << "ReturnEvent:\n"
 //        << " > Call ID:     " << event->info()->call << "\n"
 //        << " > Function ID: " << event->info()->function << "\n"
 //        << " > End time:    " << event->info()->endTime << std::endl;
+=======
+	LOG(DEBUG) 
+        << "ReturnEvent:\n"
+        << " > Call ID:     " << event->info()->callId() << "\n"
+        << " > Function ID: " << event->info()->functionId() << "\n"
+        << " > End time:    " << event->info()->endTime() << std::endl;
+>>>>>>> [FunctionInfo] is now base for ReturnInfo and CallInfo
 }
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {

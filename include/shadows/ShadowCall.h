@@ -22,10 +22,14 @@ public:
     /// @brief Constructor.
     explicit ShadowCall(const TIME& call_time,
                         const TIME& runtime,           
-                        const SEG_ID& segment_id,    
-                        FunctionType function_type) noexcept
-        : CallTime_(call_time), Runtime_(runtime),
-          SegmentId_(segment_id), FunctionType_(function_type)
+                        const FUN_ID& function_id,
+                        FunctionType function_type,
+                        const SEG_ID& segment_id) noexcept    
+        : CallTime_(call_time),
+          Runtime_(runtime),
+          FunctionId_(function_id),
+          FunctionType_(function_type),
+          SegmentId_(segment_id)
         {}
     
     /// _Default_ destructor.
@@ -48,6 +52,10 @@ public:
     const TIME& runtime() const noexcept
     { return Runtime_; }
 
+    /// Returns the ID of the called function.
+    const FUN_ID& functionId() const noexcept
+    { return FunctionId_; }
+
     /// Returns the function type.
     const FunctionType functionType() const noexcept
     { return FunctionType_; }
@@ -61,10 +69,12 @@ private:
     TIME CallTime_;
     /// The runtime of the function.
     TIME Runtime_;
-    /// The call segment ID.
-    SEG_ID SegmentId_;
+    /// The ID of the called function.
+    FUN_ID FunctionId_;
     /// The type of the called function.
     FunctionType FunctionType_;
+    /// The call segment ID.
+    SEG_ID SegmentId_;
 };
 
 #endif

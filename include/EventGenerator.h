@@ -113,19 +113,19 @@ public:
     /// Creates and delivers a CallEvent to the event service.
     void callEvent(const TRD_ID& parent_thread_id,
                    const CAL_ID& call_id,
-                   const CALLSITE& SiteId,
-                   const TIME& CallTime,
-                   const TIME& Runtime,
-                   const FUN_SG& FnSignature,
-                   const SEG_ID& Segment,
-                   FunctionType FnType);
+                   const CALLSITE& site_id,
+                   const TIME& call_time,
+                   const TIME& runtime,
+                   const FUN_ID& function_id,
+                   const FUN_SG& function_signature,
+                   FunctionType function_type,
+                   const SEG_ID& segment_id);
 
     /// Creates and delivers a ReturnEvent to the event service.
     /// @param return_time The time when the call returns.
     void returnEvent(const TRD_ID& parent_thread_id,
-                     const CAL_ID& call,
-                     const FUN_ID function,
-                     const TIME& return_ime);
+                     const CAL_ID& call_id,
+                     const TIME& return_time);
 
     /// Returns the last (called?, created?) thread ID.
     const TRD_ID& lastThreadId() const noexcept
@@ -168,9 +168,10 @@ private:
                                              const CALLSITE& site_id,
                                              const TIME& call_time,
                                              const TIME& runtime,
+                                             const FUN_ID& function_id,
                                              const FUN_SG& function_signature,
-                                             const SEG_ID& segment_id,
-                                             FunctionType function_type);
+                                             FunctionType function_type,
+                                             const SEG_ID& segment_id);
 };
 
 #endif
