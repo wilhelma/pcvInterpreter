@@ -84,6 +84,9 @@ int main(int argc, char *argv[]) {
     if (argc == 2)
         db_file_name = std::string(argv[1]);
 
+    // Dirty trick to suppress output (on Linux)
+    el::Loggers::reconfigureAllLoggers(el::ConfigurationType::Format, "\r\x1b[A");
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

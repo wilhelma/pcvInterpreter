@@ -42,7 +42,7 @@ std::ostream& operator<<(std::ostream& s, const AccessEvent& e) {
            s << "AccessType:  " << std::setw(2) << static_cast<int>(e.info()->accessType()) << " | ";
            s << "RefType:     " << std::setw(2) << static_cast<int>(e.info()->referenceType()) << " | ";
            s << "Size:        " << std::setw(2) << e.info()->size() << " | ";
-    return s << "Name:        " << std::setw(2) << e.info()->name() << " | ";
+    return s << "Name:        " << std::setw(2) << e.info()->name();
 }
 
 void EventTestTool::Access(const AccessEvent* e) {
@@ -86,7 +86,16 @@ void EventTestTool::Call(const CallEvent* e) {
 
 void EventTestTool::Join(const JoinEvent* e) {
     EXPECT_LE(e->threadId(), e->info()->childThreadId());
+    EXPECT_LT(e->info()->startTime(), e->info()->joinTime());
     ++ NumJoins_;
+}
+
+std::ostream& operator<<(std::ostream& s, const NewThreadEvent& e) {
+    s << "Parent trd id: " << std::setw(3) << e.threadId()              << " | ";
+    s << "Child trd id:  " << std::setw(3) << e.info()->childThreadId() << " | ";
+    s << "Start time:    " << std::setw(3) << e.info()->startTime()     << " | ";
+    s << "Run time:      " << std::setw(3) << e.info()->runTime()       << " | ";
+    return s;
 }
 
 void EventTestTool::NewThread(const NewThreadEvent* e) {
@@ -94,14 +103,10 @@ void EventTestTool::NewThread(const NewThreadEvent* e) {
 
     ++ NumNewThreads_;
 
-//    std::cout << "New Thread" << std::endl;
-//    std::cout << " Parent id:   " << e->threadId() << std::endl;
-//    std::cout << " Child id:    " << e->info()->childThreadId() << std::endl;
-//    std::cout << " Start time:  " << e->info()->startTime() << std::endl;
-//    std::cout << " Run time:    " << e->info()->runTime() << std::endl;
 }
 
 void EventTestTool::Release(const ReleaseEvent* e) {
+    EXPECT_LT(e->info()->acquireTime(), e->info()->releaseTime());
     ++ NumReleases_;
 }
 
@@ -109,8 +114,19 @@ void EventTestTool::Return(const ReturnEvent* e) {
     ++ NumReturns_;
 }
 
+std::ostream& operator<<(std::ostream& s, const ThreadEndEvent& e) {
+    s << "Parent trd id: " << std::setw(3) << e.threadId() << " | ";
+    s << "Child trd id:  " << std::setw(3) << e.info()->childThreadId() << " | ";
+    s << "Start time:    " << std::setw(3) << e.info()->startTime() << " | ";
+    s << "End time:      " << std::setw(2) << e.info()->endTime();
+    return s;
+}
+
 void EventTestTool::ThreadEnd(const ThreadEndEvent* e) {
     EXPECT_LE(e->threadId(), e->info()->childThreadId());
+    EXPECT_LT(e->info()->startTime(), e->info()->endTime());
+
+    std::cout << *e << std::endl;
 
     ++ NumThreadEnds_;
 }
