@@ -46,6 +46,7 @@
 
 EventGenerator::EventGenerator(std::unique_ptr<const EventService>&& event_service) noexcept :
     EventService_(std::move(event_service)),
+    ShadowCallMap_(std::make_unique<ShadowCallMap>()),
     ShadowLockMap_(std::make_unique<ShadowLockMap>()),
     ShadowThreadMap_(std::make_unique<ShadowThreadMap>()),
     ShadowVariableMap_(std::make_unique<ShadowVariableMap>()),
@@ -206,24 +207,39 @@ void EventGenerator::joinEvent(const TRD_ID& parent_thread_id,
     LastThreadId_ = parent_thread_id;
 }
 
-void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
-                               const CALLSITE& SiteId,
-                               const TIME& CallTime,
-                               const TIME& Runtime,
-                               const FUN_SG& FnSignature,
-                               const SEG_ID& Segment,
-                               FunctionType FnType,
-                               const FIL_PT& FileName,
-                               const FIL_PT& FilePath)
+std::unique_ptr<const CallInfo> EventGenerator::callInfo(const CAL_ID& call_id,
+                                                         const CALLSITE& site_id,
+                                                         const TIME& call_time,
+                                                         const TIME& runtime,
+                                                         const FUN_SG& function_signature,
+                                                         const SEG_ID& segment_id,
+                                                         FunctionType function_type)
 {
-    assert(LastEventTime_ <= CallTime);
+    // make sure the entry is not yet in the map
+    assert(ShadowCallMap_->find(call_id) == std::cend(*ShadowCallMap_));
+    auto call_entry = std::make_shared<const ShadowCall>(call_time, runtime, segment_id, function_type);
+    const auto& call_it = ShadowCallMap_->insert(std::make_pair(call_id, call_entry)).first;
+
+    return std::make_unique<const CallInfo>(call_it, site_id, function_signature);
+}
+
+void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
+                               const CAL_ID& call_id,
+                               const CALLSITE& site_id,
+                               const TIME& call_time,
+                               const TIME& runtime,
+                               const FUN_SG& function_signature,
+                               const SEG_ID& segment_id,
+                               FunctionType function_type)
+{
+    assert(LastEventTime_ <= call_time);
 
     const auto& parent_thread_it = get_iterator(parent_thread_id, *ShadowThreadMap_);
-    auto&& call_info = std::make_unique<const CallInfo>(SiteId, CallTime, Runtime, FnSignature, Segment, FnType, FileName, FilePath);
+    auto&& call_info = callInfo(call_id, site_id, call_time, runtime, function_signature, segment_id, function_type);
     CallEvent call_event(parent_thread_it, std::move(call_info));
     EventService_->publish(&call_event);
 
-    LastEventTime_ = CallTime;
+    LastEventTime_ = call_time;
 }
 
 void EventGenerator::returnEvent(const TRD_ID& parent_thread_id,

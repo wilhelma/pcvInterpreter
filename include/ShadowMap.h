@@ -55,14 +55,6 @@ public:
     ShadowMap& operator=(ShadowMap&&)      = delete;
 
     /// @brief Erase an entry from the map.
-    /// @param id The key id of the element to remove.
-    /// @return Iterator following the removed element.
-    /// @throw ShadowMapException If the queried ID is not in the map.
-    /// @throw ShadowMapException If the pointer corresponding to the ID is still in use.
-    /// @todo Probably change the exception specification to one resembling the STL.
-    iterator erase(const IdT& id);
-
-    /// @brief Erase an entry from the map.
     /// @param it The iterator to the element to erase.
     iterator erase(const_iterator it) noexcept
     { return Map_.erase(it); }

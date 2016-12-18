@@ -10,6 +10,7 @@
 #include "fwd/ShadowLock.h"
 
 #include "Access.h" // for AccessType
+#include "Reference.h"
 
 #include "AccessEvent.h"
 #include "AccessInfo.h"

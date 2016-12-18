@@ -60,6 +60,7 @@ void DebugTool::Acquire(const AcquireEvent* event) {
 }
 
 void DebugTool::Call(const CallEvent* event) {
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //		<< "CallEvent:\n"
 //        << " > Call Site:  " << event->info()->siteId << "\n"
@@ -69,6 +70,15 @@ void DebugTool::Call(const CallEvent* event) {
 //		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->fnType) << "\n"
 //		<< " > File name:  " << event->info()->fileName << "\n"
 //		<< " > File path:  " << event->info()->filePath << std::endl;
+=======
+	LOG(DEBUG) 
+		<< "CallEvent:\n"
+        << " > Call Site:  " << event->info()->siteId() << "\n"
+        << " > Start Time  " << event->info()->callTime() << "\n"
+        << " > Runtime:    " << event->info()->runtime() << "\n"
+		<< " > Fun. sig.:  " << event->info()->functionSignature() << "\n"
+		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->functionType()) << std::endl;
+>>>>>>> [ShadowCall] create ShadowCall{,Map}
 }
 
 

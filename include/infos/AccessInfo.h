@@ -12,11 +12,10 @@
 #ifndef  ACCESS_INFO_H_
 #define  ACCESS_INFO_H_
 
-#include "ShadowVariableMap.h"
-
-#include "Reference.h" // Contains the ReferenceType!
+#include "fwd/Reference.h"
 
 #include "Access.h" // Contains the AccessType!
+#include "ShadowVariableMap.h"
 #include "Types.h"
 
 #include <memory>

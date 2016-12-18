@@ -8,7 +8,7 @@
 #ifndef DBINTERPRETER_H_
 #define DBINTERPRETER_H_
 
-// Tables
+// -- Tables -------------------
 #include "fwd/Access.h"
 #include "fwd/Call.h"
 #include "fwd/File.h"
@@ -20,6 +20,7 @@
 #include "fwd/Reference.h"
 #include "fwd/Segment.h"
 #include "fwd/Thread.h"
+// -----------------------------
  
 #include "CallStack.h"
 
@@ -40,7 +41,7 @@ enum class ErrorCode {
 };
 
 /// @ingroup database
-/// @brief Database interpreter: produces Event's from the database types (e.g. access_t, call_t and so on).
+/// @brief Interprets the content of the `Database` and uses the `EventGenerator` to publish events to the `Tool`'s.
 class DBInterpreter {
 public:
     /// @brief Constructor.
@@ -62,7 +63,6 @@ public:
     /// @brief Processes the database by looping over the instruction table.
     /// @param DBPath The database to process.
     ErrorCode process(const std::string& DBPath);
-
 
 private:
     /// Helper function to access the database in a read-only way.

@@ -236,17 +236,15 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
         case FunctionType::FUNCTION:
         case FunctionType::METHOD:
         {
-            const auto& file_of_fun = file_of(fun_of_call, *database());
             EventGenerator_->callEvent(
                     call.thread_id,
+                    call.id,
                     static_cast<CALLSITE>(getHash(call.function_id, line)),
                     call.start_time,
                     static_cast<TIME>(call.end_time - call.start_time),
                     fun_of_call.name,
                     segId,
-                    fun_of_call.type,
-                    file_of_fun.file_name,
-                    file_of_fun.file_path);
+                    fun_of_call.type);
             CallStack_.push(call.id);
             ret = ErrorCode::OK;
             break;

@@ -154,15 +154,15 @@ void ParasiteTool::Call(const CallEvent* e) {
 
 	print_event_start("CALL");
 	const auto& _info = e->info();
-	last_event_time = _info->callTime;
+	last_event_time = _info->callTime();
 	if (DEBUG_OUTPUT) {
 		std::cout << "starting call Event with signature " <<
-				      _info->fnSignature.c_str() << std::endl;
+				      _info->functionSignature().c_str() << std::endl;
 	}
-    stacks.bottomThread()->continuation.init_call_site(_info->siteId, 
-    												   concur(_info->callTime));
-    work.record_call_site(_info->siteId, _info->fnSignature);
-	stacks.function_push(_info->fnSignature, _info->siteId);
+    stacks.bottomThread()->continuation.init_call_site(_info->siteId(), 
+    												   concur(_info->callTime()));
+    work.record_call_site(_info->siteId(), _info->functionSignature());
+	stacks.function_push(_info->functionSignature(), _info->siteId());
 	print_event_end("CALL");
 }
 

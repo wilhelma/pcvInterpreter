@@ -31,6 +31,8 @@
 #include "ThreadEndInfo.h"
 // ---------------------------
 
+#include "Reference.h"
+
 #include "gtest/gtest.h"
 
 #include <iomanip>

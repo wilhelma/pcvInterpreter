@@ -13,6 +13,7 @@
 #define  EVENT_GENERATOR_H_
 
 #include "fwd/EventService.h"
+#include "fwd/ShadowCallMap.h"
 #include "fwd/ShadowLockMap.h"
 #include "fwd/ShadowThreadMap.h"
 #include "fwd/ShadowVariableMap.h"
@@ -25,6 +26,7 @@
 
 // Infos ----------------------
 #include "fwd/AcquireInfo.h"
+#include "fwd/CallInfo.h"
 #include "fwd/NewThreadInfo.h"
 // ----------------------------
 
@@ -110,14 +112,13 @@ public:
 
     /// Creates and delivers a CallEvent to the event service.
     void callEvent(const TRD_ID& parent_thread_id,
+                   const CAL_ID& call_id,
                    const CALLSITE& SiteId,
                    const TIME& CallTime,
                    const TIME& Runtime,
                    const FUN_SG& FnSignature,
                    const SEG_ID& Segment,
-                   FunctionType FnType,
-                   const FIL_PT& FileName,
-                   const FIL_PT& FilePath);
+                   FunctionType FnType);
 
     /// Creates and delivers a ReturnEvent to the event service.
     /// @param return_time The time when the call returns.
@@ -135,6 +136,8 @@ public:
 private:
     /// Constant pointer to the EventService.
     const std::unique_ptr<const EventService> EventService_;
+    /// Maps a call ID to its ShadowCall.
+    const std::unique_ptr<ShadowCallMap>      ShadowCallMap_;
     /// Maps a reference ID to its ShadowLock.
     const std::unique_ptr<ShadowLockMap>      ShadowLockMap_;
     /// Maps a thread ID to its ShadowThread.
@@ -160,6 +163,14 @@ private:
     std::unique_ptr<const NewThreadInfo> newThreadInfo(const TRD_ID& child_thread_id,
                                                        const TIME& start_time,
                                                        const TIME& run_time);
+
+    std::unique_ptr<const CallInfo> callInfo(const CAL_ID& call_id,
+                                             const CALLSITE& site_id,
+                                             const TIME& call_time,
+                                             const TIME& runtime,
+                                             const FUN_SG& function_signature,
+                                             const SEG_ID& segment_id,
+                                             FunctionType function_type);
 };
 
 #endif

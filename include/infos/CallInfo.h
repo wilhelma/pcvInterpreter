@@ -12,30 +12,52 @@
 #ifndef  CALL_INFO_H_
 #define  CALL_INFO_H_
 
-#include "Function.h"
+#include "ShadowCallMap.h"
+#include "ShadowCall.h"
+
+#include "Function.h" // <- for FunctionType
 #include "Types.h"
 
+/// @ingroup info
+/// @brief Information about a function call.
 struct CallInfo {
-	CALLSITE siteId;
-  TIME callTime;
-  TIME runtime;
-	FUN_SG fnSignature;
-	SEG_ID segment;
-	FunctionType fnType;
-	FIL_PT fileName;
-	FIL_PT filePath;
+    /// Constructor.
+    explicit CallInfo(ShadowCallMap::const_iterator call_it,
+                      const CALLSITE& site_id,
+                      const FUN_SG& function_signature) noexcept
+        : Call_(call_it),
+          SiteId_(site_id),
+          FunctionSignature_(function_signature)
+        {}
 
-	explicit
-  CallInfo(const CALLSITE& SiteId,
-           const TIME& CallTime,
-           const TIME& Runtime,
-           const FUN_SG& FnSignature,
-           const SEG_ID& Segment,
-           FunctionType FnType,
-           const FIL_PT& FileName,
-           const FIL_PT& FilePath) noexcept
-    : siteId(SiteId), callTime(CallTime), runtime(Runtime), fnSignature(FnSignature),
-      segment(Segment), fnType(FnType), fileName(FileName), filePath(FilePath) {}
+    /// Returns the time when the function was called.
+    const TIME& callTime() const noexcept
+    { return Call_->second->callTime(); }
+
+    /// Returns the runtime of the function.
+    const TIME& runtime() const noexcept
+    { return Call_->second->runtime(); }
+
+    /// Returns the function type.
+    const FunctionType functionType() const noexcept
+    { return Call_->second->functionType(); }
+
+    /// Returns the segment ID of the call.
+    const SEG_ID& segmentId() const noexcept
+    { return Call_->second->segmentId(); }
+
+    const CALLSITE& siteId() const noexcept
+    { return SiteId_; }
+
+    const FUN_SG& functionSignature() const noexcept
+    { return FunctionSignature_; }
+
+private:
+    /// Shadow information about the call.
+    ShadowCallMap::const_iterator Call_;
+
+    CALLSITE SiteId_;
+    FUN_SG   FunctionSignature_;
 };
 
 #endif
