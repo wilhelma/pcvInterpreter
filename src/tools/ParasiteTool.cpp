@@ -18,6 +18,9 @@
 #include <memory>
 #include "ParasiteTool.h"
 
+
+#include "AccessInfo.h"
+#include "JoinInfo.h"
 //#include "AcquireEvent.h"
 //#include "AcquireInfo.h"
 #include "ReleaseEvent.h"

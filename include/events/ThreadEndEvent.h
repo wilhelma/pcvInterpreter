@@ -37,4 +37,9 @@ public:
     { return Events::THREADEND; };
 };
 
+/// @brief Output stream operator for ThreadEndEvent.
+/// @param s The stream.
+/// @param e The event to stream.
+std::ostream& operator<<(std::ostream& s, const ThreadEndEvent& e);
+
 #endif

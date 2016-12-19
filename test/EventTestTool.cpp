@@ -35,18 +35,6 @@
 
 #include "gtest/gtest.h"
 
-#include <iomanip>
-
-std::ostream& operator<<(std::ostream& s, const AccessEvent& e) {
-//           s << " ------------ \n";
-           s << "Instruction: " << std::setw(2) << e.info()->instructionId() << " | ";
-           s << "Reference:   " << std::setw(2) << e.info()->variableId() << " | ";
-           s << "AccessType:  " << std::setw(2) << static_cast<int>(e.info()->accessType()) << " | ";
-           s << "RefType:     " << std::setw(2) << static_cast<int>(e.info()->referenceType()) << " | ";
-           s << "Size:        " << std::setw(2) << e.info()->size() << " | ";
-    return s << "Name:        " << std::setw(2) << e.info()->name();
-}
-
 void EventTestTool::Access(const AccessEvent* e) {
     ++ NumAccesses_;
 
@@ -92,14 +80,6 @@ void EventTestTool::Join(const JoinEvent* e) {
     ++ NumJoins_;
 }
 
-std::ostream& operator<<(std::ostream& s, const NewThreadEvent& e) {
-    s << "Parent trd id: " << std::setw(3) << e.threadId()              << " | ";
-    s << "Child trd id:  " << std::setw(3) << e.info()->childThreadId() << " | ";
-    s << "Start time:    " << std::setw(3) << e.info()->startTime()     << " | ";
-    s << "Run time:      " << std::setw(3) << e.info()->runTime()       << " | ";
-    return s;
-}
-
 void EventTestTool::NewThread(const NewThreadEvent* e) {
     EXPECT_LE(e->threadId(), e->info()->childThreadId());
 
@@ -114,14 +94,6 @@ void EventTestTool::Release(const ReleaseEvent* e) {
 
 void EventTestTool::Return(const ReturnEvent* e) {
     ++ NumReturns_;
-}
-
-std::ostream& operator<<(std::ostream& s, const ThreadEndEvent& e) {
-    s << "Parent trd id: " << std::setw(3) << e.threadId() << " | ";
-    s << "Child trd id:  " << std::setw(3) << e.info()->childThreadId() << " | ";
-    s << "Start time:    " << std::setw(3) << e.info()->startTime() << " | ";
-    s << "End time:      " << std::setw(2) << e.info()->endTime();
-    return s;
 }
 
 void EventTestTool::ThreadEnd(const ThreadEndEvent* e) {

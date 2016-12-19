@@ -18,6 +18,7 @@
 #include "Event.h"
 #include "Types.h"
 
+#include <iosfwd>
 #include <memory>
 
 /// @ingroup events
@@ -36,5 +37,10 @@ public:
     Events type() const final
     { return Events::JOIN; };
 };
+
+/// @brief Output stream operator for JoinEvent.
+/// @param s The stream.
+/// @param s The event to stream.
+std::ostream& operator<<(std::ostream& s, const JoinEvent& e);
 
 #endif

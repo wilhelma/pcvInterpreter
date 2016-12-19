@@ -7,12 +7,6 @@
 #include "ShadowThreadMap.h"
 #include "Types.h"
 
-// -----------------------------------------------------
-// Include these otherwise I get error from Parasite (?)
-#include "AccessInfo.h"
-#include "JoinInfo.h"
-// -----------------------------------------------------
-
 #include <memory>
 #include <type_traits>
 

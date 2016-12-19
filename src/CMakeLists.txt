@@ -45,6 +45,16 @@ set(INTERPRETER_SOURCES
     SAAPRunner.cpp)
 
 set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
+    events/AccessEvent.cpp
+    events/AcquireEvent.cpp
+    events/CallEvent.cpp
+    events/JoinEvent.cpp
+    events/NewThreadEvent.cpp
+    events/ReleaseEvent.cpp
+    events/ReturnEvent.cpp
+    events/ThreadEndEvent.cpp)
+
+set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
     infos/AccessInfo.cpp
     infos/LockInfo.cpp
     infos/FunctionInfo.cpp

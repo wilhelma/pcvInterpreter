@@ -14,6 +14,7 @@
 
 #include "fwd/AccessInfo.h"
 #include "fwd/ShadowThreadMap.h"
+#include <iosfwd>
 
 #include "Event.h"
 #include "Types.h"
@@ -26,7 +27,7 @@ class AccessEvent final : public Event<AccessInfo> {
 public:
     /// @brief Constructor.
     /// @param shadow_thread The shadow information of the thread that triggered the event.
-    /// @param info         The access event information.
+    /// @param info          The access event information.
     explicit AccessEvent(ShadowThreadMap::const_iterator shadow_thread,
                          std::unique_ptr<const AccessInfo>&& info)
         : Event(shadow_thread, std::move(info))
@@ -40,5 +41,7 @@ public:
     { return Events::ACCESS; };
 };
 
+/// Stream operator for AccessEvent.
+std::ostream& operator<<(std::ostream& s, const AccessEvent& e);
 
 #endif

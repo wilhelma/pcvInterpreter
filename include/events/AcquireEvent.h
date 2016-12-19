@@ -18,6 +18,7 @@
 #include "Event.h"
 #include "Types.h"
 
+#include <iosfwd>
 #include <memory>
 
 /// @ingroup events
@@ -36,5 +37,8 @@ public:
     Events type() const final
     { return Events::ACQUIRE; };
 };
+
+/// Stream operator for AcquireEvent.
+std::ostream& operator<<(std::ostream& s, const AcquireEvent& e);
 
 #endif

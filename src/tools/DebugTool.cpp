@@ -39,6 +39,7 @@
 
 void DebugTool::Access(const AccessEvent* event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //		<< "AccessEvent:\n"
 //		<< " > Access Type:  " << static_cast<unsigned>(event->info()->type) << "\n"
@@ -79,10 +80,21 @@ void DebugTool::Call(const CallEvent* event) {
 		<< " > Fun. sig.:  " << event->info()->functionSignature() << "\n"
 		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->functionType()) << std::endl;
 >>>>>>> [ShadowCall] create ShadowCall{,Map}
+=======
+	LOG(DEBUG) << *event << std::endl;
 }
 
+void DebugTool::Acquire(const AcquireEvent* event) {
+	LOG(DEBUG) << *event << std::endl;
+}
+
+void DebugTool::Call(const CallEvent* event) {
+	LOG(DEBUG) << *event << std::endl;
+>>>>>>> Make output stream operators for events
+}
 
 void DebugTool::Join(const JoinEvent* event) {
+<<<<<<< HEAD
 //	const JoinInfo& ji = *(event->getInfo());
 //	LOG(DEBUG) << "JoinEvent:" << std::endl;
 }
@@ -109,6 +121,17 @@ void DebugTool::Release(const ReleaseEvent* event) {
 void DebugTool::Release(const ReleaseEvent* event) {
 	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime() << std::endl;
 >>>>>>> [EventGenerator] creates and publishes events
+=======
+	LOG(DEBUG) << *event << std::endl;
+}
+
+void DebugTool::NewThread(const NewThreadEvent* event) {
+	LOG(DEBUG) << *event << std::endl;
+}
+
+void DebugTool::Release(const ReleaseEvent* event) {
+	LOG(DEBUG) << *event << std::endl;
+>>>>>>> Make output stream operators for events
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
@@ -129,6 +152,7 @@ void DebugTool::Return(const ReturnEvent* event) {
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 //	LOG(DEBUG)
 //        << "ThreadEndEvent:\n"
 //		<< " > Thread ID: " << event->info()->id << "\n"
@@ -139,4 +163,7 @@ void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
 		<< " > Thread ID: " << event->info()->childThreadId() << "\n"
 		<< " > End time:  " << event->info()->endTime() << std::endl;
 >>>>>>> [EventGenerator] creates and publishes events
+=======
+	LOG(DEBUG) << *event << std::endl;
+>>>>>>> Make output stream operators for events
 }
