@@ -13,6 +13,7 @@
 #define  ACCESS_EVENT_H_
 
 #include "fwd/AccessInfo.h"
+#include "fwd/EventType.h"
 #include "fwd/ShadowThreadMap.h"
 #include <iosfwd>
 
@@ -37,8 +38,7 @@ public:
     ~AccessEvent() = default;
 
     /// Return the event type.
-    Events type() const final
-    { return Events::ACCESS; };
+    EventType type() const noexcept final;
 };
 
 /// Stream operator for AccessEvent.

@@ -12,6 +12,7 @@
 #ifndef  RETURN_EVENT_H_
 #define  RETURN_EVENT_H_
 
+#include "fwd/EventType.h"
 #include "fwd/ReturnInfo.h"
 #include "fwd/ShadowThreadMap.h"
 
@@ -34,8 +35,7 @@ public:
     {};
 
     /// Returns the event type.
-    Events type() const final
-    { return Events::RETURN; }
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for ReturnEvent.

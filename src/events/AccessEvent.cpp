@@ -12,10 +12,14 @@
 #include "AccessEvent.h"
 
 #include "AccessInfo.h"
+#include "EventType.h"
 #include "ShadowThread.h"
 
 #include <iomanip>
 #include <ostream>
+
+EventType AccessEvent::type() const noexcept
+{ return EventType::ACCESS; }
 
 std::ostream& operator<<(std::ostream& s, const AccessEvent& e) {
     s << "Instruction: " << std::setw(2) << e.info()->instructionId() << " | ";

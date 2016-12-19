@@ -1,18 +1,17 @@
 /**
  *
- *    @file  Event.h
+ *    @file  EventType.h
  *   @brief  Forward header.
  *
- *    @date  08/16/16
+ *    @date  12/19/16
  *  @author  Paolo Di Giglio (github.com/pdigiglio),
  *           <p.digiglio91@gmail.com>
  *
  */
 
-#ifndef  FWD_EVENT_H_
-#define  FWD_EVENT_H_
+#ifndef  FWD_EVENT_TYPE_H_
+#define  FWD_EVENT_TYPE_H_
 
-template <typename InfoType>
-class Event;
+enum class EventType : unsigned char;
 
 #endif

@@ -13,6 +13,7 @@
 #define  CALL_EVENT_H_
 
 #include "fwd/CallInfo.h"
+#include "fwd/EventType.h"
 #include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
@@ -31,11 +32,10 @@ public:
     explicit CallEvent(ShadowThreadMap::const_iterator shadow_thread,
                        std::unique_ptr<const CallInfo>&& info)
         : Event(shadow_thread, std::move(info))
-    {};
+    {}
 
     /// Return the event type.
-    Events type() const final
-    { return Events::CALL; };
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for CallEvent.

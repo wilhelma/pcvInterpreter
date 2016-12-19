@@ -13,6 +13,7 @@
 #define  ACQUIRE_EVENT_H_
 
 #include "fwd/AcquireInfo.h"
+#include "fwd/EventType.h"
 #include "fwd/ShadowThreadMap.h"
 
 #include "Event.h"
@@ -31,11 +32,10 @@ public:
     explicit AcquireEvent(ShadowThreadMap::const_iterator shadow_thread,
                           std::unique_ptr<const AcquireInfo>&& info)
         : Event(shadow_thread, std::move(info))
-    {};
+    {}
 
     /// Return the event type.
-    Events type() const final
-    { return Events::ACQUIRE; };
+    EventType type() const noexcept final;
 };
 
 /// Stream operator for AcquireEvent.

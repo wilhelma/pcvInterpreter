@@ -12,6 +12,7 @@
 #ifndef  RELEASE_EVENT_H_
 #define  RELEASE_EVENT_H_
 
+#include "fwd/EventType.h"
 #include "fwd/ReleaseInfo.h"
 #include "fwd/ShadowThreadMap.h"
 
@@ -34,8 +35,7 @@ public:
     {}; 
 
     /// Returns the event type.
-    Events type() const noexcept final
-    { return Events::RELEASE; }; 
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for ReleaseEvent.

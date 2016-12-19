@@ -6,7 +6,7 @@
  */
 
 #include "DebugTool.h"
-#include "Event.h"
+#include "EventType.h"
 #include "Filter.h"
 #include "SAAPRunner.h"
 //#include "FunctionTrackerTool.h"
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     const auto& debug_tool_it = runner->registerTool(
             std::make_unique<DebugTool>(),
             std::unique_ptr<Filter>(nullptr),
-            Events::ALL);
+            EventType::ALL);
 
 //    const auto& parasite_tool_it = runner->registerTool(
 //            std::make_unique<ParasiteTool>(),

@@ -12,6 +12,7 @@
 #ifndef  NEW_THREAD_EVENT_H_
 #define  NEW_THREAD_EVENT_H_
 
+#include "fwd/EventType.h"
 #include "fwd/NewThreadInfo.h"
 #include "fwd/ShadowThreadMap.h"
 
@@ -31,11 +32,10 @@ public:
     explicit NewThreadEvent(ShadowThreadMap::const_iterator shadow_thread,
                             std::unique_ptr<const NewThreadInfo>&& info)
         : Event(shadow_thread, std::move(info))
-    {};
+    {}
 
     /// Returns the event type.
-    Events type() const final
-    { return Events::NEWTHREAD; };
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for NewThreadEvent.

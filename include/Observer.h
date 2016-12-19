@@ -12,7 +12,7 @@
 #ifndef  OBSERVER_H_
 #define  OBSERVER_H_
 
-#include "Event.h"
+#include "EventType.h"
 #include "Filter.h"
 #include "Tool.h"
 
@@ -25,7 +25,7 @@ struct Observer {
     /// The filter.
     std::unique_ptr<Filter> filter;
     /// The events the tool is registered to.
-    Events events;
+    EventType events;
 
     /// Constructor.
     /// @param t Pointer to the Tool to register.
@@ -33,7 +33,7 @@ struct Observer {
     /// @param e The events the Tool registers to.
     explicit Observer(std::unique_ptr<Tool>&& t,
                       std::unique_ptr<Filter>&& f,
-                      Events&& e) noexcept :
+                      EventType&& e) noexcept :
         tool(std::move(t)),
         filter(std::move(f)),
         events(std::move(e))

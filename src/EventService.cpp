@@ -7,7 +7,7 @@
 
 #include "EventService.h"
 
-#include "Event.h"
+#include "EventType.h"
 #include "Observer.h"
 #include "Tool.h"
 
@@ -30,64 +30,104 @@ EventService::EventService(const std::shared_ptr<const ObserverList>& observer_l
 
 bool EventService::publish(const NewThreadEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::NEWTHREAD) != 0) 
-            it.tool->NewThread(event);
+        switch (it.events & EventType::NEWTHREAD) {
+            case EventType::NEWTHREAD:
+                it.tool->NewThread(event);
+                break;
+            default:
+                break;
+        } 
 
     return true;
 }
 
 bool EventService::publish(const ThreadEndEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::THREADEND) != 0)
-            it.tool->ThreadEnd(event);
+        switch (it.events & EventType::THREADEND) {
+            case EventType::THREADEND:
+                it.tool->ThreadEnd(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const JoinEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::JOIN) != 0)
-            it.tool->Join(event);
+        switch (it.events & EventType::JOIN) {
+            case EventType::JOIN:
+                it.tool->Join(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const AcquireEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::ACQUIRE) != 0)
-            it.tool->Acquire(event);
+        switch (it.events & EventType::ACQUIRE) {
+            case EventType::ACQUIRE:
+                it.tool->Acquire(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const ReleaseEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::RELEASE) != 0)
-            it.tool->Release(event);
+        switch (it.events & EventType::RELEASE) {
+            case EventType::RELEASE:
+                it.tool->Release(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const ReturnEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::RETURN) != 0)
-            it.tool->Return(event);
+        switch (it.events & EventType::RETURN) {
+            case EventType::RETURN:
+                it.tool->Return(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const AccessEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::ACCESS) != 0)
-            it.tool->Access(event);
+        switch (it.events & EventType::ACCESS) {
+            case EventType::ACCESS:
+                it.tool->Access(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }
 
 bool EventService::publish(const CallEvent *event) const {
     for (const auto& it : *observerList())
-        if ((it.events & Events::CALL) != 0)
-            it.tool->Call(event);
+        switch (it.events & EventType::CALL) {
+            case EventType::CALL:
+                it.tool->Call(event);
+                break;
+            default:
+                break;
+        }
 
     return true;
 }

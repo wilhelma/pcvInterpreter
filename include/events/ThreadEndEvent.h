@@ -12,6 +12,7 @@
 #ifndef  THREAD_END_EVENT_H_
 #define  THREAD_END_EVENT_H_
 
+#include "fwd/EventType.h"
 #include "fwd/ShadowThread.h"
 #include "fwd/ThreadEndInfo.h"
 
@@ -33,8 +34,7 @@ public:
     {};
 
     /// Returns the event type.
-    Events type() const final
-    { return Events::THREADEND; };
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for ThreadEndEvent.

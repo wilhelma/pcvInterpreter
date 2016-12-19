@@ -11,7 +11,7 @@
 
 
 #include "DBInterpreter.h"
-#include "Event.h"
+#include "EventType.h"
 #include "Observer.h"
 #include "SAAPRunner.h"
 #include "Filter.h"
@@ -35,7 +35,7 @@ TEST_F(EventGeneratorTest, CorrectThrownEvents) {
     const auto& event_test_tool_it = runner->registerTool(
             std::make_unique<EventTestTool>(),
             std::unique_ptr<Filter>(nullptr),
-            Events::ALL);
+            EventType::ALL);
 
     // Start interpretation of the database
     runner->interpret(static_cast<std::string>("../test/databases/integration_test.db"));

@@ -12,6 +12,7 @@
 #ifndef  JOIN_EVENT_H_
 #define  JOIN_EVENT_H_
 
+#include "fwd/EventType.h"
 #include "fwd/JoinInfo.h"
 #include "fwd/ShadowThreadMap.h"
 
@@ -34,8 +35,7 @@ public:
     {}
 
     /// Returns the event type.
-    Events type() const final
-    { return Events::JOIN; };
+    EventType type() const noexcept final;
 };
 
 /// @brief Output stream operator for JoinEvent.

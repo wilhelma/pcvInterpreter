@@ -15,9 +15,9 @@
 #include "fwd/Filter.h"
 
 #include "DBInterpreter.h"
-#include "Event.h"
 #include "EventGenerator.h"
 #include "EventService.h"
+#include "EventType.h"
 #include "Observer.h"
 
 #include <list>
@@ -37,7 +37,7 @@ SAAPRunner::~SAAPRunner() = default;
 
 const ObserverList::const_iterator SAAPRunner::registerTool(std::unique_ptr<Tool>&& tool,
                                                             std::unique_ptr<Filter>&& filter,
-                                                            Events&& events) const
+                                                            EventType&& events) const
 {
     return ObserverList_->emplace(ObserverList_->cend(),
                                   Observer(std::move(tool), std::move(filter), std::move(events)));

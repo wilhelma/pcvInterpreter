@@ -9,7 +9,7 @@
 #define SAAPRUNNER_H_
 
 #include "fwd/DBInterpreter.h"
-#include "fwd/Event.h"
+#include "fwd/EventType.h"
 #include "fwd/Filter.h"
 #include "fwd/Observer.h"
 #include "fwd/Tool.h"
@@ -44,7 +44,7 @@ public:
     /// to store it!__
     const ObserverList::const_iterator registerTool(std::unique_ptr<Tool>&& tool,
                                                     std::unique_ptr<Filter>&& filter,
-                                                    Events&& events) const;
+                                                    EventType&& events) const;
 
     /// @brief Unsubscribes the Tool from the events and deletes it.
     /// @param tool Iterator to the Tool to remove.
