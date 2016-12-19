@@ -16,5 +16,5 @@
 #include "Types.h"
 
 const TIME& LockInfo::acquireTime() const noexcept {
-    return Lock_->second->acquire_time;
+    return Lock_->second->acquireTime();
 }

@@ -115,7 +115,7 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
             returnThread = thread_t::no_id();
         }
 
-        publishCallReturn(topCall);
+        EventGenerator_->returnEvent(topCall.thread_id, topCall.id);
 
         if (call.thread_id != topCall.thread_id)
             returnThread = topCall.thread_id;
@@ -127,12 +127,6 @@ ErrorCode DBInterpreter::processReturn(const instruction_t& ins,
     if (returnThread != thread_t::no_id())
         publishThreadReturn(returnThread);
 
-    return ErrorCode::OK;
-}
-
-// TODO remove this function and call returnEvent directly
-ErrorCode DBInterpreter::publishCallReturn(const call_t& topCall) {
-    EventGenerator_->returnEvent(topCall.thread_id, topCall.id, topCall.end_time);
     return ErrorCode::OK;
 }
 
@@ -177,7 +171,7 @@ ErrorCode DBInterpreter::processEnd() {
             EventGenerator_->threadEndEvent(top_call.thread_id, last_thread.id, last_thread.start_cycle + last_thread.num_cycles);
         }
 
-        EventGenerator_->returnEvent(top_call.thread_id, top_call.id, top_call.end_time);
+        EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
 
         ret = ErrorCode::OK;
     }
@@ -241,7 +235,7 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
                     call.id,
                     static_cast<CALLSITE>(getHash(call.function_id, line)),
                     call.start_time,
-                    static_cast<TIME>(call.end_time - call.start_time),
+                    call.end_time,
                     fun_of_call.id,
                     fun_of_call.name,
                     fun_of_call.type,

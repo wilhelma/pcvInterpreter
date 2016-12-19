@@ -94,8 +94,7 @@ private:
                           const thread_t& thread);
     ErrorCode processFork(const thread_t& thread);
 
-    ErrorCode publishCallReturn(const call_t& topCall);
     ErrorCode publishThreadReturn(TRD_ID threadId);
 };
 
-#endif /* DBINTERPRETER_H_ */
+#endif

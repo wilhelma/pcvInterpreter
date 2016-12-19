@@ -115,7 +115,7 @@ public:
                    const CAL_ID& call_id,
                    const CALLSITE& site_id,
                    const TIME& call_time,
-                   const TIME& runtime,
+                   const TIME& return_time,
                    const FUN_ID& function_id,
                    const FUN_SG& function_signature,
                    FunctionType function_type,
@@ -124,8 +124,7 @@ public:
     /// Creates and delivers a ReturnEvent to the event service.
     /// @param return_time The time when the call returns.
     void returnEvent(const TRD_ID& parent_thread_id,
-                     const CAL_ID& call_id,
-                     const TIME& return_time);
+                     const CAL_ID& call_id);
 
     /// Returns the last (called?, created?) thread ID.
     const TRD_ID& lastThreadId() const noexcept

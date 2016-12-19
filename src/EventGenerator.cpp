@@ -230,7 +230,7 @@ void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
                                const CAL_ID& call_id,
                                const CALLSITE& site_id,
                                const TIME& call_time,
-                               const TIME& runtime,
+                               const TIME& return_time,
                                const FUN_ID& function_id,
                                const FUN_SG& function_signature,
                                FunctionType function_type,
@@ -239,7 +239,7 @@ void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
     assert(LastEventTime_ <= call_time);
 
     const auto& parent_thread_it = get_iterator(parent_thread_id, *ShadowThreadMap_);
-    auto&& call_info = callInfo(call_id, site_id, call_time, runtime, function_id, function_signature, function_type, segment_id);
+    auto&& call_info = callInfo(call_id, site_id, call_time, return_time, function_id, function_signature, function_type, segment_id);
     CallEvent call_event(parent_thread_it, std::move(call_info));
     EventService_->publish(&call_event);
 
@@ -247,17 +247,17 @@ void EventGenerator::callEvent(const TRD_ID& parent_thread_id,
 }
 
 void EventGenerator::returnEvent(const TRD_ID& parent_thread_id,
-                                 const CAL_ID& call_id,
-                                 const TIME& return_time)
+                                 const CAL_ID& call_id)
 {
-    assert(LastEventTime_ <= return_time);
 
     const auto& parent_thread_it = get_iterator(parent_thread_id, *ShadowThreadMap_);
     const auto& call_it = get_iterator(call_id, *ShadowCallMap_);
-    auto&& return_info = std::make_unique<const ReturnInfo>(call_it, return_time);
+    assert(LastEventTime_ <= call_it->second->returnTime());
+
+    auto&& return_info = std::make_unique<const ReturnInfo>(call_it);
     ReturnEvent return_event(parent_thread_it, std::move(return_info));
     EventService_->publish(&return_event);
 
+    LastEventTime_ = return_event.info()->returnTime();
     ShadowCallMap_->erase(call_it);
-    LastEventTime_ = return_time;
 }

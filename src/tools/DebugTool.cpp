@@ -33,54 +33,8 @@
 
 // Loggin system
 #include "easylogging++.h"
-//
-//#include <utility>
-//#include <iostream>
 
 void DebugTool::Access(const AccessEvent* event) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-//	LOG(DEBUG)
-//		<< "AccessEvent:\n"
-//		<< " > Access Type:  " << static_cast<unsigned>(event->info()->type) << "\n"
-//		<< " > Instruct. id: " << event->info()->instructionID << std::endl;
-}
-
-void DebugTool::Acquire(const AcquireEvent* event) {
-//	LOG(DEBUG) << "AcquireEvent:" << event->info()->acquireTime << std::endl;
-=======
-	LOG(DEBUG) 
-		<< "AccessEvent:\n"
-		<< " > Access Type:  " << static_cast<unsigned>(event->info()->accessType()) << "\n"
-		<< " > Instruct. id: " << event->info()->instructionId() << std::endl;
-}
-
-void DebugTool::Acquire(const AcquireEvent* event) {
-	LOG(DEBUG) << "AcquireEvent:" << event->info()->acquireTime() << std::endl;
->>>>>>> [EventGenerator] creates and publishes events
-}
-
-void DebugTool::Call(const CallEvent* event) {
-<<<<<<< HEAD
-//	LOG(DEBUG)
-//		<< "CallEvent:\n"
-//        << " > Call Site:  " << event->info()->siteId << "\n"
-//        << " > Start Time  " << event->info()->callTime << "\n"
-//        << " > Runtime:    " << event->info()->runtime << "\n"
-//		<< " > Fun. sig.:  " << event->info()->fnSignature << "\n"
-//		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->fnType) << "\n"
-//		<< " > File name:  " << event->info()->fileName << "\n"
-//		<< " > File path:  " << event->info()->filePath << std::endl;
-=======
-	LOG(DEBUG) 
-		<< "CallEvent:\n"
-        << " > Call Site:  " << event->info()->siteId() << "\n"
-        << " > Start Time  " << event->info()->callTime() << "\n"
-        << " > Runtime:    " << event->info()->runtime() << "\n"
-		<< " > Fun. sig.:  " << event->info()->functionSignature() << "\n"
-		<< " > Fun. type:  " << static_cast<unsigned>(event->info()->functionType()) << std::endl;
->>>>>>> [ShadowCall] create ShadowCall{,Map}
-=======
 	LOG(DEBUG) << *event << std::endl;
 }
 
@@ -90,38 +44,9 @@ void DebugTool::Acquire(const AcquireEvent* event) {
 
 void DebugTool::Call(const CallEvent* event) {
 	LOG(DEBUG) << *event << std::endl;
->>>>>>> Make output stream operators for events
 }
 
 void DebugTool::Join(const JoinEvent* event) {
-<<<<<<< HEAD
-//	const JoinInfo& ji = *(event->getInfo());
-//	LOG(DEBUG) << "JoinEvent:" << std::endl;
-}
-
-void DebugTool::NewThread(const NewThreadEvent* event) {
-<<<<<<< HEAD
-//	LOG(DEBUG)
-//		<< "NewThreadEvent:\n"
-//        << " > Thread id:   " << event->info()->childThread->threadId << std::endl
-//        << " > Start time:  " << event->info()->startTime << "\n"
-//        << " > Runtime      " << event->info()->runTime << std::endl;
-}
-
-void DebugTool::Release(const ReleaseEvent* event) {
-//	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime << std::endl;
-=======
-	LOG(DEBUG) 
-		<< "NewThreadEvent:\n"
-        << " > Thread id:   " << event->info()->childThreadId() << std::endl
-        << " > Start time:  " << event->info()->startTime() << "\n"
-        << " > Runtime      " << event->info()->runTime() << std::endl;
-}
-
-void DebugTool::Release(const ReleaseEvent* event) {
-	LOG(DEBUG) << "ReleaseEvent:" << event->info()->releaseTime() << std::endl;
->>>>>>> [EventGenerator] creates and publishes events
-=======
 	LOG(DEBUG) << *event << std::endl;
 }
 
@@ -131,39 +56,12 @@ void DebugTool::NewThread(const NewThreadEvent* event) {
 
 void DebugTool::Release(const ReleaseEvent* event) {
 	LOG(DEBUG) << *event << std::endl;
->>>>>>> Make output stream operators for events
 }
 
 void DebugTool::Return(const ReturnEvent* event) {
-<<<<<<< HEAD
-//	LOG(DEBUG)
-//        << "ReturnEvent:\n"
-//        << " > Call ID:     " << event->info()->call << "\n"
-//        << " > Function ID: " << event->info()->function << "\n"
-//        << " > End time:    " << event->info()->endTime << std::endl;
-=======
-	LOG(DEBUG) 
-        << "ReturnEvent:\n"
-        << " > Call ID:     " << event->info()->callId() << "\n"
-        << " > Function ID: " << event->info()->functionId() << "\n"
-        << " > End time:    " << event->info()->endTime() << std::endl;
->>>>>>> [FunctionInfo] is now base for ReturnInfo and CallInfo
+	LOG(DEBUG) << *event << std::endl;
 }
 
 void DebugTool::ThreadEnd(const ThreadEndEvent* event) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-//	LOG(DEBUG)
-//        << "ThreadEndEvent:\n"
-//		<< " > Thread ID: " << event->info()->id << "\n"
-//		<< " > End time:  " << event->info()->endTime << std::endl;
-=======
-	LOG(DEBUG) 
-        << "ThreadEndEvent:\n"
-		<< " > Thread ID: " << event->info()->childThreadId() << "\n"
-		<< " > End time:  " << event->info()->endTime() << std::endl;
->>>>>>> [EventGenerator] creates and publishes events
-=======
 	LOG(DEBUG) << *event << std::endl;
->>>>>>> Make output stream operators for events
 }

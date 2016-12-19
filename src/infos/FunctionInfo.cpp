@@ -25,6 +25,9 @@ const TIME& FunctionInfo::callTime() const noexcept
 const TIME& FunctionInfo::runtime() const noexcept
 { return Call_->second->runtime(); }
 
+const TIME& FunctionInfo::returnTime() const noexcept
+{ return Call_->second->returnTime(); }
+
 const FunctionType FunctionInfo::functionType() const noexcept
 { return Call_->second->functionType(); }
 

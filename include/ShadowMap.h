@@ -40,7 +40,7 @@ public:
     using const_iterator = typename std::map<const key_type, mapped_type>::const_iterator;
 
     /// _Default_ constructor.
-    explicit ShadowMap() = default;
+    constexpr explicit ShadowMap() = default;
     /// _Default_ destructor.
     virtual ~ShadowMap() = default;
 
@@ -56,7 +56,7 @@ public:
 
     /// @brief Erase an entry from the map.
     /// @param it The iterator to the element to erase.
-    iterator erase(const_iterator it) noexcept
+    constexpr iterator erase(const_iterator it) noexcept
     { return Map_.erase(it); }
 
     /// Insert an element.
@@ -65,23 +65,23 @@ public:
 
     /// Find element in the map.
     /// @param id The key of the element to look for.
-    const_iterator find(const IdT& id) const noexcept
+    constexpr const_iterator find(const IdT& id) const noexcept
     { return Map_.find(id); }
 
     /// Return a constant iterator to the element after the last one.
-    const_iterator cend() const noexcept
+    constexpr const_iterator cend() const noexcept
     { return Map_.cend(); }
 
     /// Return a constant iterator to the element after the last one.
-    const_iterator end() const noexcept
+    constexpr const_iterator end() const noexcept
     { return Map_.end(); }
 
     /// Return an iterator to the element after the last one.
-    iterator end() noexcept
+    constexpr iterator end() noexcept
     { return Map_.end(); }
 
     /// Returns whether the map is empty.
-    const bool empty() const noexcept
+    constexpr const bool empty() const noexcept
     { return Map_.empty(); }
 
 private:

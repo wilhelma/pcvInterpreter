@@ -4,8 +4,8 @@
 #define EVENT_H_
 
 #include "fwd/EventType.h"
+#include "fwd/ShadowThread.h"
 
-#include "ShadowThread.h"
 #include "ShadowThreadMap.h"
 #include "Types.h"
 

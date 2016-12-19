@@ -22,4 +22,4 @@ const std::shared_ptr<const ShadowThread>& ChildThreadInfo::childThread() const 
 { return ChildThread_->second; }
 
 const TIME& ChildThreadInfo::startTime() const noexcept
-{ return childThread()->StartTime_; }
+{ return childThread()->startTime(); }

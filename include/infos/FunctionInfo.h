@@ -36,6 +36,9 @@ public:
     /// Returns the runtime of the function.
     const TIME& runtime() const noexcept;
 
+    /// Returns the time when the function returned.
+    const TIME& returnTime() const noexcept;
+
     /// Returns the function type.
     const FunctionType functionType() const noexcept;
 

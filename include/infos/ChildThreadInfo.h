@@ -39,7 +39,7 @@ public:
     const TIME& startTime() const noexcept;
 
 private:
-    /// The forked thread.
+    /// The information about the forked thread.
     ShadowThreadMap::const_iterator ChildThread_;
 };
 

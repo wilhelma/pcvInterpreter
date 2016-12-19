@@ -23,20 +23,9 @@ class ReturnInfo : public FunctionInfo {
 public:
     /// @brief Constructor.
     /// @param call_it  Information about the function call.
-    /// @param end_time The time when the function has returned.
-    explicit ReturnInfo(ShadowCallMap::const_iterator call_it,
-                        const TIME& end_time) noexcept
-        : FunctionInfo(call_it),
-          EndTime_(end_time)
+    explicit ReturnInfo(ShadowCallMap::const_iterator call_it) noexcept
+        : FunctionInfo(call_it)
         {}
-
-    /// Returns the time when the function has returned.
-    const TIME& endTime() const noexcept
-    { return EndTime_; }
-
-private:
-    /// The time when the function has returned.
-    TIME EndTime_;
 };
 
 #endif
