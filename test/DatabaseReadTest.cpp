@@ -76,6 +76,76 @@ TEST_F(DatabaseReadTest, DatabaseProperlyRead) {
     ASSERT_EQ(db->referenceTable()->size(),    12);
     ASSERT_EQ(db->segmentTable()->size(),       6);
     ASSERT_EQ(db->threadTable()->size(),        2);
+
+    // Check correctness of read data.
+    ACC_ID acc_id{15};
+    const auto& a = access_with_id(acc_id, *db);
+    EXPECT_EQ(a.instruction_id, 18);
+    EXPECT_EQ(a.position,        0);
+    EXPECT_EQ(a.reference_id,    4);
+    EXPECT_EQ(a.access_type, AccessType::READ);
+    EXPECT_EQ(a.memory_state, AccessState::INIT);
+
+    CAL_ID cal_id{4};
+    const auto& c = call_with_id(cal_id, *db);
+    EXPECT_EQ(c.thread_id,      1);
+    EXPECT_EQ(c.function_id,    9);
+    EXPECT_EQ(c.instruction_id, 0); // NULL in SQL is read as 0.
+    EXPECT_EQ(c.start_time, 40928559884969);
+    EXPECT_EQ(c.end_time,   40928570173223);
+
+    FIL_ID fil_id{1};
+    const auto fi = db->fileTable()->find(fil_id);
+    ASSERT_NE(fi, std::cend(*db->fileTable()));
+    EXPECT_EQ(fi->second.file_path, "/home/wilhelma/workspace/tests/parceive/pcvInterpreter/integration_test.c");
+    EXPECT_EQ(fi->second.file_name, "integration_test.c");
+
+    FUN_ID fun_id{11};
+    const auto fu = db->functionTable()->find(fun_id);
+    ASSERT_NE(fu, std::cend(*db->functionTable()));
+    EXPECT_EQ(fu->second.name,      "main");
+    EXPECT_EQ(fu->second.signature, "main");
+    EXPECT_EQ(fu->second.file_id,     0);
+    EXPECT_EQ(fu->second.line_number, 0);
+//    EXPECT_EQ(fu->second.column,      0); // to be implemented
+    EXPECT_EQ(fu->second.type, FunctionType::METHOD);
+
+    INS_ID ins_id{21};
+    const auto& i = db->instructionTable()->find(ins_id);
+    ASSERT_NE(i, std::cend(*db->instructionTable()));
+    EXPECT_EQ(i->second.segment_id,   5);
+    EXPECT_EQ(i->second.instruction_type, InstructionType::ALLOC);
+    EXPECT_EQ(i->second.line_number, 43);
+//    EXPECT_EQ(i->second.column,      0); // to be implemented
+
+    // Loops are not there.
+
+    REF_ID ref_id{8};
+    const auto& r = db->referenceTable()->find(ref_id);
+    ASSERT_NE(r, std::cend(*db->referenceTable()));
+    EXPECT_EQ(r->second.size,         8);
+    EXPECT_EQ(r->second.memory_type, ReferenceType::STACK);
+    EXPECT_EQ(r->second.name, "thread");
+    EXPECT_EQ(r->second.allocinstr,  11);
+
+    SEG_ID seg_id{4};
+    const auto& s = db->segmentTable()->find(seg_id);
+    ASSERT_NE(s, std::cend(*db->segmentTable()));
+    EXPECT_EQ(s->second.call_id,      3);
+    EXPECT_EQ(s->second.segment_type, SegmentType::REGION);
+    EXPECT_EQ(s->second.loop_pointer, 0);
+
+    TRD_ID trd_id{1};
+    const auto& t = thread_with_id(trd_id, *db);
+    EXPECT_EQ(t.start_time, "2016-10-20T11:56:42.157583550Z");
+    EXPECT_EQ(t.end_time,   "2016-10-20T11:56:42.170146129Z");
+    EXPECT_EQ(t.start_cycle, 40928550606636);
+    EXPECT_EQ(t.num_cycles,        32679275);
+    EXPECT_EQ(t.create_instruction_id,   25);
+    EXPECT_EQ(t.join_instruction_id,     49);
+    EXPECT_EQ(t.parent_thread_id,         0);
+    EXPECT_EQ(t.process_id,           18120);
+    EXPECT_EQ(t.call_id,                  4);
 }
 
 INITIALIZE_EASYLOGGINGPP

@@ -45,7 +45,7 @@ enum class ErrorCode {
 class DBInterpreter {
 public:
     /// @brief Constructor.
-    /// @param e_generator The event generator to create and publish the events.
+    /// @param event_generator The event generator to create and publish the events.
     explicit DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator);
 
     /// _Deleted_ copy constructor.

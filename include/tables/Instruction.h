@@ -41,7 +41,7 @@ struct instruction_t {
     LIN_NO line_number;
 
     /// Constructor.
-    explicit
+    constexpr explicit
     instruction_t(INS_ID instructionId,
                   SEG_ID segmentId,
                   InstructionType instructionType,

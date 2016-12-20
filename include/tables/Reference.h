@@ -26,6 +26,7 @@ enum class ReferenceType : unsigned char {
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _Reference_
 /// database table.
+/// @todo remove std::string and make constexpr
 struct reference_t {
     /// SQL ID of the reference.
     REF_ID id;

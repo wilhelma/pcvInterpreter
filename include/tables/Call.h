@@ -34,18 +34,16 @@ struct call_t {
     TIME end_time;
 
     /// Constructor.
-    explicit
-    call_t(CAL_ID sqlID,
-           TRD_ID threadID,
-           FUN_ID functionID,
-           INS_ID instructionID,
-           TIME startTime,
-           TIME endTime) noexcept
+    constexpr explicit call_t(CAL_ID sqlID,
+                              TRD_ID threadID,
+                              FUN_ID functionID,
+                              INS_ID instructionID,
+                              TIME startTime,
+                              TIME endTime) noexcept
         : id(sqlID), thread_id(threadID),
           function_id(functionID), instruction_id(instructionID),
           start_time(startTime), end_time(endTime)
-    {
-    }
+    {}
 };
 
 #endif

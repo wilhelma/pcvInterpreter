@@ -14,12 +14,12 @@
 #include "Types.h"
 
 // helper function to retrieve the file name from its path
-decltype(auto) retrieveFileName(FIL_PT filePath, const char directorySeparator = '/') {
+std::string retrieve_file_name(FIL_PT filePath, const char directorySeparator = '/') {
     // search for last occurrence of the directory separator
-    auto pos = filePath.find_last_of(directorySeparator);
+    const auto pos = filePath.find_last_of(directorySeparator) + 1;
     return ((pos > filePath.size()) ? filePath : filePath.substr(pos));
 }
 
 file_t::file_t(FIL_ID sqlID, FIL_PT filePath) noexcept
-    : id(sqlID), file_path(filePath), file_name(retrieveFileName(filePath))
+    : id(sqlID), file_path(filePath), file_name(retrieve_file_name(filePath))
 {}
