@@ -33,7 +33,8 @@ class CallSiteProfile {
     explicit CallSiteProfile(std::shared_ptr<CallSiteSpanProfile>
                                                                  span_profile,
                              std::shared_ptr<CallSiteWorkProfile> 
-                                                                 work_profile);
+                                                                 work_profile,
+                             TIME start_time);
 
     CallSiteProfile();
     ~CallSiteProfile();

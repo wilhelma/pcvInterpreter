@@ -39,17 +39,19 @@ struct function_frame_t {
 
 	LockIntervals lock_intervals;
 
+	int topCall;
+	int topCallOnThread;
+
 	void add_locks(std::shared_ptr<function_frame_t> child_function) {
 		lock_intervals.add(child_function->lock_intervals);
 	}
 
 	TIME lock_wait_time(){
 		TIME wait_time = lock_intervals.waitTime();
-		print_time("calculated lock wait time as", wait_time);
 		return wait_time;
 	}
 
-	function_frame_t() : call_site(0) {}
+	function_frame_t() : call_site(0), topCall(0), topCallOnThread(0) {}
 };
 
 
@@ -67,7 +69,9 @@ class FunctionStack {
 		*/
 		void init_frame(int function_index, 
 					   FUN_SG funSg,
-					   CALLSITE callsiteID);
+					   CALLSITE callsiteID,
+					   int topCall,
+					   int topCallOnThread);
 
 		/**
 		*    @fn push()
@@ -75,7 +79,9 @@ class FunctionStack {
 					vector.
 		*/
 		std::shared_ptr<function_frame_t> push(FUN_SG funSg, 
-											   CALLSITE callsiteID);
+											   CALLSITE callsiteID,
+											   int topCall,
+											   int topCallOnThread);
 
 		/**
 		*    @fn pop()

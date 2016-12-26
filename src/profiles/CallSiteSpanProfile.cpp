@@ -11,7 +11,7 @@
 
 #include "CallSiteSpanProfile.h"
 
-CallSiteSpanProfile::CallSiteSpanProfile() : call_site(0), start(0), span(0), 
+CallSiteSpanProfile::CallSiteSpanProfile() : call_site(0), span(0), 
 											 lock_wait_time(0) {}
 
 CallSiteSpanProfile::~CallSiteSpanProfile() {}
@@ -19,20 +19,15 @@ CallSiteSpanProfile::~CallSiteSpanProfile() {}
 void CallSiteSpanProfile::add_in_callsite_span
 			  (const std::shared_ptr<CallSiteSpanProfile> profile_to_add) {
 	span += profile_to_add->span;
-	start = std::min(start, profile_to_add->start);
 }
 
-void CallSiteSpanProfile::init(CALLSITE call_site, TIME start_time)
- {
- 	start = start_time;
-	call_site = call_site;
+void CallSiteSpanProfile::init(CALLSITE cll_site) {
+	call_site = cll_site;
 }
 
 void CallSiteSpanProfile::print() {
 	std::cout << " ================ \n" << std::endl;
 	std::cout << "CALL SITE " << static_cast<int>(call_site) << std::endl;
-	print_time("SPAN", span);
-	print_time("LOCK WAIT TIME", lock_wait_time);
 	std::cout << "LOCK SPAN FRACTION of SPAN \n" << 
 									static_cast<double>(lock_wait_time) / 
 								    static_cast<double>(span) << std::endl;

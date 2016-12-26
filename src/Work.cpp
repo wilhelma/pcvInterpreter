@@ -43,7 +43,6 @@ std::shared_ptr<CallSiteWorkProfile>  Work::profileAt(CALLSITE call_site) {
 	if (!hashtable->count(call_site)) {
 		std::cout << "WORK PROFILE NOT INITIALIZED CORRECTLY at call site " <<
 			call_site << std::endl;
-		//std::exit(EXIT_FAILURE);
 	}
 	return hashtable->at(call_site);
 }
@@ -62,11 +61,13 @@ void Work::clear() {
 
 void Work::init_call_site(CALLSITE call_site, FUN_SG function_signature) {
 
-	std::shared_ptr<CallSiteWorkProfile> new_ptr(new CallSiteWorkProfile());
-	new_ptr->init_callsite_profile(call_site, function_signature);
-	std::pair<CALLSITE, std::shared_ptr<CallSiteWorkProfile>> 
+	if (!hashtable->count(call_site)) {
+		std::shared_ptr<CallSiteWorkProfile> new_ptr(new CallSiteWorkProfile());
+		new_ptr->init_callsite_profile(call_site, function_signature);
+		std::pair<CALLSITE, std::shared_ptr<CallSiteWorkProfile>> 
                                     newPair(call_site, new_ptr);
-	hashtable->insert(newPair);
+		hashtable->insert(newPair);
+	}
 }
 
 
@@ -85,8 +86,6 @@ void Work::add_to_call_site(CALLSITE call_site, FUN_SG function_signature,
 TIME Work::at_call_site(CALLSITE call_site) {
 	return profileAt(call_site)->work;
 }
-
-
 
 void Work::record_call_site(CALLSITE call_site, FUN_SG function_signature) {
 

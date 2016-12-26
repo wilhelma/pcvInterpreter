@@ -44,15 +44,13 @@ class CallSiteSpanProfile {
     *    @fn init_callsite_profile(...)
     *    @brief Initialize prof with the information provided in function parameters
     */
-    void init(CALLSITE call_site, TIME start_time);
+    void init(CALLSITE call_site);
 
     /**
     *    @var call_site
     *    @brief The call site whose data is contained in the profile. 
     */
     CALLSITE call_site;
-
-    TIME start;
 
     /**
     *    @var span

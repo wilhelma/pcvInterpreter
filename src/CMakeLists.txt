@@ -29,7 +29,6 @@ include_directories(${INCLUDE_DIRECTORIES} ${source_dir}/include)
 
 set(SRC_LIST
     DBInterpreter.cpp
-    DAG.cpp
     EventService.cpp
     FunctionStack.cpp
     LockIntervals.cpp
