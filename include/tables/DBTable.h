@@ -64,7 +64,10 @@ public:
     /// @param pos The database ID to query for.
     /// @throws std::out_of_range If _pos_ is not smaller than _size()_.
     const value_type& at(const index_type& pos) const
-    { return Vector_.at(idToVectorIndex(pos)); }
+    {
+        auto tmp = idToVectorIndex(pos);
+        return Vector_.at(tmp);
+    }
 
     /// Size of the internal map.
     const std::size_t size() const noexcept
@@ -101,7 +104,10 @@ protected:
     /// @brief Helper function to convert database ID's to vector indices.
     /// @attention ID's start at 1, so far!
     virtual const size_type idToVectorIndex(const index_type& id) const
-    { return static_cast<size_type>(id) - 1; }
+    {
+        size_type tmp = static_cast<size_type>(id);
+        return tmp - 1;
+    }
 };
 
 /// @brief Helper function to allow `std::copy`ing on the table.

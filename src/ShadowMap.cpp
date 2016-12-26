@@ -26,7 +26,7 @@ template <typename IdT, typename T>
 const std::shared_ptr<const T> ShadowMap<IdT, T>::getShadow(const IdT& id) noexcept {
     // Get the Shadow corresponding to id
     const auto& shadow_it = Map_.find(id);
-    if (shadow_it != std::cend(Map_))
+    if (shadow_it != end(Map_))
         return shadow_it->second;
 
     // If the entry is not in the map, make a new one
@@ -41,7 +41,7 @@ void ShadowMap<IdT, T>::remove(const IdT& id) {
     const auto& shadow_it = Map_.find(id);
 
     // In this case, the interpreter is probably buggy
-    if (shadow_it == std::cend(Map_))
+    if (shadow_it == end(Map_))
         throw ShadowMapException("Entry " + std::to_string(id) + " not found",
                                  "ShadowMap::remove");
 
