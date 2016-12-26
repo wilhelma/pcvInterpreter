@@ -4,14 +4,9 @@
  *  Created on: Aug 28, 2014
  *      Author: wilhelma
  */
+
 #include "DBInterpreter.h"
-
 #include "SQLException.h"
-
-#include <iostream>
-#include <string>
-#include <functional>
-#include <cassert>
 
 // Database tables
 #include "AccessTable.h"
@@ -25,7 +20,6 @@
 #include "ReferenceTable.h"
 #include "SegmentTable.h"
 #include "ThreadTable.h"
-#include "DBTable.h"
 
 #include "Access.h"
 #include "Call.h"
@@ -39,29 +33,16 @@
 #include "Segment.h"
 #include "Thread.h"
 
-#include "AccessEvent.h"
-#include "AccessInfo.h"
-#include "AcquireEvent.h"
-#include "AcquireInfo.h"
-#include "CallEvent.h"
-#include "CallInfo.h"
-#include "JoinEvent.h"
-#include "JoinInfo.h"
-#include "NewThreadEvent.h"
-#include "NewThreadInfo.h"
-#include "ReleaseEvent.h"
-#include "ReleaseInfo.h"
-#include "ReturnEvent.h"
-#include "ReturnInfo.h"
-#include "ThreadEndEvent.h"
-#include "ThreadEndInfo.h"
-
 #include "Database.h"
 
 #include "EventGenerator.h"
 #include "Types.h"
 
+#include <cassert>
+#include <functional>
+#include <iostream>
 #include <memory>
+#include <string>
 
 // logging system
 #include "easylogging++.h"
