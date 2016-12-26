@@ -19,8 +19,12 @@
 
 /// @ingroup info
 /// @brief Information about a function call.
-struct CallInfo : public FunctionInfo {
-    /// Constructor.
+class CallInfo : public FunctionInfo {
+public:
+    /// @brief Constructor.
+    /// @param call_it            The information about the call.
+    /// @param site_id            __What is this?__
+    /// @param function_signature The signature of the function.
     explicit CallInfo(ShadowCallMap::const_iterator call_it,
                       const CALLSITE& site_id,
                       const FUN_SG& function_signature) noexcept
@@ -29,14 +33,19 @@ struct CallInfo : public FunctionInfo {
           FunctionSignature_(function_signature)
         {}
 
+    /// @todo Document this.
     const CALLSITE& siteId() const noexcept
     { return SiteId_; }
 
+    /// Returns the signature of the called function.
     const FUN_SG& functionSignature() const noexcept
     { return FunctionSignature_; }
 
 private:
+    /// @todo Document this.
     CALLSITE SiteId_;
+    /// @brief The signature of the called function.
+    /// @attention So far this is only the function name.
     FUN_SG   FunctionSignature_;
 };
 
