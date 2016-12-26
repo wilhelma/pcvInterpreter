@@ -34,7 +34,7 @@ notification:
 # Build
 script:
     # Manually download the database (otherwise, Git LFS needs to be installed)
-    - wget https://github.com/wilhelma/pcvInterpreter/raw/test/test/databases/integration_test.db -O test/databases/integration_test.db
+    - wget https://github.com/wilhelma/pcvInterpreter/raw/development/test/databases/integration_test.db -O test/databases/integration_test.db
       ## Compile Google Test
     # Compile Google Test
     - ./travisCI/gtest_compile.sh
