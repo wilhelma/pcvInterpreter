@@ -95,45 +95,40 @@ TEST_F(DatabaseReadTest, DatabaseProperlyRead) {
     EXPECT_EQ(c.end_time,   40928570173223);
 
     FIL_ID fil_id{1};
-    const auto fi = db->fileTable()->find(fil_id);
-    ASSERT_NE(fi, std::cend(*db->fileTable()));
-    EXPECT_EQ(fi->second.file_path, "/home/wilhelma/workspace/tests/parceive/pcvInterpreter/integration_test.c");
-    EXPECT_EQ(fi->second.file_name, "integration_test.c");
+    const auto& fi = file_with_id(fil_id, *db);
+    EXPECT_EQ(fi.file_path, "/home/wilhelma/workspace/tests/parceive/pcvInterpreter/integration_test.c");
+    EXPECT_EQ(fi.file_name, "integration_test.c");
 
     FUN_ID fun_id{11};
-    const auto fu = db->functionTable()->find(fun_id);
-    ASSERT_NE(fu, std::cend(*db->functionTable()));
-    EXPECT_EQ(fu->second.name,      "main");
-    EXPECT_EQ(fu->second.signature, "main");
-    EXPECT_EQ(fu->second.file_id,     0);
-    EXPECT_EQ(fu->second.line_number, 0);
-//    EXPECT_EQ(fu->second.column,      0); // to be implemented
-    EXPECT_EQ(fu->second.type, FunctionType::METHOD);
+    const auto& fu = function_with_id(fun_id, *db);
+    EXPECT_EQ(fu.name,      "main");
+    EXPECT_EQ(fu.signature, "main");
+    EXPECT_EQ(fu.file_id,     0);
+    EXPECT_EQ(fu.line_number, 0);
+//    EXPECT_EQ(fu.column,      0); // to be implemented
+    EXPECT_EQ(fu.type, FunctionType::METHOD);
 
     INS_ID ins_id{21};
-    const auto& i = db->instructionTable()->find(ins_id);
-    ASSERT_NE(i, std::cend(*db->instructionTable()));
-    EXPECT_EQ(i->second.segment_id,   5);
-    EXPECT_EQ(i->second.instruction_type, InstructionType::ALLOC);
-    EXPECT_EQ(i->second.line_number, 43);
-//    EXPECT_EQ(i->second.column,      0); // to be implemented
+    const auto& i = instruction_with_id(ins_id, *db);
+    EXPECT_EQ(i.segment_id,   5);
+    EXPECT_EQ(i.instruction_type, InstructionType::ALLOC);
+    EXPECT_EQ(i.line_number, 43);
+//    EXPECT_EQ(i.column,      0); // to be implemented
 
     // Loops are not there.
 
     REF_ID ref_id{8};
-    const auto& r = db->referenceTable()->find(ref_id);
-    ASSERT_NE(r, std::cend(*db->referenceTable()));
-    EXPECT_EQ(r->second.size,         8);
-    EXPECT_EQ(r->second.memory_type, ReferenceType::STACK);
-    EXPECT_EQ(r->second.name, "thread");
-    EXPECT_EQ(r->second.allocinstr,  11);
+    const auto& r = reference_with_id(ref_id, *db);
+    EXPECT_EQ(r.size,         8);
+    EXPECT_EQ(r.memory_type, ReferenceType::STACK);
+    EXPECT_EQ(r.name, "thread");
+    EXPECT_EQ(r.allocinstr,  11);
 
     SEG_ID seg_id{4};
-    const auto& s = db->segmentTable()->find(seg_id);
-    ASSERT_NE(s, std::cend(*db->segmentTable()));
-    EXPECT_EQ(s->second.call_id,      3);
-    EXPECT_EQ(s->second.segment_type, SegmentType::REGION);
-    EXPECT_EQ(s->second.loop_pointer, 0);
+    const auto& s = segment_with_id(seg_id, *db);
+    EXPECT_EQ(s.call_id,      3);
+    EXPECT_EQ(s.segment_type, SegmentType::REGION);
+    EXPECT_EQ(s.loop_pointer, 0);
 
     TRD_ID trd_id{1};
     const auto& t = thread_with_id(trd_id, *db);

@@ -232,19 +232,49 @@ const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Databas
 /// @brief Return the access with a specified access ID.
 /// @param acc_id The access ID.
 /// @param db     The database to look in.
-/// @throw DatabaseException If the entry is not found.
+/// @throw std::out_of_range If the entry is not found.
 const access_t& access_with_id(const ACC_ID& acc_id, const Database& db);
-
-/// @brief Return the thread with a specified thread ID.
-/// @param trd_id The thread ID.
-/// @param db     The database to look in.
-/// @throw DatabaseException If the entry is not found.
-const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db);
 
 /// @brief Return the call with a specified call ID.
 /// @param cal_id The call ID.
 /// @param db     The database to look in.
-/// @throw DatabaseException If the entry is not found.
+/// @throw std::out_of_range If the entry is not found.
 const call_t& call_with_id(const CAL_ID& cal_id, const Database& db);
+
+/// @brief Return the file with a specified file ID.
+/// @param fil_id The file ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const file_t& file_with_id(const FIL_ID& fil_id, const Database& db);
+
+/// @brief Return the function with a specified function ID.
+/// @param fun_id The function ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const function_t& function_with_id(const FUN_ID& fun_id, const Database& db);
+
+/// @brief Return the instruction with a specified instruction ID.
+/// @param ins_id The instruction ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const instruction_t& instruction_with_id(const INS_ID& ins_id, const Database& db);
+
+/// @brief Return the reference with a specified reference ID.
+/// @param ref_id The reference ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const reference_t& reference_with_id(const REF_ID& ref_id, const Database& db);
+
+/// @brief Return the segment with a specified segment ID.
+/// @param seg_id The segment ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const segment_t& segment_with_id(const SEG_ID& seg_id, const Database& db);
+
+/// @brief Return the thread with a specified thread ID.
+/// @param trd_id The thread ID.
+/// @param db     The database to look in.
+/// @throw std::out_of_range If the entry is not found.
+const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db);
 
 #endif

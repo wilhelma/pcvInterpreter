@@ -164,8 +164,23 @@ const std::vector<ACC_ID>& access_ids_of(const instruction_t& ins, const Databas
 const access_t& access_with_id(const ACC_ID& acc_id, const Database& db)
 { return db.accessTable()->at(acc_id); }
 
-const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db)
-{ return db.threadTable()->at(trd_id); }
-
 const call_t& call_with_id(const CAL_ID& cal_id, const Database& db)
 { return db.callTable()->at(cal_id); }
+
+const file_t& file_with_id(const FIL_ID& fil_id, const Database& db)
+{ return db.fileTable()->at(fil_id); }
+
+const function_t& function_with_id(const FUN_ID& fun_id, const Database& db)
+{ return db.functionTable()->at(fun_id); }
+
+const instruction_t& instruction_with_id(const INS_ID& ins_id, const Database& db)
+{ return db.instructionTable()->at(ins_id); }
+
+const reference_t& reference_with_id(const REF_ID& ref_id, const Database& db)
+{ return db.referenceTable()->at(ref_id); }
+
+const segment_t& segment_with_id(const SEG_ID& seg_id, const Database& db)
+{ return db.segmentTable()->at(seg_id); }
+
+const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db)
+{ return db.threadTable()->at(trd_id); }
