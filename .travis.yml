@@ -25,6 +25,9 @@ addons:
             - gcc-6
             - g++-6
 
+before_install:
+    - pip install --user cpp-coveralls
+
 # Sent e-mails if the build fail
 notification:
     email:
@@ -38,7 +41,10 @@ script:
       ## Compile Google Test
     # Compile Google Test
     - ./travisCI/gtest_compile.sh
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-6 --coverage" CC="gcc-6 --coverage"; fi
     - mkdir build && cd build
     - cmake .. && make -j && ./src/pcv ../test/databases/integration_test.db
     - make pcv_test -j && ./test/pcv_test
+
+after_success:
+    - coveralls --exclude 'external/' --exclude 'travisCI/'
