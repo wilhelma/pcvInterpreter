@@ -24,7 +24,7 @@ EventType AccessEvent::type() const noexcept
 std::ostream& operator<<(std::ostream& s, const AccessEvent& e) {
     s << "Instruction: " << std::setw(2) << e.info()->instructionId() << " | ";
     s << "Reference:   " << std::setw(2) << e.info()->variableId() << " | ";
-    s << "AccessType:  " << std::setw(2) << static_cast<int>(e.info()->accessType()) << " | ";
+    s << "AccessType:  " << std::setw(0) << e.info()->accessType() << " | ";
     s << "RefType:     " << std::setw(2) << static_cast<int>(e.info()->referenceType()) << " | ";
     s << "Size:        " << std::setw(2) << e.info()->size() << " | ";
     s << "Name:        " << std::setw(2) << e.info()->name();
