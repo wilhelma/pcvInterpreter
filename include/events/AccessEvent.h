@@ -30,7 +30,7 @@ public:
     /// @param shadow_thread The shadow information of the thread that triggered the event.
     /// @param info          The access event information.
     explicit AccessEvent(ShadowThreadMap::const_iterator shadow_thread,
-                         std::unique_ptr<const AccessInfo>&& info)
+                         std::unique_ptr<const AccessInfo>&& info) noexcept
         : Event(shadow_thread, std::move(info))
     {};
 

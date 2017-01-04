@@ -49,7 +49,7 @@ void EventTestTool::Access(const AccessEvent* e) {
         std::cout << *e << std::endl;
     } else if (e->info()->instructionId() == 35) {
         EXPECT_EQ(e->info()->variableId(),    12);
-        EXPECT_EQ(e->info()->referenceType(), ReferenceType::STATICVAR);
+        EXPECT_EQ(e->info()->referenceType(), ReferenceType::STATIC);
         EXPECT_EQ(e->info()->accessType(),    AccessType::READ);
         EXPECT_EQ(e->info()->size(),          4);
         EXPECT_EQ(e->info()->name(),          "global");

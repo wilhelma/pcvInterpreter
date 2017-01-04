@@ -13,12 +13,10 @@
 #define  ACCESS_INFO_H_
 
 #include "fwd/Reference.h"
+#include "fwd/Access.h"
 
-#include "Access.h" // Contains the AccessType!
 #include "ShadowVariableMap.h"
 #include "Types.h"
-
-#include <memory>
 
 /// @defgroup info
 /// @brief Information about various runtime events.
