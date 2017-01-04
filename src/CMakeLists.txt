@@ -48,6 +48,7 @@ set(INTERPRETER_SOURCES ${INTERPRETER_SOURCES}
     events/AccessEvent.cpp
     events/AcquireEvent.cpp
     events/CallEvent.cpp
+    events/EventType.cpp
     events/JoinEvent.cpp
     events/NewThreadEvent.cpp
     events/ReleaseEvent.cpp

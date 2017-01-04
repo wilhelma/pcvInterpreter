@@ -12,7 +12,7 @@
 #ifndef  EVENT_TYPE_H_
 #define  EVENT_TYPE_H_
 
-#include <ostream>
+#include <iosfwd>
 #include <type_traits>
 
 /// @ingroup events
@@ -34,14 +34,12 @@ enum class EventType : unsigned char {
 /// @param rhs The right-hand side.
 constexpr inline
 EventType operator&(EventType lhs, EventType rhs) noexcept {
-    return static_cast<EventType>(
-        static_cast<std::underlying_type<EventType>::type>(lhs) &
-        static_cast<std::underlying_type<EventType>::type>(rhs)   );
+    using event_type = std::underlying_type<EventType>::type;
+    return static_cast<EventType>(static_cast<event_type>(lhs) & static_cast<event_type>(rhs));
 }
 
 /// @brief Output stream operator for EventType.
-inline std::ostream& operator<<(std::ostream& s, EventType e) {
-    return s << static_cast<std::underlying_type<EventType>::type>(e);
-}
+/// @attention Remember to update this when changing EventType!
+std::ostream& operator<<(std::ostream& s, EventType e);
 
 #endif
