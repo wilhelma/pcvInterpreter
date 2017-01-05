@@ -108,6 +108,15 @@ std::unique_ptr<const Database> load_database(const std::string& DBPath) {
     return db;
 }
 
+const access_t& access_of(const instruction_t& ins, const Database& db) {
+    const auto& accesses = db.accessTable()->getInsAccessMap().at(ins.id);
+
+    // if this is not 1, how can I know which access I'm referring to?
+    if (accesses.size() != 1)
+        throw DatabaseException("Instruction refers to more accesses", "access_of");
+    return access_with_id(accesses[0], db);
+}
+
 const segment_t& segment_of(const instruction_t& ins, const Database& db)
 { return db.segmentTable()->at(ins.segment_id); }
 

@@ -20,7 +20,6 @@
 #include "Types.h"
 
 #include <iosfwd>
-#include <memory>
 
 /// @ingroup events
 /// @brief Event for function returns.
@@ -28,9 +27,9 @@ class ReturnEvent final : public Event<ReturnInfo> {
 public:
     /// @brief Constructor.
     /// @param shadow_thread The shadow information of the thread that triggered the event.
-    /// @param info         The return event information.
+    /// @param info          The return event information.
     explicit ReturnEvent(ShadowThreadMap::const_iterator shadow_thread,
-                         std::unique_ptr<const ReturnInfo>&& info)
+                         std::unique_ptr<const ReturnInfo>&& info) noexcept
         : Event(shadow_thread, std::move(info))
     {};
 

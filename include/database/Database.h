@@ -163,6 +163,13 @@ private:
 /// @param DBPath The database path.
 std::unique_ptr<const Database> load_database(const std::string& DBPath);
 
+/// @brief Access record of the instruction.
+/// @param ins The called instruction.
+/// @param db  The database to look in.
+/// @throws std::out_of_range If the corresponding access record is not found.
+/// @throws DatabaseException If more than one access is associated to the instruction id.
+const access_t& access_of(const instruction_t& ins, const Database& db);
+
 /// @brief Segment containing the instruction.
 /// @param ins The called instruction.
 /// @param db  The database to look in.

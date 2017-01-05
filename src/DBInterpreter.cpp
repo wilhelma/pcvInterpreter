@@ -240,30 +240,36 @@ ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
 ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
     // This will throw or abort in case of failure
     const auto& call_of_ins = call_of(ins, *database());
+    const auto& acc_of_ins  = access_of(ins, *database());
 
-    for (const auto& access : *database()->accessTable()) {
-        if (access.instruction_id == ins.id) {
-            EventGenerator_->acquireEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-            return ErrorCode::OK;
-        }
-    }
+    EventGenerator_->acquireEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
 
-    return ErrorCode::NO_ENTRY;
+//    for (const auto& access : *database()->accessTable()) {
+//        if (access.instruction_id == ins.id) {
+//            EventGenerator_->acquireEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
+//            return ErrorCode::OK;
+//        }
+//    }
+
+    return ErrorCode::OK;
 }
 
 /// @todo Code duplication! Candidate for template!
 ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
     // This will throw or abort in case of failure
     const auto& call_of_ins = call_of(ins, *database());
+    const auto& acc_of_ins  = access_of(ins, *database());
 
-    for (const auto& access : *database()->accessTable()) {
-        if (access.instruction_id == ins.id) {
-            EventGenerator_->releaseEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-            return ErrorCode::OK;
-        }
-    }
+    EventGenerator_->releaseEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
 
-    return ErrorCode::NO_ENTRY;
+//    for (const auto& access : *database()->accessTable()) {
+//        if (access.instruction_id == ins.id) {
+//            EventGenerator_->releaseEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
+//            return ErrorCode::OK;
+//        }
+//    }
+
+    return ErrorCode::OK;
 }
 
 /// TODO Code duplication! Candidate for template!

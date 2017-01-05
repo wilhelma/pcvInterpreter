@@ -39,7 +39,7 @@ public:
           FunctionId_(function_id),
           FunctionType_(function_type),
           SegmentId_(segment_id)
-        { assert(return_time >= call_time); }
+        { assert(ReturnTime_ >= CallTime_); }
     
     /// _Default_ destructor.
     ~ShadowCall() = default;

@@ -93,6 +93,7 @@ void EventTestTool::Release(const ReleaseEvent* e) {
 }
 
 void EventTestTool::Return(const ReturnEvent* e) {
+    EXPECT_LE(e->info()->callTime(), e->info()->returnTime());
     ++ NumReturns_;
 }
 

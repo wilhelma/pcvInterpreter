@@ -15,7 +15,6 @@
 #include "fwd/ShadowCallMap.h"
 
 #include "FunctionInfo.h"
-#include "Types.h"
 
 /// @ingroup info
 /// @brief Information about a function return.
