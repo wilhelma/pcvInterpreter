@@ -88,8 +88,17 @@ private:
     ErrorCode processInstruction(const instruction_t& instruction);
     ErrorCode processCall(const instruction_t& instruction);
     ErrorCode processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
-    ErrorCode processAcquire(const instruction_t& instruction);
-    ErrorCode processRelease(const instruction_t& instruction);
+
+    /// @brief Submits an AcquireEvent to the EventGenerator.
+    /// @param instruction The instruction from which the memory was accessed.
+    /// @param call        The function called on that instruction.
+    ErrorCode processAcquire(const instruction_t& instruction, const call_t& call);
+
+    /// @brief Submits a ReleaseEvent to the EventGenerator.
+    /// @param instruction The instruction from which the memory was accessed.
+    /// @param call        The function called on that instruction.
+    ErrorCode processRelease(const instruction_t& instruction, const call_t& call);
+
     ErrorCode processJoin(const instruction_t& instruction,
                           const thread_t& thread);
     ErrorCode processFork(const thread_t& thread);

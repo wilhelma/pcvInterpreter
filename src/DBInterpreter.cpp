@@ -178,10 +178,10 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
             return processAccess(ins, call_of_seg.thread_id); 
 
         case InstructionType::ACQUIRE:
-            return processAcquire(ins);
+            return processAcquire(ins, call_of_seg);
 
         case InstructionType::RELEASE:
-            return processRelease(ins);
+            return processRelease(ins, call_of_seg);
 
         case InstructionType::FORK:
             for (const auto& trd: *database()->threadTable())
@@ -237,9 +237,9 @@ ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
 }
 
 /// @todo Code duplication! Candidate for template!
-ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
+ErrorCode DBInterpreter::processAcquire(const instruction_t& ins, const call_t& call_of_ins) {
     // This will throw or abort in case of failure
-    const auto& call_of_ins = call_of(ins, *database());
+//    const auto& call_of_ins = call_of(ins, *database());
     const auto& acc_of_ins  = access_of(ins, *database());
 
     EventGenerator_->acquireEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
@@ -255,9 +255,9 @@ ErrorCode DBInterpreter::processAcquire(const instruction_t& ins) {
 }
 
 /// @todo Code duplication! Candidate for template!
-ErrorCode DBInterpreter::processRelease(const instruction_t& ins) {
+ErrorCode DBInterpreter::processRelease(const instruction_t& ins, const call_t& call_of_ins) {
     // This will throw or abort in case of failure
-    const auto& call_of_ins = call_of(ins, *database());
+//    const auto& call_of_ins = call_of(ins, *database());
     const auto& acc_of_ins  = access_of(ins, *database());
 
     EventGenerator_->releaseEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
