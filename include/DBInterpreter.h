@@ -8,7 +8,7 @@
 #ifndef DBINTERPRETER_H_
 #define DBINTERPRETER_H_
 
-// -- Tables -------------------
+// -- Database records ---------
 #include "fwd/Access.h"
 #include "fwd/Call.h"
 #include "fwd/File.h"
@@ -46,7 +46,7 @@ class DBInterpreter {
 public:
     /// @brief Constructor.
     /// @param event_generator The event generator to create and publish the events.
-    explicit DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator);
+    explicit DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) noexcept;
 
     /// _Deleted_ copy constructor.
     DBInterpreter(const DBInterpreter&) = delete;
@@ -79,29 +79,40 @@ private:
     CallStack CallStack_;
 
     // private methods---------------------------------------------------------
-    ErrorCode processAccess(const instruction_t& instruction, const TRD_ID& thread_id);
+    ErrorCode processAccess(const instruction_t& instruction, const TRD_ID& thread_id) const;
 
 
     ErrorCode processReturn(const instruction_t& ins, const call_t& call);
     ErrorCode processStart();
     ErrorCode processEnd();
+
+    /// @brief Calls other _process_ member functions based on the istruction type.
+    /// @param instruction The instruction to process.
     ErrorCode processInstruction(const instruction_t& instruction);
-    ErrorCode processCall(const instruction_t& instruction);
-    ErrorCode processCall(const call_t& call, LIN_NO callLine, SEG_ID segId);
+
+    /// @brief Submits a CallEvent to the EventGenerator.
+    /// @param call   The called function.
+    /// @param line   The line of the call instruction.
+    /// @param seg_id The ID of the segment containing the instruction.
+    ErrorCode processCall(const call_t& call, const LIN_NO& line, const SEG_ID& seg_id);
 
     /// @brief Submits an AcquireEvent to the EventGenerator.
     /// @param instruction The instruction from which the memory was accessed.
-    /// @param call        The function called on that instruction.
-    ErrorCode processAcquire(const instruction_t& instruction, const call_t& call);
+    /// @param caller      The function that called that instruction.
+    ErrorCode processAcquire(const instruction_t& instruction, const call_t& caller) const;
 
     /// @brief Submits a ReleaseEvent to the EventGenerator.
     /// @param instruction The instruction from which the memory was accessed.
-    /// @param call        The function called on that instruction.
-    ErrorCode processRelease(const instruction_t& instruction, const call_t& call);
+    /// @param caller      The function that called that instruction.
+    ErrorCode processRelease(const instruction_t& instruction, const call_t& caller) const;
 
-    ErrorCode processJoin(const instruction_t& instruction,
-                          const thread_t& thread);
-    ErrorCode processFork(const thread_t& thread);
+    /// @brief Submits a JoinEvent to the EventGenerator.
+    /// @param joined_thread    The joined thread.
+    ErrorCode processJoin(const thread_t& joined_thread) const noexcept;
+
+    /// @brief Submits a NewThreadEvent to the EventGenerator.
+    /// @param new_thread The forked thread.
+    ErrorCode processFork(const thread_t& new_thread) const noexcept;
 
     ErrorCode publishThreadReturn(TRD_ID threadId);
 };

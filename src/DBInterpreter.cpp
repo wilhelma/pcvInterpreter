@@ -8,7 +8,7 @@
 #include "DBInterpreter.h"
 #include "SQLException.h"
 
-// Database tables
+// -- Database tables ----------
 #include "AccessTable.h"
 #include "CallTable.h"
 #include "FileTable.h"
@@ -20,7 +20,9 @@
 #include "ReferenceTable.h"
 #include "SegmentTable.h"
 #include "ThreadTable.h"
+// -----------------------------
 
+// -- Database records ---------
 #include "Access.h"
 #include "Call.h"
 #include "File.h"
@@ -32,6 +34,7 @@
 #include "Reference.h"
 #include "Segment.h"
 #include "Thread.h"
+// -----------------------------
 
 #include "Database.h"
 
@@ -47,13 +50,7 @@
 // logging system
 #include "easylogging++.h"
 
-size_t getHash(unsigned funId, unsigned lineNo) {
-    size_t h1 = std::hash<unsigned>()(funId);
-    size_t h2 = std::hash<unsigned>()(lineNo);
-    return h1 ^ (h2 << 1);
-}
-
-DBInterpreter::DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) :
+DBInterpreter::DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) noexcept:
     EventGenerator_(std::move(event_generator))
 {}
 
@@ -120,7 +117,7 @@ ErrorCode DBInterpreter::publishThreadReturn(TRD_ID threadId) {
 }
 
 ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
-        const TRD_ID& thread_id) {
+        const TRD_ID& thread_id) const {
 
     // loop over the memory accesses of the instruction
     for (const auto& acc_id : access_ids_of(instruction, *database())) {
@@ -163,25 +160,24 @@ ErrorCode DBInterpreter::processEnd() {
 ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
     // Segment containing the instruction
     const auto& seg_of_ins  = segment_of(ins, *database());
-    const auto& call_of_seg = call_of(seg_of_ins, *database());
+    // This is now the caller of the instruction
+    const auto& caller_of_seg = call_of(seg_of_ins, *database());
 
     // handle call/thread stack returns
-    processReturn(ins, call_of_seg);
+    processReturn(ins, caller_of_seg);
 
     switch (ins.instruction_type) {
         case InstructionType::CALL:
-            // TODO Replace with a direct call (the line below doesn't work)
-            // return processCall(call_of_seg, ins.line_number, ins.segment_id);
-            return processCall(ins);
+            return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
 
         case InstructionType::ACCESS:
-            return processAccess(ins, call_of_seg.thread_id); 
+            return processAccess(ins, caller_of_seg.thread_id); 
 
         case InstructionType::ACQUIRE:
-            return processAcquire(ins, call_of_seg);
+            return processAcquire(ins, caller_of_seg);
 
         case InstructionType::RELEASE:
-            return processRelease(ins, call_of_seg);
+            return processRelease(ins, caller_of_seg);
 
         case InstructionType::FORK:
             for (const auto& trd: *database()->threadTable())
@@ -192,7 +188,7 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
         case InstructionType::JOIN:
             for (const auto& trd : *database()->threadTable())
                 if (ins.id == trd.join_instruction_id)
-                    return processJoin(ins, trd);
+                    return processJoin(trd);
             break;
 
         default:
@@ -202,7 +198,15 @@ ErrorCode DBInterpreter::processInstruction(const instruction_t& ins) {
     return ErrorCode::NO_ENTRY;
 }
 
-ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID segId) {
+// helper function
+const CALLSITE call_hash(const FUN_ID& fun_id, const LIN_NO& line) noexcept {
+    const auto h1 = std::hash<unsigned>()(fun_id);
+    const auto h2 = std::hash<unsigned>()(line);
+
+    return static_cast<CALLSITE>(h1 ^ (h2 << 1));
+}
+
+ErrorCode DBInterpreter::processCall(const call_t& call, const LIN_NO& line, const SEG_ID& seg_id) {
     auto ret = ErrorCode::NO_ENTRY;
 
     const auto& fun_of_call = function_of(call, *database());
@@ -214,13 +218,13 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
             EventGenerator_->callEvent(
                     call.thread_id,
                     call.id,
-                    static_cast<CALLSITE>(getHash(call.function_id, line)),
+                    call_hash(call.function_id, line),
                     call.start_time,
                     call.end_time,
                     fun_of_call.id,
                     fun_of_call.name,
                     fun_of_call.type,
-                    segId);
+                    seg_id);
             CallStack_.push(call.id);
             ret = ErrorCode::OK;
             break;
@@ -232,62 +236,30 @@ ErrorCode DBInterpreter::processCall(const call_t& call, LIN_NO line, SEG_ID seg
     return ret;
 }
 
-ErrorCode DBInterpreter::processCall(const instruction_t& ins) {
-    return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
-}
-
 /// @todo Code duplication! Candidate for template!
-ErrorCode DBInterpreter::processAcquire(const instruction_t& ins, const call_t& call_of_ins) {
-    // This will throw or abort in case of failure
-//    const auto& call_of_ins = call_of(ins, *database());
-    const auto& acc_of_ins  = access_of(ins, *database());
-
+ErrorCode DBInterpreter::processAcquire(const instruction_t& ins, const call_t& call_of_ins) const {
+    const auto& acc_of_ins  = access_of(ins, *database()); // may throw
     EventGenerator_->acquireEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
 
-//    for (const auto& access : *database()->accessTable()) {
-//        if (access.instruction_id == ins.id) {
-//            EventGenerator_->acquireEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-//            return ErrorCode::OK;
-//        }
-//    }
-
     return ErrorCode::OK;
 }
 
 /// @todo Code duplication! Candidate for template!
-ErrorCode DBInterpreter::processRelease(const instruction_t& ins, const call_t& call_of_ins) {
-    // This will throw or abort in case of failure
-//    const auto& call_of_ins = call_of(ins, *database());
-    const auto& acc_of_ins  = access_of(ins, *database());
-
+ErrorCode DBInterpreter::processRelease(const instruction_t& ins, const call_t& call_of_ins) const {
+    const auto& acc_of_ins  = access_of(ins, *database()); // may throw
     EventGenerator_->releaseEvent(call_of_ins.thread_id, acc_of_ins.reference_id, call_of_ins.start_time);
 
-//    for (const auto& access : *database()->accessTable()) {
-//        if (access.instruction_id == ins.id) {
-//            EventGenerator_->releaseEvent(call_of_ins.thread_id, access.reference_id, call_of_ins.start_time);
-//            return ErrorCode::OK;
-//        }
-//    }
+    return ErrorCode::OK;
+}
+
+ErrorCode DBInterpreter::processFork(const thread_t& new_thread) const noexcept {
+    EventGenerator_->newThreadEvent(new_thread.parent_thread_id, new_thread.id, new_thread.start_cycle, new_thread.num_cycles);
 
     return ErrorCode::OK;
 }
 
-/// TODO Code duplication! Candidate for template!
-/// TODO Remove function. Call directly.
-ErrorCode DBInterpreter::processFork(const thread_t& thread) {
-
-    // XXX Consider changing prototype to newThreadEvent(const thread_t&)
-    EventGenerator_->newThreadEvent(thread.parent_thread_id, thread.id, thread.start_cycle, thread.num_cycles);
-
-    return ErrorCode::OK;
-}
-
-/// TODO Code duplication! Candidate for template!
-/// TODO Remove function. Call directly.
-ErrorCode DBInterpreter::processJoin(const instruction_t& ins,
-        const thread_t& thread) {
-
-    EventGenerator_->joinEvent(thread.parent_thread_id, thread.id, EventGenerator_->lastEventTime());
+ErrorCode DBInterpreter::processJoin(const thread_t& joined_thread) const noexcept {
+    EventGenerator_->joinEvent(joined_thread.parent_thread_id, joined_thread.id, EventGenerator_->lastEventTime());
 
     return ErrorCode::OK;
 }
