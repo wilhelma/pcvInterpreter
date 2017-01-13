@@ -65,6 +65,9 @@ public:
             throw std::invalid_argument("Input string is nullptr from FastString::FastString");
     }
 
+    /// _Default_ constructor.
+    constexpr FastString() = default;
+
     /// Return the i-th element (without boundary checking).
     constexpr const CharT operator[](const difference_type i) const noexcept
     { return String_[i]; }

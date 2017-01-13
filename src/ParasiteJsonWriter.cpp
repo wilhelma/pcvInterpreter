@@ -38,7 +38,7 @@ void ParasiteJsonWriter::writeCallSite(std::shared_ptr<CallSiteProfile> profile)
     rapidjson::Value object(rapidjson::kObjectType);
     object.AddMember("call_site", static_cast<int>(profile->call_site), allocator);
     object.AddMember("count", profile->count, allocator);
-    rapidjson::Value fun_sg((profile->function_signature).c_str(), allocator);
+    rapidjson::Value fun_sg(reinterpret_cast<const char*>((profile->function_signature).c_str()), allocator);
     object.AddMember("function_signature", fun_sg.Move(), allocator);
     object.AddMember("parallelism", profile->parallelism, allocator);
     object.AddMember("span", static_cast<uint64_t>(profile->span), allocator);

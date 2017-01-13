@@ -173,9 +173,9 @@ using CALLSITE = StrongTypedef<size_t, no_summable,  13>;
 using FIL_PT = FastString<unsigned char>;//std::string;
 
 // Function Types
-using FUN_SG = std::string; 
+using FUN_SG = FastString<unsigned char>; //std::string; 
 // Function Name
-using FUN_NM = std::string;
+using FUN_NM = FastString<unsigned char>; //std::string;
 // FUN_TYP Already uses FunctionType
 using LIN_NO = StrongTypedef<unsigned, no_summable, 14>; 
 

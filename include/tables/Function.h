@@ -20,7 +20,6 @@
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _Function_
 /// database table.
-/// @todo Remove std::string and make it constexpr
 struct function_t {
     /// SQL ID of the function.
     FUN_ID id;
@@ -38,7 +37,7 @@ struct function_t {
     LIN_NO line_number;
 
     /// Constructor.
-    explicit
+    constexpr explicit
     function_t(FUN_ID sqlID,
                FUN_NM name,
                FUN_SG fnSignature,
