@@ -78,8 +78,8 @@ inline const std::string QueryResult::get(int column) const
 { return static_cast<std::string>(reinterpret_cast<const char*>(sqlite3_column_text(Query_, column))); }
 
 template<>
-inline const REF_NAME QueryResult::get(int column) const
-{ return static_cast<REF_NAME>(sqlite3_column_text(Query_, column)); }
+inline const FastString<unsigned char> QueryResult::get(int column) const
+{ return static_cast<FastString<unsigned char>>(sqlite3_column_text(Query_, column)); }
 
 /// @brief Accesses the query (`TIME` specialization).
 /// @param column The column to access in the query.

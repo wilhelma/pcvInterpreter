@@ -170,7 +170,7 @@ inline constexpr TIME operator-(const TIME& lhs, const TIME& rhs) noexcept
 using CALLSITE = StrongTypedef<size_t, no_summable,  13>;
 
 // File Types
-using FIL_PT = std::string;
+using FIL_PT = FastString<unsigned char>;//std::string;
 
 // Function Types
 using FUN_SG = std::string; 

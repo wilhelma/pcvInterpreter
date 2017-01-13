@@ -103,23 +103,21 @@ constexpr const bool operator==(const FastString<CharT> lhs, const FastString<Ch
 /// @param lhs The left-hand side FastString.
 /// @param rhs The right-hand side character array.
 template <typename CharT>
-constexpr const bool operator==(const FastString<CharT> lhs, const char* rhs) noexcept {
-    return lhs == FastString<CharT>(reinterpret_cast<const CharT*>(rhs));
-}
+inline constexpr const bool operator==(const FastString<CharT> lhs, const char* rhs) noexcept
+{ return lhs == FastString<CharT>(reinterpret_cast<const CharT*>(rhs)); }
 
 /// @brief Unequality operator.
 /// @param lhs The left-hand side.
 /// @param rhs The right-hand side.
 template <typename CharT>
-constexpr const bool operator!=(const FastString<CharT> lhs, const FastString<CharT> rhs) noexcept
+inline constexpr const bool operator!=(const FastString<CharT> lhs, const FastString<CharT> rhs) noexcept
 { return !( lhs == rhs ); }
 
 /// @brief Output stream operator for FastString.
 /// @param s  The output stream.
 /// @param fs The FastString to stream.
 template <typename CharT>
-std::ostream& operator<<(std::ostream& s, const FastString<CharT>& fs) {
-    return s << fs.c_str();
-}
+inline std::ostream& operator<<(std::ostream& s, const FastString<CharT>& fs)
+{ return s << fs.c_str(); }
 
 #endif

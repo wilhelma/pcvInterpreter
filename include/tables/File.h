@@ -14,6 +14,19 @@
 
 #include "Types.h"
 
+constexpr const FIL_PT retrieve_file_name(const FIL_PT& path) noexcept {
+    const char dir_separator = '/';
+
+    // Index of the last non-terminator character in the string.
+    int i = path.length() - 1;
+    while (path[i] != dir_separator && i > 0)
+        -- i;
+
+    // Advance i by one to avoid the '/' in the file name
+    i += (path[i] == dir_separator ? 1 : 0);
+    return FastString<unsigned char>(path.c_str() + i);
+}
+
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _File_
 /// database table.
@@ -28,7 +41,11 @@ struct file_t {
     /// Constructor.
     /// @param sqlID    The SQL ID of the file.
     /// @param filePath The file path and name.
-    explicit file_t(FIL_ID sqlID, FIL_PT filePath) noexcept;
+    constexpr explicit file_t(FIL_ID sqlID, FIL_PT filePath) noexcept :
+        id(sqlID),
+        file_path(filePath),
+        file_name(retrieve_file_name(filePath))
+   {}
 };
 
 #endif
