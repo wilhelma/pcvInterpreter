@@ -23,22 +23,22 @@ struct {
 TIME getMinStart(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
     TIME min = static_cast<TIME>(0);
-    for (int i = 0; i < intervls->size(); i++) {
+    for (unsigned int i = 0; i < intervls->size(); i++) {
         if (intervls->at(i).start < min)
             min = intervls->at(i).start;
     }
     return min;
-};
+}
 
 TIME getMaxStop(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
     TIME max = static_cast<TIME>(0);
-    for (int i = 0; i < intervls->size(); i++) {
+    for (unsigned int i = 0; i < intervls->size(); i++) {
         if (intervls->at(i).stop > max)
             max = intervls->at(i).stop;
     }
     return max;
-};
+}
 
 TIME span(std::shared_ptr<std::vector<LockInterval>> intervls) {
 
@@ -64,7 +64,7 @@ void LockIntervals::order() {
 
     std::sort(ordered_intervals->begin(), ordered_intervals->end(), compareLockIntervalStarts);
 
-    for (int i = 0; i < ordered_intervals->size() - 1; i++) {
+    for (int i = 0; i < static_cast<int>(ordered_intervals->size()) - 1; i++) {
 
         if (ordered_intervals->at(i).stop > ordered_intervals->at(i+1).start) {
             TIME right_shift = (static_cast<TIME>(1) + ordered_intervals->at(i).stop) - 
