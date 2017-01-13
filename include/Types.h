@@ -14,9 +14,7 @@
 
 #include "FastString.h"
 
-#include <string>
 #include <limits>
-
 #include <type_traits>
 
 template<bool is_true>
@@ -195,7 +193,7 @@ using REF_NAME = FastString<unsigned char>; //std::string;
 
 // Thread Types
 using PID = StrongTypedef<unsigned, no_summable, 16>;
-using TIME_STRING = std::string;
+using TIME_STRING = FastString<unsigned char>; //std::string;
 using NUM_CYCLES = StrongTypedef<unsigned, no_summable, 17>;
 
 #endif /* TYPES_H_ */
