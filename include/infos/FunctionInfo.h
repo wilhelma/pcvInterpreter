@@ -12,9 +12,10 @@
 #ifndef  FUNCTION_INFO_H_
 #define  FUNCTION_INFO_H_
 
-#include "fwd/Function.h"
 
 #include "ShadowCallMap.h"
+
+#include "fwd/FunctionType.h"
 #include "Types.h"
 
 /// @ingroup info

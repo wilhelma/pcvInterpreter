@@ -20,7 +20,6 @@
 
 // Records --------------------
 #include "fwd/Reference.h"
-#include "fwd/Function.h"
 // ----------------------------
 
 // Infos ----------------------
@@ -30,6 +29,7 @@
 // ----------------------------
 
 #include "fwd/AccessType.h"
+#include "fwd/FunctionType.h"
 #include "Types.h"
 
 #include <memory>

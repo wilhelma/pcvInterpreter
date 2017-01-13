@@ -25,6 +25,11 @@ template<bool is_true>
 inline constexpr std::integral_constant<bool, is_true> sortable() noexcept
 { return std::integral_constant<bool, is_true>{}; }
 
+/// @defgroup types
+/// @brief Types defined to handle the data read from the input database.
+
+
+/// @ingroup types
 /// @brief Struct to prevent implicit conversion among types.
 /// @tparam T   The underlying type.
 /// @tparam uid A _unique ID specifier_ to prevent implicit casts.
