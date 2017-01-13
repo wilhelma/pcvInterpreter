@@ -12,6 +12,8 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+#include "FastString.h"
+
 #include <string>
 #include <limits>
 
@@ -185,7 +187,8 @@ using LIN_NO = StrongTypedef<unsigned, no_summable, 14>;
 // Reference Types
 using REF_SIZE = StrongTypedef<size_t, no_summable, 15>;
 // REF_MTYP Already uses ReferenceType
-using REF_NAME = std::string;
+
+using REF_NAME = FastString<unsigned char>; //std::string;
 
 // Segment Types
 // SEG_TYP Already uses SegmentType 
