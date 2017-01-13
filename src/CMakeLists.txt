@@ -31,7 +31,7 @@ set(DB_SOURCES
     tables/Call.cpp
     tables/CallTable.cpp
     tables/File.cpp
-    tables/Reference.cpp)
+    tables/ReferenceType.cpp)
 
 # Add a rule to compile the database part in a shared library
 add_library(SQL_DB SHARED EXCLUDE_FROM_ALL ${DB_SOURCES})

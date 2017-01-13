@@ -12,7 +12,7 @@
 #ifndef  ACCESS_INFO_H_
 #define  ACCESS_INFO_H_
 
-#include "fwd/Reference.h"
+#include "fwd/ReferenceType.h"
 #include "fwd/Access.h"
 
 #include "ShadowVariableMap.h"

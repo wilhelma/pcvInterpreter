@@ -13,7 +13,7 @@
 
 #include "AccessInfo.h"
 #include "EventType.h"
-#include "Reference.h"
+#include "ReferenceType.h"
 #include "ShadowThread.h"
 
 #include <iomanip>

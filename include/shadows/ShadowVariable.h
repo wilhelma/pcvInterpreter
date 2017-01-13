@@ -8,7 +8,9 @@
 #ifndef SHADOW_VARIABLE_H_
 #define SHADOW_VARIABLE_H_
 
+#include "fwd/ReferenceType.h"
 #include "fwd/Reference.h"
+
 #include "Types.h"
 
 /// @ingroup shadows

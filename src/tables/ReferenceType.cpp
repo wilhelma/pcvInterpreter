@@ -1,6 +1,6 @@
 /**
  *
- *    @file  Reference.cpp
+ *    @file  ReferenceType.cpp
  *   @brief  
  *
  *    @date  01/04/17
@@ -9,7 +9,7 @@
  *
  */
 
-#include "Reference.h"
+#include "ReferenceType.h"
 #include <ostream>
 
 std::ostream& operator<<(std::ostream& s, ReferenceType r) {
