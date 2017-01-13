@@ -12,14 +12,8 @@
 #ifndef  SEGMENT_iNC
 #define  SEGMENT_iNC
 
+#include "SegmentType.h"
 #include "Types.h"
-
-/// @ingroup types
-/// @brief The type of the segment.
-enum class SegmentType : bool {
-    REGION = 0, ///< @todo ?
-    LOOP   = 1  ///< @todo ?
-};
 
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _Segment_
@@ -32,7 +26,7 @@ struct segment_t {
     SegmentType segment_type;
     LOI_ID loop_pointer;
 
-    explicit
+    constexpr explicit
     segment_t(SEG_ID sqlID,
               CAL_ID callId,
               SegmentType segmentType,
