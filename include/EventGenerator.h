@@ -19,7 +19,6 @@
 #include "fwd/ShadowVariableMap.h"
 
 // Records --------------------
-#include "fwd/Access.h"
 #include "fwd/Reference.h"
 #include "fwd/Function.h"
 // ----------------------------
@@ -30,6 +29,7 @@
 #include "fwd/NewThreadInfo.h"
 // ----------------------------
 
+#include "fwd/AccessType.h"
 #include "Types.h"
 
 #include <memory>

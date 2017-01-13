@@ -12,35 +12,9 @@
 #ifndef  ACCESS_H_
 #define  ACCESS_H_
 
+#include "AccessState.h"
+#include "AccessType.h"
 #include "Types.h"
-
-#include <iosfwd>
-
-/// @brief The type of the access.
-enum class AccessType : unsigned char {
-	READ  = 1, ///< Read access.
-	WRITE = 2  ///< Write access.
-};
-
-/// @brief Output stream operator for AccessType.
-/// @param s The output stream.
-/// @param a The access type to print.
-/// @attention Remember to update this when changing AccessType!
-std::ostream& operator<<(std::ostream& s, AccessType a);
-
-/// @brief The state of the access.
-enum class AccessState : unsigned char {
-    INIT              = 0,
-    EXCLUSIVE         = 1,
-    READ_SHARED       = 2,
-    READ_WRITE_SHARED = 3
-};
-
-/// @brief Output stream operator for AccessState.
-/// @param s The output stream.
-/// @param a The access state to print.
-/// @attention Remember to update this when changing AccessState!
-std::ostream& operator<<(std::ostream& s, AccessState a);
 
 /// @defgroup records
 /// @brief Structures holding data read from the database.

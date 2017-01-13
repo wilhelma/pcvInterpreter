@@ -26,7 +26,8 @@ set(DB_SOURCES
     database/Database.cpp
     database/DBManager.cpp
     database/QueryResult.cpp
-    tables/Access.cpp
+    tables/AccessState.cpp
+    tables/AccessType.cpp
     tables/AccessTable.cpp
     tables/Call.cpp
     tables/CallTable.cpp
