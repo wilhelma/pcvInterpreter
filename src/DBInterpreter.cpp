@@ -130,7 +130,7 @@ ErrorCode DBInterpreter::processAccess(const instruction_t& instruction,
 }
 
 ErrorCode DBInterpreter::processStart() {
-    const auto& main_call        = call_with_id(call_t::MAIN, *database()); // may throw
+    const auto& main_call        = call_with_id(call_t::main_id(), *database()); // may throw
     const auto& main_call_thread = thread_of(main_call, *database());
     processFork(main_call_thread);
     processCall(main_call, static_cast<LIN_NO>(0), static_cast<SEG_ID>(0));

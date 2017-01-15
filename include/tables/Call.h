@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef  call_H_
-#define  call_H_
+#ifndef  CALL_H_
+#define  CALL_H_
 
 #include "Types.h"
 
@@ -18,7 +18,9 @@
 /// @brief Holds the information contained in one row of the _Call_
 /// database table.
 struct call_t {
-    static const CAL_ID MAIN;// = static_cast<CAL_ID>(1);
+    /// Returns a call ID to associate to the `main()` function (i.e. _1_).
+    static constexpr const CAL_ID main_id() noexcept
+    { return CAL_ID(1); }
 
     /// SQL ID of the call.
     CAL_ID id;

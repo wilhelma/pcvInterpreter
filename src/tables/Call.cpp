@@ -13,4 +13,6 @@
 
 #include "Types.h"
 
-const CAL_ID call_t::MAIN(1);
+//constexpr const CAL_ID call_t::main_id() noexcept {
+//    return CAL_ID(1);
+//}
