@@ -39,7 +39,7 @@ struct access_t {
     AccessState memory_state;
 
     /// Constructor.
-    explicit
+    constexpr explicit
     access_t(ACC_ID sqlID,
              INS_ID instructionID,
              POS pos,

@@ -28,7 +28,7 @@ constexpr const FIL_PT retrieve_file_name(const FIL_PT& path) noexcept {
 }
 
 /// @ingroup records
-/// @brief Holds the information contained in one row of the _File_
+/// @brief Holds the information contained in one row of the _File_.
 /// database table.
 struct file_t {
     /// SQL ID of the file.
