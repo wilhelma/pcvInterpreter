@@ -47,6 +47,7 @@
 #include "Types.h"
 
 #include <algorithm>
+#include <cassert>
 #include <iterator>
 #include <memory>
 #include <string>
@@ -61,22 +62,35 @@
 // Default destructor.
 Database::~Database() = default;
 
+//auto read_task(int limit, int offset) {
+//    DBManager db;
+//    try {
+//        db.open(DBPath);
+//    } catch (const SQLException& e) {
+//        LOG(FATAL) << e.what();
+//        std::abort();
+//    }
+//}
+
 // Helper function to fill the tables
 template<typename T,
          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::unique_ptr<const T> load_table(const std::string& table_name, const DBManager& db) {
     // Query the number of entries in the database table
-    const auto numEntries = db.query("select max(Id) from " + table_name + ";")->getSingle<std::size_t>(0) + 1;
+    const int table_entries = db.entries(table_name);
 
     // Create the new table
     T* table = new T();
-    table->reserve(numEntries);
+    table->reserve(table_entries);
     std::copy(SQLStatementIterator<typename T::value_type>(db.query("select * from " + table_name + ";")),
               SQLStatementIterator<typename T::value_type>::end(), inserter<T>(table));
 
     // Log the number of entries
     LOG(TRACE) << std::setw(24) << std::left
                << "Rows in " + table_name + ": " << table->size();
+
+    // Check if the table size is correct
+    assert(static_cast<int>(table->size()) == table_entries);
 
     return std::unique_ptr<const T>(static_cast<const T*>(table));
 }

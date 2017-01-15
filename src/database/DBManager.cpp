@@ -26,13 +26,18 @@ void DBManager::open(const std::string& DBPath) {
 	// open the database and store its return code
 	auto rc = sqlite3_open_v2(DBPath.c_str(),
 			&Database_,
-			SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX,
+			SQLITE_OPEN_READWRITE | SQLITE_OPEN_NOMUTEX,
 			nullptr);
 
 //	// store the pointer in a unique_ptr class
 //	Database_.reset(temp_db_pointer);
 
 	// if database opening failed
+	if (rc != SQLITE_OK)
+		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
+
+    // Set Write-Ahead Logging
+    rc = sqlite3_exec(Database_, "pragma journal_mode = WAL", nullptr, nullptr, nullptr);
 	if (rc != SQLITE_OK)
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
 }
@@ -48,6 +53,18 @@ DBManager::~DBManager() noexcept {
     catch (SQLException& e) {
         std::cerr << e.what() << std::endl;
         std::abort();
+    }
+}
+
+const int DBManager::entries(const std::string& table_name) const {
+    const auto query_result = query("select count(*) from " + table_name);
+    switch (query_result->step()) {
+        case SQLITE_ROW:
+            return query_result->get<int>(0);
+        case SQLITE_DONE:
+            throw SQLException("No entry", "DBManager::entries");
+        default:
+            throw SQLException("Iterating database failed", "DBManager::entries");
     }
 }
 

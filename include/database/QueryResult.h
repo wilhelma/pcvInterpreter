@@ -33,11 +33,6 @@ public:
     template<typename T>
     const T get(int column) const;
 
-    /// @brief Accesses the value in the prepared statement for a single result.
-    /// @param column The column to access in the prepared statement.
-    template<typename T>
-    const T getSingle(int column);
-
     /// Makes a step, i.e. reads the next entry in the prepared statement.
     const int step()
     { return sqlite3_step(Query_); }
@@ -53,19 +48,9 @@ private:
     sqlite3_stmt* Query_;
 };
 
-template<typename T>
-inline const T QueryResult::getSingle(int column) {
-    switch(step()) {
-        case SQLITE_ROW:
-            break;
-        case SQLITE_DONE:
-            throw SQLException("Iterating DB failed. No Entry.", "QueryResult::getSingle");
-        default:
-            throw SQLException("Iterating DB failed", "QueryResult::getSingle");
-    }
-
-    return static_cast<T>(sqlite3_column_int(Query_, column));
-}
+template<>
+inline const char* const QueryResult::get(int column) const
+{ return reinterpret_cast<const char*>(sqlite3_column_text(Query_, column)); }
 
 template<typename T>
 inline const T QueryResult::get(int column) const

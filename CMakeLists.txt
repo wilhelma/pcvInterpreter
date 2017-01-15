@@ -11,8 +11,7 @@ if(DOXYGEN_FOUND)
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
-set(CMAKE_CXX_FLAGS "-fPIC -DBIGARRAY_MULTIPLIER=1 -pedantic -g -Wall -Wno-unknown-pragmas -std=c++14 -march=native")
-#set(CMAKE_C_FLAGS   "-fPIC -DBIGARRAY_MULTIPLIER=1 -g -Wall -Wno-unknown-pragmas -march=native" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DBIGARRAY_MULTIPLIER=1 -pedantic -g -Wall -Wno-unknown-pragmas -std=c++14 -march=native")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-Bsymbolic ${CMAKE_SHARED_LINKER_FLAGS} ")
 
 # Add subdirectories

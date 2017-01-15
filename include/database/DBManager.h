@@ -30,9 +30,9 @@
 class DBManager {
 public:
     /// Constructor.
-    explicit DBManager()
-        : Database_(nullptr) //, CurrentQueryResult_(nullptr)
-    {};
+    constexpr explicit DBManager() noexcept
+        : Database_(nullptr)
+    {}
 
     /// @brief Try to open the database.
     /// @param DBPath The database to open.
@@ -42,8 +42,13 @@ public:
     /// @brief Query the database.
     /// @param sql_query The database query string.
     /// @return A pointer to the QueryResult containing the result of the query.
-    /// @throw SQLException
+    /// @throw SQLException If the query fails.
     std::unique_ptr<QueryResult> query(const std::string& sql_query) const;
+
+    /// @brief Returns the number of entries in a database table.
+    /// @param table_name The name of the table.
+    /// @throw SQLException If the `count(*)` query fails.
+    const int entries(const std::string& table_name) const;
 
     /// @brief Destructor: try to close the database.
     /// @attention If an exception is thrown when closing the database, the 
@@ -57,9 +62,6 @@ private:
     sqlite3* Database_;
     
 //  std::unique_ptr<sqlite3> Database_;
-
-//  /// Pointer to the prepared statement currently being operated on
-//  std::shared_ptr<QueryResult> CurrentQueryResult_
 };
 
 #endif
