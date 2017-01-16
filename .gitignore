@@ -1,6 +1,9 @@
 # Ignore (generated) documentation 
 latex/
 
+# Vim swap files
+*.swp
+
 # Ignore CMake-related files
 CMakeCache.txt
 CMakeFiles/
