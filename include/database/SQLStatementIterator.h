@@ -216,6 +216,13 @@ inline thread_t SQLStatementIterator<thread_t>::operator*() const {
     return thread_t(id, start_time, end_time, start_cycle, num_cycles, create_instr_id, join_instr_id, parent_thread_id, process_id, call_id);
 }
 
+/// @brief Deference operator.
+/// @details `size_t` specialization to query for the number of entries in tables.
+template <>
+inline size_t SQLStatementIterator<size_t>::operator*() const {
+    return Query_->get<size_t>(0);
+}
+
 template<typename T>
 SQLStatementIterator<T>& SQLStatementIterator<T>::operator++() {
     switch(Query_->step()) {

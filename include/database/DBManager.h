@@ -48,7 +48,7 @@ public:
     /// @brief Returns the number of entries in a database table.
     /// @param table_name The name of the table.
     /// @throw SQLException If the `count(*)` query fails.
-    const int entries(const std::string& table_name) const;
+    const size_t entries(const std::string& table_name) const;
 
     /// @brief Destructor: try to close the database.
     /// @attention If an exception is thrown when closing the database, the 

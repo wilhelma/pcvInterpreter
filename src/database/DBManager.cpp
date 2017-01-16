@@ -13,7 +13,9 @@
 
 #include "QueryResult.h"
 #include "SQLException.h"
+#include "SQLStatementIterator.h"
 
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <sqlite3.h>
@@ -56,16 +58,11 @@ DBManager::~DBManager() noexcept {
     }
 }
 
-const int DBManager::entries(const std::string& table_name) const {
-    const auto query_result = query("select count(*) from " + table_name);
-    switch (query_result->step()) {
-        case SQLITE_ROW:
-            return query_result->get<int>(0);
-        case SQLITE_DONE:
-            throw SQLException("No entry", "DBManager::entries");
-        default:
-            throw SQLException("Iterating database failed", "DBManager::entries");
-    }
+const size_t DBManager::entries(const std::string& table_name) const {
+    auto it = SQLStatementIterator<size_t>(query("select count(*) from " + table_name));
+    const auto entries = *it;
+    assert(++it == SQLStatementIterator<size_t>::end());
+    return entries;
 }
 
 std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {
