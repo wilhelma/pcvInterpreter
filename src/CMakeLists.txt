@@ -92,9 +92,8 @@ set(LINKED_TOOLS ${LINKED_TOOLS} FunctionTrackerTool)
 
 # > libLockSetChecker.a -------------------------------------------
 # Download rapidjson from its Github repository
-set(RAPIDJSON_SOURCE_DIR ${pcv_SOURCE_DIR}/external/rapidjson)
 ExternalProject_Add(rapidjson
-    DOWNLOAD_DIR      ${RAPIDJSON_SOURCE_DIR}
+    PREFIX            ${EXTERNAL}
     GIT_REPOSITORY    https://github.com/miloyip/rapidjson
     UPDATE_COMMAND    ${GIT_EXECUTABLE} pull origin master
     CONFIGURE_COMMAND ""

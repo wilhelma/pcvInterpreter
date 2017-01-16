@@ -6,6 +6,7 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    file(MAKE_DIRECTORY ${pcv_BINARY_DIR}/doc/html)
     add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
@@ -20,10 +21,11 @@ if (GIT_FOUND)
 
     # Download EasyLogging++ from its Github repository
     include(ExternalProject)
+    set(EXTERNAL_DIR ${pcv_BINARY_DIR}/external/)
     ExternalProject_Add(easyloggingpp
-        PREFIX            "${pcv_BINARY_DIR}/external/"
-        GIT_REPOSITORY    "https://github.com/easylogging/easyloggingpp"
-        GIT_TAG           "9.84"
+        PREFIX            ${EXTERNAL}
+        GIT_REPOSITORY    https://github.com/easylogging/easyloggingpp
+        GIT_TAG           9.84
         UPDATE_COMMAND    ""
         CONFIGURE_COMMAND ""
         BUILD_COMMAND     ""
