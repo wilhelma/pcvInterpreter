@@ -31,6 +31,7 @@
 #include "ThreadEndInfo.h"
 // ---------------------------
 
+#include "FunctionType.h"
 #include "Reference.h"
 
 #include "gtest/gtest.h"
@@ -72,6 +73,32 @@ void EventTestTool::Acquire(const AcquireEvent* e) {
 
 void EventTestTool::Call(const CallEvent* e) {
     ++ NumCalls_;
+
+    // XXX only three out of 4 call events are thrown!
+
+    if (e->info()->callId() == 1) { // main
+        EXPECT_EQ(e->info()->callTime(),   40928481527560);
+        EXPECT_EQ(e->info()->runtime(),         112199687);
+        EXPECT_EQ(e->info()->returnTime(), 40928593727247);
+        EXPECT_EQ(e->info()->functionType(), FunctionType::METHOD);
+        EXPECT_EQ(e->info()->functionId(), 11);
+        EXPECT_EQ(e->info()->segmentId(),   0); // main function doesn't have an instruction => segment
+        EXPECT_EQ(e->info()->functionSignature(), "main");
+
+        // What's this?
+      //EXPECT_EQ(e->info()->siteId(),      0); // main function doesn't have an instruction => site
+
+        std::cout << *e << std::endl;
+    } else if (e->info()->callId() == 2) {
+        EXPECT_EQ(e->info()->callTime(), 40928517974366);
+        std::cout << *e << std::endl;
+    } else if (e->info()->callId() == 3) {
+        EXPECT_EQ(e->info()->callTime(), 40928518829231);
+        std::cout << *e << std::endl;
+    } else if (e->info()->callId() == 4) {
+        EXPECT_EQ(e->info()->callTime(), 40928559884969);
+        std::cout << *e << std::endl;
+    }
 }
 
 void EventTestTool::Join(const JoinEvent* e) {
