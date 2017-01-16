@@ -20,11 +20,11 @@ if (GIT_FOUND)
 
     # Download EasyLogging++ from its Github repository
     include(ExternalProject)
-    set(EASYLOGGINGPP_SOURCE_DIR ${pcv_SOURCE_DIR}/external/easyloggingpp)
     ExternalProject_Add(easyloggingpp
-        DOWNLOAD_DIR      ${EASYLOGGINGPP_SOURCE_DIR}
-        GIT_REPOSITORY    https://github.com/easylogging/easyloggingpp
-        UPDATE_COMMAND    ${GIT_EXECUTABLE} pull origin master
+        PREFIX            "${pcv_BINARY_DIR}/external/"
+        GIT_REPOSITORY    "https://github.com/easylogging/easyloggingpp"
+        GIT_TAG           "9.84"
+        UPDATE_COMMAND    ""
         CONFIGURE_COMMAND ""
         BUILD_COMMAND     ""
         INSTALL_COMMAND   ""
