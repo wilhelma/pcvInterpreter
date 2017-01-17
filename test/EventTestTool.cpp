@@ -111,7 +111,6 @@ void EventTestTool::NewThread(const NewThreadEvent* e) {
     EXPECT_LE(e->threadId(), e->info()->childThreadId());
 
     ++ NumNewThreads_;
-
 }
 
 void EventTestTool::Release(const ReleaseEvent* e) {

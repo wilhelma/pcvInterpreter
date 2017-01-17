@@ -38,6 +38,7 @@
 #include "Segment.h"
 #include "Thread.h"
 
+#include "DatabaseException.h"
 #include "easylogging++.h"
 
 #include <chrono>
@@ -141,6 +142,16 @@ TEST_F(DatabaseReadTest, DatabaseProperlyRead) {
     EXPECT_EQ(t.parent_thread_id,         0);
     EXPECT_EQ(t.process_id,           18120);
     EXPECT_EQ(t.call_id,                  4);
+}
+
+TEST_F(DatabaseReadTest, Exceptions) {
+    std::unique_ptr<const Database> db;
+    // Throws if database can't be closed
+    EXPECT_NO_THROW(db = load_database(db_file_name));
+
+    // Query for some non-existing element
+    const TRD_ID trd_id{10};
+    EXPECT_THROW(thread_with_id(trd_id, *db), std::out_of_range);
 }
 
 INITIALIZE_EASYLOGGINGPP
