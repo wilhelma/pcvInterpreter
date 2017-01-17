@@ -152,6 +152,12 @@ TEST_F(DatabaseReadTest, Exceptions) {
     // Query for some non-existing element
     const TRD_ID trd_id{10};
     EXPECT_THROW(thread_with_id(trd_id, *db), std::out_of_range);
+
+    // The instruction is not a fork nor a join
+    const INS_ID ins_id{10};
+    const auto& ins = db->instructionTable()->at(ins_id);
+    EXPECT_THROW(thread_forked_by(ins, *db), DatabaseException);
+    EXPECT_THROW(thread_joined_by(ins, *db), DatabaseException);
 }
 
 INITIALIZE_EASYLOGGINGPP

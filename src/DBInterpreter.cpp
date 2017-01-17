@@ -162,16 +162,10 @@ void DBInterpreter::processInstruction(const instruction_t& ins) {
             return processRelease(ins, caller_of_seg);
 
         case InstructionType::FORK:
-            for (const auto& trd: *database()->threadTable())
-                if (ins.id == trd.create_instruction_id)
-                    return processFork(trd);
-            break;
+            return processFork(thread_forked_by(ins, *database()));
 
         case InstructionType::JOIN:
-            for (const auto& trd : *database()->threadTable())
-                if (ins.id == trd.join_instruction_id)
-                    return processJoin(trd);
-            break;
+            return processJoin(thread_joined_by(ins, *database()));
 
         default:
             return;

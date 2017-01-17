@@ -207,3 +207,27 @@ const segment_t& segment_with_id(const SEG_ID& seg_id, const Database& db)
 
 const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db)
 { return db.threadTable()->at(trd_id); }
+
+const thread_t& thread_forked_by(const instruction_t& ins, const Database& db) {
+    if (ins.instruction_type != InstructionType::FORK)
+        throw DatabaseException("Instruction " + std::to_string(ins.id) + " is not a fork", "thread_forked_by");
+
+    for (const auto& trd : *db.threadTable())
+        if (ins.id == trd.create_instruction_id)
+            return trd;
+
+    // If the function doesn't return, throw
+    throw SQLException("No thread was forked by instruction " + std::to_string(ins.id), "thread_forked_by");  
+}
+
+const thread_t& thread_joined_by(const instruction_t& ins, const Database& db) {
+    if (ins.instruction_type != InstructionType::JOIN)
+        throw DatabaseException("Instruction " + std::to_string(ins.id) + " is not a join", "thread_joined_by");
+
+    for (const auto& trd : *db.threadTable())
+        if (ins.id == trd.join_instruction_id)
+            return trd;
+
+    // If the function doesn't return, throw
+    throw SQLException("No thread was joined by instruction " + std::to_string(ins.id), "thread_joined_by");  
+}

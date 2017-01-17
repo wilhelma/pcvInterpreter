@@ -284,4 +284,18 @@ const segment_t& segment_with_id(const SEG_ID& seg_id, const Database& db);
 /// @throw std::out_of_range If the entry is not found.
 const thread_t& thread_with_id(const TRD_ID& trd_id, const Database& db);
 
+/// @brief Return the thread forked on the instruction.
+/// @param ins The fork instruction.
+/// @param db  The database to look in.
+/// @throw DatabaseException If the instruction is not a fork.
+/// @throw SQLException If no thread was forked on that instruction (i.e. the database is corrupted).
+const thread_t& thread_forked_by(const instruction_t& ins, const Database& db);
+
+/// @brief Return the thread joined on the instruction.
+/// @param ins The join instruction.
+/// @param db  The database to look in.
+/// @throw DatabaseException If the instruction is not a join.
+/// @throw SQLException If no thread was joined on that instruction (i.e. the database is corrupted).
+const thread_t& thread_joined_by(const instruction_t& ins, const Database& db);
+
 #endif
