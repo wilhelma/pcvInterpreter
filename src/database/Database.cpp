@@ -49,6 +49,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iterator>
+#include <future>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -62,28 +63,82 @@
 // Default destructor.
 Database::~Database() = default;
 
-//auto read_task(int limit, int offset) {
-//    DBManager db;
-//    try {
-//        db.open(DBPath);
-//    } catch (const SQLException& e) {
-//        LOG(FATAL) << e.what();
-//        std::abort();
-//    }
-//}
+// Helper function to evaluate the number of available threads on the machine
+const size_t available_threads() noexcept {
+    const auto available_cores = std::thread::hardware_concurrency();
+
+    // This will be 0 if the number of threads cannot be detected on the
+    // machine. In this case, I don't use any parallelization.
+    return available_cores + (!available_cores ? 1 : 0);
+}
+
+// Helper function to distribute the entries to read across tasks
+const std::vector<size_t> partition_entries(const std::string& table_name, const DBManager& db) {
+    // Query the number of entries in the database table
+    const auto table_entries = entries(table_name, db);
+    const auto entries_block = std::min(table_entries, available_threads());
+
+    // If there are no entry in the database table
+    if (entries_block == 0)
+        return std::vector<size_t>(1, 0);
+
+    std::vector<size_t> entries_partition(entries_block, table_entries / entries_block);
+    // Distribute the remainder of the tasks
+    for (size_t i = 0; i < table_entries % entries_block; ++ i)
+        ++ entries_partition[i];
+
+    return entries_partition;
+}
+
+// Helper function to collect the results from the tasks
+template <typename T>
+const T* collect_results(std::vector<std::future<std::vector<typename T::value_type>>>& task_results, const size_t table_entries) {
+    T* table = new T();
+    table->reserve(table_entries);
+    for (auto& tr : task_results) {
+        auto result = tr.get();
+        std::copy(std::make_move_iterator(std::begin(result)),
+                  std::make_move_iterator(std::end(result)),
+                  inserter<T>(table));
+    }
+
+    return table;
+}
 
 // Helper function to fill the tables
 template<typename T,
          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
-std::unique_ptr<const T> load_table(const std::string& table_name, const DBManager& db) {
-    // Query the number of entries in the database table
-    const auto table_entries = entries(table_name, db);
+std::unique_ptr<const T> load_table(const std::string& table_name, const std::string& DBPath) {
+    // Open a new database connection and set WAL mode _only once_
+    const auto db = open_database_connection(DBPath);
+    db.query("pragma journal_mode = WAL");
 
-    // Create the new table
-    T* table = new T();
-    table->reserve(table_entries);
-    std::copy(SQLStatementIterator<typename T::value_type>(db.query("select * from " + table_name + ";")),
-              SQLStatementIterator<typename T::value_type>::end(), inserter<T>(table));
+    // Evaluate the the read-in work distribution
+    const auto entries_partition = partition_entries(table_name, db);
+
+    auto read_task = [](const std::string table_name, const std::string DBPath, const size_t offset, const size_t table_entries) {
+        const auto connection = open_database_connection(DBPath);
+        // Create the new table
+        std::vector<typename T::value_type> table;
+        table.reserve(table_entries);
+        std::copy(SQLStatementIterator<typename T::value_type>(query_table(table_name, connection, offset, table_entries)),
+                SQLStatementIterator<typename T::value_type>::end(), std::inserter(table, std::end(table)));
+        return table;
+    };
+
+    // Vector of the task results
+    std::vector<std::future<std::vector<typename T::value_type>>> task_results;
+    task_results.reserve(entries_partition.size());
+    
+    // Distribute the tasks
+    size_t table_entries = 0;
+    for (const auto& ep : entries_partition) {
+        task_results.push_back(std::async(std::launch::async, read_task, table_name, DBPath, table_entries, ep));
+        table_entries += ep;
+    }
+
+    // Collect the results
+    const auto table = collect_results<T>(task_results, table_entries);
 
     // Log the number of entries
     LOG(TRACE) << std::setw(24) << std::left
@@ -92,34 +147,23 @@ std::unique_ptr<const T> load_table(const std::string& table_name, const DBManag
     // Check if the table size is correct
     assert(table->size() == table_entries);
 
-    return std::unique_ptr<const T>(static_cast<const T*>(table));
+    return std::unique_ptr<const T>(table);
 }
 
 std::unique_ptr<const Database> load_database(const std::string& DBPath) {
-    // try to open the database
-    DBManager sql_input_db;
-    try {
-        sql_input_db.open(DBPath);
-    } catch (const SQLException& e) {
-        LOG(FATAL) << e.what();
-        std::abort();
-    }
-
     // Create the database
-    auto db = std::make_unique<const Database>(
-            load_table<AccessTable>("Access", sql_input_db),
-            load_table<CallTable>("Call", sql_input_db),
-            load_table<FileTable>("File", sql_input_db),
-            load_table<FunctionTable>("Function", sql_input_db),
-            load_table<InstructionTable>("Instruction", sql_input_db),
-            load_table<LoopTable>("Loop", sql_input_db),
-            load_table<LoopExecutionTable>("LoopExecution", sql_input_db),
-            load_table<LoopIterationTable>("LoopIteration", sql_input_db),
-            load_table<ReferenceTable>("Reference", sql_input_db),
-            load_table<SegmentTable>("Segment", sql_input_db),
-            load_table<ThreadTable>("Thread", sql_input_db));
-
-    return db;
+    return std::make_unique<const Database>(
+            load_table<AccessTable>("Access", DBPath),
+            load_table<CallTable>("Call", DBPath),
+            load_table<FileTable>("File", DBPath),
+            load_table<FunctionTable>("Function", DBPath),
+            load_table<InstructionTable>("Instruction", DBPath),
+            load_table<LoopTable>("Loop", DBPath),
+            load_table<LoopExecutionTable>("LoopExecution", DBPath),
+            load_table<LoopIterationTable>("LoopIteration", DBPath),
+            load_table<ReferenceTable>("Reference", DBPath),
+            load_table<SegmentTable>("Segment", DBPath),
+            load_table<ThreadTable>("Thread", DBPath));
 }
 
 const access_t& access_of(const instruction_t& ins, const Database& db) {

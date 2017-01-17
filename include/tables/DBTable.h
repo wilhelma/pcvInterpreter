@@ -49,11 +49,11 @@ public:
     /// _Deleted_ move assignment operator.
     DBTable& operator=(DBTable&&)      = delete;
 
-    /// @brief Inserts the _entry_ in the position before the one pointed to by _hint_.
+    /// @brief Move-inserts the _entry_ in the position before the one pointed to by _hint_.
     /// @param hint  Iterator pointing to the position where to insert.
     /// @param entry The entry to insert.
     virtual iterator insert(iterator hint, value_type&& entry)
-    { return Vector_.emplace(hint, std::forward<value_type>(entry)); }
+    { return Vector_.emplace(hint, std::move(entry)); }
     
     /// @brief Reserve memory for the internal vector.
     /// @param new_cap The number of elements to reserve.
@@ -117,6 +117,6 @@ protected:
 template <typename T,
           typename enable = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::insert_iterator<T> inserter(T* table) noexcept
-{ return std::insert_iterator<T>(*table, table->end()); }
+{ return std::insert_iterator<T>(*table, std::end(*table)); }
 
 #endif

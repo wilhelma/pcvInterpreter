@@ -15,6 +15,8 @@
 #include "SQLException.h"
 #include "SQLStatementIterator.h"
 
+#include "easylogging++.h"
+
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -35,11 +37,6 @@ void DBManager::open(const std::string& DBPath) {
 //	Database_.reset(temp_db_pointer);
 
 	// if database opening failed
-	if (rc != SQLITE_OK)
-		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
-
-    // Set Write-Ahead Logging
-    rc = sqlite3_exec(Database_, "pragma journal_mode = WAL", nullptr, nullptr, nullptr);
 	if (rc != SQLITE_OK)
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::DBManager");
 }
@@ -79,4 +76,15 @@ const size_t entries(const std::string& table_name, const DBManager& connection)
     const auto entries = *it;
     assert(++it == SQLStatementIterator<size_t>::end());
     return entries;
+}
+
+const DBManager open_database_connection(const std::string& DBPath) {
+    DBManager db;
+    try {
+        db.open(DBPath);
+    } catch (const SQLException& e) {
+        LOG(FATAL) << e.what();
+        std::abort();
+    }
+    return db;
 }

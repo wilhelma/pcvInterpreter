@@ -74,4 +74,8 @@ inline std::unique_ptr<QueryResult> query_table(const std::string& table_name, c
 /// @throw SQLException If the `count(*)` query fails.
 const size_t entries(const std::string& table_name, const DBManager& connection);
 
+/// @brief Connects to a database.
+/// @param DBPath The database to connect to.
+const DBManager open_database_connection(const std::string& DBPath);
+
 #endif
