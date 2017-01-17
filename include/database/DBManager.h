@@ -45,11 +45,6 @@ public:
     /// @throw SQLException If the query fails.
     std::unique_ptr<QueryResult> query(const std::string& sql_query) const;
 
-    /// @brief Returns the number of entries in a database table.
-    /// @param table_name The name of the table.
-    /// @throw SQLException If the `count(*)` query fails.
-    const size_t entries(const std::string& table_name) const;
-
     /// @brief Destructor: try to close the database.
     /// @attention If an exception is thrown when closing the database, the 
     /// execution will be `std::abort()`ed.
@@ -63,5 +58,20 @@ private:
     
 //  std::unique_ptr<sqlite3> Database_;
 };
+
+/// @brief Query a table from the database
+/// @param table_name The name of the table to query for.
+/// @param connection The connection through which access the database.
+/// @param offset     The entries to skip.
+/// @param entries    The number of entries to query for.
+/// @throw SQLException If the query fails.
+inline std::unique_ptr<QueryResult> query_table(const std::string& table_name, const DBManager& connection, const size_t offset, const size_t entries)
+{ return connection.query("select * from " + table_name + " limit " + std::to_string(entries) + " offset " + std::to_string(offset)); }
+
+/// @brief Returns the number of entries in a database table.
+/// @param table_name The name of the table.
+/// @param connection The connection through which access the database.
+/// @throw SQLException If the `count(*)` query fails.
+const size_t entries(const std::string& table_name, const DBManager& connection);
 
 #endif

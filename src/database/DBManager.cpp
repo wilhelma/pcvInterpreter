@@ -58,13 +58,6 @@ DBManager::~DBManager() noexcept {
     }
 }
 
-const size_t DBManager::entries(const std::string& table_name) const {
-    auto it = SQLStatementIterator<size_t>(query("select count(*) from " + table_name));
-    const auto entries = *it;
-    assert(++it == SQLStatementIterator<size_t>::end());
-    return entries;
-}
-
 std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {
 	sqlite3_stmt *sql_statement = nullptr;
 
@@ -79,4 +72,11 @@ std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) cons
 		throw SQLException(sqlite3_errmsg(Database_), "DBManager::query");
 
 	return std::make_unique<QueryResult>(sql_statement);
+}
+
+const size_t entries(const std::string& table_name, const DBManager& connection) {
+    auto it = SQLStatementIterator<size_t>(connection.query("select count(*) from " + table_name));
+    const auto entries = *it;
+    assert(++it == SQLStatementIterator<size_t>::end());
+    return entries;
 }

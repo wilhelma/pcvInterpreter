@@ -77,7 +77,7 @@ template<typename T,
          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::unique_ptr<const T> load_table(const std::string& table_name, const DBManager& db) {
     // Query the number of entries in the database table
-    const int table_entries = db.entries(table_name);
+    const auto table_entries = entries(table_name, db);
 
     // Create the new table
     T* table = new T();
@@ -90,7 +90,7 @@ std::unique_ptr<const T> load_table(const std::string& table_name, const DBManag
                << "Rows in " + table_name + ": " << table->size();
 
     // Check if the table size is correct
-    assert(static_cast<int>(table->size()) == table_entries);
+    assert(table->size() == table_entries);
 
     return std::unique_ptr<const T>(static_cast<const T*>(table));
 }
