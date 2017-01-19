@@ -36,7 +36,7 @@ public:
 
     /// @brief Constructor.
     /// @param query The query result manager statement to read values in.
-    constexpr explicit SQLStatementIterator(std::shared_ptr<QueryResult> query)
+    constexpr explicit SQLStatementIterator(std::shared_ptr<const QueryResult>&& query)
         : Query_(std::move(query))
     { ++(*this); }
 
@@ -73,14 +73,13 @@ private:
     /// @brief Pointer to QueryResult, which manages the query result.
     /// @attention This can't be a `unique_ptr` because the iterator needs
     /// to be copied in `std::copy`.
-    std::shared_ptr<QueryResult> Query_;
+    std::shared_ptr<const QueryResult> Query_;
 
     /// Default constructor (private).
-    constexpr explicit SQLStatementIterator() noexcept :  Query_(nullptr) {};
+    constexpr explicit SQLStatementIterator() noexcept : Query_(nullptr) {};
 };
 
 /// @brief Unequality operator.
-/// @details Negates `operator==`.
 template <typename T>
 inline constexpr const bool operator!=(const SQLStatementIterator<T>& lhs, const SQLStatementIterator<T>& rhs) noexcept
 { return !(lhs == rhs); }

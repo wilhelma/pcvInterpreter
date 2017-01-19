@@ -37,6 +37,7 @@ inline constexpr const CharT* const save_string(const CharT* input, const unsign
 
 /// @ingroup types
 /// @brief Lightweight literal string to replace `std::string`.
+/// @todo Maybe use a shared_ptr to make sure there are no memory leaks.
 template <typename CharT>
 class FastString {
 public:
@@ -91,7 +92,7 @@ private:
 /// @param lhs The left-hand side.
 /// @param rhs The right-hand side.
 template <typename CharT>
-constexpr const bool operator==(const FastString<CharT> lhs, const FastString<CharT> rhs) noexcept {
+constexpr const bool operator==(const FastString<CharT>& lhs, const FastString<CharT>& rhs) noexcept {
     if (lhs.length() != rhs.length())
         return false;
 
@@ -106,14 +107,14 @@ constexpr const bool operator==(const FastString<CharT> lhs, const FastString<Ch
 /// @param lhs The left-hand side FastString.
 /// @param rhs The right-hand side character array.
 template <typename CharT>
-inline constexpr const bool operator==(const FastString<CharT> lhs, const char* rhs) noexcept
+inline constexpr const bool operator==(const FastString<CharT>& lhs, const char* rhs) noexcept
 { return lhs == FastString<CharT>(reinterpret_cast<const CharT*>(rhs)); }
 
 /// @brief Unequality operator.
 /// @param lhs The left-hand side.
 /// @param rhs The right-hand side.
 template <typename CharT>
-inline constexpr const bool operator!=(const FastString<CharT> lhs, const FastString<CharT> rhs) noexcept
+inline constexpr const bool operator!=(const FastString<CharT>& lhs, const FastString<CharT>& rhs) noexcept
 { return !( lhs == rhs ); }
 
 /// @brief Output stream operator for FastString.

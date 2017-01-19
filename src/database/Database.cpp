@@ -73,9 +73,11 @@ const size_t available_threads() noexcept {
 }
 
 // Helper function to distribute the entries to read across tasks
-const std::vector<size_t> partition_entries(const std::string& table_name, const DBManager& db) {
+const std::vector<size_t> partition_entries(const std::string& table_name, const std::string& DBPath) {
+    const auto db = open_database_connection(DBPath);
+
     // Query the number of entries in the database table
-    const auto table_entries = entries(table_name, db);
+    const auto table_entries = entries(table_name, db); // may throw
     const auto entries_block = std::min(table_entries, available_threads());
 
     // If there are no entry in the database table
@@ -93,7 +95,7 @@ const std::vector<size_t> partition_entries(const std::string& table_name, const
 // Helper function to collect the results from the tasks
 template <typename T>
 const T* collect_results(std::vector<std::future<std::vector<typename T::value_type>>>& task_results, const size_t table_entries) {
-    T* table = new T();
+    T* table = new T(); // may throw
     table->reserve(table_entries);
     for (auto& tr : task_results) {
         auto result = tr.get();
@@ -109,12 +111,9 @@ const T* collect_results(std::vector<std::future<std::vector<typename T::value_t
 template<typename T,
          typename = std::enable_if_t<std::is_base_of<DBTable<typename T::index_type, typename T::value_type>, T>::value>>
 std::unique_ptr<const T> load_table(const std::string& table_name, const std::string& DBPath) {
-    // Open a new database connection and set WAL mode _only once_
-    const auto db = open_database_connection(DBPath);
-    db.query("pragma journal_mode = WAL");
 
     // Evaluate the the read-in work distribution
-    const auto entries_partition = partition_entries(table_name, db);
+    const auto entries_partition = partition_entries(table_name, DBPath);
 
     auto read_task = [](const std::string table_name, const std::string DBPath, const size_t offset, const size_t table_entries) {
         const auto connection = open_database_connection(DBPath);
@@ -151,6 +150,10 @@ std::unique_ptr<const T> load_table(const std::string& table_name, const std::st
 }
 
 std::unique_ptr<const Database> load_database(const std::string& DBPath) {
+    // Open a new database connection and set WAL mode _only once_
+    const auto db = open_database_connection(DBPath);
+    db.query("pragma journal_mode = WAL");
+
     // Create the database
     return std::make_unique<const Database>(
             load_table<AccessTable>("Access", DBPath),

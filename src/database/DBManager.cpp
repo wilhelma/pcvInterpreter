@@ -55,7 +55,7 @@ DBManager::~DBManager() noexcept {
     }
 }
 
-std::unique_ptr<QueryResult> DBManager::query(const std::string& sql_query) const {
+std::unique_ptr<const QueryResult> DBManager::query(const std::string& sql_query) const {
 	sqlite3_stmt *sql_statement = nullptr;
 
 	// Execute SQL statement
@@ -78,7 +78,7 @@ const size_t entries(const std::string& table_name, const DBManager& connection)
     return entries;
 }
 
-const DBManager open_database_connection(const std::string& DBPath) {
+const DBManager open_database_connection(const std::string& DBPath) noexcept {
     DBManager db;
     try {
         db.open(DBPath);

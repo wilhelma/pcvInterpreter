@@ -16,7 +16,7 @@
 #include "Types.h"
 
 #include <sqlite3.h>
-#include <string>
+//#include <string>
 
 /// @ingroup input
 /// @brief Holds a prepared query statement and accesses its values.
@@ -24,7 +24,7 @@ class QueryResult {
 public:
     /// @brief Constructor.
     /// @param query_statement The prepared query statement (i.e. the result of a query). 
-    explicit QueryResult(sqlite3_stmt* query_statement)
+    constexpr explicit QueryResult(sqlite3_stmt* query_statement) noexcept
         : Query_(query_statement)
     {}
 
@@ -34,7 +34,7 @@ public:
     const T get(int column) const;
 
     /// Makes a step, i.e. reads the next entry in the prepared statement.
-    const int step()
+    const int step() const
     { return sqlite3_step(Query_); }
 
     /// @brief Destructor: tries to finalize the prepared statement.
@@ -45,22 +45,22 @@ public:
 private:
     /// @brief Pointer to the query results.
     /// @todo Try to wrap Query_ in a smart pointer (e.g. unique_ptr)
-    sqlite3_stmt* Query_;
+    sqlite3_stmt* const Query_;
 };
 
-template<>
-inline const char* const QueryResult::get(int column) const
-{ return reinterpret_cast<const char*>(sqlite3_column_text(Query_, column)); }
+//template<>
+//inline const char* const QueryResult::get(int column) const
+//{ return reinterpret_cast<const char*>(sqlite3_column_text(Query_, column)); }
 
 template<typename T>
 inline const T QueryResult::get(int column) const
 { return static_cast<T>(sqlite3_column_int(Query_, column)); }
 
-/// @brief Accesses the query (`std::string` specialization).
-/// @param column The column to access in the query.
-template<>
-inline const std::string QueryResult::get(int column) const
-{ return static_cast<std::string>(reinterpret_cast<const char*>(sqlite3_column_text(Query_, column))); }
+///// @brief Accesses the query (`std::string` specialization).
+///// @param column The column to access in the query.
+//template<>
+//inline const std::string QueryResult::get(int column) const
+//{ return static_cast<std::string>(reinterpret_cast<const char*>(sqlite3_column_text(Query_, column))); }
 
 template<>
 inline const FastString<unsigned char> QueryResult::get(int column) const
