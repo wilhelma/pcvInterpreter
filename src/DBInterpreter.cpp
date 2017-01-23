@@ -78,6 +78,15 @@ void DBInterpreter::process(const std::string& DBPath) {
     processEnd();
 }
 
+// Helper function to publish a thread return
+void publish_thread_return(const TRD_ID& thread_id,
+                           const std::unique_ptr<const Database>& db,
+                           const std::unique_ptr<EventGenerator>& event_generator) {
+    const auto& thread  = thread_with_id(thread_id, *db); // may throw
+    const TIME end_time = thread.start_cycle + thread.num_cycles;
+    event_generator->threadEndEvent(thread.parent_thread_id, thread.id, end_time);
+}
+
 void DBInterpreter::processReturn(const instruction_t& ins, const call_t& call) {
     TRD_ID returnThread = thread_t::no_id();
 
@@ -86,7 +95,7 @@ void DBInterpreter::processReturn(const instruction_t& ins, const call_t& call) 
         const auto& topCall = call_with_id(topCallId, *database()); // may throw
 
         if (returnThread != thread_t::no_id() && returnThread != topCall.thread_id) {
-            publishThreadReturn(topCall.thread_id);
+            publish_thread_return(topCall.thread_id, database(), EventGenerator_);
             returnThread = thread_t::no_id();
         }
 
@@ -100,13 +109,7 @@ void DBInterpreter::processReturn(const instruction_t& ins, const call_t& call) 
     }
 
     if (returnThread != thread_t::no_id())
-        publishThreadReturn(returnThread);
-}
-
-void DBInterpreter::publishThreadReturn(TRD_ID threadId) const {
-    const auto& thread       = thread_with_id(threadId, *database()); // may throw
-    const TIME threadEndTime = thread.start_cycle + thread.num_cycles;
-    EventGenerator_->threadEndEvent(thread.parent_thread_id, thread.id, threadEndTime);
+        publish_thread_return(returnThread, database(), EventGenerator_);
 }
 
 void DBInterpreter::processAccess(const instruction_t& instruction, const TRD_ID& thread_id) const {

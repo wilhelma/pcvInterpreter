@@ -105,8 +105,6 @@ private:
     /// @brief Submits a NewThreadEvent to the EventGenerator.
     /// @param new_thread The forked thread.
     void processFork(const thread_t& new_thread) const noexcept;
-
-    void publishThreadReturn(TRD_ID threadId) const;
 };
 
 #endif
