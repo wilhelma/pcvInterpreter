@@ -19,12 +19,22 @@
 #include "ParasiteTool.h"
 
 
+#include "AccessEvent.h"
 #include "AccessInfo.h"
+#include "AcquireEvent.h"
+#include "AcquireInfo.h"
+#include "CallEvent.h"
+#include "CallInfo.h"
+#include "JoinEvent.h"
 #include "JoinInfo.h"
-//#include "AcquireEvent.h"
-//#include "AcquireInfo.h"
+#include "NewThreadEvent.h"
+#include "NewThreadInfo.h"
 #include "ReleaseEvent.h"
 #include "ReleaseInfo.h"
+#include "ReturnEvent.h"
+#include "ReturnInfo.h"
+#include "ThreadEndEvent.h"
+#include "ThreadEndInfo.h"
 
 ParasiteTool::ParasiteTool():thread_graph(random_string(5)), name(random_string(5)), 
 							 jsonWriter(random_string(5)), last_event_time(0) {

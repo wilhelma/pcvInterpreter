@@ -12,41 +12,22 @@
 #ifndef PARASITE_TOOL_H_
 #define PARASITE_TOOL_H_
 
-#include <array>
-#include <iostream>
-#include <memory>
-#include <set>
-#include <unordered_map>
-#include <vector>
+#include "fwd/AccessEvent.h"
+#include "fwd/AcquireEvent.h"
+#include "fwd/CallEvent.h"
+#include "fwd/JoinEvent.h"
+#include "fwd/NewThreadEvent.h"
+#include "fwd/ReleaseEvent.h"
+#include "fwd/ReturnEvent.h"
+#include "fwd/ThreadEndEvent.h"
 
-#include "AccessEvent.h"
-#include "AcquireEvent.h"
-#include "AcquireInfo.h"
-#include "CallEvent.h"
-#include "CallInfo.h"
-#include "CallSiteProfile.h"
-#include "CallSiteSpanProfile.h"
-#include "Work.h"
-#include "CallSiteWorkProfile.h"
-#include "DAG.h"
-#include "Event.h"
-#include "JoinEvent.h"
-#include "LockIntervals.h"
-#include "NewThreadEvent.h"
-#include "NewThreadInfo.h"
-#include "ParasiteJsonWriter.h"
-#include "ParasiteProfile.h"
-#include "ParasiteTracker.h"
-#include "ReturnEvent.h"
-#include "ReturnInfo.h"
-#include "ReleaseEvent.h"
-#include "ShadowLock.h"
-#include "ShadowThread.h"
-#include "ShadowVariable.h"
-#include "ThreadEndEvent.h"
-#include "ThreadEndInfo.h"
 #include "Tool.h"
+
 #include "Utility.h"
+#include "Work.h"
+#include "DAG.h"
+#include "ParasiteJsonWriter.h"
+#include "ParasiteTracker.h"
 
 /**
 *
@@ -56,15 +37,18 @@
 			  each call site. 
 */
 
-class ParasiteTool : public Tool {
+class ParasiteTool final : public Tool {
  public:
 	ParasiteTool();
 	~ParasiteTool();
 
-	static const bool DEBUG_OUTPUT = 1;
-	static const bool COMMAND_LINE_OUTPUT = 1;
-	static const bool JSON_OUTPUT = 1;
-	static const bool GRAPH_OUTPUT = 1;
+	ParasiteTool(const ParasiteTool&)            = delete;
+	ParasiteTool& operator=(const ParasiteTool&) = delete;
+
+	static constexpr bool DEBUG_OUTPUT = 1;
+	static constexpr bool COMMAND_LINE_OUTPUT = 1;
+	static constexpr bool JSON_OUTPUT = 1;
+	static constexpr bool GRAPH_OUTPUT = 1;
 
 	void Access(const AccessEvent* e) override;
 	void Acquire(const AcquireEvent* e) override;
@@ -125,11 +109,6 @@ class ParasiteTool : public Tool {
 	*    @brief Tracks the time of the last event
 	*/
 	TIME last_event_time;
-
- private:
-	// prevent generated functions --------------------------------------------
-	ParasiteTool(const ParasiteTool&);
-	ParasiteTool& operator=(const ParasiteTool&);
 };
 
 #endif  // PARASITE_TOOL_H_ 
