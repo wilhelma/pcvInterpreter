@@ -23,6 +23,7 @@ addons:
         packages:
             - cmake
             - sqlite3
+            - valgrind
             # Without Boost, ParasiteTool is not compilable
             #- libboost-all-dev
             # Google test headers (they need to be compiled)
@@ -58,7 +59,8 @@ script:
     - cd ${TRAVIS_BUILD_DIR} && pwd
     - if [ "$CXX" = "g++" ]; then export CXX="g++-6 --coverage" CC="gcc-6 --coverage"; fi
     - mkdir build && cd build
-    - cmake .. && make -j && ./src/pcv ../test/databases/integration_test.db
+    - cmake .. && make -j
+    - valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./src/pcv ../test/databases/integration_test.db
     - make pcv_test -j && ./test/pcv_test
 
 after_success:
