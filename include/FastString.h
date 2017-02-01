@@ -12,18 +12,19 @@
 #ifndef  FAST_STRING_H
 #define  FAST_STRING_H
 
+#include <iostream>
 #include <ostream>
 #include <stdexcept>
 
 // Helper function to determine how long the string is.
 template <typename CharT>
-inline constexpr unsigned int string_length(const CharT* input, unsigned int i = 0) noexcept {
+constexpr const unsigned int string_length(const CharT* input, unsigned int i = 0) noexcept {
     return (input[i] == '\0' ? ++i : string_length(input, ++i));
 }
 
 // Helper function to allocate the memory for the string.
 template <typename CharT>
-inline constexpr const CharT* const save_string(const CharT* input, const unsigned int len) {
+constexpr const CharT* const save_string(const CharT* input, const unsigned int len) {
     // Dynamically allocate the string to prevent the memory from being freed
     // at the end of the function scope
     auto tmp = new CharT[len];
@@ -35,6 +36,7 @@ inline constexpr const CharT* const save_string(const CharT* input, const unsign
     return tmp;
 }
 
+
 /// @ingroup types
 /// @brief Lightweight literal string to replace `std::string`.
 /// @todo Maybe use a shared_ptr to make sure there are no memory leaks.
@@ -43,18 +45,76 @@ class FastString {
 public:
     using difference_type = unsigned int;
 
-    /// @brief Constructor.
-    /// @details Compile-time template deduction is used to evaluate the array length.
-    /// @param  input The pointer to the first element of the string.
-    /// @tparam N     The length of the input character array.
-    /// @throw std::bad_alloc If the memory for the string can't be allocated.
-    template <difference_type N>
-    constexpr explicit FastString(const CharT input[N]) :
-        Length_(N),
-        String_(save_string(input, Length_))
-    {}
+//    /// @brief Constructor.
+//    /// @details Compile-time template deduction is used to evaluate the array length.
+//    /// @param  input The pointer to the first element of the string.
+//    /// @tparam N     The length of the input character array.
+//    /// @attention This is not `explicit` in order to allow implicit conversions from
+//    /// arrays of characters to FastStrings at compile-time.
+//    /// @throw std::bad_alloc If the memory for the string can't be allocated.
+//    template <difference_type N>
+//    constexpr FastString(const CharT (&input)[N]) :
+//        Length_(N),
+//        String_(save_string(input, Length_))
+//    {}
+
+    /// @brief Copy constructor.
+     FastString(const FastString& fs) :
+        Length_(fs.Length_),
+        String_(save_string(fs.String_, Length_))
+    {
+//        std::cout << "Copied faststring: " << this << std::endl;
+    }
+
+    /// @brief Copy assignment operator.
+    constexpr FastString& operator=(const FastString& fs) {
+        if (this != &fs) {
+            Length_ = fs.Length_;
+            String_ = save_string(fs.String_, Length_);
+        }
+
+        return *this;
+    }
+
+    /// @brief Move constructor.
+     FastString(FastString&& fs) noexcept :
+        Length_(fs.Length_),
+        String_(fs.String_)
+    {
+        // NOTE: String_ is nullptr only if one tries to
+        // move a FastString that had been already moved.
+//        std::cout << "Moved faststring:  " << this << std::endl;
+
+        // Prevent fs's destructor from deallocating
+        // the memory that this->String_ points to.
+        fs.String_ = nullptr;
+    }
+
+    /// @brief Move assignment operator.
+    constexpr FastString& operator=(FastString&& fs) noexcept { 
+        if (this != &fs) {
+            Length_ = fs.Length_;
+            String_ = fs.String_;
+
+            // Prevent fs's destructor from deallocating
+            // the memory that this->String_ points to.
+            fs.String_ = nullptr;
+        }
+
+        return *this;
+    }
+
+    /// @brief Destructor.
+    /// @attention As soon as you have a non-trivial destructor, the
+    /// class cannot be a literal type.
+    ~FastString() {
+        // Nothing will happen if String_ is nullptr.
+        delete[] String_;
+    }
 
     /// @brief Constructor.
+    /// @attention The input string is assumed to be '\0'-terminated. If that's not
+    /// the case, the behavior is undefined.
     /// @param input The pointer to a character array to store in the FastString.
     /// @throw std::invalid_argument If `input` is `nullptr`.
     /// @throw std::bad_alloc        If the memory for the string can't be allocated.
@@ -91,12 +151,12 @@ private:
 /// @brief Equality operator.
 /// @param lhs The left-hand side.
 /// @param rhs The right-hand side.
-template <typename CharT>
-constexpr const bool operator==(const FastString<CharT>& lhs, const FastString<CharT>& rhs) noexcept {
+template <typename CharT1, typename CharT2>
+constexpr const bool operator==(const FastString<CharT1>& lhs, const FastString<CharT2>& rhs) noexcept {
     if (lhs.length() != rhs.length())
         return false;
 
-    for (typename FastString<CharT>::difference_type i = 0; i < lhs.length(); ++ i)
+    for (typename FastString<CharT1>::difference_type i = 0; i < lhs.length(); ++ i)
         if (lhs[i] != rhs[i])
             return false;
 
@@ -106,9 +166,9 @@ constexpr const bool operator==(const FastString<CharT>& lhs, const FastString<C
 /// @brief Equality operator.
 /// @param lhs The left-hand side FastString.
 /// @param rhs The right-hand side character array.
-template <typename CharT>
-inline constexpr const bool operator==(const FastString<CharT>& lhs, const char* rhs) noexcept
-{ return lhs == FastString<CharT>(reinterpret_cast<const CharT*>(rhs)); }
+template <typename CharT, size_t N>
+inline constexpr const bool operator==(const FastString<CharT>& lhs, const char (&rhs)[N]) noexcept
+{ return lhs == FastString<char>(std::forward<const char(&)[N]>(rhs)); }
 
 /// @brief Unequality operator.
 /// @param lhs The left-hand side.

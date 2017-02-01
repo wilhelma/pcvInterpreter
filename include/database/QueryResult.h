@@ -31,7 +31,7 @@ public:
     /// @brief Accesses the value in the prepared statement.
     /// @param column The column to access in the prepared statement.
     template<typename T>
-    const T get(int column) const;
+    T get(int column) const;
 
     /// Makes a step, i.e. reads the next entry in the prepared statement.
     const int step() const
@@ -53,7 +53,7 @@ private:
 //{ return reinterpret_cast<const char*>(sqlite3_column_text(Query_, column)); }
 
 template<typename T>
-inline const T QueryResult::get(int column) const
+inline T QueryResult::get(int column) const
 { return static_cast<T>(sqlite3_column_int(Query_, column)); }
 
 ///// @brief Accesses the query (`std::string` specialization).
@@ -63,13 +63,13 @@ inline const T QueryResult::get(int column) const
 //{ return static_cast<std::string>(reinterpret_cast<const char*>(sqlite3_column_text(Query_, column))); }
 
 template<>
-inline const FastString<unsigned char> QueryResult::get(int column) const
+inline FastString<unsigned char> QueryResult::get(int column) const
 { return static_cast<FastString<unsigned char>>(sqlite3_column_text(Query_, column)); }
 
 /// @brief Accesses the query (`TIME` specialization).
 /// @param column The column to access in the query.
 template<>
-inline const TIME QueryResult::get(int column) const
+inline TIME QueryResult::get(int column) const
 { return static_cast<TIME>(sqlite3_column_int64(Query_, column)); }
 
 #endif

@@ -45,10 +45,13 @@ struct access_t {
              POS pos,
              REF_ID referenceID,
              AccessType accessType,
-             AccessState memoryState) noexcept
-        : id(sqlID), instruction_id(instructionID), position(pos),
-          reference_id(referenceID), access_type(accessType),
-          memory_state(memoryState)
+             AccessState memoryState) noexcept :
+        id(sqlID),
+        instruction_id(instructionID),
+        position(pos),
+        reference_id(referenceID),
+        access_type(accessType),
+        memory_state(memoryState)
     {}
 };
 

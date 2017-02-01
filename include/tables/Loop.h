@@ -24,10 +24,11 @@ struct loop_t {
     LIN_NO line_number;
 
     /// Constructor.
-    explicit
+    constexpr explicit
     loop_t(LOP_ID sqlID,
-           LIN_NO lineNumber) noexcept
-        : id(sqlID), line_number(lineNumber)
+           LIN_NO lineNumber) noexcept :
+        id(sqlID),
+        line_number(lineNumber)
     {}
 };
 

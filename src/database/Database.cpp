@@ -121,7 +121,7 @@ std::unique_ptr<const T> load_table(const std::string& table_name, const std::st
         std::vector<typename T::value_type> table;
         table.reserve(table_entries);
         std::copy(SQLStatementIterator<typename T::value_type>(query_table(table_name, connection, offset, table_entries)),
-                SQLStatementIterator<typename T::value_type>::end(), std::inserter(table, std::end(table)));
+                  SQLStatementIterator<typename T::value_type>::end(), std::inserter(table, std::end(table)));
         return table;
     };
 

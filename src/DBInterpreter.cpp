@@ -83,7 +83,7 @@ void publish_thread_return(const TRD_ID& thread_id,
                            const std::unique_ptr<const Database>& db,
                            const std::unique_ptr<EventGenerator>& event_generator) {
     const auto& thread  = thread_with_id(thread_id, *db); // may throw
-    const TIME end_time = thread.start_cycle + thread.num_cycles;
+    const auto end_time = thread.start_cycle + thread.num_cycles;
     event_generator->threadEndEvent(thread.parent_thread_id, thread.id, end_time);
 }
 

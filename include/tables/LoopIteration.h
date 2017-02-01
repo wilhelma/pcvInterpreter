@@ -26,12 +26,13 @@ struct loopIteration_t {
     LOI_ID loop_iteration;
 
     /// Constructor.
-    explicit loopIteration_t(LOI_ID sqlID,
-                             LOE_ID loopExecution,
-                             LOI_ID loopIteration) noexcept :
+    constexpr explicit
+    loopIteration_t(LOI_ID sqlID,
+                    LOE_ID loopExecution,
+                    LOI_ID loopIteration) noexcept :
         id(sqlID), loop_execution(loopExecution),
         loop_iteration(loopIteration)
-        {}
+    {}
 };
 
 #endif

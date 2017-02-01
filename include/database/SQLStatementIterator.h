@@ -87,132 +87,121 @@ inline constexpr const bool operator!=(const SQLStatementIterator<T>& lhs, const
 /// Deference operator (`const access_t` specialization).
 template<>
 inline access_t SQLStatementIterator<access_t>::operator*() const {
-    auto&&           id(Query_->get<ACC_ID>(0));
-    auto&&  instruction(Query_->get<INS_ID>(1));
-    auto&&     position(Query_->get<POS>(2));
-    auto&&    reference(Query_->get<REF_ID>(3));
-    auto&&  access_type(Query_->get<AccessType>(4));
-    auto&& memory_state(Query_->get<AccessState>(5));
-
-    return access_t(id, instruction, position, reference, access_type, memory_state);
+    return access_t(
+            Query_->get<ACC_ID>(0),
+            Query_->get<INS_ID>(1),
+            Query_->get<POS>(2),
+            Query_->get<REF_ID>(3),
+            Query_->get<AccessType>(4),
+            Query_->get<AccessState>(5));
 }
 
 /// Deference operator (`const call_t` specialization).
 template<>
 inline call_t SQLStatementIterator<call_t>::operator*() const {
-    auto&&             id(Query_->get<CAL_ID>(0));
-    auto&&      thread_id(Query_->get<TRD_ID>(1));
-    auto&&    function_id(Query_->get<FUN_ID>(2));
-    auto&& instruction_id(Query_->get<INS_ID>(3));
-    auto&&     start_time(Query_->get<TIME>(4));
-    auto&&       end_time(Query_->get<TIME>(5));
-
-    return call_t(id, thread_id, function_id, instruction_id, start_time, end_time);
+    return call_t(
+            Query_->get<CAL_ID>(0),
+            Query_->get<TRD_ID>(1),
+            Query_->get<FUN_ID>(2),
+            Query_->get<INS_ID>(3),
+            Query_->get<TIME>(4),
+            Query_->get<TIME>(5));
 }
 
 /// Deference operator (`const file_t` specialization).
 template<>
 inline file_t SQLStatementIterator<file_t>::operator*() const {
-    auto&&        id(Query_->get<FIL_ID>(0));
-    auto&& file_path(Query_->get<FIL_PT>(1));
-
-    return file_t(id, file_path);
+    return file_t(
+            Query_->get<FIL_ID>(0),
+            Query_->get<FIL_PT>(1));
 }
 
 /// Deference operator (`const function_t` specialization).
 template<>
 inline function_t SQLStatementIterator<function_t>::operator*() const {
-    auto&&          id(Query_->get<FUN_ID>(0));
-    auto&&        name(Query_->get<FUN_NM>(1));
-    auto&&   signature(Query_->get<FUN_SG>(2));
-    auto&&     file_id(Query_->get<FIL_ID>(3));
-    auto&& line_number(Query_->get<LIN_NO>(4));
-    auto&&        type(Query_->get<FunctionType>(6));
-
-    return function_t(id, name, signature, type, file_id, line_number);
+    return function_t(
+            Query_->get<FUN_ID>(0),
+            Query_->get<FUN_NM>(1),
+            Query_->get<FUN_SG>(2),
+            Query_->get<FIL_ID>(3),
+            Query_->get<LIN_NO>(4),
+            Query_->get<FunctionType>(6));
 }
 
 /// Deference operator (`const instruction_t` specialization).
 template<>
 inline instruction_t SQLStatementIterator<instruction_t>::operator*() const {
-    auto&&      id(Query_->get<INS_ID>(0));
-    auto&& segment(Query_->get<SEG_ID>(1));
-    auto&&    type(Query_->get<InstructionType>(2));
-    auto&&    line(Query_->get<LIN_NO>(3));
-
-    return instruction_t(id, segment, type, line);
+    return instruction_t(
+            Query_->get<INS_ID>(0),
+            Query_->get<SEG_ID>(1),
+            Query_->get<InstructionType>(2),
+            Query_->get<LIN_NO>(3));
 }
 
 /// @brief Deference operator (`const loopExecution_t` specialization).
 /// @todo Define types for `parent` and `duration`
 template<>
 inline loopExecution_t SQLStatementIterator<loopExecution_t>::operator*() const {
-    auto&&   id(Query_->get<LOE_ID>(0));
-    auto&& loop(Query_->get<LOE_ID>(1));
-    // TODO Define types for these variables!
-    auto&& parent{Query_->get<int>(2)};
-    auto&& duration{Query_->get<int>(3)};
-
-    return loopExecution_t(id, loop, parent, duration);
+    return loopExecution_t(
+            Query_->get<LOE_ID>(0),
+            Query_->get<LOE_ID>(1),
+            // TODO Define types for these variables!
+            Query_->get<int>(2),
+            Query_->get<int>(3));
 }
 
 /// Deference operator (`const loopIteration_t` specialization).
 template<>
 inline loopIteration_t SQLStatementIterator<loopIteration_t>::operator*() const {
-    auto&&            id(Query_->get<LOI_ID>(0));
-    auto&& loopExecution(Query_->get<LOE_ID>(1));
-    auto&& loopIteration(Query_->get<LOI_ID>(2));
-
-    return loopIteration_t(id, loopExecution, loopIteration);
+    return loopIteration_t(
+            Query_->get<LOI_ID>(0),
+            Query_->get<LOE_ID>(1),
+            Query_->get<LOI_ID>(2));
 }
 
 /// Deference operator (`const loop_t` specialization).
 template<>
 inline loop_t SQLStatementIterator<loop_t>::operator*() const {
-    auto&&   id(Query_->get<LOP_ID>(0));
-    auto&& line(Query_->get<LIN_NO>(1));
-
-    return loop_t(id, line);
+    return loop_t(
+            Query_->get<LOP_ID>(0),
+            Query_->get<LIN_NO>(1));
 }
 
 /// Deference operator (`const reference_t` specialization).
 template<>
 inline reference_t SQLStatementIterator<reference_t>::operator*() const {
-    auto&&         id(Query_->get<REF_ID>(0));
-    auto&&       size(Query_->get<REF_SIZE>(1));
-    auto&&       type(Query_->get<ReferenceType>(2));
-    auto&& allocinstr(Query_->get<INS_ID>(4));
-    auto&&       name(Query_->get<REF_NAME>(3));
-
-    return reference_t(id, size, type, name, allocinstr);
+    return reference_t(
+            Query_->get<REF_ID>(0),
+            Query_->get<REF_SIZE>(1),
+            Query_->get<ReferenceType>(2),
+            Query_->get<REF_NAME>(3),
+            Query_->get<INS_ID>(4));
 }
 
 /// Deference operator (`const segment_t` specialization).
 template<>
 inline segment_t SQLStatementIterator<segment_t>::operator*() const {
-    auto&&           id(Query_->get<SEG_ID>(0));
-    auto&&         call(Query_->get<CAL_ID>(1));
-    auto&&         type(Query_->get<SegmentType>(2));
-    auto&& loop_pointer(Query_->get<LOI_ID>(3));
-
-    return segment_t(id, call, type, loop_pointer);
+    return segment_t(
+            Query_->get<SEG_ID>(0),
+            Query_->get<CAL_ID>(1),
+            Query_->get<SegmentType>(2),
+            Query_->get<LOI_ID>(3));
 }
 
 /// Deference operator (`const thread_t` specialization).
 template<>
 inline thread_t SQLStatementIterator<thread_t>::operator*() const {
-    auto&&               id(Query_->get<TRD_ID>(0));
-    auto&&       start_time(Query_->get<TIME_STRING>(1));
-    auto&&         end_time(Query_->get<TIME_STRING>(2));
-    auto&&      start_cycle(Query_->get<TIME>(3));
-    auto&&       num_cycles(Query_->get<TIME>(4));
-    auto&&  create_instr_id(Query_->get<INS_ID>(5));
-    auto&&    join_instr_id(Query_->get<INS_ID>(6));
-    auto&& parent_thread_id(Query_->get<TRD_ID>(7));
-    auto&&       process_id(Query_->get<PID>(8));
-    auto&&          call_id(Query_->get<CAL_ID>(9));
-
-    return thread_t(id, start_time, end_time, start_cycle, num_cycles, create_instr_id, join_instr_id, parent_thread_id, process_id, call_id);
+    return thread_t(
+            Query_->get<TRD_ID>(0),
+            Query_->get<TIME_STRING>(1),
+            Query_->get<TIME_STRING>(2),
+            Query_->get<TIME>(3),
+            Query_->get<TIME>(4),
+            Query_->get<INS_ID>(5),
+            Query_->get<INS_ID>(6),
+            Query_->get<TRD_ID>(7),
+            Query_->get<PID>(8),
+            Query_->get<CAL_ID>(9));
 }
 
 /// @brief Deference operator.

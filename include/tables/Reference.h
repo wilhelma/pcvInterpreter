@@ -18,7 +18,6 @@
 /// @ingroup records
 /// @brief Holds the information contained in one row of the _Reference_
 /// database table.
-/// @todo remove std::string and make constexpr
 struct reference_t {
     /// SQL ID of the reference.
     REF_ID id;
@@ -39,9 +38,12 @@ struct reference_t {
                 REF_SIZE refSize,
                 ReferenceType memoryType,
                 REF_NAME refName,
-                INS_ID allocInstr) noexcept
-        : id(refId), size(refSize), memory_type(memoryType),
-          name(refName), allocinstr(allocInstr)
+                INS_ID allocInstr) noexcept :
+        id(refId),
+        size(refSize),
+        memory_type(memoryType),
+        name(std::move(refName)),
+        allocinstr(allocInstr)
     {}
 };
 

@@ -30,13 +30,12 @@ struct segment_t {
     segment_t(SEG_ID sqlID,
               CAL_ID callId,
               SegmentType segmentType,
-              LOI_ID loopPointer) noexcept
-        : id(sqlID), call_id(callId),
-          segment_type(segmentType),
-          loop_pointer(loopPointer)
-    {
-    }
-
+              LOI_ID loopPointer) noexcept :
+        id(sqlID),
+        call_id(callId),
+        segment_type(segmentType),
+        loop_pointer(loopPointer)
+    {}
 };
 
 #endif

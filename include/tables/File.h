@@ -14,7 +14,7 @@
 
 #include "Types.h"
 
-constexpr const FIL_PT retrieve_file_name(const FIL_PT& path) noexcept {
+inline FIL_PT retrieve_file_name(const FIL_PT& path) noexcept {
     const char dir_separator = '/';
 
     // Index of the last non-terminator character in the string.
@@ -41,10 +41,11 @@ struct file_t {
     /// Constructor.
     /// @param sqlID    The SQL ID of the file.
     /// @param filePath The file path and name.
-    constexpr explicit file_t(FIL_ID sqlID, FIL_PT filePath) noexcept :
+    explicit file_t(FIL_ID sqlID,
+                    FIL_PT filePath) noexcept :
         id(sqlID),
-        file_path(filePath),
-        file_name(retrieve_file_name(filePath))
+        file_path(std::move(filePath)),
+        file_name(std::move(retrieve_file_name(file_path)))
    {}
 };
 

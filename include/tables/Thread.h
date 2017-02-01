@@ -35,7 +35,7 @@ struct thread_t {
     CAL_ID call_id;
 
     /// Constructor
-    constexpr explicit thread_t(TRD_ID id,
+    explicit thread_t(TRD_ID id,
                       TIME_STRING start_time,
                       TIME_STRING end_time,
                       TIME start_cycle,
@@ -45,12 +45,17 @@ struct thread_t {
                       TRD_ID parentThreadId,
                       PID processId,
                       CAL_ID callId) noexcept :
-        id(id), start_time(start_time), end_time(end_time),
-        start_cycle(start_cycle), num_cycles(num_cycles),
-        create_instruction_id(createINS_id), join_instruction_id(joinIns_id),
-        parent_thread_id(parentThreadId), process_id(processId),
+        id(id),
+        start_time(std::move(start_time)),
+        end_time(std::move(end_time)),
+        start_cycle(start_cycle),
+        num_cycles(num_cycles),
+        create_instruction_id(createINS_id),
+        join_instruction_id(joinIns_id),
+        parent_thread_id(parentThreadId),
+        process_id(processId),
         call_id(callId)
-        {}
+    {}
 
     /// Returns an ID for a thread that doesn't have one (i.e. the parent of the master).
     static constexpr const TRD_ID no_id() noexcept

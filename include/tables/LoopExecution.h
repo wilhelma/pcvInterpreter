@@ -27,15 +27,16 @@ struct loopExecution_t {
     unsigned loop_duration;
 
     /// Constructor
-    explicit
+    constexpr explicit
     loopExecution_t(LOE_ID sqlID,
                     LOE_ID loopID,
                     int parentIteration,
-                    int loopDuration) noexcept
-        : id(sqlID), loop_id(loopID),
-        parent_iteration(parentIteration), loop_duration(loopDuration)
+                    int loopDuration) noexcept :
+        id(sqlID),
+        loop_id(loopID),
+        parent_iteration(parentIteration),
+        loop_duration(loopDuration)
     {}
-
 };
 
 #endif

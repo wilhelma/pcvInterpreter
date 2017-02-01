@@ -41,10 +41,13 @@ struct call_t {
                               FUN_ID functionID,
                               INS_ID instructionID,
                               TIME startTime,
-                              TIME endTime) noexcept
-        : id(sqlID), thread_id(threadID),
-          function_id(functionID), instruction_id(instructionID),
-          start_time(startTime), end_time(endTime)
+                              TIME endTime) noexcept :
+        id(sqlID),
+        thread_id(threadID),
+        function_id(functionID),
+        instruction_id(instructionID),
+        start_time(startTime),
+        end_time(endTime)
     {}
 };
 
