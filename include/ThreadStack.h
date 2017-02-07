@@ -99,7 +99,10 @@ struct thread_frame_t {
 					 prefix(Span()), 
 					 longest_child(Span()),
 					 continuation(Span()),
-					 concurrency_offset(0) {}
+					 concurrency_offset(0),
+                     spawned_children_count(0)
+
+    {}
 };
 
 class ThreadStack {
