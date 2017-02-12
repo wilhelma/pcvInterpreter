@@ -33,6 +33,7 @@
 
 #include "FunctionType.h"
 #include "Reference.h"
+#include "Segment.h"
 
 #include "gtest/gtest.h"
 
@@ -82,7 +83,7 @@ void EventTestTool::Call(const CallEvent* e) {
         EXPECT_EQ(e->info()->returnTime(), 40928593727247);
         EXPECT_EQ(e->info()->functionType(), FunctionType::METHOD);
         EXPECT_EQ(e->info()->functionId(), 11);
-        EXPECT_EQ(e->info()->segmentId(),   0); // main function doesn't have an instruction => segment
+        EXPECT_EQ(e->info()->segmentId(), segment_t::main_id());
         EXPECT_EQ(e->info()->functionSignature(), "main");
 
         // What's this?

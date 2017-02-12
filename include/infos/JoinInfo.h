@@ -17,6 +17,8 @@
 #include "ChildThreadInfo.h"
 #include "Types.h"
 
+#include <cassert>
+
 /// @ingroup info
 /// @brief Information about a thread join.
 /// @todo Remove child thread from the map on destruction.
@@ -29,7 +31,7 @@ public:
                       const TIME& join_time) noexcept
         : ChildThreadInfo(child_thread_info),
           JoinTime_(join_time)
-        {}
+        { assert(startTime() < joinTime()); }
 
     /// Return the time when the thread was joined.
     const TIME& joinTime() const noexcept

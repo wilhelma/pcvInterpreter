@@ -36,6 +36,14 @@ struct segment_t {
         segment_type(segmentType),
         loop_pointer(loopPointer)
     {}
+
+    /// Returns an invalid segment ID.
+    static constexpr const SEG_ID no_id() noexcept
+    { return static_cast<SEG_ID>(0); }
+
+    /// Returns the segment of the main function.
+    static constexpr const SEG_ID main_id() noexcept
+    { return static_cast<SEG_ID>(1); }
 };
 
 #endif

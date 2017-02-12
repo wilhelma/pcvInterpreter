@@ -30,7 +30,7 @@ public:
                            const TIME& end_time) noexcept
         : ChildThreadInfo(child_thread_it),
           EndTime_(end_time)
-        {}
+        { assert(startTime() < endTime()); }
 
     /// Return the time when the thread has finished its work.
     const TIME& endTime() const noexcept

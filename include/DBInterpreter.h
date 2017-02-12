@@ -22,12 +22,11 @@
 #include "fwd/Thread.h"
 // -----------------------------
  
-#include "CallStack.h"
-
 #include "fwd/Database.h"
 #include "fwd/EventGenerator.h"
 
 #include <memory>
+#include <stack>
 #include <string>
 
 #include "Types.h"
@@ -67,8 +66,16 @@ private:
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
 
-    /// Stack of call IDs.
-    CallStack CallStack_;
+    using CallStack = std::stack<CAL_ID>;
+
+    const std::unique_ptr<CallStack>& callStack() const noexcept
+    { return CallStack_; }
+
+    /// Stack of the call IDs.
+    const std::unique_ptr<CallStack> CallStack_;
+
+    /// Keep track of the last segment ID to detect function returns.
+    SEG_ID LastSegmentId_;
 
     // private methods---------------------------------------------------------
     void processAccess(const instruction_t& instruction, const TRD_ID& thread_id) const;
