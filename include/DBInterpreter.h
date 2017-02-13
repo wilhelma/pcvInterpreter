@@ -66,13 +66,8 @@ private:
     /// Content of the input database.
     std::unique_ptr<const Database> Database_;
 
-    using CallStack = std::stack<CAL_ID>;
-
-    const std::unique_ptr<CallStack>& callStack() const noexcept
-    { return CallStack_; }
-
-    /// Stack of the call IDs.
-    const std::unique_ptr<CallStack> CallStack_;
+    /// Access the call stack in the event generator.
+    const std::unique_ptr<CallStack>& callStack() const noexcept;
 
     /// Keep track of the last segment ID to detect function returns.
     SEG_ID LastSegmentId_;

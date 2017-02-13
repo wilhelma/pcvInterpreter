@@ -12,6 +12,11 @@
 #ifndef  FWD_EVENT_GENERATOR_H_
 #define  FWD_EVENT_GENERATOR_H_
 
+#include "Types.h" // TODO make a fwd for the types!
+#include <stack>
+
 class EventGenerator;
+
+using CallStack = std::stack<CAL_ID>;
 
 #endif

@@ -12,6 +12,7 @@
 #ifndef  EVENT_GENERATOR_H_
 #define  EVENT_GENERATOR_H_
 
+#include "fwd/EventGenerator.h"
 #include "fwd/EventService.h"
 #include "fwd/ShadowCallMap.h"
 #include "fwd/ShadowLockMap.h"
@@ -132,6 +133,11 @@ public:
 
     const TIME& lastEventTime() const noexcept
     { return LastEventTime_; }
+
+    /// Access the call stack.
+    const std::unique_ptr<CallStack>& callStack() const noexcept
+    { return CallStack_; }
+
 private:
     /// Constant pointer to the EventService.
     const std::unique_ptr<const EventService> EventService_;
@@ -143,6 +149,9 @@ private:
     const std::unique_ptr<ShadowThreadMap>    ShadowThreadMap_;
     /// Maps a reference ID to its ShadowVariable.
     const std::unique_ptr<ShadowVariableMap>  ShadowVariableMap_;
+
+    /// Stack of the call IDs.
+    const std::unique_ptr<CallStack> CallStack_;
 
     /// The ID of the thread at the top of the stack.
     TRD_ID LastThreadId_;

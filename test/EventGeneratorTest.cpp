@@ -60,6 +60,17 @@ TEST_F(EventGeneratorTest, CorrectThrownEvents) {
     // Each acquired resource should be released
     EXPECT_EQ(test_tool_ptr->NumAcquires_, test_tool_ptr->NumReleases_);
 
+    std::cout << std::endl
+              << " > Summary:" << std::endl
+              << "     N. of accesses .... " << test_tool_ptr->NumAccesses_ << std::endl
+              << "     N. of acquires      " << test_tool_ptr->NumAcquires_ << std::endl
+              << "     N. of releases .... " << test_tool_ptr->NumReleases_ << std::endl
+              << "     N. of calls         " << test_tool_ptr->NumCalls_    << std::endl
+              << "     N. of returns ..... " << test_tool_ptr->NumReturns_  << std::endl
+              << "     N. of threads       " << test_tool_ptr->NumNewThreads_ << std::endl
+              << "     N. of joins ....... " << test_tool_ptr->NumJoins_ << std::endl
+              << "     N. of thread ends   " << test_tool_ptr->NumThreadEnds_ << std::endl;
+
     // Unregister the tool
     runner->removeTool(event_test_tool_it);
 }
