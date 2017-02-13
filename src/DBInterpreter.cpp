@@ -47,7 +47,6 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
-#include <stack>
 #include <string>
 
 // logging system
@@ -55,9 +54,11 @@
 
 DBInterpreter::DBInterpreter(std::unique_ptr<EventGenerator>&& event_generator) noexcept:
     EventGenerator_(std::move(event_generator)),
-    CallStack_(std::make_unique<CallStack>()),
     LastSegmentId_(segment_t::no_id())
 {}
+
+const std::unique_ptr<CallStack>& DBInterpreter::callStack() const noexcept
+{ return EventGenerator_->callStack(); }
 
 // Default the destructor here to allow the Ptr to Impl idiom.
 DBInterpreter::~DBInterpreter() = default;
@@ -109,9 +110,8 @@ void DBInterpreter::processReturn(const instruction_t& ins, const call_t& call) 
         if (top_call.thread_id != EventGenerator_->lastThreadId())
             publish_thread_return(top_call.thread_id, database(), top_call.end_time, EventGenerator_);
 
-        // Publish the call return.
+        // Publish the call return (and pop from the stack).
         EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
-        callStack()->pop(); // TODO Do it in the return event!
     }
 
     // The call stack should never be empty.
@@ -148,8 +148,8 @@ void DBInterpreter::processEnd() {
         if (top_call.thread_id != EventGenerator_->lastThreadId())
             publish_thread_return(top_call.thread_id, database(), top_call.end_time, EventGenerator_);
 
+        // Publish the call return (and pop from the stack).
         EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
-        callStack()->pop(); // TODO Do it in the return event!
     }
 }
 
@@ -229,9 +229,6 @@ void DBInterpreter::processCall(const call_t& call, const LIN_NO& line, const SE
                     fun_of_call.name,
                     fun_of_call.type,
                     seg_id);
-            std::cout << "Call id: " << call.id << std::endl;
-            const auto call_id = call.id;
-            callStack()->emplace(call_id);
             break;
         }
         default:

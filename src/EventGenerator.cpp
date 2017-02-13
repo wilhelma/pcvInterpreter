@@ -52,6 +52,7 @@ EventGenerator::EventGenerator(std::unique_ptr<const EventService>&& event_servi
     ShadowLockMap_(std::make_unique<ShadowLockMap>()),
     ShadowThreadMap_(std::make_unique<ShadowThreadMap>()),
     ShadowVariableMap_(std::make_unique<ShadowVariableMap>()),
+    CallStack_(std::make_unique<CallStack>()),
     LastThreadId_(thread_t::no_id()),
     LastEventTime_(0)
 {}
@@ -223,6 +224,9 @@ std::unique_ptr<const CallInfo> EventGenerator::callInfo(const CAL_ID& call_id,
     auto call_entry = std::make_shared<const ShadowCall>(call_time, runtime, function_id, function_type, segment_id);
     const auto& call_it = ShadowCallMap_->insert(std::make_pair(call_id, call_entry)).first;
 
+    // Add element to the stack
+    callStack()->emplace(call_id);
+
     return std::make_unique<const CallInfo>(call_it, site_id, function_signature);
 }
 
@@ -259,5 +263,9 @@ void EventGenerator::returnEvent(const TRD_ID& parent_thread_id,
     EventService_->publish(&return_event);
 
     LastEventTime_ = return_event.info()->returnTime();
+
     ShadowCallMap_->erase(call_it);
+
+    assert(callStack()->top() == call_id);
+    callStack()->pop();
 }
