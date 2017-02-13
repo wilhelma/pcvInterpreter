@@ -20,7 +20,7 @@ EventType CallEvent::type() const noexcept
 { return EventType::CALL; }
 
 std::ostream& operator<<(std::ostream& s, const CallEvent& e) {
-    s << "Event:      " << std::setw(2) << e.type() << " | ";
+    s << "Event: " << e.type() << " | ";
     s << "Thread id:  " << std::setw(2) << e.threadId() << " | ";
     s << "Call Id:    " << std::setw(2) << e.info()->callId() << " | ";
     s << "Call time:  " << std::setw(2) << e.info()->callTime() << " | ";

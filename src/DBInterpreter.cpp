@@ -98,13 +98,20 @@ void DBInterpreter::processReturn(const instruction_t& ins, const call_t& call) 
         // Retrieve the call at the top of the stack.
         const auto& top_call = call_with_id(callStack()->top(), *database()); // may throw
 
-        // Publish the call return.
-        EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
-        callStack()->pop(); // TODO Do it in the return event!
+#ifndef NDEBUG
+        std::cout << " > Current thread: " << call.thread_id
+                  << "   Top thread:     " << top_call.thread_id
+                  << "   Last thread:    " << EventGenerator_->lastThreadId()
+                  << std::endl; 
+#endif
 
         // Check if the threads has changed.
         if (top_call.thread_id != EventGenerator_->lastThreadId())
             publish_thread_return(top_call.thread_id, database(), top_call.end_time, EventGenerator_);
+
+        // Publish the call return.
+        EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
+        callStack()->pop(); // TODO Do it in the return event!
     }
 
     // The call stack should never be empty.
@@ -128,17 +135,21 @@ void DBInterpreter::processStart() {
 }
 
 void DBInterpreter::processEnd() {
-    // close final calls
+    // Close final calls.
     while (!callStack()->empty()) {
         const auto& top_call = call_with_id(callStack()->top(), *database()); // may trow
-        callStack()->pop();
 
-        if (top_call.thread_id != EventGenerator_->lastThreadId()) {
-            const auto& last_thread = thread_with_id(EventGenerator_->lastThreadId(), *database());
-            EventGenerator_->threadEndEvent(top_call.thread_id, last_thread.id, last_thread.start_cycle + last_thread.num_cycles);
-        }
+#ifndef NDEBUG
+        std::cout << " > Top thread:     " << top_call.thread_id
+                  << "   Last thread:    " << EventGenerator_->lastThreadId()
+                  << std::endl; 
+#endif
+
+        if (top_call.thread_id != EventGenerator_->lastThreadId())
+            publish_thread_return(top_call.thread_id, database(), top_call.end_time, EventGenerator_);
 
         EventGenerator_->returnEvent(top_call.thread_id, top_call.id);
+        callStack()->pop(); // TODO Do it in the return event!
     }
 }
 
@@ -149,28 +160,29 @@ void DBInterpreter::processInstruction(const instruction_t& ins) {
     const auto& caller_of_seg = call_of(seg_of_ins, *database());
 
     if (seg_of_ins.id != LastSegmentId_) {
-        // The segment should always be increasing.
-        assert(seg_of_ins.id > LastSegmentId_);
 
+#ifndef NDEBUG
+        if (ins.instruction_type == InstructionType::CALL) {
+            // The segment should always be increasing on a function call.
+            assert(seg_of_ins.id > LastSegmentId_);
+        }
+#endif
+
+        // If the segment decreases, a function returned.
         if (callStack()->top() > caller_of_seg.id) {
             // Make sure that this isn't a call event.
             assert(ins.instruction_type != InstructionType::CALL);
             processReturn(ins, caller_of_seg);
         }
+
+        // Update the last segment ID.
+        LastSegmentId_ = seg_of_ins.id;
     }
 
 
     switch (ins.instruction_type) {
         case InstructionType::CALL:
-        {
-            // The segment should always be increasing.
-            assert(LastSegmentId_ < seg_of_ins.id);
-
-            // Update the last segment ID.
-            LastSegmentId_ = seg_of_ins.id;
-
             return processCall(call_of(ins, *database()), ins.line_number, ins.segment_id);
-        }
 
         case InstructionType::ACCESS:
             return processAccess(ins, caller_of_seg.thread_id); 
